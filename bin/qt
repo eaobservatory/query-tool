@@ -1,11 +1,12 @@
 #!/bin/csh -f 
 
-set JAVA = /local/java/jdk/bin/java
+onintr tidy
 
+set JAVA		= /local/java/jdk/bin/java
 set baseOTConfigDir	= /jac_sw/orac3/OT/install/cfg
 set qtConfig	        = /jac_sw/omp/QT/config/qtSystem.conf
 
-set usage		= "Usage: $0 <telescope> [-h] [-options] \n\nwhere telescope is:\n\tukirt\t\tspecifies the UKIRT widget set\n\tjcmt\t\tspecifies the jcmt widget set\n\nand options include:\n\t-jac\t\tspecifies JAC global configs instead of local user configs\n\t-config file\tspecies the absolute path to the \042file\042 used for this session\n\n\n"
+set usage		= "Usage: $0 <telescope> [-h] [-options] \n\nwhere telescope is:\n\tukirt\t\tspecifies the UKIRT widget set\n\tjcmt\t\tspecifies the jcmt widget set\n\nand options include:\n\t-hilo <solaris_host>\t\tspecifies we are running in hilo and sets the solaris host\n\t-config <file>\tspecies the absolute path to the \042file\042 used for this session\n\t-scenario\tspecifies scenario mode (does not depend on drama)\n\n"
 
 set classic = ""
 set xdebug = ""
@@ -13,26 +14,21 @@ set xnoagent = ""
 set xrunjdwptrans = ""
 set xbootclasspath = ""
 
-
 # set default behaviour to -ql -nosim -noeng for UKIRT 
-
 set tosim = "nosim" 
 set toql = "ql" 
 set toeng = "noeng" 
 set debug = ""
 set dramaEnabled = "true"
+set scenario = 0
+set solHost = "UNDEF"
 
-if (`domainname` == "JAC.ukirt") then
-   set solHost = "kiki"
-else if (`domainname` == "JAC.Hilo") then
-   set solHost = "lokahi"
-endif
- 
 while ($#argv != 0)
    switch ($argv[1])
       case -h:
         printf "${usage}" 
-        exit 
+        exit 0
+        breaksw
       case -jdebug:
         set xdebug = "-Xdebug"
         set xnoagent = "-Xnoagent"
@@ -41,7 +37,6 @@ while ($#argv != 0)
 	echo QT Will be controled by JDEBUG!
         shift
         breaksw
-
       case -noql: 
         set toql = "noql" 
         echo No quick look specified 
@@ -74,7 +69,7 @@ while ($#argv != 0)
         breaksw 
       case -eng 
         set toeng = "eng" 
-        echo Engineering specified 
+        echo "Data to be saved in engingeering directories"
         shift 
         breaksw 
       case -noeng 
@@ -82,17 +77,23 @@ while ($#argv != 0)
         echo Science observing specified 
         shift 
         breaksw 
-
-      case -jac:
+      case -hilo:
+        shift
         set qtConfig = /jac_sw/omp/QT/config/qtSystem.conf
-	set solHost = "lokahi"
+	set solHost = $argv[1]
         echo Global configs to be used
 	echo Solaris host is ${solHost}
+        shift
+        breaksw
+      case -scenario
+        set scenario = 1
+	set solHost = ""
         shift
         breaksw
       case -config
         shift
 	set qtConfig = $argv[1]
+        shift
         breaksw
       case -debug
 	set debug = true
@@ -120,24 +121,87 @@ while ($#argv != 0)
    endsw
 end
 
-if !($?widgetFile) then
-    printf "${usage}"
-    exit
-endif
- 
-if (! ${?IMP_SCRATCH} && (${HOST} == "kiki")) then
-    setenv IMP_SCRATCH /tmp
-    echo "IMP_SCRATCH set to /tmp"
-else if (! ${?IMP_SCRATCH}) then
-    echo "IMP_SCRATCH is not set"
-else
-    echo "IMP_SCRATCH is set to: ${IMP_SCRATCH}"
+
+if (`domainname` == "JAC.ukirt") then
+   set solHost = "kiki"
+   echo HEY!
+else if (`domainname` == "JAC.Hilo") then
+   set solHost = ${solHost}
+
+   if (${solHost} == "UNDEF") then
+      echo "\n\nIn Hilo you must specify -hilo <solaris_host> || -scenario"
+      printf "${usage}"
+      exit 1
+   endif
 endif
 
-if (! ${?IMP_STARTUP}) then
-    set dramaEnabled = "false"
+if !($?widgetFile) then
+    printf "${usage}"
+    exit 1
 endif
+
+setenv LOGPATH "/ukirtdata/epics_data/qtLogs/"
+
+#Make the log directory
+if (-dwx ${LOGPATH} ) then
+   setenv QT_LOG_DIR ${LOGPATH}`date +%Y%m%d-%H%M%S`
+   mkdir ${QT_LOG_DIR}
+   echo "\n\n\n***This QT and (S)equence (M)anager session will be logged in ${QT_LOG_DIR}.***\n\n\n"
+else
+   echo ${LOGPATH} does not exist
+   printf "${usage}"
+   exit 1   
+endif
+
+
+#Test for scenario mode
+if (! ${?IMP_STARTUP} || ${scenario}) then
+   set dramaEnabled = "false"
+
+else
+   if (! ${?IMP_SCRATCH} ) then
+      setenv IMP_SCRATCH /tmp
+      echo "IMP_SCRATCH set to ${IMP_SCRATCH}"
+   else
+      if (${IMP_SCRATCH} != "/tmp") then
+         echo "***ERROR: IMP_SCRATCH is set to: ${IMP_SCRATCH} "
+         echo "\tIt should be set to /tmp. Fix this and try again."
+	 exit 1
+      endif
+   endif
+
+   # We want ample IMP_transmitter buffer space
+   setenv IMP_NET_KBYTES 5120
+
+   # If we're on a Linux box start the master task
+   set OS  = `uname -s`
+   if($OS == "Linux") master &
+
+   # check whether the CSO task is running
+   ditsgetinfo -running CSOMON
+
+   set run = $status
+
+   #If csomon in not running && we're on solaris, start it.
+   if ($run != 0 && $OS == "SunOS") then
+      echo "Starting CSOMON"
+      getcso.pl &
+   else
+      echo "CSOMON already running - will not start"
+   endif
+endif
+
+setenv DUL_DIR /local/progs/drama/release/dul/r0_10_1/
+setenv GIT_DIR /local/progs/drama/release/git/r0_9_2/
+setenv DTCL_DIR /local/progs/drama/release/dtcl/r1_2_3/
 
 set CLASSPATH = /jac_sw/omp/QT/lib/qt.jar:/jac_sw/omp/QT/lib/xerces.jar:/jac_sw/omp/QT/lib/mail.jar:/jac_sw/omp/QT/lib/activation.jar:/jac_sw/omp/QT/lib/soap.jar:/jac_sw/orac3/OT/install/classes:/jac_sw/orac3/GEMINI/install/classes:/jac_sw/itsroot/install/ompSM/classes:/jac_sw/orac3/ORAC/install/classes:/jac_sw/orac3/OMP/install/classes:/jac_sw/orac3/ODB/install/classes:/jac_sw/omp/QT/lib/jsky.jar:/jac_sw/omp/QT/lib/diva.jar:/jac_sw/omp/QT/lib/junit.jar:/jac_sw/omp/QT/icons:/local/java/jdk/lib/tools.jar:/jac_sw/itsroot/install/dcHub/lib/dcHub.jar:/local/progs/drama/drama_source/djava
 
-${JAVA} ${classic} ${xdebug} ${xnoagent} ${xrunjdwptrans} ${xbootclasspath} -Ddebug=${debug} -DDRAMA_ENABLED=${dramaEnabled} -DSIMULATE=${tosim} -DENGINEERING=${toeng} -DQUICKLOOK=${toql} -Dtelescope=${telescope} -DSOLARIS_HOST=${solHost} -DDOMAIN=`domainname` -DqtConfig=${qtConfig} -Dot.cfgdir=${instConfigDir}/ -DwidgetFile=${widgetFile} -DOMP -cp ${CLASSPATH} edu.jach.qt.app.QT &
+${JAVA} ${classic} ${xdebug} ${xnoagent} ${xrunjdwptrans} ${xbootclasspath} -Ddebug=${debug} -DDRAMA_ENABLED=${dramaEnabled} -DSIMULATE=${tosim} -DENGINEERING=${toeng} -DQUICKLOOK=${toql} -Dtelescope=${telescope} -DSOLARIS_HOST=${solHost} -DDOMAIN=`domainname` -DqtConfig=${qtConfig} -Dot.cfgdir=${instConfigDir}/ -DwidgetFile=${widgetFile} -DQT_LOG_DIR=${QT_LOG_DIR} -DOMP -cp ${CLASSPATH} edu.jach.qt.app.QT
+
+tidy: 
+onintr - 
+cleanup 
+unsetenv DUL_DIR
+unsetenv GIT_DIR
+unsetenv DTCL_DIR
