@@ -76,13 +76,11 @@ public class Querytool implements Observer {
 	 Element item, sub;
 	 JToggleButton abstractButton;
 	 Object obj;
-
-	 //System.out.println("WidgetHash: "+ht.toString());
 	 
 	 for(Enumeration e = ht.keys(); e.hasMoreElements() ; ) {
 	    next = (String) e.nextElement();
 	    item = doc.createElement(next);
-	    if (next.equals("Instruments")) {
+	    if (next.equalsIgnoreCase("Instruments")) {
 	       for (ListIterator iter = ((LinkedList)(ht.get(next))).listIterator(0); 
 		    iter.hasNext(); 
 		    iter.nextIndex()) {
@@ -94,7 +92,7 @@ public class Querytool implements Observer {
 		  }
 	       }
 	    }
-	    else if(next.equals("Moon")) {
+	    else if(next.equalsIgnoreCase("Moon")) {
 	       for (ListIterator iter = ((LinkedList)(ht.get(next))).listIterator(0); 
 		    iter.hasNext(); 
 		    iter.nextIndex()) {
@@ -110,13 +108,11 @@ public class Querytool implements Observer {
 		    iter.nextIndex()) {
 
 		  obj = iter.next();
-		  //System.out.println("Object: "+obj.toString());
-		  //System.out.println("Object is JComboBox: "+ (obj instanceof JComboBox));
 		  if (obj instanceof JComboBox) {
 		     String textField = (String) (iter.next());
 		     obj = (JComboBox)obj;
 		     if(!textField.equals("")) {
-		     sub = doc.createElement((String) (((JComboBox)obj).getSelectedItem()) ) ;
+		     sub = doc.createElement((String) (((JComboBox)obj).getSelectedItem())) ;
 		     sub.appendChild( doc.createTextNode(textField));
 		     item.appendChild(sub);
 		     }
@@ -133,7 +129,7 @@ public class Querytool implements Observer {
 	 }
 	 doc.appendChild(root);
 
-	 OutputFormat    format  = new OutputFormat( doc );   //Serialize DOM
+	 OutputFormat    format  = new OutputFormat( doc,"UTF-8",true );   //Serialize DOM
 	 StringWriter  stringOut = new StringWriter();        //Writer will be a String
 	 XMLSerializer    serial = new XMLSerializer( stringOut, format );
 	 serial.asDOMSerializer();                            // As a DOM Serializer
