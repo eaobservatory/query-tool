@@ -160,6 +160,9 @@ public class ExecuteJCMT extends Execute implements Runnable {
 		logger.debug("Error from LoadSCUQUEUE: "+new String(errorMessage));
 		if (rtn != 0) {
 		    logger.error("Error loading queue");
+		    new PopUp ("Load Error",
+			       new String(errorMessage).trim(),
+			       JOptionPane.ERROR_MESSAGE).start();
 		    success.delete();
 		    return;
 		}
