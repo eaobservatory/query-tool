@@ -415,20 +415,26 @@ final public class ProgramTree extends JPanel implements
 			new ErrorBox(this, "Failed to Execute. Check log using View>Log menu button.");
 		    }
 		}
-		if (!isDeferred && !failed) {
-		    msbPendingFile = new File (msbPendingDir+projectID+"_"+checkSum+".pending");
- 		    anObservationHasBeenDone = true;
-		    markAsDone(obsList.getSelectedIndex());
-		}
-		else if (!failed) {
-		    DeferredProgramList.markThisObservationAsDone(item);
-		}
+		if ( ! _useQueue ) {
+		    if (!isDeferred && !failed) {
+		        msbPendingFile = new File (msbPendingDir+projectID+"_"+checkSum+".pending");
+ 		        anObservationHasBeenDone = true;
+		        markAsDone(obsList.getSelectedIndex());
+		    }
+		    else if (!failed) {
+		        DeferredProgramList.markThisObservationAsDone(item);
+		    }
 	
-		if ( !isDeferred && 
-		     IsModelEmpty() && 
-		     TelescopeDataPanel.DRAMA_ENABLED) {
-		    msbDone = showMSBDoneDialog();
-		} // end of if ()
+		    if ( !isDeferred && 
+		         IsModelEmpty() && 
+		         TelescopeDataPanel.DRAMA_ENABLED) {
+		         msbDone = showMSBDoneDialog();
+		    } // end of if ()
+		}
+		else if ( !(failed) ) {
+		    // We are using the queue, so assime the observation is done
+		    msbDone = true;
+		}
 
 		setExecutable(true);
 	    }
