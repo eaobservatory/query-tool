@@ -379,36 +379,6 @@ final public class DeferredProgramList extends JPanel implements
 	}
 	else if (System.getProperty("telescope").equalsIgnoreCase("jcmt")) {
 	    new ExecuteInThread (currentItem, true).start();
-	    /*
-	    try {
-		logger.info("Sending observation "+currentItem.getTitle()+" for execution.");
-		
-		ExecuteJCMT execute = ExecuteJCMT.getInstance(currentItem);
-		execute.run();
-		File failFile = new File ("/jcmtdata/orac_data/deferred/.failure");
-		File successFile = new File ("/jcmtdata/orac_data/deferred/.success");
-		if (failFile.exists()) {
-		    new ErrorBox(this, "Failed to Execute. Check messages.");
-		    logger.warn ("Failed to execute observation");
-		}
-		else if (successFile.exists()) {
-		    // Mark this observation as having been done
-		    markThisObservationAsDone(currentItem);
-		    logger.info("Observation executed successfully");
-		}
-		else {
-		    // Neither file exists - report an error to the user
-		    new ErrorBox("Unable to determine success status - assuming failed.");
-		    logger.error ("Unable to determine success status for observation.");
-		}
-	    }
-	    catch (Exception e) {
-		logger.error("Failed to execute thread.",e);
-		if (t!= null && t.isAlive()) {
-		    logger.error("Last observation still seems to be running");
-		}
-	    }
-	    */
 	    return;
 	}
     }
@@ -781,11 +751,18 @@ final public class DeferredProgramList extends JPanel implements
     }
 
     public class ExecuteInThread extends Thread {
-	SpItem _item;
+	SpProg _item = (SpProg) SpFactory.create(SpType.SCIENCE_PROGRAM);
 	boolean _isDeferred;
 
 	public ExecuteInThread ( SpItem item, boolean deferred ) {
-	    _item = item;
+	    // Make the obs into an SpProg
+	    _item.setPI("observer");
+	    _item.setCountry("JAC");
+	    _item.setProjectID("Deferred Obs");
+	    SpInsertData spID = SpTreeMan.evalInsertInside(item, _item);
+	    if ( spID != null ) {
+		 SpTreeMan.insert(spID);
+	    }
 	    _isDeferred = deferred;
 	}
 

@@ -1310,7 +1310,23 @@ final public class ProgramTree extends JPanel implements
 	boolean _isDeferred;
 
 	public ExecuteInThread ( SpItem item, boolean deferred ) {
-	    _item = item;
+	    // if this is a deferred observation, then we need to
+	    // convert the supplied item, which is an SpObs into
+	    // an SpProg
+	    if ( deferred ) {
+		SpProg root = (SpProg) SpFactory.create(SpType.SCIENCE_PROGRAM);
+		root.setPI("observer");
+		root.setCountry("JAC");
+		root.setProjectID("CAL");
+		SpInsertData spID = SpTreeMan.evalInsertInside(item, root);
+		if ( spID != null ) {
+		    SpTreeMan.insert(spID);
+		}
+		_item = (SpItem)root;
+	    }
+	    else {
+	        _item = item;
+	    }
 	    _isDeferred = deferred;
 	}
 
