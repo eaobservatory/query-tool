@@ -2,6 +2,7 @@ package edu.jach.qt.djava;
 
 import au.gov.aao.drama.*;
 import ocs.utils.CommandReceiver;
+import org.apache.log4j.Logger;
 
 /**
  * <code>MonitorResponse</code> is used to handle reponses to the
@@ -10,6 +11,9 @@ import ocs.utils.CommandReceiver;
  * @author <a href="mailto:mrippa@jach.hawaii.edu">Mathew Rippa</a>
  * $Id$ */
 public abstract class MonitorResponse extends DramaMonitor.MonResponse {
+
+  protected static Logger logger = Logger.getRootLogger();
+
 
   protected CommandReceiver cr;
   public final boolean DEBUG = "true".equals(System.getProperty("debug", "false"));

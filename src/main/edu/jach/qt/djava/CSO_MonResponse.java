@@ -25,7 +25,7 @@ public class CSO_MonResponse extends MonitorResponse {
 
     if (name.equals("CSOTAU")) {
       
-      System.out.println(value.RealValue(name));
+      logger.info("Tau update: "+value.RealValue(name));
       
       TelescopeDataPanel.setTau(value.RealValue(name));
     }
