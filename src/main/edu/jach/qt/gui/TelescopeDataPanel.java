@@ -28,11 +28,11 @@ public class TelescopeDataPanel extends JPanel implements ActionListener {
   public static String	tauString = "-----";
 
   private static JLabel csoTauValue;
+  private static JLabel airmassValue;
   private JLabel csoTau;
   private JLabel seeing;
   private JLabel seeingValue;
   private JLabel airmass;
-  private JLabel airmassValue;
   private JButton updateButton;
   private DcHub hub;
 
@@ -96,6 +96,15 @@ public class TelescopeDataPanel extends JPanel implements ActionListener {
     String output = myFormatter.format(val);
 
     TelescopeDataPanel.csoTauValue.setText(""+output);
+  }
+
+  public static void setAirmass(double val) {
+  
+    //The arg in the following constructor is a pattern for formating
+    DecimalFormat myFormatter = new DecimalFormat("0.000");
+    String output = myFormatter.format(val);
+
+    TelescopeDataPanel.airmassValue.setText(""+output);
   }
 
   public void config() {
