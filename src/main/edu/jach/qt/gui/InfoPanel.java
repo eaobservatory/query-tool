@@ -40,7 +40,9 @@ public class InfoPanel extends JPanel
   private TelescopeDataPanel telescopeInfoPanel;
 
   JLabel hstLabel		= new JLabel("HST");
-  JButton searchButton		= new JButton();
+
+  public static JButton searchButton		= new JButton();
+
   JButton xmlPrintButton	= new JButton();
   JButton exitButton		= new JButton();
   JButton fetchMSB		= new JButton();
@@ -100,10 +102,10 @@ public class InfoPanel extends JPanel
 
     blinker = new Led();
 
-    searchButton.setText("Search");
-    searchButton.setName("Search");
-    searchButton.setBackground(java.awt.Color.gray);
-    searchButton.addActionListener(new ActionListener() {
+    InfoPanel.searchButton.setText("Search");
+    InfoPanel.searchButton.setName("Search");
+    InfoPanel.searchButton.setBackground(java.awt.Color.gray);
+    InfoPanel.searchButton.addActionListener(new ActionListener() {
 	public void actionPerformed(ActionEvent e) {
 	  final SwingWorker worker = new SwingWorker() {
 	      Boolean isStatusOK;
@@ -130,7 +132,7 @@ public class InfoPanel extends JPanel
 	}
       } );
       
-    searchButton.setBackground(java.awt.Color.gray);
+    InfoPanel.searchButton.setBackground(java.awt.Color.gray);
 
     xmlPrintButton.setText("Execute");
     xmlPrintButton.setName("Execute");
@@ -167,7 +169,7 @@ public class InfoPanel extends JPanel
     gbc.insets.right = 5;
     gbc.weightx = 100;
     gbc.weighty = 100;
-    add(searchButton, gbc, 0, 2, 1, 1);
+    add(InfoPanel.searchButton, gbc, 0, 2, 1, 1);
     
     gbc.fill = GridBagConstraints.NONE;
     gbc.anchor = GridBagConstraints.CENTER;

@@ -36,6 +36,7 @@ public class WidgetPanel extends JPanel
   private int totalNumRadRows = 0;
   private int numRadPanels = 0;
 
+  private  static JTextFieldPanel atmospherePanel;
   /**
    * Describe variable <code>instrumentPanel</code> here.
    *
@@ -184,6 +185,7 @@ public class WidgetPanel extends JPanel
 	    }
 	    else if (info.getTitle().equalsIgnoreCase("Atmosphere") ) {
 	      add(panel, gbc, 1, 3, 2, info.getSize()+1);
+	      setAtmospherePanel(panel);
 	    }
 	    else if (info.getTitle().equalsIgnoreCase("Moon") ) {
 	      add(panel, gbc, 1, 20, 2, info.getSize()+1);
@@ -191,21 +193,20 @@ public class WidgetPanel extends JPanel
 
 	    else {
 	      //add(panel, gbc, numRadPanels, 20, 1, info.getSize()+1);
-	      System.out.println("title: "+info.getTitle());
-	      
+	      //System.out.println("title: "+info.getTitle());
 	    }
 	    totalNumRadRows += info.getSize()+2;
 	  }
 	  else {
 	    add(panel, gbc, 0, numComponents + totalNumRadRows, 1, 2);
-	  } // end of else
+	  }
 
 	  numRadPanels++;
-	} // end of if ()
+	}
 	else {
 	  System.out.println("FAILED to set radio position!");
 	  System.exit(1);
-	} // end of else
+	}
       }
 
       //JCheckBoxGroup
@@ -351,6 +352,14 @@ public class WidgetPanel extends JPanel
     numComponents++;
   }
 
+  public void setAtmospherePanel(WidgetPanel panel) {
+    atmospherePanel = (JTextFieldPanel)panel;
+  }
+
+  public static JTextFieldPanel getAtmospherePanel() {
+    return WidgetPanel.atmospherePanel;
+  }
+  
   /**
    * This <code>actionPerformed</code> method is mandated by
    * ActionListener and is need particularly for the 2 checkbox

@@ -2,11 +2,11 @@ package edu.jach.qt.gui;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.text.DecimalFormat;
+import java.text.*;
 import javax.swing.*;
 import javax.swing.border.*;
 import javax.swing.event.*;
-import ocs.utils.DcHub;
+import ocs.utils.*;
 
 
 /**
@@ -18,7 +18,7 @@ import ocs.utils.DcHub;
  * @author <a href="mailto: mrippa@jach.hawaii.edu"Mathew Rippa</a>
  */
 
-public class TelescopeDataPanel extends JPanel {
+public class TelescopeDataPanel extends JPanel implements ActionListener {
    
   private JLabel csoTau;
   private static JLabel csoTauValue;
@@ -71,7 +71,7 @@ public class TelescopeDataPanel extends JPanel {
     airmassValue.setForeground(java.awt.Color.green);
 
     updateButton.setBackground(java.awt.Color.gray);
-
+    updateButton.addActionListener(this);
 
     gbc.fill = GridBagConstraints.NONE;
     //gbc.anchor = GridBagConstraints.CENTER;
@@ -115,6 +115,19 @@ public class TelescopeDataPanel extends JPanel {
     gbc.gridwidth = w;
     gbc.gridheight = h;
     add(c, gbc);      
+  }
+
+  // implementation of java.awt.event.ActionListener interface
+
+  /**
+   *
+   * @param param1 <description>
+   */
+  public void actionPerformed(ActionEvent param1) {
+
+    WidgetPanel.getAtmospherePanel().setTau(TelescopeDataPanel.csoTauValue.getText());
+    //WidgetPanel.getAtmospherePanel().setSeeing(TelescopeDataPanel.seeingValue.getText());
+    //WidgetPanel.getAtmospherePanel().setAirmass(TelescopeDataPanel.airmassValue.getText());
   }
    
 }

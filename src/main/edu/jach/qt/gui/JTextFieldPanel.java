@@ -72,6 +72,11 @@ public class JTextFieldPanel extends WidgetPanel
     }
   }
 
+  public void setTau(String val) {
+    JTextField temp = (JTextField) (fieldElems.getFirst());
+    temp.setText(val);
+  }
+
   /**
    * The <code>insertUpdate</code> adds the current text to the
    * WidgetDataBag.  All observers are notified.
