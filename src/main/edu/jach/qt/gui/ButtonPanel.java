@@ -74,7 +74,8 @@ public class ButtonPanel extends WidgetPanel  {
       for (ListIterator iter = buttonList.listIterator(); iter.hasNext(); iter.nextIndex()) {
 	 next = (JCheckBox)iter.next();
 	 if (!next.getText().equals("Any Instrument") &&
-	     !next.getText().equals("Any Heterodyne")) {
+	     !next.getText().equals("Any Heterodyne") &&
+             !next.getText().equals("current")) {
 	   next.setEnabled(booleanFlag);
 	   
 	 }
@@ -93,7 +94,8 @@ public class ButtonPanel extends WidgetPanel  {
       for (ListIterator iter = buttonList.listIterator(); iter.hasNext(); iter.nextIndex()) {
 	 next = (JCheckBox)iter.next();
 	 if (!next.getText().equals("Any Instrument") &&
-	     !next.getText().equals("Any Heterodyne")) {
+	     !next.getText().equals("Any Heterodyne") &&
+             !next.getText().equals("current")) {
 	   next.setSelected(flag);
 	   setAttribute(myTitle, buttonList);
 	 }
@@ -145,7 +147,8 @@ public class ButtonPanel extends WidgetPanel  {
          return;
      }
      if (temp.getText().equals("Any Instrument") ||
-	 temp.getText().equals("Any Heterodyne")) {
+	 temp.getText().equals("Any Heterodyne") ||
+         temp.getText().equals("current")) {
        if (temp.isSelected()) {
 	 setSelected(false);
 	 setEnabled(false);
