@@ -99,8 +99,13 @@ public class TelescopeDataPanel extends JPanel implements ActionListener {
 			 JOptionPane.OK_CANCEL_OPTION, 
 			 JOptionPane.WARNING_MESSAGE, null, options, options[0]);
 
-      if( (n == JOptionPane.NO_OPTION) || (n == JOptionPane.CLOSED_OPTION))
-	System.exit(0);
+      if( (n == JOptionPane.NO_OPTION) || (n == JOptionPane.CLOSED_OPTION)) {
+	  System.exit(0);
+      }
+      else {
+	  hub.closeDcHub();
+	  DRAMA_ENABLED = false;
+      }
     }
     else  {
       Object[] options = { "CONTINUE", "CANCEL" };
