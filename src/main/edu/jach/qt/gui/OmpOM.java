@@ -211,8 +211,13 @@ public class OmpOM extends JPanel{
       
     //CalibrationArea ca = new CalibrationArea();
     //JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, ptree, ca);
-    JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, ptree, new DeferredProgramList());
-    return splitPane;
+      DeferredProgramList deferredList = new DeferredProgramList();
+      NotePanel notes = new NotePanel();
+      notes.setNote(spItem);
+      JSplitPane dsp = new JSplitPane(JSplitPane.VERTICAL_SPLIT, deferredList, notes);
+//     JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, ptree, new DeferredProgramList());
+      JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, ptree, dsp);
+      return splitPane;
   }
 
   public JSplitPane getDragTreePanel() {
