@@ -1,14 +1,27 @@
 package edu.jach.qt.utils;
 
-import java.io.*;
-import java.util.*;
-import javax.xml.parsers.*;
-import org.xml.sax.*;
-import org.apache.xerces.parsers.*;
-import org.apache.xml.serialize.*;
+// import java.io.*;
+// import java.util.*;
+// import javax.xml.parsers.*;
+// import org.xml.sax.*;
+// import org.apache.xerces.parsers.DOMParser;
+// import org.apache.xml.serialize.*;
+// import org.apache.log4j.Logger;
+// import org.w3c.dom.*;
+import java.io.File;
+import java.io.FileReader;
+import java.io.StringReader;
+import java.io.IOException;
+import java.util.Hashtable;
+import org.w3c.dom.Node;
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
+import org.apache.xerces.parsers.DOMParser;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXNotRecognizedException;
+import org.xml.sax.SAXNotSupportedException;
 import org.apache.log4j.Logger;
-import org.w3c.dom.*;
-
 /**
  * Read information about a specific telescope.
  * The information, in XML format, is contained in the config file
@@ -55,8 +68,10 @@ public class TelescopeInformation {
 	    reader.read(buffer);
 	    String buffer_z = new String(buffer);
 
+
 	    DOMParser parser = new DOMParser();
-	    parser.setIncludeIgnorableWhitespace(false);
+	    parser.setFeature("http://xml.org/sax/features/validation", false);
+	    parser.setFeature("http://apache.org/xml/features/dom/include-ignorable-whitespace", false);
 	    parser.parse(new InputSource(new StringReader(buffer_z)));
 
 	    doc = parser.getDocument();
