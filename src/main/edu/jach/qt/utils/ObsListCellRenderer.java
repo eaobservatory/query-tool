@@ -1,6 +1,8 @@
 package edu.jach.qt.utils;
 
 import om.util.OracColor;
+import java.text.NumberFormat;
+import java.text.ParsePosition;
 import gemini.sp.*;
 import java.awt.*;
 import java.util.StringTokenizer;
@@ -33,6 +35,16 @@ public class ObsListCellRenderer extends DefaultListCellRenderer {
   {
     String s = ((SpObs)value).getTitle();
     String duration = (String)((SpObs)value).getTable().get("estimatedDuration");
+    Double d = new Double(duration);
+    NumberFormat nf = NumberFormat.getInstance();
+    nf.setMaximumFractionDigits(1);
+    nf.setMinimumFractionDigits(1);
+    try {
+	duration = nf.format(d.doubleValue());
+    }
+    catch (Exception e) {
+    }
+    
     s = s + "( "+duration+" seconds )";
     setText(s);
     boolean isDone=false;
