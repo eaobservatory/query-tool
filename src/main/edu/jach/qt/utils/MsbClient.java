@@ -1,6 +1,5 @@
 package edu.jach.qt.utils;
 
-
 import java.io.*;
 import java.net.*;
 import gemini.sp.SpItem;
@@ -15,35 +14,39 @@ import orac.util.*;
 /**
  * MsbClient.java
  *
+ * This is a utility class used to send SOAP messages to the MsbServer.
  *
  * Created: Mon Aug 27 18:30:31 2001
  *
- * @author Mathew Rippa, modified by Martin Folger
- * @version
+ * @author <a href="mailto:mrippa@jach.hawaii.edu">Mathew Rippa</a>,
+ * modified by Martin Folger
+
+ * $Id$ 
  */
 public class MsbClient extends SoapClient {
 
-   public static void main(String[] args) {
-      MsbClient.queryMSB("<Query><Moon>Dark</Moon></Query>");
-      MsbClient.fetchMSB(new Integer(96));
-   }
-
-   public static boolean queryMSB(String xmlQueryString) {
+  /**
+   * <code>queryMSB</code>
+   * Perform a query to the MsbServer with the given query
+   * String. Success will return a true value and write the msbSummary
+   * xml to file.
+   *
+   * @param xmlQueryString a <code>String</code> value. The xml representing the query.
+   * @return a <code>boolean</code> value indicating success.
+   */
+  public static boolean queryMSB(String xmlQueryString) {
       try {
 	 URL url = new URL(System.getProperty("msbServer"));
 	 flushParameter();
 	 addParameter("xmlquery", String.class, xmlQueryString);
-	 //addParameter("maxreturn", Integer.class, new Integer(2));
-	 //System.out.println(doCall(url, "urn:OMP::MSBServer", "queryMSB"));
 
 	 FileWriter fw = new FileWriter(System.getProperty("msbSummary"));
 	 Object tmp = doCall(url, "urn:OMP::MSBServer", "queryMSB");
 
 	 if (tmp != null ) {
-
 	   fw.write( (String)tmp );
 	   fw.close();
-	 } // end of if ()
+	 }
 
 	 else 
 	   return false;
@@ -56,36 +59,34 @@ public class MsbClient extends SoapClient {
 
    }
 
-   public static SpItem fetchMSB(Integer msbid) {
+  /**
+   * <code>fetchMSB</code> Fetch the msb indicated by the msbid. The
+   * SpItem will return null on failure. In the future this should
+   * throw an exception instead.
+   *
+   * @param msbid an <code>Integer</code> value of the MSB
+   * @return a <code>SpItem</code> value representing the MSB.
+   */
+  public static SpItem fetchMSB(Integer msbid) {
 
      SpItem spItem = null;
       try {
 	System.out.println(""+msbid);
 	
-	//URL url = new URL("http://www.jach.hawaii.edu/JAClocal/cgi-bin/msbsrv.pl");
 	URL url = new URL(System.getProperty("msbServer"));
 	flushParameter();
 	addParameter("key", Integer.class, msbid);
-	//System.out.println(doCall(url, "urn:OMP::MSBServer", "fetchMSB"));
 	
 	FileWriter fw = new FileWriter(System.getProperty("msbFile"));
 	String spXML = (String) doCall(url, "urn:OMP::MSBServer", "fetchMSB");
 	
 	if (spXML != null ) {
-	  
-	  //System.out.println("The msb says:\n "+ spXML);
-	  
 	  StringReader r = new StringReader(spXML);
-	  
-	  //SpItemDOM dom = new SpItemDOM (r);
-	  //spItem = dom.getSpItem();
-	  
-	  
 	  spItem = (SpItem)(new SpInputXML()).xmlToSpItem(r);
 	  
 	  fw.write( (String)spXML );
 	  fw.close();
-	} // end of if ()
+	}
 	
 	else 
 	  return spItem;
@@ -98,6 +99,12 @@ public class MsbClient extends SoapClient {
       return spItem;
    }
 
+  /**
+   * <code>doneMSB</code> Mark the given project ID as done in the database.
+   *
+   * @param projID a <code>String</code> the project ID.
+   * @param checksum a <code>String</code> the checksum for this project.
+   */
   public static void doneMSB(String projID, String checksum) {
     try {
 	
@@ -117,4 +124,16 @@ public class MsbClient extends SoapClient {
     }
     return;
   }
+
+
+  /**
+   * Describe <code>main</code> method here.
+   *
+   * @param args a <code>String[]</code> value
+   */
+  public static void main(String[] args) {
+    MsbClient.queryMSB("<Query><Moon>Dark</Moon></Query>");
+    MsbClient.fetchMSB(new Integer(96));
+  }
+
 }

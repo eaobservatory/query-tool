@@ -18,22 +18,53 @@ import org.apache.soap.util.xml.QName;
  *
  * Created: Mon Aug 27 18:30:31 2001
  *
- * @author Mathew Rippa, modified by Martin Folger
- * @version
+ * @author <a href="mailto:mrippa@jach.hawaii.edu">Mathew Rippa</a>,
+ * modified by Martin Folger
+ *
+ * $Id$ 
  */
 public class SoapClient {
 
   private static Header header = null;
   private static Vector params = new Vector();
    
+  /**
+   * <code>addParameter</code>. Add a Parameter to the next Call that
+   * is to take place.
+   *
+   * @param name a <code>String</code> value. The name of the
+   * parameter to be added to next soap Call.
+
+   * @param type a <code>Class</code> value. The explicit Class of
+   * this parameter.
+
+   * @param val an <code>Object</code> value. The object to register this Parameter with.
+   */
   protected static void addParameter(String name, Class type, Object val) {
     params.add(new Parameter(name, type, val, null));
   }
     
+  /**
+   * <code>flushParameter</code> Clear the Vector of
+   * <code>Parameters</code> Objects to be sent in the next Call.
+   * 
+   */
   protected static void flushParameter() {
     params.clear();
   }
     
+  /**
+   * <code>doCall</code> Send the Call with various configurations.
+   *
+   * @param url an <code>URL</code> val indicating the soap server to
+   * connect to.
+   * @param soapAction a <code>String</code>. The URN like
+   * "urn:OMP::MSBServer"
+   * @param methodName a <code>String</code> The name of the method to
+   * call in the server.
+   * @return an <code>Object</code> returned by the method called in
+   * the server .
+   */
   protected static Object doCall(URL url, String soapAction, String methodName)  {
     //String result = "";
     Object obj = new Object();
@@ -97,5 +128,5 @@ public class SoapClient {
 	
     return null;
   }
-} // SoapClient
+}
 
