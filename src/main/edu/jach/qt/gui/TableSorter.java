@@ -66,6 +66,11 @@ public class TableSorter extends TableMap {
 	 return 1; 
       }
 
+      if (o1.toString().equals("??") || o1.toString().equals("??"))
+	  {
+	      return -1;
+	  }
+
       /*
        * We copy all returned values from the getValue call in case
        * an optimised model is reusing one object to return many
@@ -76,9 +81,9 @@ public class TableSorter extends TableMap {
        */
 
       if (type.getSuperclass() == java.lang.Number.class) {
-	 Number n1 = (Integer)data.getValueAt(row1, column);
+	 Number n1 = new Double (data.getValueAt(row1, column).toString());
 	 int d1 = n1.intValue();
-	 Number n2 = (Integer)data.getValueAt(row2, column);
+	 Number n2 = new Double (data.getValueAt(row2, column).toString());
 	 int d2 = n2.intValue();
 	   
 	 if (d1 < d2) {
