@@ -45,56 +45,6 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
     public static int      CHECKSUM;
     public static int      MSBID;
     private BitSet         currentBitSet;
-
-//   public static String[] colNames ={
-//       "projectid",  //0
-//       "title",      //1
-//       "instrument", //2
-//       "waveband",   //3
-//       "target",     //4
-//       "ra",         //5
-//       "coordstype",  //6
-//       "ha",         //7
-//       "timeest",    //8
-//       "priority",   //9
-//       "remaining",  //10
-//       "obscount",   //11
-//       "checksum",   //12
-//       "msbid",      //13
-//   };
-   
-//   public static Class[] colClasses = {
-//     String.class,	//0
-//     String.class,	//1
-//     String.class,	//2
-//     String.class,	//3
-//     String.class,	//4
-//     String.class,	//5
-//     String.class,	//6
-//     String.class,	//7
-//     Integer.class,	//8
-//     Integer.class,	//9
-//     Integer.class,	//10
-//     Integer.class,	//11
-//     String.class,	//12
-//     Integer.class,	//13
-//   };
-
-//   public static int 
-//     PROJECTID           = 0,
-//     TITLE               = 1,
-//     INSTRUMENT          = 2,
-//     WAVEBAND		= 3,
-//     TARGET              = 4,
-//     RA		        = 5, 
-//     COORDSTYPE          = 6, 
-//     HA		        = 7,
-//     TIMEEST             = 8, //INT
-//     PRIORITY            = 9,  //INT
-//     REMAINING           = 10, //INT
-//     OBSCOUNT            = 11, //INT
-//     CHECKSUM            = 12,
-//     MSBID		= 13; //INT
       
   //DATA
   //DOM object to hold XML document contents
@@ -208,6 +158,12 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
     return colCount;
   }
 
+    /**
+     * Get the real number of columns in the model.  This may be
+     * less than the number of columns displayed on the associated
+     * table.
+     * @return   The number of columns in the model.
+     */
   public int getRealColumnCount() {
     return colNames.length;
   }
@@ -292,6 +248,16 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
   }
 
 
+
+    /**
+     * Method to select a subset of columns in the model to display
+     * on the associated table.  The <code>BitSet</code> input must
+     * be in the same order as that returned from a 
+     * <code>getColumnNames</code> query.  If a bit is set, it is assumed
+     * that column should be displayed.
+     * @see edu.jach.qt.utils.MsbClient#getColumnNames()
+     * @param  colSet  The set of columns to display.
+     */
     public void updateColumns(BitSet colSet) {
 	int nHidden = 0;
 	currentBitSet = colSet;
@@ -312,11 +278,12 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
 		// Get the contents and move them to the end...
 		Object o = colVector.remove(i);
 		colVector.add(o);
-
+		// Make sure the classes stay linked to the names
 		o = classVector.remove(i);
 		classVector.add(o);
 	    }		
 	}
+	// Set the column count
 	colCount = colNames.length - nHidden;
 	for (int i=0; i< colNames.length; i++) {
 	    colNames[i] = (String)colVector.get(i);

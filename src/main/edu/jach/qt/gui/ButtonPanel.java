@@ -18,7 +18,7 @@ import edu.jach.qt.gui.WidgetDataBag;
  * Created: Tue Mar  6 11:52:13 2001
  *
  * @author <a href="mailto: "Mathew Rippa</a>
- * @version
+ * @version $Id$
  */
 
 public class ButtonPanel extends WidgetPanel  {

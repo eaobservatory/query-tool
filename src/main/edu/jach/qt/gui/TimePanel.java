@@ -13,7 +13,7 @@ import java.text.DateFormat;
  * Created: Fri Apr 20 14:55:26 2001
  *
  * @author <a href="mailto: "Mathew Rippa</a>
- * @version
+ * @version $Id$
  */
 
 public class TimePanel extends JLabel

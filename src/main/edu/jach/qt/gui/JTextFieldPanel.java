@@ -90,6 +90,11 @@ public class JTextFieldPanel extends WidgetPanel
       }
   }
 
+    /**
+     * Get the text currently in a text field on the panel.
+     * @param  field  The label associated with the text field.
+     * @return        The value in the textfield as a <code>String</code>.
+     */
     public String getText(String field) {
       String rtn = null;
       ListIterator iterator = fieldElems.listIterator(0);

@@ -25,6 +25,15 @@ import ocs.utils.*;
 import org.apache.log4j.Logger;
 
 
+/**
+ * Implements the executable method for JCMT.  It simply sends either a 
+ * single deferred observation, or an entire science project to the SCUQUEUE.
+ * This is currently only usable for SCUBA observations.
+ * @see edu.jach.qt.gui.Execute
+ * Implements <code>Runnable</code>
+ * @author $Author$
+ * @version $Id$
+ */
 public class ExecuteJCMT extends Execute implements Runnable {
 
     static Logger logger = Logger.getLogger(ExecuteJCMT.class);
@@ -32,10 +41,27 @@ public class ExecuteJCMT extends Execute implements Runnable {
     private static String jcmtDir = File.separator +
 	"jcmtdata" + File.separator + "orac_data";
     
+    /**
+     * Constructor.
+     * @param  item      The item to send to SCUQUEUE
+     * @throws Exception From the base class.
+     */
     public ExecuteJCMT(SpItem item) throws Exception {
 	_itemToExecute = item;
     };
 
+    /**
+     * Implementation of the <code>Runnable</code> interface.
+     * The success or failure of the file is determined by a
+     * file called .success or .failure left in a defined directory
+     * when the mothod ends.  Thus it is important to make sure that
+     * when this method is run as a thread, the caller joins the thread.
+     * If the item is a science project, it overwrites the current contents
+     * of the queue.  If it is a deferred observation, it is inserted into
+     * the queue at the next convinient point.
+     * <bold>Note:</bold>  This method currently uses hard coded path
+     * names for the files and for the commands to execute the queue.
+     */
     public void run() {
 	// To execute JCMT, we write the execution to a file
 	File success = new File ("/jcmtdata/orac_data/deferred/.success");
@@ -111,10 +137,8 @@ public class ExecuteJCMT extends Execute implements Runnable {
 	if (TelescopeDataPanel.DRAMA_ENABLED) {
 	    try {
 		rt = Runtime.getRuntime();
-// 		command = "/home/dewitt/bin/loadSCUQUEUE.ksh "+ new String (odfFile);
 		String command;
 		if (super.isDeferred) {
-// 		    command = "/export/data/dewitt/omp/QT/bin/insertSCUQUEUE.ksh "+ new String (odfFile);
  		    command = "/jac_sw/omp/QT/bin/insertSCUQUEUE.ksh "+ new String (odfFile);
 		}
 		else {

@@ -137,6 +137,11 @@ public class MsbClient extends SoapClient {
   }
 
 
+    /**
+     * Method to get the list of columns in an MSB Summary.  Requires the
+     * <code>telescope</code> system parameter to be set.
+     * @return      A string array of column names.
+     */
     public static String [] getColumnNames () {
 	String [] columns;
 	try {
@@ -153,6 +158,11 @@ public class MsbClient extends SoapClient {
 	return columns;
     }
 
+    /**
+     * Method to get the list of column types in an MSB Summary.  Requires the
+     * <code>telescope</code> system parameter to be set.
+     * @return      A string array of column types (eg Integer, String, etc).
+     */
     public static String [] getColumnClasses () {
 	String [] columns;
 	try {

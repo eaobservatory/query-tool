@@ -258,6 +258,10 @@ public class InfoPanel extends JPanel implements ActionListener {
 	return telescopeInfoPanel;
     }
 
+    /**
+     * Get the <code>SatPanel</code>
+     * @return  the current satellite panel.
+     */
     public SatPanel getSatPanel() {
 	return satPanel;
     }

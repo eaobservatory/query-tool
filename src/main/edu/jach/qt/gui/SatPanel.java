@@ -96,6 +96,13 @@ public class SatPanel extends JLabel implements TimerListener {
       }
   }
 
+
+    /**
+     * Method to set the currently displayed image.  If the input string
+     * is "Water Vapour", a water vapour image is displayed.  Otherwise
+     * and infra red image is displayed.
+     * @param image  The type of satellite image to display.
+     */
     public void setDisplay (String image) {
 	if (image.equalsIgnoreCase("Water Vapour")) {
 	    currentWebPage = System.getProperty("satelliteWVPage");

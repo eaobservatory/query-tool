@@ -223,6 +223,10 @@ public class TelescopeDataPanel extends JPanel implements ActionListener {
     return hub;
   }
     
+    /**
+     * Gets the tau value currently displayed on this panel.
+     * @return   The current CSO tau value.
+     */
     public static String getCSO() {
 	return TelescopeDataPanel.csoTauValue.getText();
     }

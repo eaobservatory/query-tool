@@ -11,6 +11,13 @@ import javax.swing.*;
 import edu.jach.qt.utils.MsbClient;
 
 
+/**
+ * This class is used to display a series of checkboxes which allow a
+ * user to define a subset of columns which they want to appear in a table.
+ * Extends <code>JFrame</code> and implements <code>ActionListener</code>.
+ * @author  $Author$
+ * @version $Id$
+ */
 public class ColumnSelector 
     extends JFrame 
     implements ActionListener {
@@ -19,9 +26,16 @@ public class ColumnSelector
     private QtFrame parent;
     private MSBQueryTableModel _msbqtm;
 
+    /**
+     * Default constructor
+     */
     public ColumnSelector() {
     }
 
+    /**
+     * Normal constructor.  This should be used for all calls.
+     * @param  frame  The parent <code>JFrame</code>
+     */
     public ColumnSelector (QtFrame frame) {
 	parent = frame;
 	_msbqtm = parent.getModel();
@@ -33,6 +47,11 @@ public class ColumnSelector
     }
     
 
+    /**
+     * Alternate constructor.  This can be used in place of the standard
+     * constructor, but the resulting table may be displayed incorrectly.
+     * @param model    The model used to generate the table.
+     */
     public ColumnSelector (MSBQueryTableModel model) {
 	// Disable the parent
 	_msbqtm = model;
@@ -64,6 +83,13 @@ public class ColumnSelector
 	this.getContentPane().add(closeButton, BorderLayout.SOUTH);
     }
 
+    /**
+     * <code>ActionEvent</code> handler.
+     * This is run when the "Accept" button is selected.  It tells the model
+     * to update its columns.  The selected columns are passed as a 
+     * <code>BitSet</code>.  The window is then dismissed.
+     * @param  evt  The default <code>ActionEvent</code>
+     */
     public void actionPerformed(ActionEvent evt) {
 	BitSet selected = new BitSet(_msbqtm.getRealColumnCount());
 	System.out.println("Number of components: "+columnPanel.getComponentCount());

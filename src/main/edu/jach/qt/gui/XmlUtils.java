@@ -81,25 +81,10 @@ public class XmlUtils {
 	 for( int i=0; i<nodes.getLength(); i++){
             s = ((Node)nodes.item( i )).getNodeValue().trim();
             if(s.equals("") || s.equals("\r")) {
-	       continue;
+		continue;
             }
 	    else {
-// 	       if(tagName.equals("remaining"))
-// 		  return (new Integer(s));
-
-// 	       else if(tagName.equals("obscount"))
-// 		  return (new Integer(s));
-
-// 	       else if(tagName.equals("priority"))
-// 		  return (new Float(s));
-
-// 	       else if(tagName.equals("tagpriority"))
-// 		  return (new Integer(s));
-
-// 	       else if(tagName.equals("msbid"))
-// 		  return (new Integer(s));
-
-	       return s;
+		return s;
 	    }
 	 }
       }
@@ -112,6 +97,16 @@ public class XmlUtils {
 
    }
 
+    /**
+     * Returns an array of strings representing the columns contained
+     * in the MSB summary file.  This file must exist, so the application
+     * needs to perform a query before this method can be invoked.
+     * @param  summaryFile   The name of the XML file containing the MSB
+     *                       summary information.
+     * @return               A string array of column names, or null if an 
+     *                       error is encountered.
+     * @deprecated           Replaced by {@link edu.jach.qt.utils.MsbClient#getColumnNames()}
+     */
     public static String [] getColumnNames(String summaryFile) {
 	Document doc;
 	try {

@@ -300,6 +300,10 @@ public class QtFrame extends JFrame implements PopupMenuListener, ActionListener
     table.setVisible(true);
   }
 
+    /**
+     * Method used to set the current column sizes.  This should be called
+     * before each query.
+     */
     public void updateColumnSizes() {
 	TableColumnModel tcm = table.getColumnModel();
 	tableColumnSizes = new int [table.getColumnCount()];
@@ -308,6 +312,9 @@ public class QtFrame extends JFrame implements PopupMenuListener, ActionListener
 	}
     }
 
+    /**
+     * Method to set the column sizes following a query.
+     */
     public void setColumnSizes() {
 	TableColumnModel tcm = table.getColumnModel();
 	for (int i=0; i<tableColumnSizes.length; i++) {
@@ -317,6 +324,9 @@ public class QtFrame extends JFrame implements PopupMenuListener, ActionListener
 	table.updateUI();
     }
 
+    /**
+     * Method to redistribute the column widths to the default values.
+     */
     public void setTableToDefault() {
 	TableColumnModel tcm = table.getColumnModel();
 	for (int i=0; i<msbQTM.getColumnCount(); i++) {
@@ -325,6 +335,10 @@ public class QtFrame extends JFrame implements PopupMenuListener, ActionListener
 	table.setColumnModel(tcm);
     }
 
+    /**
+     * Method to get the current table model.
+     * @return   The current table model.
+     */
     public MSBQueryTableModel getModel() {
 	return msbQTM;
     }
@@ -349,10 +363,18 @@ public class QtFrame extends JFrame implements PopupMenuListener, ActionListener
     
   }
 
+    /**
+     * Method to get the currently selected tab.
+     * @return  The integer value of the selected tab.
+     */
     public int getSelectedTab() {
 	return tabbedPane.getSelectedIndex();
     }
 
+    /**
+     * Method to set the selected tab.
+     * @param tab   The tab to select.
+     */
     public void setSelectedTab(int tab) {
 	if ( (tabbedPane.getTabCount() - 1) >= tab) {
 	    tabbedPane.setSelectedIndex(tab);
@@ -384,6 +406,9 @@ public class QtFrame extends JFrame implements PopupMenuListener, ActionListener
   }
 
 
+    /**
+     *  Method to set the observational parameter to default.
+     */
     public void setMenuDefault() {
 	if ( !(observability.isSelected()) ) {
 	    observability.doClick();

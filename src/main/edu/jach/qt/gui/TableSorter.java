@@ -181,7 +181,7 @@ public class TableSorter extends TableMap {
      * @returns     (-1, 0, 1) depending on the values in the two
      *              rows and whether the table is being sorted in
      *              ascending or descending order.
-     * @see compareRowsByColumn
+     * @see #compareRowsByColumn(int, int, int)
      */
    public int compare(int row1, int row2) {
       compares++;

@@ -19,10 +19,25 @@ import java.util.*;
 import javax.swing.*;
 
 
+/**
+ * This class is a base class and should be extended to execute MSBs for
+ * each telescope.  It basically is used to decide whether the project
+ * being executed comes from the deferred or project list.
+ * @author $Author$
+ * @version $Id$
+ */
 public class Execute {
 
+    /**
+     * Indicates whether a observation is from the deferred list or the
+     * project list.
+     */
     protected boolean isDeferred = false;
 
+    /**
+     * Default constructor.
+     * @throws Exception   When no or multiple items selected.
+     */
     protected Execute () throws Exception {
 	if (ProgramTree.selectedItem == null &&
 	    DeferredProgramList.currentItem == null) {

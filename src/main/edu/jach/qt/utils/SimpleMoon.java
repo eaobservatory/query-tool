@@ -76,7 +76,7 @@ public class SimpleMoon {
      * Calulated by getting the angle subtended by the moon and sun
      * positions.
      *
-     * @see       Sun
+     * @see       #Sun
      * 
      * @return    <code>double</code> indicating the fraction of the
      *            moon illuminated.
