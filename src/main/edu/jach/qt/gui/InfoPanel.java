@@ -1,7 +1,5 @@
 package edu.jach.qt.gui;
 
-import edu.jach.qt.app.Querytool;
-import edu.jach.qt.utils.*;
 import java.awt.*;
 import java.awt.Toolkit;
 import java.awt.event.*;
@@ -14,6 +12,11 @@ import javax.swing.*;
 import javax.swing.ImageIcon;
 import javax.swing.border.*;
 import javax.swing.event.*;
+
+import edu.jach.qt.app.Querytool;
+import edu.jach.qt.utils.*;
+import ocs.utils.ObeyNotRegisteredException;
+import ocs.utils.DcHub;
 /**
  * InfoPanel.java
  *
@@ -33,12 +36,14 @@ public class InfoPanel extends JPanel
   private MSBQueryTableModel msb_qtm;
   private TimePanel timePanel ;
   private Querytool localQuerytool;
+  private Led blinker;
+  private TelescopeDataPanel telescopeInfoPanel;
 
-  JLabel hstLabel = new JLabel("HST");
-  JButton searchButton = new JButton();
-  JButton xmlPrintButton = new JButton();
-  JButton exitButton = new JButton();
-  JButton fetchMSB   = new JButton();
+  JLabel hstLabel		= new JLabel("HST");
+  JButton searchButton		= new JButton();
+  JButton xmlPrintButton	= new JButton();
+  JButton exitButton		= new JButton();
+  JButton fetchMSB		= new JButton();
   QtFrame qtf;
   JLabel logoImage;
 
@@ -90,10 +95,10 @@ public class InfoPanel extends JPanel
     GridBagConstraints gbc = new GridBagConstraints();
     timePanel = new TimePanel();
 
-    TelescopeDataPanel telescopeInfoPanel = new TelescopeDataPanel();
+    telescopeInfoPanel = new TelescopeDataPanel();
     telescopeInfoPanel.config();
 
-    final Led blinker = new Led();
+    blinker = new Led();
 
     searchButton.setText("Search");
     searchButton.setName("Search");
@@ -226,6 +231,14 @@ public class InfoPanel extends JPanel
     return LOGO_IMAGE;
   }
 
+  public Led getBlinker() {
+    return blinker;
+  }
+
+  public DcHub getCSODcHub() {
+    return telescopeInfoPanel.getHub();
+  }
+
   /**
    * Describe <code>actionPerformed</code> method here.
    *
@@ -235,9 +248,13 @@ public class InfoPanel extends JPanel
     Object source = e.getSource();
     Color color = getBackground();
     if (source == exitButton) {
-      System.exit(0);
-    }
-    if (source == searchButton) {
+
+      try {
+	telescopeInfoPanel.getHub().closeDcHub();
+      } catch ( ObeyNotRegisteredException onr) {
+	
+      } // end of try-catch
+      
       System.exit(0);
     }
     else if (source == xmlPrintButton) {
