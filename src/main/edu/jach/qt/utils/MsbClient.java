@@ -1,15 +1,19 @@
 package edu.jach.qt.utils;
 
-import java.io.*;
-import java.net.*;
-import gemini.sp.SpItem;
-import gemini.sp.SpProg;
-import orac.util.SpItemDOM;
-import orac.util.SpItemUtilities;
-import orac.util.SpInputXML;
 
-import java.lang.reflect.*;
+// /* Gemini imports */
+import gemini.sp.SpItem;
+
+// /* ORAC imports */
 import orac.util.*;
+
+// /* Standard imports */
+import java.io.*;
+import java.lang.reflect.*;
+import java.net.*;
+
+// /* Miscellaneous imports */
+import org.apache.log4j.Logger;
 
 /**
  * MsbClient.java
@@ -25,6 +29,8 @@ import orac.util.*;
  */
 public class MsbClient extends SoapClient {
 
+  static Logger logger = Logger.getLogger(MsbClient.class);
+
   /**
    * <code>queryMSB</code>
    * Perform a query to the MsbServer with the given query
@@ -36,28 +42,31 @@ public class MsbClient extends SoapClient {
    */
   public static boolean queryMSB(String xmlQueryString) {
       try {
-	 URL url = new URL(System.getProperty("msbServer"));
-	 flushParameter();
-	 addParameter("xmlquery", String.class, xmlQueryString);
+	
+	logger.debug("Sending queryMSB: "+xmlQueryString);
+	URL url = new URL(System.getProperty("msbServer"));
+	flushParameter();
+	addParameter("xmlquery", String.class, xmlQueryString);
 
-	 FileWriter fw = new FileWriter(System.getProperty("msbSummary"));
-	 Object tmp = doCall(url, "urn:OMP::MSBServer", "queryMSB");
+	FileWriter fw = new FileWriter(System.getProperty("msbSummary"));
+	Object tmp = doCall(url, "urn:OMP::MSBServer", "queryMSB");
 
-	 if (tmp != null ) {
-	   fw.write( (String)tmp );
-	   fw.close();
-	 }
+	if (tmp != null ) {
+	  fw.write( (String)tmp );
+	  fw.close();
+	}
 
-	 else 
-	   return false;
+	else 
+	  return false;
 	 
       } catch (Exception e) {
+	logger.error("queryMSB threw Exception", e);
 	e.printStackTrace();
 	return false;
       }
       return true;
 
-   }
+  }
 
   /**
    * <code>fetchMSB</code> Fetch the msb indicated by the msbid. The
@@ -69,35 +78,36 @@ public class MsbClient extends SoapClient {
    */
   public static SpItem fetchMSB(Integer msbid) {
 
-     SpItem spItem = null;
-      try {
-	System.out.println(""+msbid);
+    SpItem spItem = null;
+    try {
 	
-	URL url = new URL(System.getProperty("msbServer"));
-	flushParameter();
-	addParameter("key", Integer.class, msbid);
+      logger.debug("Sending fetchMSB: "+msbid);
+      URL url = new URL(System.getProperty("msbServer"));
+      flushParameter();
+      addParameter("key", Integer.class, msbid);
 	
-	FileWriter fw = new FileWriter(System.getProperty("msbFile"));
-	String spXML = (String) doCall(url, "urn:OMP::MSBServer", "fetchMSB");
+      FileWriter fw = new FileWriter(System.getProperty("msbFile"));
+      String spXML = (String) doCall(url, "urn:OMP::MSBServer", "fetchMSB");
 	
-	if (spXML != null ) {
-	  StringReader r = new StringReader(spXML);
-	  spItem = (SpItem)(new SpInputXML()).xmlToSpItem(r);
+      if (spXML != null ) {
+	StringReader r = new StringReader(spXML);
+	spItem = (SpItem)(new SpInputXML()).xmlToSpItem(r);
 	  
-	  fw.write( (String)spXML );
-	  fw.close();
-	}
-	
-	else 
-	  return spItem;
-	
-      } catch (Exception e) {
-	e.printStackTrace();
-	return spItem;
+	fw.write( (String)spXML );
+	fw.close();
       }
-      
+	
+      else 
+	return spItem;
+	
+    } catch (Exception e) {
+      logger.error("queryMSB threw Exception", e);
+      e.printStackTrace();
       return spItem;
-   }
+    }
+      
+    return spItem;
+  }
 
   /**
    * <code>doneMSB</code> Mark the given project ID as done in the database.
@@ -107,7 +117,9 @@ public class MsbClient extends SoapClient {
    */
   public static void doneMSB(String projID, String checksum) {
     try {
-	
+
+      logger.debug("Sending doneMSB "+projID+ " "+checksum);
+
       URL url = new URL(System.getProperty("msbServer"));
       flushParameter();
       addParameter("projID", String.class, projID);

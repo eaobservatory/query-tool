@@ -7,6 +7,7 @@ import java.io.*;
 import java.util.Properties;
 import om.util.ExecDtask;
 import orac.ukirt.util.SpTranslator;
+import org.apache.log4j.Logger;
 
 /**
  * QtTools.java
@@ -28,6 +29,9 @@ public class QtTools {
       @return  none
       @throws none
   */
+
+  static Logger logger = Logger.getLogger(QtTools.class);
+
   public static void loadConfig(String filename) {
     try {
       String line_str;
@@ -50,7 +54,7 @@ public class QtTools {
 		     line_str.substring(colonpos+1).trim());
 
 	  }catch (IndexOutOfBoundsException e) {
-	    System.out.println ("Problem reading line "+lineno+": "+line_str);
+	    logger.fatal("Problem reading line "+lineno+": "+line_str);
 	    d.close();
 	    is.close();
 	    System.exit(1);
@@ -61,7 +65,7 @@ public class QtTools {
       is.close();
 
     } catch (IOException e) {
-      System.out.println("File error: " + e);
+      logger.error("File error: " + e);
     }
   }
 
@@ -83,22 +87,19 @@ public class QtTools {
     int status = task.getExitStatus();
     if (status != 0) {
       //errorBox = new ErrorBox ("Error reported by instrument startup script, code was: "+err);
-      System.err.println("Error reported by instrument startup script, code was: "+status);
+      logger.error("Error reported by instrument startup script, code was: "+status);
     }
 
     task.stop();
     try {
       task.join();
     }catch (InterruptedException e) {
-      System.out.println ("Load task join interrupted! "+e.getMessage());
+      logger.error("Load task join interrupted! "+e.getMessage());
     }
     
     return status;
   }
  
-
-
-
 
   /**
      String trans (SpItem observation) is a private method
@@ -120,18 +121,16 @@ public class QtTools {
     String fileProperty = new String(inst+"ExecFilename");
     try {
       tname=spt.translate();
-      System.out.println("Translated file set to: "+System.getProperty("EXEC_PATH")+"/"+tname);
+      logger.debug("Translated file set to: "+System.getProperty("EXEC_PATH")+"/"+tname);
 
       temp.put(fileProperty,tname);
-      System.out.println("System property "+fileProperty+" now set to "+
-			 System.getProperty("EXEC_PATH")+"/"+tname);
+      logger.debug("System property "+fileProperty+" now set to "+
+		   System.getProperty("EXEC_PATH")+"/"+tname);
       
     }catch (NullPointerException e) {
-      System.out.println ("Translation failed!, exception was "+e);
-      e.printStackTrace();
+      logger.fatal("Translation failed!, exception was "+e);
     } catch (Exception e) {
-      System.out.println ("Translation failed!, Missing value "+e);
-      //e.printStackTrace();
+      logger.fatal("Translation failed!, Missing value "+e);
     }
     return tname;
   }
@@ -152,16 +151,15 @@ public class QtTools {
     script[3] = "-"+System.getProperty("SIMULATE","simTel");
     script[4] = "-"+System.getProperty("ENGINEERING","eng");
 
-    System.out.println ("About to start script "+
-			script[0]
-			+			" "+script[1] 
-			+			" "+script[2] 
-			+			" "+script[3] 
-			+                       " "+script[4]
-			);
-
+    logger.fatal("About to start script "+
+		 script[0]
+		 +			" "+script[1] 
+		 +			" "+script[2] 
+		 +			" "+script[3] 
+		 +                       " "+script[4]
+		 );
+    
     int status = QtTools.execute(script);
   }
-
   
 }

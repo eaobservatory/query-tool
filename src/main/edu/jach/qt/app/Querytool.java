@@ -1,11 +1,19 @@
 package edu.jach.qt.app;
 
+/* Gemini imports */
+import gemini.sp.SpItem;
+
+/* QT imports */
 import edu.jach.qt.gui.*;
 import edu.jach.qt.utils.*;
-import gemini.sp.SpItem;
+
+/* Standard imports */
 import java.io.*;
 import java.util.*;
 import javax.swing.*;
+
+/* Miscellaneous imports */
+import org.apache.log4j.Logger;
 import org.apache.xerces.dom.*;
 import org.apache.xml.serialize.*;
 import org.w3c.dom.*;
@@ -28,6 +36,8 @@ import org.w3c.dom.*;
  * @author <a href="mailto:mrippa@jach.hawaii.edu">Mathew Rippa</a>
  * @version 1.0 */
 public class Querytool implements Runnable, Observer {
+
+  static Logger logger = Logger.getLogger(Querytool.class);
 
   private String _xmlString;
   private WidgetDataBag bag;
@@ -203,7 +213,7 @@ public class Querytool implements Runnable, Observer {
 	       iter.nextIndex()) {
 
 	    //abstractButton = (JRadioButton) (iter.next());
-	    System.out.println("ATMOS: "+(String)iter.next());
+	    logger.debug("ATMOS: "+(String)iter.next());
 		
 	    //  		if (abstractButton.isSelected()) {
 	    //  		  String seeing = abstractButton.getText();
@@ -338,7 +348,7 @@ public class Querytool implements Runnable, Observer {
    * _xmlString.
    */
   public void printXML() {
-    System.out.println( _xmlString ); //Spit out DOM as a String
+    logger.debug( _xmlString ); //Spit out DOM as a String
   }
 
   /**
@@ -368,8 +378,6 @@ public class Querytool implements Runnable, Observer {
   public SpItem fetchMSB(Integer i) throws NullPointerException {
 
     SpItem spItem = MsbClient.fetchMSB(i);
-
-    System.out.println("And the NEXT winner is: "+spItem);
 
     if ( spItem == null) {
       throw (new NullPointerException());

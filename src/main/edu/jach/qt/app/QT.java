@@ -1,17 +1,24 @@
 package edu.jach.qt.app;
 
-import edu.jach.qt.gui.QtFrame;
-import edu.jach.qt.gui.WidgetDataBag;
-import edu.jach.qt.utils.QtTools;
-import java.awt.*;
-import javax.swing.UIManager;
-import edu.jach.qt.utils.BasicWindowMonitor;
+/* JSKY imports */
 import jsky.app.ot.OtFileIO;
 
-
+/* ORAC imports */
 import orac.ukirt.util.UkirtPreTranslator;
 import orac.util.SpItemDOM;
 
+/* QT imports */
+import edu.jach.qt.gui.QtFrame;
+import edu.jach.qt.gui.WidgetDataBag;
+import edu.jach.qt.utils.BasicWindowMonitor;
+import edu.jach.qt.utils.QtTools;
+
+/* Standard imports */
+import java.awt.*;
+import javax.swing.UIManager;
+
+import org.apache.log4j.PropertyConfigurator;
+import org.apache.log4j.Logger;
 
 /**
  * This is the top most OMP-QT class.  Upon init it instantiates 
@@ -29,23 +36,26 @@ import orac.util.SpItemDOM;
  */
 final public class QT {
 
+  static Logger logger = Logger.getLogger(QT.class);
+
    /**
     * Creates a new <code>QT</code> instance which starts a 
     * Querytool, the app itself, and a QtFrame, the user interface.  The
     * frame is also set be centered on the screen.
     */
    public QT () {
+     PropertyConfigurator.configure("/jac_sw/omp/QT/config/log4j.properties");
+
+     logger.info("-------WELCOME TO THE QT----------");
      OtFileIO.setXML(System.getProperty("OMP") != null);
 
      try {
        SpItemDOM.setPreTranslator(new UkirtPreTranslator("Base", "GUIDE"));
         
      } catch ( Exception e) {
-       System.out.println("THIS WONT WORK. ");
-       
+       logger.fatal("PreTranslator error starting the QT");
        System.exit(1);
-     } // end of try-catch
-     
+     }
 
       QtTools.loadConfig(System.getProperty("qtConfig"));
 
@@ -61,12 +71,7 @@ final public class QT {
       Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
       Dimension frameSize = qtf.getSize();
 
-      // Validate frames that have preset sizes
-      
-      // Pack frmaes otherwise
-      //qtf.pack();
-
-      //Fill screen if the screen is smaller that qtfSize.
+      /* Fill screen if the screen is smaller that qtfSize. */
       if (frameSize.height > screenSize.height) {
 	 frameSize.height = screenSize.height;
       }
@@ -74,7 +79,7 @@ final public class QT {
 	 frameSize.width = screenSize.width;
       }
 
-      //Center the screen
+      /* Center the screen */
       int x = screenSize.width/2 - frameSize.width/2;
       int y = screenSize.height/2 - frameSize.height/2;
       qtf.setLocation(x,y);
@@ -95,6 +100,10 @@ final public class QT {
 
 /*
  * $Log$
+ * Revision 1.14  2002/05/30 22:26:26  mrippa
+ * colapsed imports > 4
+ * Implemented logging with log4j
+ *
  * Revision 1.13  2002/04/17 03:35:24  mrippa
  * Removed needless comments
  *
