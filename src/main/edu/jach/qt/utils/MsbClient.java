@@ -1,8 +1,8 @@
 package edu.jach.qt.utils;
 
+import java.io.*;
 import java.lang.reflect.*;
-import java.net.URL;
-import java.io.FileWriter;
+import java.net.*;
 
 /**
  * MsbClient.java
@@ -49,6 +49,8 @@ public class MsbClient extends SoapClient {
 
    public static boolean fetchMSB(Integer msbid) {
       try {
+	System.out.println(""+msbid);
+	
 	 URL url = new URL("http://www.jach.hawaii.edu/JAClocal/cgi-bin/msbsrv.pl");
 	 addParameter("key", Integer.class, msbid);
 	 //System.out.println(doCall(url, "urn:OMP::MSBServer", "fetchMSB"));
@@ -57,8 +59,8 @@ public class MsbClient extends SoapClient {
 	 Object tmp = doCall(url, "urn:OMP::MSBServer", "fetchMSB");
 
 	 if (tmp != null ) {
-
-	   System.out.println("The msb says:\n "+ tmp);
+	   
+	   //System.out.println("The msb says:\n "+ tmp);
 	   
 	   fw.write( (String)tmp );
 	   fw.close();
@@ -72,5 +74,24 @@ public class MsbClient extends SoapClient {
 	return false;
       }
       return true;
+   }
+
+  public static void doneMSB(String projID, String checksum) {
+      try {
+	
+	 URL url = new URL("http://www.jach.hawaii.edu/JAClocal/cgi-bin/msbsrv.pl");
+	 addParameter("projID", String.class, projID);
+	 addParameter("checksum", String.class, checksum);
+
+	 Object tmp = doCall(url, "urn:OMP::MSBServer", "doneMSB");
+
+	 if (tmp != null ) {
+	   // tmp has something with success
+	 }
+
+      } catch (Exception e) {
+	e.printStackTrace();
+      }
+      return;
    }
 }
