@@ -40,6 +40,8 @@ public class SatPanel extends JLabel implements TimerListener {
       (BorderFactory.createLineBorder(new Color(51, 134, 206)), "Loading Sat...",
        TitledBorder.CENTER, TitledBorder.DEFAULT_POSITION);
 
+    satBorder.setTitleColor( new Color(51, 134, 206) );
+
     setBorder(satBorder);
 
     if (System.getProperty("telescope").equalsIgnoreCase("jcmt")) {
@@ -82,7 +84,7 @@ public class SatPanel extends JLabel implements TimerListener {
 	      public Object construct () {
 		  try {
 		      String imageSuffix = URLReader.getImageString(thisURL);
-		      String timeString = imageSuffix.substring(8, imageSuffix.indexOf('.'));
+		      String timeString = imageSuffix.substring(imageSuffix.lastIndexOf("/")+1, imageSuffix.lastIndexOf("/")+13);
 		      
 		      //System.out.println("IMG=>>>"+InfoPanel.IMG_PREFIX + imageSuffix+"<<<");
 		      setIcon(new ImageIcon(new URL(InfoPanel.IMG_PREFIX + imageSuffix)));
@@ -140,9 +142,9 @@ class URLReader {
 
     while (st.hasMoreTokens()) {
       String temp = st.nextToken();
-      if (temp.startsWith("SRC=ni4") ||
-	  temp.startsWith("SRC=nw8")) {
-	imgString = temp.substring(4, temp.indexOf('>'));
+      if (temp.startsWith("SRC"))  {
+	  imgString = temp.substring(4, temp.indexOf('>'));
+          break;
       }
     }
     
