@@ -29,7 +29,9 @@ SOURCES = \
 	ExecDtask.java \
 	ErrorBox.java \
 	NoSuchParameterException.java \
-	OracColor.java
+	InvalidUserException.java \
+	OracColor.java \
+	MSBDoneDialog.java
 
 
 

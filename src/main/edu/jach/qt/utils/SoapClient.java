@@ -27,6 +27,8 @@ public class SoapClient {
 
   private static Header header = null;
   private static Vector params = new Vector();
+
+    public static final String FAULT_CODE_INVALID_USER = "SOAP-ENV:Client.InvalidUser";
    
   /**
    * <code>addParameter</code>. Add a Parameter to the next Call that
@@ -65,7 +67,7 @@ public class SoapClient {
    * @return an <code>Object</code> returned by the method called in
    * the server .
    */
-  protected static Object doCall(URL url, String soapAction, String methodName)  {
+  protected static Object doCall(URL url, String soapAction, String methodName) throws Exception {
     //String result = "";
     Object obj = new Object();
 
@@ -101,7 +103,12 @@ public class SoapClient {
 
 	Parameter ret = resp.getReturnValue();
 	//result = (String) ret.getValue();
-	obj = ret.getValue();
+	if (ret == null) {
+	    obj = null;
+	}
+	else {
+	    obj = ret.getValue();
+	}
 
 	//Reset the params vector.
 	params.clear();
@@ -112,6 +119,10 @@ public class SoapClient {
       }
       else {
 	Fault fault = resp.getFault ();
+
+	if (fault.getFaultCode().equals(FAULT_CODE_INVALID_USER)) {
+	    throw new InvalidUserException(fault.getFaultString());
+	}
 	JOptionPane.showMessageDialog(null,
 				      "Code:    "+fault.getFaultCode()+"\n" + 
 				      "Problem: "+fault.getFaultString(), 
@@ -122,7 +133,11 @@ public class SoapClient {
 	//System.out.println ("  Fault String = " + fault.getFaultString());
       }
 	    
-    } catch (Exception e) {
+    }
+    catch (InvalidUserException e) {
+	throw e;
+    }
+    catch (Exception e) {
       e.printStackTrace();
     }
 	

@@ -42,6 +42,7 @@ import javax.swing.tree.*;
 /* Miscellaneous imports */
 //import ocs.utils.*;
 import org.apache.log4j.Logger;
+import edu.jach.qt.utils.MSBDoneDialog;
 
 
 /**
@@ -200,7 +201,14 @@ final public class ProgramTree extends JPanel implements
      * @param projectID  The value to set.
      */
     public void setProjectID(String projectID) {
-	this.projectID = projectID;
+// 	this.projectID = projectID;
+	this.projectID = ((SpProg)_spItem).getProjectID();
+	if (this.projectID == null)
+	    this.projectID = projectID;
+    }
+
+    public SpItem getCurrentItem() {
+	return _spItem;
     }
 
     /**
@@ -208,7 +216,10 @@ final public class ProgramTree extends JPanel implements
      * @param checksum  The value to set.
      */
     public void setChecksum(String checksum) {
-	this.checkSum = checksum;
+// 	this.checkSum = checksum;
+	this.checkSum = XmlUtils.getChecksum(_spItem.toXML());
+	if (this.checkSum == null)
+	    this.checkSum = checksum;
     }
 
     /**
@@ -308,19 +319,7 @@ final public class ProgramTree extends JPanel implements
 		    anObservationHasBeenDone == true &&
 		    msbDone == false &&
 		    TelescopeDataPanel.DRAMA_ENABLED) { 
-		    int mark = showMSBDoneDialog();
-		    if (mark == JOptionPane.YES_OPTION) {
-			MsbClient.doneMSB(projectID, checkSum);
-			msbDone = true;
-			InfoPanel.searchButton.doClick();
-		    }
-		    else if (mark == JOptionPane.NO_OPTION) {
-			// Reserved for marking and MSB as rejected
-			msbDone = true;
-		    }
-		    else {
-			// user cancelled operation
-		    }
+		    msbDone = showMSBDoneDialog();
 		}
 	    }
 	}
@@ -353,7 +352,6 @@ final public class ProgramTree extends JPanel implements
 		    System.out.println("Marking this observation as done");
 		    anObservationHasBeenDone = true;
 		    markAsDone(obsList.getSelectedIndex());
-		    // 		    model.remove(obsList.getSelectedIndex());
 		}
 		else if (!failed) {
 		    DeferredProgramList.markThisObservationAsDone(item);
@@ -362,20 +360,7 @@ final public class ProgramTree extends JPanel implements
 		if ( !isDeferred && 
 		     IsModelEmpty() && 
 		     TelescopeDataPanel.DRAMA_ENABLED) {
-		    int mark = showMSBDoneDialog();
-		    if (mark == JOptionPane.YES_OPTION) {
-			MsbClient.doneMSB(projectID, checkSum);
-			// Since the MSBID has changed, redo the search...
-			InfoPanel.searchButton.doClick();
-			msbDone = true;
-		    }
-		    if (mark ==  JOptionPane.CANCEL_OPTION) {
-			// Carry on with what we were doing
-		    }
-		    if (mark == JOptionPane.NO_OPTION) {
-			// This is where we reject the MSB
-			msbDone=true;
-		    }
+		    msbDone = showMSBDoneDialog();
 		} // end of if ()
 
 		run.setEnabled(true);
@@ -471,7 +456,6 @@ final public class ProgramTree extends JPanel implements
 		int lastSpace = obsName.lastIndexOf(" ");
 		obsName = obsName.substring(0, lastSpace);
 	    }
-	    System.out.println("Name: "+obsName);
 	    if (!(obsName.endsWith("*"))) {
 		nRemaining++;
 	    }
@@ -545,21 +529,11 @@ final public class ProgramTree extends JPanel implements
 		 msbDone == false &&
 		 anObservationHasBeenDone == true &&
 		 TelescopeDataPanel.DRAMA_ENABLED ) {
-		int mark = showMSBDoneDialog();
-		if (mark == JOptionPane.YES_OPTION) {
-		    MsbClient.doneMSB(projectID, checkSum);
-		    InfoPanel.searchButton.doClick();
-		    msbDone = true;
-		}
-		if (mark == JOptionPane.CANCEL_OPTION) {
-		    // Keep the old observation
+		msbDone = showMSBDoneDialog();
+		// Now check whether we can proceed
+		if (!msbDone) {
+		    System.out.println("Cancelled loading of new MSB");
 		    return;
-		}
-		if (mark == JOptionPane.NO_OPTION) {
-		    // Do nothing - just carry on.
-		    // Assumes the entire MSB has not been done.
-		    // Later we may well mark this observation as rejected.
-		    msbDone = true;
 		}
 	    }
 	    anObservationHasBeenDone = false;
@@ -1038,7 +1012,7 @@ final public class ProgramTree extends JPanel implements
 	    }
 
 	    if (selectedItem == null) {
-		msbDonePopup.show(e.getComponent(), e.getX(), e.getY());
+		msbDone = showMSBDoneDialog();
 	    }
 	    // If this is an observation then show the popup
 	    else if (selectedItem.type()==SpType.OBSERVATION) {
@@ -1190,40 +1164,48 @@ final public class ProgramTree extends JPanel implements
 	    }
 	}
 	obsList.setEnabled(true);
-// 	if (IsModelEmpty() && 
-// 	    TelescopeDataPanel.DRAMA_ENABLED && 
-// 	    anObservationHasBeenDone) {
-// 	    int mark = showMSBDoneDialog();
-// 	    if (mark == JOptionPane.YES_OPTION) {
-// 		MsbClient.doneMSB(projectID, checkSum);
-// 		// Since the MSBID has changed, redo the search...
-// 		InfoPanel.searchButton.doClick();
-// 		msbDone = true;
-// 	    }
-// 	    else if (mark == JOptionPane.NO_OPTION) {
-// 		// Reserved for marking MSB as rejected
-// 		msbDone = true;
-// 	    }
-// 	    else {
-// 		// Do nothing - user will need to send an observation to retrigger
-// 	    }
-// 	} // end of if ()
     }
 
-    private int showMSBDoneDialog() {
-	String [] options = {"Accept", "Reject", "Cancel"};
-	int mark = JOptionPane.showOptionDialog(this, "Mark the MSB with \n"+
-						"Project ID: "+projectID+"\n"+
-						"CheckSum: "+checkSum+"\n"+
-						"Remaining Observations: "+getRemainingObservations()+"\n"+
-						"as done?",
-						"MSB complete",
-						JOptionPane.YES_NO_CANCEL_OPTION,
-						JOptionPane.QUESTION_MESSAGE,
-						null,
-						options,
-						options[0]);
-	return mark;
+    private boolean showMSBDoneDialog() {
+	boolean done = false;
+
+	Container parent = this.getParent();
+	while (parent != null &&
+	       (!(parent instanceof java.awt.Frame))) {
+	    parent = parent.getParent();
+	}
+	// Create the comm files
+	File cancelFile = new File ("/tmp/cancel");
+	File acceptFile = new File ("/tmp/accept");
+	File rejectFile = new File ("/tmp/reject");
+	try {
+	    cancelFile.createNewFile();
+	    acceptFile.createNewFile();
+	    rejectFile.createNewFile();
+	}
+	catch (IOException ioe) {
+	    logger.warn ("Unable to create one of the MSBDoneDialog com files");
+	}
+	MSBDoneDialog mdd = new MSBDoneDialog ((Frame)parent, 
+					       projectID, 
+					       checkSum);
+	// See which comms file exist after accept/reject
+	if (cancelFile.exists()) {
+	    cancelFile.delete();
+	}
+	else if (acceptFile.exists()) {
+	    acceptFile.delete();
+	    done = true;
+	    anObservationHasBeenDone = false;
+	    InfoPanel.searchButton.doClick();
+	}
+	else if (rejectFile.exists()) {
+	    rejectFile.delete();
+	    done = true;
+	    anObservationHasBeenDone = false;
+	    InfoPanel.searchButton.doClick();
+	}
+	return done;
     }
 
     public JButton getRunButton () {return run;}

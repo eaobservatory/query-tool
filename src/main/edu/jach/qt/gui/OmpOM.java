@@ -214,7 +214,7 @@ public class OmpOM extends JPanel{
      */
   public void setSpItem(SpItem item) {
     spItem = item;
-    NotePanel.setNote(spItem);
+//      NotePanel.setNote(spItem);
   }
 
     /** 
@@ -316,10 +316,16 @@ public class OmpOM extends JPanel{
       
       deferredList = new DeferredProgramList();
       NotePanel notes = new NotePanel();
-      notes.setNote(spItem);
+//       notes.setNote(spItem);
       JSplitPane dsp = new JSplitPane(JSplitPane.VERTICAL_SPLIT, deferredList, notes);
       dsp.setDividerLocation(250);
       JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, ptree, dsp);
+      if (ptree.getCurrentItem() != null) {
+	  notes.setNote(ptree.getCurrentItem());
+      }
+      else {
+	  notes.setNote(spItem);
+      }
       return splitPane;
   }
 

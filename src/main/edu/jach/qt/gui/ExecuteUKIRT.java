@@ -52,7 +52,8 @@ public class ExecuteUKIRT extends Execute implements Runnable {
       itemToExecute = DeferredProgramList.currentItem;
       logger.info("Executing observation from deferred list");
     }
-	
+    failure.delete();
+    /*	
     SpItem inst = (SpItem) SpTreeMan.findInstrument(itemToExecute);
     if (inst == null) {
       logger.error("No instrument found");
@@ -167,6 +168,7 @@ public class ExecuteUKIRT extends Execute implements Runnable {
 	success.delete();
       }
     }
+    */
 	
   }
 

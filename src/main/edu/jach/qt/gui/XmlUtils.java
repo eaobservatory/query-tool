@@ -154,6 +154,25 @@ public class XmlUtils {
 
    }
 
+    public static String getChecksum(String xmlString) {
+	// Conver string to document
+	Document doc;
+	String   checksum = null;
+	try {
+	    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+	    DocumentBuilder builder = factory.newDocumentBuilder();
+	    doc = builder.parse( new InputSource( new StringReader(xmlString) ) );
+	}
+	catch (Exception e) {
+	    return checksum;
+	}
+	// Get the MSB element
+	Element msb = getElement(doc, "SpMSB", 0);
+	// Get the attribute checksum
+	checksum = msb.getAttribute("checksum");
+	return checksum;
+    }
+
     /**
      * Returns an array of strings representing the columns contained
      * in the MSB summary file.  This file must exist, so the application
