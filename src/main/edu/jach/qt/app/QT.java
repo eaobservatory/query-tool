@@ -28,7 +28,7 @@ final public class QT {
     * frame is also set be centered on the screen.
     */
    public QT () {
-      QtTools.loadConfig("config/qt.conf");
+      QtTools.loadConfig("/home/mrippa/netroot/install/omp/QT/config/qt.conf");
 
       WidgetDataBag wdb = new WidgetDataBag ();
       Querytool qt = new Querytool(wdb);
@@ -80,6 +80,9 @@ final public class QT {
 } // Omp
 
 //$Log$
+//Revision 1.6  2001/10/20 04:12:11  mrippa
+//The main config file is now in $install/omp/QT/config/qt.conf
+//
 //Revision 1.5  2001/09/29 05:34:50  mrippa
 //Frame centers on screen.
 //
