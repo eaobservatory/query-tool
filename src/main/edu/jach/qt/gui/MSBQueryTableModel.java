@@ -40,10 +40,19 @@ public class MSBQueryTableModel extends AbstractTableModel {
       };*/
    
    public static final String[] colNames ={
-      "projectid",
-      "checksum",
+      "wavelength",
+      "instrument",
       "remaining",
-      "filename"
+      "target",
+      "obscount",
+      "seeing",
+      "title",
+      "checksum",
+      "coordstype",
+      "timeest",
+      "projectid",
+      "tauband",
+      "priority",
       };
    
    public static final Class[] colClasses ={
@@ -51,15 +60,31 @@ public class MSBQueryTableModel extends AbstractTableModel {
       String.class,
       Integer.class,
       String.class,
+      String.class,
+      String.class,
+      String.class,
+      String.class,
+      String.class,
+      String.class,
+      String.class,
+      String.class,
+      String.class,
    };
 
    public static final int 
-      PROJECTID          = 0,
-      SOURCENAME           = 1,
-      INSTRUMENT          = 2,
-      WAVELENGTH           = 3,
-      EXPOSURETIME        =4,
-      PI                  =5;
+      WAVELENGTH          = 0,
+      INSTRUMENT          = 1,
+      REMAINING           = 2,
+      TARGET              = 3,
+      OBSCOUNT            = 4,
+      SEEING              = 5,
+      TITLE               = 6,
+      CHECKSUM            = 7,
+      COORDSTYPE          = 8,
+      TIMEEST             = 9,
+      PROJECTID           = 10,
+      TAUBAND             = 11,
+      PRIORITY            = 12;
 
    //DATA
    //DOM object to hold XML document contents
@@ -73,7 +98,7 @@ public class MSBQueryTableModel extends AbstractTableModel {
 
    public MSBQueryTableModel() {
       docIsNull = true;
-      projectIds = new Integer[100];
+      projectIds = new Integer[200];
    }
 
    public void setQuery() {
