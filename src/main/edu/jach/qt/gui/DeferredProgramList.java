@@ -173,6 +173,7 @@ final public class DeferredProgramList extends JPanel implements
 	SpItem thisObs = (SpItem)theseObs.firstElement();
 	thisObs.getTable().set("project", "CAL");
 	thisObs.getTable().set("msbid", "CAL");
+	((SpObs)thisObs).setOptional(true);
 	if (!isDuplicate(thisObs)) {
 	    makePersistent(thisObs);
 	    ((DefaultListModel)obsList.getModel()).addElement(thisObs);
