@@ -391,6 +391,7 @@ public class QtFrame
     if (table.getSelectedRow() != -1) {
 
       msbWorker.start();
+      om.updateDeferredList();
     }
 
     else {
