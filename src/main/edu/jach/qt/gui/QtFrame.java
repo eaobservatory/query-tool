@@ -135,7 +135,7 @@ public class QtFrame
 	  canExit = om.checkProgramTree();
       }
       if (!canExit) {
-	  JOptionPane.showMessageDialog ( null,
+	  JOptionPane.showMessageDialog ( this,
 					  "Can not exit the QT until the current MSB is accepted/rejected",
 					  "Can not exit QT",
 					  JOptionPane.WARNING_MESSAGE);
@@ -144,7 +144,7 @@ public class QtFrame
       
       if (DeferredProgramList.deferredFilesExist()) {
 	  Object [] options = {"Save", "Delete"};
-	  int selection = JOptionPane.showOptionDialog( null,
+	  int selection = JOptionPane.showOptionDialog( this,
 							"Deferred observations currently exist. Save?",
 							"Deferred observations exist",
 							JOptionPane.DEFAULT_OPTION,
@@ -183,7 +183,7 @@ public class QtFrame
     // Check whether deferred Observations currently exist and ask the user if he wants to
     // use these.  If they don't then delete the current files
     if (DeferredProgramList.obsExist()) {
-	int selection = JOptionPane.showConfirmDialog(null,
+	int selection = JOptionPane.showConfirmDialog(this,
 						      "Use current Deferred Observations?",
 						      "Deferred Observations Exist",
 						      JOptionPane.YES_NO_OPTION
@@ -494,7 +494,7 @@ public class QtFrame
     }
 
     else {
-      JOptionPane.showMessageDialog(null, "Must select a project summary first!");
+      JOptionPane.showMessageDialog(this, "Must select a project summary first!");
 
     }
     
@@ -649,6 +649,8 @@ public class QtFrame
     mbar.add(viewMenu);
     JMenuItem columnItem = new JMenuItem("Columns...");
     columnItem.addActionListener(this);
+    JMenuItem logItem = new JMenuItem("Log...");
+    logItem.addActionListener(this);
     JMenu satMenu = new JMenu("Satellite Image");
     JMenuItem irItem = new JMenuItem("Infra Red");
     irItem.addActionListener(this);
@@ -657,6 +659,7 @@ public class QtFrame
     satMenu.add(irItem);
     satMenu.add(wvItem);
     viewMenu.add(columnItem);
+    viewMenu.add(logItem);
     viewMenu.add(satMenu);
 
 
@@ -808,6 +811,11 @@ public class QtFrame
 	}
 	else if (thisItem.getText().equalsIgnoreCase("Columns...") ) {
 	    ColumnSelector colSelector = new ColumnSelector(this);
+	    return;
+	}
+	else if (thisItem.getText().equalsIgnoreCase("Log...") ) {
+	    LogViewer viewer = new LogViewer();
+	    viewer.showLog( System.getProperty("QT_LOG_DIR")+"/QT.log" );
 	    return;
 	}
 	else if (thisItem.getText().equalsIgnoreCase("Infra Red") ) {
