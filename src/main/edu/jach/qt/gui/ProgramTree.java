@@ -66,7 +66,7 @@ final public class ProgramTree extends JPanel implements
     public static final String BIN_SEL_IMAGE = System.getProperty("binImage");
 
     private GridBagConstraints		gbc;
-    private JButton			run;
+    private static JButton		run;
     private JButton                     xpand;
     private JTree			tree;
     private static JList		obsList;
@@ -137,12 +137,7 @@ final public class ProgramTree extends JPanel implements
 
 	run=new JButton("Send for Execution");
 	run.setMargin(new Insets(5,10,5,10));
-	if (TelescopeDataPanel.DRAMA_ENABLED) {
-	    run.setEnabled(true);
-	}
-	else {
-	    run.setEnabled(false);
-	}
+	run.setEnabled(TelescopeDataPanel.DRAMA_ENABLED);
 	run.addActionListener(this);
 
 	xpand = new JButton("Expand Observation");
@@ -233,7 +228,7 @@ final public class ProgramTree extends JPanel implements
      * Set the "Send for Execution" to (dis)abled.
      * @param  flag  <code>true</code> to enable execution.
      */
-    public void setExecutable (boolean flag) {
+    public static void setExecutable (boolean flag) {
 	if (!TelescopeDataPanel.DRAMA_ENABLED) {
 	    run.setEnabled(false);
 	}
@@ -348,7 +343,7 @@ final public class ProgramTree extends JPanel implements
 	    isDeferred =  true;
 	    item = DeferredProgramList.currentItem;
 	}
-	run.setEnabled(false);
+	setExecutable(false);
 	if (System.getProperty("telescope").equalsIgnoreCase("ukirt")) {
 	    try {
 		ExecuteUKIRT execute = new ExecuteUKIRT();
@@ -361,8 +356,8 @@ final public class ProgramTree extends JPanel implements
 		    new ErrorBox(this, "Failed to Execute. Check messages.");
 		}
 		if (!isDeferred && !failed) {
-		    System.out.println("Marking this observation as done");
-		    anObservationHasBeenDone = true;
+		    msbPendingFile = new File (msbPendingDir+projectID+"_"+checkSum+".pending");
+ 		    anObservationHasBeenDone = true;
 		    markAsDone(obsList.getSelectedIndex());
 		}
 		else if (!failed) {
@@ -375,14 +370,14 @@ final public class ProgramTree extends JPanel implements
 		    msbDone = showMSBDoneDialog();
 		} // end of if ()
 
-		run.setEnabled(true);
+		setExecutable(true);
 	    }
 	    catch (Exception e) {
 		logger.error("Failed to execute",e);
 		if ( t!=null && t.isAlive() ) {
 		    logger.info("Last execution still running");
 		}
-		run.setEnabled(true);
+		setExecutable(true);
 		return;
 	    }
 	}
@@ -414,6 +409,7 @@ final public class ProgramTree extends JPanel implements
 			    markAsDone(i);
 			    if (TelescopeDataPanel.DRAMA_ENABLED) {
 				anObservationHasBeenDone = true;
+				msbPendingFile = new File (msbPendingDir+projectID+"_"+checkSum+".pending");
 				msbDone = showMSBDoneDialog();
 			    }
 			}
@@ -423,21 +419,18 @@ final public class ProgramTree extends JPanel implements
 		    DeferredProgramList.markThisObservationAsDone(item);
 		}
 	
-		run.setEnabled(true);
+		setExecutable(true);
 	    }
 	    catch (Exception e) {
 		logger.error("Failed to execute",e);
 		if ( t!=null && t.isAlive()) {
 		    logger.info("Last execution still running");
 		}
-		run.setEnabled(true);
+		setExecutable(true);
 		return;
 	    }
 	}
-	if ( anObservationHasBeenDone ) {
-	    msbPendingFile = new File (msbPendingDir+projectID+"_"+checkSum+".pending");
-	}
-    }
+   }
 
     private void markAsDone(int index) {
 	SpObs obs = (SpObs)model.getElementAt(index);
@@ -544,89 +537,103 @@ final public class ProgramTree extends JPanel implements
      * Set up the List GUI and populate it with the results of a query.
      * @param sp  The list of obervations in the MSB.
      */
-    public void addList(SpItem sp) {
+     public void addList(SpItem sp) {
 
-	if (sp == null) {
-	    obsList = new JList();
-	}
-	else {
-	    // Check if there is already an existing model and whether it still has
-	    // observations to perform
-	    if ( model != null   && 
-		 msbDone == false &&
-		 ( System.getProperty("telescope").equalsIgnoreCase("ukirt") || instrumentContext instanceof SpInstHeterodyne) && 
-		 anObservationHasBeenDone == true &&
-		 TelescopeDataPanel.DRAMA_ENABLED ) {
+	// Check if there is already an existing model and whether it still has
+	// observations to perform
+	if ( model != null   && 
+	     msbDone == false &&
+	     ( System.getProperty("telescope").equalsIgnoreCase("ukirt") || instrumentContext instanceof SpInstHeterodyne) && 
+	     anObservationHasBeenDone == true &&
+	     TelescopeDataPanel.DRAMA_ENABLED ) {
+	    if (sp != null) {
 		msbDone = showMSBDoneDialog();
 		// Now check whether we can proceed
 		if (!msbDone) {
-		    System.out.println("Cancelled loading of new MSB");
+		    logger.info("Cancelled loading of new MSB");
 		    return;
 		}
 	    }
-	    anObservationHasBeenDone = false;
-	    msbDone = false;
-	    _spItem = sp;
+	    else {
+		// If the input is null we are trying to empty the list.  This
+		// should only happen at startup (in which case model should be
+		// null and we should never get here), or when the user has clicked
+		// on the "Set Default" button, in which case they were probably
+		// searching for programs to do later in the night.
+		return;
+	    }
+	}
 
-	    getContext(sp);
-	    model = new DefaultListModel();
+	// If we get here we should reinitialise with the new argument
+	anObservationHasBeenDone = false;
+	msbDone = false;
+	_spItem = sp;
 
+	getContext(sp);
+	model = new DefaultListModel();
+
+	if ( _spItem != null ) {
 	    Vector obsVector =  SpTreeMan.findAllItems(sp, "gemini.sp.SpObs");
-	  
+	    
 	    Enumeration e = obsVector.elements();
 	    while (e.hasMoreElements() ) {
 		model.addElement(e.nextElement());
 	    } // end of while ()
+	}
+	else {
+	    model.clear();
+	}
 
-	    obsList = new JList(model);
-	    obsList.setCellRenderer(new ObsListCellRenderer());
-	    MouseListener ml = new MouseAdapter()
+	obsList = new JList(model);
+	obsList.setCellRenderer(new ObsListCellRenderer());
+	MouseListener ml = new MouseAdapter()
+	    {
+		public void mouseClicked(MouseEvent e)
 		{
-		    public void mouseClicked(MouseEvent e)
-		    {
-			if (e.getClickCount() == 2) {
-			    doExecute();
+		    if (e.getClickCount() == 2) {
+			doExecute();
+		    }
+		    else if (e.getClickCount() == 1 && 
+			     (e.getModifiers() & InputEvent.BUTTON1_MASK) == InputEvent.BUTTON1_MASK ) {
+			if (selectedItem != obsList.getSelectedValue() ) {
+			    // Select the new item
+			    selectedItem = (SpItem) obsList.getSelectedValue();
+			    DeferredProgramList.clearSelection();
 			}
-			else if (e.getClickCount() == 1 && 
-				 (e.getModifiers() & InputEvent.BUTTON1_MASK) == InputEvent.BUTTON1_MASK ) {
-			    if (selectedItem != obsList.getSelectedValue() ) {
-				// Select the new item
-				selectedItem = (SpItem) obsList.getSelectedValue();
-				DeferredProgramList.clearSelection();
-			    }
-			    else if (e.getClickCount() == 1)
-				{
-				    if (selectedItem != obsList.getSelectedValue() ) {
-					// Select the new item
-					selectedItem = (SpItem) obsList.getSelectedValue();
-					DeferredProgramList.clearSelection();
-				    }
-				    else {
-					obsList.clearSelection();
-					selectedItem = null;
-				    }
+			else if (e.getClickCount() == 1)
+			    {
+				if (selectedItem != obsList.getSelectedValue() ) {
+				    // Select the new item
+				    selectedItem = (SpItem) obsList.getSelectedValue();
+				    DeferredProgramList.clearSelection();
 				}
-			}
+				else {
+				    obsList.clearSelection();
+				    selectedItem = null;
+				}
+			    }
 		    }
+		}
 
-		    public void mousePressed(MouseEvent e) {
-			DeferredProgramList.clearSelection();
-			enableList(false);
-		    }
-		    public void mouseReleased(MouseEvent e) {
-			enableList(true);
-		    }
-		};
-	    obsList.addMouseListener(ml);
-	    MouseListener popupListener = new PopupListener();
-	    obsList.addMouseListener(popupListener);
+		public void mousePressed(MouseEvent e) {
+		    DeferredProgramList.clearSelection();
+		    enableList(false);
+		}
+		public void mouseReleased(MouseEvent e) {
+		    enableList(true);
+		}
+	    };
+	obsList.addMouseListener(ml);
+	MouseListener popupListener = new PopupListener();
+	obsList.addMouseListener(popupListener);
+	if (model.size() > 0) {
 	    obsList.setSelectedIndex(0);
 	    selectedItem = (SpItem) obsList.getSelectedValue();
-
-	    dragSource.createDefaultDragGestureRecognizer(obsList,
-							  DnDConstants.ACTION_MOVE,
-							  this);
 	}
+
+	dragSource.createDefaultDragGestureRecognizer(obsList,
+						      DnDConstants.ACTION_MOVE,
+						      this);
 	// Add the listbox to a scrolling pane
 	scrollPane.getViewport().removeAll();
 	scrollPane.getViewport().add(obsList);
@@ -642,10 +649,6 @@ final public class ProgramTree extends JPanel implements
 	add(scrollPane, gbc, 0, 0, 2, 1);
     
     }
-
-    //public MsbNode getMsbNode() {
-    //   return myObs;
-    // }
 
     /**
      * Clear the selection from the Prgram Tree List.
@@ -811,35 +814,6 @@ final public class ProgramTree extends JPanel implements
     }
 
     /**
-     * private void disableRun()
-     *
-     * Disable the run option whilst other things are happening
-     *
-     **/
-    private void disableRun() {
-	run.setEnabled(false);
-	run.setForeground(Color.white);
-    }
-
-
-    /**
-     * private void enableRun()
-     *
-     * Enable the run option once other things have stopped
-     *
-     **/
-    private void enableRun() {
-	if (TelescopeDataPanel.DRAMA_ENABLED) {
-	    run.setEnabled(true);
-	    run.setForeground(Color.black);
-	}
-	else {
-	    run.setEnabled(false);
-	}
-    }
-
-
-    /**
      * private void editAttributes()
      *
      * Invokes the attribute editor on the current item, as long as that
@@ -851,7 +825,7 @@ final public class ProgramTree extends JPanel implements
 	// Recheck that this is an observation
 	if (selectedItem.type()==SpType.OBSERVATION) {
 
-	    disableRun();
+	    setExecutable(false);
 
 	    SpObs observation = (SpObs) selectedItem;
 
@@ -864,7 +838,7 @@ final public class ProgramTree extends JPanel implements
 					      "Not an Obs!",
 					      JOptionPane.INFORMATION_MESSAGE);
 	    }
-	    enableRun();
+	    setExecutable(true);
 	}
     }
  
@@ -879,7 +853,7 @@ final public class ProgramTree extends JPanel implements
 	    return;
 	}
 	
-	disableRun();
+	setExecutable(false);
 	    
 	SpObs observation = (SpObs) selectedItem;
 	if (!observation.equals(null)) {
@@ -903,7 +877,7 @@ final public class ProgramTree extends JPanel implements
 					  "Not an Obs!",
 					  JOptionPane.INFORMATION_MESSAGE);
 	}
-	enableRun();
+	setExecutable(true);
     }
     
   
@@ -918,7 +892,7 @@ final public class ProgramTree extends JPanel implements
 	    return;
 	}
 	
-	disableRun();
+	setExecutable(false);
 	
 	SpObs observation = (SpObs) selectedItem;
 	if (!observation.equals(null)) {
@@ -939,7 +913,7 @@ final public class ProgramTree extends JPanel implements
 					  "Not an Obs!",
 					  JOptionPane.INFORMATION_MESSAGE);
 	}
-	enableRun();
+	setExecutable(true);
     }
 
     private Double lastScaleFactor() {
@@ -957,9 +931,15 @@ final public class ProgramTree extends JPanel implements
     }
 
     private void getContext(SpItem item) {
-	Vector obs  = SpTreeMan.findAllItems(item, "gemini.sp.SpObs");
-	instrumentContext = SpTreeMan.findInstrument((SpObs)obs.firstElement());
-	targetContext     = SpTreeMan.findAllItems(item, "gemini.sp.obsComp.SpTelescopeObsComp");
+	if (item == null) {
+	    instrumentContext = null;
+	    targetContext     = null;
+	}
+	else {
+	    Vector obs  = SpTreeMan.findAllItems(item, "gemini.sp.SpObs");
+	    instrumentContext = SpTreeMan.findInstrument((SpObs)obs.firstElement());
+	    targetContext     = SpTreeMan.findAllItems(item, "gemini.sp.obsComp.SpTelescopeObsComp");
+	}
     }
 
     /**

@@ -110,7 +110,6 @@ public class QtFrame
 
       om = new OmpOM();
       om.addNewTree(null);
-      om.setExecutable( localQuerytool.canExecute());
 
       compInit();
       validateTree();
@@ -331,7 +330,6 @@ public class QtFrame
 
 		try {
 		  om.setSpItem( localQuerytool.fetchMSB(msbID));
-		  om.setExecutable( localQuerytool.canExecute());
 		  isStatusOK = new Boolean(true);
 		} catch (NullPointerException e) {
 		  isStatusOK = new Boolean(false);
@@ -938,5 +936,12 @@ public class QtFrame
   public void popupMenuCanceled(PopupMenuEvent param1) {
     // TODO: implement this javax.swing.event.PopupMenuListener method
   }
+
+
+    public void resetCurrentMSB() {
+	if (om != null) {
+	    om.addNewTree(null);
+	}
+    }
 
 }//QtFrame

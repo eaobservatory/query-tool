@@ -283,9 +283,13 @@ public class OmpOM extends JPanel{
    */
   public void addNewTree(Integer msbID) {
 
-    ptree.addList(spItem);
-    ptree.setMinimumSize(new Dimension(400,550) );
-    //ptreeHashtable.put(msbID, ptree);
+      if (msbID == null) {
+	  ptree.addList(null);	  
+      }
+      else {
+	  ptree.addList(spItem);
+      }
+      ptree.setMinimumSize(new Dimension(400,550) );
   }
 
   /**

@@ -52,7 +52,6 @@ public class Querytool implements Runnable, Observer {
 
   private boolean remaining, observability, allocation,_q;
   private String _queue;
-  private boolean areResultsExecutable = true;
 
   /**
    * Creates a new <code>Querytool</code> instance.
@@ -318,50 +317,6 @@ public class Querytool implements Runnable, Observer {
 		{
 		    item = doc.createElement("semester");
 		}
-	    /*
-	    if ( next.equalsIgnoreCase("observation") )
-		// Specail case - build in some logic
-		{
-		    item = doc.createElement("date");
-		    tmpStr = (String)n.nextElement();
-		    // Check for non-numerics and non-integer
-		    for (int i=0;i<tmpStr.length();i++)
-			{
-			    char c = (char)(tmpStr.charAt(i));
-			    if (c == '.') {
-				StringTokenizer tok = new StringTokenizer(tmpStr, ".");
-				tmpStr = tok.nextToken();
-			    }
-			    else if (! Character.isDigit(c)) {
-				tmpStr =  null;
-				break;
-			    }
-			}
-		    // Convert string to an integer
-		    if (tmpStr != null){
-			Integer utHour = new Integer(tmpStr);
-			if (utHour.intValue() <  0) utHour = new Integer(0);
-			if (utHour.intValue() > 23) utHour = new Integer(23);
-			// Now need to get the current UT hour
-			SimpleDateFormat isoformatter = 
-			    new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-			isoformatter.setTimeZone(TimeZone.getTimeZone("UTC"));
-			Calendar uCal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-			uCal.setTime(new Date());
-			if (uCal.get(Calendar.HOUR_OF_DAY) > utHour.intValue()) {
-			    uCal.set(Calendar.DAY_OF_MONTH, 
-				     uCal.get(Calendar.DAY_OF_MONTH)+1);
-			}
-			uCal.set(Calendar.HOUR_OF_DAY, utHour.intValue());
-			uCal.set(Calendar.MINUTE, 0);
-			uCal.set(Calendar.SECOND, 0);
-			tmpStr = isoformatter.format(uCal.getTime());
-			item.appendChild(doc.createTextNode(tmpStr.trim()));
-			root.appendChild( item );
-		    }
-		    continue;
-		}
-	    */
 	    tmpStr = (String)n.nextElement();
 	    item.appendChild(doc.createTextNode(tmpStr.trim()));
 	    root.appendChild( item );
@@ -537,7 +492,6 @@ public class Querytool implements Runnable, Observer {
 		tmpStr = tu.convertLocalISODatetoUTC(tmpStr);
 		item.appendChild (doc.createTextNode(tmpStr.trim()));
 		root.appendChild (item); 
-		areResultsExecutable = false;
 		// Dont use the moon info
 		NodeList list = root.getElementsByTagName("moon");
 		if (list.getLength() != 0) {
@@ -546,34 +500,11 @@ public class Querytool implements Runnable, Observer {
 	    }
 	    else {
 		// We will use the current date, so set execution to true
-		areResultsExecutable = true;
 	    }
 	}
 	else {
-	    areResultsExecutable = true;
 	}
 	return root;
-    }
-
-    /**
-     * Check to see whether the results of any current query
-     * are executable.
-     * If the Date or Time on the GUI have been changed, then the
-     * results are not allowed to be executed.
-     * @return     <code>true</code> if results can be executed;
-     *             <code>false</code> otherwise.
-     */
-    public boolean canExecute() {
-	return areResultsExecutable;
-    }
-
-    /**
-    * Set whether results can be executed or not.
-    * @param flag       <code>boolean</code> flag stating whether to
-    *                   make the results executable.
-    */
-    public void setExecutable (boolean flag) {
-	areResultsExecutable = flag;
     }
 
 }// Querytool
