@@ -231,6 +231,9 @@ public class OmpOM extends JPanel{
      */
   public String getProgramName() {
     
+      if (spItem == null) {
+	  return "No Observations";
+      }
     Vector progVector = SpTreeMan.findAllItems(spItem, "gemini.sp.SpMSB");
 
     logger.debug("progVector "+progVector);
