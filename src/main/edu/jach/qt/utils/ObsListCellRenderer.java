@@ -34,6 +34,15 @@ public class ObsListCellRenderer extends DefaultListCellRenderer {
 						boolean cellHasFocus)    // the list and the cell have the focus
   {
     String s = ((SpObs)value).getTitle();
+    // See if this observation is from the program list and has been done
+    // This is indicated by a * at the end of the title attribute
+    boolean hasBeenObserved = false;
+    String titleAttr = ((SpObs)value).getTitleAttr();
+    if (titleAttr != null && !(titleAttr.equals(""))) {
+	if (titleAttr.endsWith("*")) {
+	    hasBeenObserved = true;
+	}
+    }
     String duration = (String)((SpObs)value).getTable().get("estimatedDuration");
     Double d = new Double(duration);
     NumberFormat nf = NumberFormat.getInstance();
@@ -60,11 +69,16 @@ public class ObsListCellRenderer extends DefaultListCellRenderer {
     if (((SpObs)value).isOptional() == false) {
 	setForeground(list.getForeground());
     }
-    else if (isDone) {
-	setForeground(Color.red);
-    }
     else {
 	setForeground(Color.blue);
+    }
+
+    // Override the defaults
+    if (isDone) {
+	setForeground(Color.red);   // Done calibrations appear red
+    }
+    if (hasBeenObserved) {
+	setForeground(Color.gray);  // Done Observations appear gray
     }
 
     setText(s);
