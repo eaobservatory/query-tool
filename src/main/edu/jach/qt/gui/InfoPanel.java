@@ -7,6 +7,7 @@ import java.awt.Toolkit;
 import java.awt.event.*;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.lang.Boolean;
 import java.net.URL;
 import java.util.Vector;
 import javax.swing.*;
@@ -110,8 +111,11 @@ public class InfoPanel extends JPanel
 	      //Runs on the event-dispatching thread.
 	      public void finished() { 
 		blinker.blinkLed(false);
-		Thread tableFill = new Thread(msb_qtm);
-		tableFill.start();
+		if ( isStatusOK.booleanValue()) {
+		  Thread tableFill = new Thread(msb_qtm);
+		  tableFill.start();
+		  
+		} // end of if ()
 	      }
 	    };
 
