@@ -122,6 +122,7 @@ final public class QT {
       Runtime rt = Runtime.getRuntime();
       rt.addShutdownHook(new Thread () {
 	      public void run () {
+		  logger.info ("Running shutdown hook");
 		  // Check if we are running the active QT on UKIRT
 		  if (System.getProperty("telescope").equalsIgnoreCase("ukirt") && 
 		      System.getProperty("DRAMA_ENABLED").equalsIgnoreCase("true") ) {
@@ -156,6 +157,9 @@ final public class QT {
 
 /*
  * $Log$
+ * Revision 1.24  2003/02/20 20:30:38  dewitt
+ * Added logging to try to track down shutdown problems.
+ *
  * Revision 1.23  2003/01/30 21:05:17  dewitt
  * Merged wide_mode_qt branch
  *
