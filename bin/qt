@@ -241,7 +241,6 @@ onintr -
 if ( ${scenario} == 0 ) then
  \rm ${lockDir}/.lock
 endif
-cleanup 
 unsetenv DUL_DIR
 unsetenv GIT_DIR
 unsetenv DTCL_DIR
