@@ -1,6 +1,7 @@
 package edu.jach.qt.gui;
 
 
+import edu.jach.qt.gui.DragDropObject;
 import edu.jach.qt.utils.*;
 import gemini.sp.SpItem;
 import gemini.sp.SpRootItem;
@@ -12,6 +13,8 @@ import java.io.*;
 import java.util.Enumeration;
 import java.util.Properties;
 import javax.swing.*;
+import javax.swing.JSplitPane;
+import javax.swing.border.*;
 import javax.swing.event.*;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
@@ -20,12 +23,11 @@ import jsky.app.ot.OtCfg;
 import jsky.app.ot.OtFileIO;
 import jsky.app.ot.OtTreeWidget;
 import jsky.app.ot.OtWindow;
+import orac.jcmt.inst.*;
+import orac.jcmt.iter.*;
 import orac.ukirt.inst.*;
 import orac.ukirt.iter.*;
 import orac.util.*;
-import javax.swing.JSplitPane;
-import edu.jach.qt.gui.DragDropObject;
-import javax.swing.border.*;
 
 /**
  * This is the top most class of the OMP-OM.  This 
@@ -52,29 +54,60 @@ public class OmpOM extends JPanel{
       //Load OM specific configs
       QtTools.loadConfig(new String(System.getProperty("omCfg")));
 
-      // Need to construct UKIRT-specific items so that their SpTypes are
-      // statically initialised.  Otherwise the sp classes won't know about 
-      // their types.  AB 19-Apr-2000
+      /* Need to construct UKIRT-specific items so that their SpTypes are
+       * statically initialised.  Otherwise the sp classes won't know about 
+       * their types.  AB 19-Apr-2000
+       */
+
+      /* Init UKIRT Instruments */
       SpItem spItem = new SpInstUFTI();
       spItem = new SpInstCGS4();
       spItem = new SpInstIRCAM3();
       spItem = new SpInstMichelle();
       spItem = new SpDRRecipe();
+
+      /* Init UKIRT SpTypes */
       spItem = new SpIterBiasObs();
-      spItem = new SpIterDarkObs();
+      spItem = new SpIterBiasObs();
       spItem = new SpIterCGS4();
-      spItem = new SpIterIRCAM3();
-      spItem = new SpIterMichelle();
-      spItem = new SpIterUFTI();
       spItem = new SpIterCGS4CalUnit();
       spItem = new SpIterCGS4CalObs();
-      spItem = new SpIterMichelleCalObs();
+      spItem = new SpIterCalUnit();
+      spItem = new SpIterDarkObs();
       spItem = new SpIterFP();
+      spItem = new SpIterIRCAM3();
       spItem = new SpIterIRPOL();
+      spItem = new SpIterMichelle();
+      spItem = new SpIterMichelleCalObs();
       spItem = new SpIterNod();
+      spItem = new SpIterNodObs();
+      spItem = new SpIterUFTI();
+
+      /* Init GEMINI Miscellaneous */
+      spItem = new SpIterRepeat();
+      spItem = new SpIterOffset();
       spItem = new SpIterObserve();
       spItem = new SpIterSky();
+      spItem = new SpSchedConstObsComp();
       spItem = new SpSiteQualityObsComp();
+
+      /* Init JCMT Instruments */
+      spItem = new SpInstSCUBA();
+      spItem = new SpInstHeterodyne();
+
+      /* Init JCMT SpTypes */
+      spItem = new SpIterFocusObs();
+      spItem = new SpIterFrequency();
+      spItem = new SpIterJiggleObs();
+      spItem = new SpIterRasterObs();
+      spItem = new SpIterSkydipObs();
+      spItem = new SpIterStareObs();
+      spItem = new SpIterScanObs();
+      spItem = new SpIterPointingObs();
+      spItem = new SpIterPhotomObs();
+
+      /* Init JCMT Miscellaneous */
+      //spItem = new orac.jcmt.obsComp.SpSiteQualityObsComp();
 
       startOM();
    }
