@@ -318,7 +318,7 @@ public class Querytool implements Runnable, Observer {
 		{
 		    item = doc.createElement("semester");
 		}
-
+	    /*
 	    if ( next.equalsIgnoreCase("observation") )
 		// Specail case - build in some logic
 		{
@@ -361,6 +361,7 @@ public class Querytool implements Runnable, Observer {
 		    }
 		    continue;
 		}
+	    */
 	    tmpStr = (String)n.nextElement();
 	    item.appendChild(doc.createTextNode(tmpStr.trim()));
 	    root.appendChild( item );
