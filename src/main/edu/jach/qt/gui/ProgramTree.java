@@ -311,7 +311,7 @@ final public class ProgramTree extends JPanel implements
 		    DeferredProgramList.markThisObservationAsDone(item);
 		}
 	
-		if ( model.isEmpty() && TelescopeDataPanel.DRAMA_ENABLED) {
+		if ( !isDeferred && model.isEmpty() && TelescopeDataPanel.DRAMA_ENABLED) {
 		    int mark = JOptionPane.showConfirmDialog(this, "Mark the MSB with \n"+
 							     "Project ID: "+projectID+"\n"+
 							     "CheckSum: "+checkSum+"\n"+
