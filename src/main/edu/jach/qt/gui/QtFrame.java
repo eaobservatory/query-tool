@@ -135,8 +135,8 @@ public class QtFrame extends JFrame implements ActionListener, MenuListener, Lis
 	    if (selRow != -1) {
 	      if (om == null) {
 
-		String projectid = (String) msbQTM.getValueAt(selRow, MSBQueryTableModel.PROJECTID);
-		String checksum = (String) msbQTM.getValueAt(selRow, MSBQueryTableModel.CHECKSUM);
+		String projectid = (String) sorter.getValueAt(selRow, MSBQueryTableModel.PROJECTID);
+		String checksum = (String) sorter.getValueAt(selRow, MSBQueryTableModel.CHECKSUM);
 
 		System.out.println("Vals are: "+projectid+", "+checksum);
 		
@@ -149,8 +149,8 @@ public class QtFrame extends JFrame implements ActionListener, MenuListener, Lis
 	      
 	      final SwingWorker worker = new SwingWorker() {
 		  Boolean isStatusOK;
-		  String tempMsbID = (String)sorter.getValueAt(selRow, MSBQueryTableModel.MSBID);
- 		  Integer msbID = new Integer(tempMsbID);
+		  Integer msbID = (Integer)sorter.getValueAt(selRow, MSBQueryTableModel.MSBID);
+ 		  //Integer msbID = new Integer(tempMsbID);
 
 		  public Object construct() {
 
