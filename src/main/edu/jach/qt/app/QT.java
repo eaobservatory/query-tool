@@ -44,9 +44,9 @@ final public class QT {
     * frame is also set be centered on the screen.
     */
    public QT () {
-       if (System.getProperty("QT_LOG_DIR").equals(""))
+       if (System.getProperty("QT_LOG_DIR") == null || System.getProperty("QT_LOG_DIR").equals(""))
        {
-	   PropertyConfigurator.configure("/home/dewitt/omp/QT/config/nolog4j.properties");
+	   PropertyConfigurator.configure("/jac_sw/omp/QT/config/nolog4j.properties");
        }
        else
        {
@@ -75,7 +75,14 @@ final public class QT {
       //qtf.setSize(new Dimension(1150, 600));
       qtf.setTitle("OMP Query Tool Observation Manager");
 
-      Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+      Dimension screenSize;
+      try {
+	  Toolkit tk = Toolkit.getDefaultToolkit();
+	  screenSize = tk.getScreenSize();
+      }
+      catch (AWTError awe) {
+	  screenSize = new Dimension (640, 480);
+      }
       Dimension frameSize = qtf.getSize();
 
       /* Fill screen if the screen is smaller that qtfSize. */
@@ -107,6 +114,9 @@ final public class QT {
 
 /*
  * $Log$
+ * Revision 1.16  2002/07/26 01:08:36  dewitt
+ * Added some additional error handling
+ *
  * Revision 1.15  2002/06/13 00:47:14  dewitt
  * Modified logging so that if a user can not write to the default log dir, it
  * only does console logging.
