@@ -313,7 +313,7 @@ final public class ProgramTree extends JPanel implements
 	
 		if ( model.isEmpty() && TelescopeDataPanel.DRAMA_ENABLED) {
 		    MsbClient.doneMSB(projectID, checkSum);
-		    JOptionPane.showMessageDialog(null, "The MSB with \n"+
+		    JOptionPane.showMessageDialog(this, "The MSB with \n"+
 						  "Project ID: "+projectID+"\n"+
 						  "CheckSum: "+checkSum+"\n"+
 						  "has been marked as done!");
