@@ -1,26 +1,26 @@
 package edu.jach.qt.gui;
 
-import edu.jach.qt.utils.*;
 
+
+
+
+
+
+import edu.jach.qt.utils.*;
 import gemini.sp.*;
 import gemini.sp.obsComp.*;
-
+import java.io.*;
+import java.util.*;
+import javax.swing.*;
+import ocs.utils.*;
+import om.console.*;
+import om.util.*;
 import orac.jcmt.inst.*;
 import orac.jcmt.iter.*;
 import orac.jcmt.obsComp.*;
 import orac.ukirt.inst.*;
 import orac.ukirt.iter.*;
 import orac.util.*;
-
-import om.console.*;
-import om.util.*;
-
-import java.util.*;
-import java.io.*;
-import javax.swing.*;
-
-import ocs.utils.*;
-
 import org.apache.log4j.Logger;
 
 
@@ -124,7 +124,7 @@ public class ExecuteUKIRT extends Execute implements Runnable {
 	      //Run script that calls 'oosLoad OOS_<itemToExecute.getTitle()> <tname>'
 	    //}
 	    String myInst = inst.type().getReadable();
-	    String[] cmd = {"/jac_sw/omp/QT/bin/oosTest",myInst};
+	    String[] cmd = {"/jac_sw/omp/QT/bin/oosTest","OOS_"+myInst};
 	    
 	    int status = -1;
 	    try {
@@ -190,12 +190,8 @@ public class ExecuteUKIRT extends Execute implements Runnable {
 
 	if ( System.getProperty("os.name").equals("SunOS") && TelescopeDataPanel.DRAMA_ENABLED) {
 	  QtTools.loadDramaTasks(inst.type().getReadable());
-	    //DcHub.getHandle().register("OOS_LIST");
 	}
 	
-	//DcHub.getHandle().register("OOS_LIST");
-	
-	//scm.showSequenceFrame();
 	failure.delete();
     }
 }
