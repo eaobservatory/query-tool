@@ -601,10 +601,10 @@ final public class ProgramTree extends JPanel implements
 
 		    public void mousePressed(MouseEvent e) {
 			DeferredProgramList.clearSelection();
-			obsList.setEnabled(false);
+			enableList(false);
 		    }
 		    public void mouseReleased(MouseEvent e) {
-			obsList.setEnabled(true);
+			enableList(true);
 		    }
 		};
 	    obsList.addMouseListener(ml);
@@ -1112,7 +1112,7 @@ final public class ProgramTree extends JPanel implements
 	    return;
 	}
 	Object selected = obsList.getSelectedValue();
-	obsList.setEnabled(false);
+	enableList(false);
 	DeferredProgramList.clearSelection();
 	selectedItem = (SpItem)selected;
 	if ( selected != null ){
@@ -1189,7 +1189,7 @@ final public class ProgramTree extends JPanel implements
 		}
 	    }
 	}
-	obsList.setEnabled(true);
+	enableList(true);
     }
 
     private boolean showMSBDoneDialog() {
@@ -1226,6 +1226,7 @@ final public class ProgramTree extends JPanel implements
 	    done = true;
 	    anObservationHasBeenDone = false;
 	    InfoPanel.searchButton.doClick();
+	    ((DefaultListModel)obsList.getModel()).clear();
 	}
 	else if (rejectFile.exists()) {
 	    rejectFile.delete();
@@ -1234,6 +1235,12 @@ final public class ProgramTree extends JPanel implements
 	    InfoPanel.searchButton.doClick();
 	}
 	return done;
+    }
+
+
+    public void enableList(boolean flag) {
+	obsList.setEnabled(flag);
+	repaint();
     }
 
     public JButton getRunButton () {return run;}

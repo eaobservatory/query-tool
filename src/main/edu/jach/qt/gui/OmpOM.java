@@ -391,6 +391,10 @@ public class OmpOM extends JPanel{
 	deferredList.reload();
     }
 
+    public void enableList(boolean flag) {
+	ptree.enableList(flag);
+    }
+
 
   public static void main(String[] args) {
     QtTools.loadConfig(System.getProperty("qtConfig"));
