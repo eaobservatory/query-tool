@@ -74,6 +74,7 @@ final public class ProgramTree extends JPanel implements
   private SpItem			_spItem;
   private DefaultMutableTreeNode	root;
   private DefaultTreeModel		treeModel;
+  private TreeViewer                    tv=null;
   private TreePath			path;
   private String			projectID, checkSum;
 //   private SequenceManager		scm;
@@ -250,7 +251,23 @@ final public class ProgramTree extends JPanel implements
 	doExecute();
     }
     else if (source == xpand) {
-	TreeViewer tv = new TreeViewer((SpItem)obsList.getSelectedValue());
+	SpItem itemToXpand;
+	if (selectedItem == null && DeferredProgramList.currentItem == null) {
+	    return;
+	}
+	else if (selectedItem == null) {
+	    itemToXpand = DeferredProgramList.currentItem;
+	}
+	else {
+	    itemToXpand = selectedItem;
+	}
+
+	if (tv == null) {
+	    tv = new TreeViewer(itemToXpand);
+	}
+	else {
+	    tv.update(itemToXpand);
+	}
     }
 
     if (source instanceof JMenuItem) {
