@@ -6,6 +6,10 @@ import java.awt.*;
 import java.util.*;
 import javax.swing.*;
 import javax.swing.border.*;
+import javax.swing.text.Style;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyleContext;
+import javax.swing.text.Document;
 
 import gemini.sp.*;
 
@@ -18,7 +22,7 @@ import gemini.sp.*;
 final public class NotePanel extends JPanel {
 
     private GridBagConstraints		gbc;
-    private static JTextArea textPanel;
+    private static JTextPane            textPanel;
 
     /**
      * Constructs a scrollable non-editable text panel.
@@ -34,10 +38,8 @@ final public class NotePanel extends JPanel {
 	setLayout(gbl);
 	gbc = new GridBagConstraints();
 	
-	textPanel = new JTextArea();
+	textPanel = new JTextPane();
 	textPanel.setEditable(false);
-	textPanel.setLineWrap(true);
-	textPanel.setWrapStyleWord(true);
 
 	JScrollPane scrollPane = new JScrollPane(textPanel);
 	scrollPane.setVerticalScrollBarPolicy (JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
@@ -81,21 +83,52 @@ final public class NotePanel extends JPanel {
 	    return;
 	}
 
-	StringBuffer notes = new StringBuffer();
+// 	StringBuffer notes = new StringBuffer();
+	ArrayList notes  = new ArrayList();
+	ArrayList styles = new ArrayList();
 
 	Vector noteVector = SpTreeMan.findAllItems(sp, "gemini.sp.SpNote");
 	Enumeration e = noteVector.elements();
 	while (e.hasMoreElements()) {
 	    SpNote thisNote = (SpNote)e.nextElement();
 	    if ( thisNote.isObserveInstruction() ) {
-		notes.append( thisNote.getNote() );
-		notes.append( "\n-------------------\n");
+		String [] instructions = thisNote.getInstructions();
+		if ( instructions != null ) {
+		    for (int i=0; i<instructions.length; i++) {
+			notes.add(instructions[i]+"\n");
+			styles.add("bold");
+		    }
+		}
+		notes.add( "\n"+thisNote.getNote()+"\n" );
+		styles.add("regular");
 	    }
 	}
-	textPanel.setText(notes.toString());
-	textPanel.setCaretPosition(0);
+	initStyles();
+	
+	Document doc = textPanel.getDocument();
+	try {
+	    for ( int i=0; i<notes.size(); i++ ) {
+		doc.insertString(doc.getLength(),
+				 (String)notes.get(i),
+				 textPanel.getStyle((String)styles.get(i)));
+	    }
+	}
+	catch (Exception ex) {
+	    System.out.println("Could not insert observer notes");
+	}
+	
     }
 
+    private static void initStyles() {
+	Style def = StyleContext.getDefaultStyleContext().
+	    getStyle(StyleContext.DEFAULT_STYLE);
+
+        Style regular = textPanel.addStyle("regular", def);
+        StyleConstants.setFontFamily(def, "SansSerif");
+
+        Style s = textPanel.addStyle("bold", regular);
+        StyleConstants.setBold(s, true);
+    }
 
 
 }
