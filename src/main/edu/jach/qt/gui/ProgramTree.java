@@ -274,7 +274,11 @@ final public class ProgramTree extends JPanel implements
 		}
 		run.setEnabled(true);
 	    }
-	    catch (Exception e) {logger.error("Failed to execute");}
+	    catch (Exception e) {
+		logger.error("Failed to execute");
+		run.setEnabled(true);
+		return;
+	    }
 	}
 	else if (System.getProperty("telescope").equalsIgnoreCase("jcmt")) {
 	    ExecuteJCMT execute;
@@ -294,7 +298,11 @@ final public class ProgramTree extends JPanel implements
 		}
 		run.setEnabled(true);
 	    }
-	    catch (Exception e) {logger.error("Failed to execute");}
+	    catch (Exception e) {
+		logger.error("Failed to execute");
+		run.setEnabled(true);
+		return;
+	    }
 	}
 	if (!isDeferred && !failed) {
 	    model.remove(obsList.getSelectedIndex());
