@@ -54,7 +54,7 @@ SOURCES = \
 	ExecuteUKIRT.java \
 	ExecuteJCMT.java \
 	ColumnSelector.java \
-	ProjectTableSelectionModel.java
+	ProjectTableSelectionModel.java \
 	TreeViewer.java
 
 include $(BUILD)/make.tail
