@@ -47,7 +47,8 @@ SOURCES = \
 	AVPair.java \
 	AttributeOrigin.java \
 	AttributeEditor.java \
-	AttributeTableModel.java
+	AttributeTableModel.java \
+	HelpPage.java
 
 include $(BUILD)/make.tail
 
