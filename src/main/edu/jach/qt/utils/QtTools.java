@@ -161,7 +161,14 @@ public class QtTools {
 	     String inst = SpTreeMan.findInstrument(currentObs).type().getReadable();
 	     double time = currentObs.getElapsedTime();
 	     fw.write("  <Entry totalDuration=\"" + time + "\"  instrument=\"" + inst +"\">\n");
-	     fw.write("    " + System.getProperty("EXEC_PATH") + "/" + translate((SpItem)currentObs, inst) + "\n");
+             // if we are using the old translator, we need to add the exec path, otherwise we don't
+             String tName = translate((SpItem)currentObs, inst);
+             if ( tName != null && tName.indexOf(System.getProperty("EXEC_PATH")) == -1 ) {
+                 fw.write("    " + System.getProperty("EXEC_PATH") + "/" + tName + "\n");
+             }
+             else {
+                 fw.write("    " + tName + "\n");
+             }
 	     fw.write("  </Entry>\n");
           }
           // Close off the entry
