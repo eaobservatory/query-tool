@@ -1,13 +1,13 @@
 package edu.jach.qt.gui;
 
 import java.awt.*;
-import java.awt.Toolkit;
 import java.awt.event.*;
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.*;
 import java.lang.Boolean;
 import java.net.URL;
 import java.util.Vector;
+import java.util.StringTokenizer;
+
 import javax.swing.*;
 import javax.swing.ImageIcon;
 import javax.swing.border.*;
@@ -30,23 +30,26 @@ import ocs.utils.DcHub;
 public class InfoPanel extends JPanel
   implements ActionListener {
 
-  private static final String LOGO_IMAGE = System.getProperty("qtLogo");
+  public static final String LOGO_IMAGE = System.getProperty("qtLogo");
+  public static final String SAT_WEBPAGE = System.getProperty("satellitePage");
+  public static final String IMG_PREFIX = System.getProperty("imagePrefix");
+
+  public static JButton searchButton   = new JButton();
+  public static LogoPanel logoPanel    = new LogoPanel();
 
   private MSBQueryTableModel msb_qtm;
-  private TimePanel timePanel ;
+  private TimePanel timePanel;
+  private SatPanel satPanel;
   private Querytool localQuerytool;
   private Led blinker;
   private TelescopeDataPanel telescopeInfoPanel;
 
   JLabel hstLabel		= new JLabel("HST");
 
-  public static JButton searchButton		= new JButton();
-
   JButton xmlPrintButton	= new JButton();
   JButton exitButton		= new JButton();
   JButton fetchMSB		= new JButton();
   QtFrame qtf;
-  JLabel logoImage;
 
   /**
    * Creates a new <code>InfoPanel</code> instance.
@@ -58,34 +61,17 @@ public class InfoPanel extends JPanel
     msb_qtm = msbQTM;
     localQuerytool = qt;
     this.qtf=qtf;
-    //setSize(new Dimension(300, 550));
-    setMinimumSize(new Dimension(175, 550));
+    setMinimumSize(new Dimension(174, 550));
     setPreferredSize(new Dimension(288, 550));
 
-    logoImage = new JLabel();
     setBackground(Color.black);
     MatteBorder matte = new MatteBorder(3,3,3,3,Color.green);
     setBorder(matte);
     GridBagLayout gbl = new GridBagLayout();
     setLayout(gbl);
 
-    try {
-      setImage();
-    } catch(Exception fnfe) {
-      System.out.println("ERROR: "+fnfe.getMessage());
-    }
     compInit();
 
-  }
-
-  public void setImage() throws Exception {
-    URL url = new URL("file://"+LOGO_IMAGE);
-    if(url != null) {
-      logoImage.setIcon(new ImageIcon(url));
-    }
-    else {
-      logoImage.setIcon(new ImageIcon(InfoPanel.class.getResource("file://"+LOGO_IMAGE)));
-    }
   }
 
   /**
@@ -95,11 +81,12 @@ public class InfoPanel extends JPanel
   public void compInit() {
     GridBagConstraints gbc = new GridBagConstraints();
     timePanel = new TimePanel();
+    satPanel = new SatPanel();
 
     telescopeInfoPanel = new TelescopeDataPanel();
     telescopeInfoPanel.config();
 
-    blinker = new Led();
+    //blinker = new Led();
 
     InfoPanel.searchButton.setText("Search");
     InfoPanel.searchButton.setName("Search");
@@ -116,7 +103,8 @@ public class InfoPanel extends JPanel
 
 	      //Runs on the event-dispatching thread.
 	      public void finished() { 
-		blinker.blinkLed(false);
+		logoPanel.stop();
+		//blinker.blinkLed(false);
 		if ( isStatusOK.booleanValue()) {
 		  Thread tableFill = new Thread(msb_qtm);
 		  tableFill.start();
@@ -125,8 +113,9 @@ public class InfoPanel extends JPanel
 	      }
 	    };
 
-	  blinker.blinkLed(true);
+	  //blinker.blinkLed(true);
 	  //blinkThread.start();
+	  logoPanel.start();
 	  worker.start();  //required for SwingWorker 3
 	}
       } );
@@ -144,65 +133,72 @@ public class InfoPanel extends JPanel
     exitButton.addActionListener(this);
 
     gbc.fill = GridBagConstraints.BOTH;
-    gbc.anchor = GridBagConstraints.EAST;
-    gbc.insets.bottom = 5;
-    gbc.insets.left = 10;
-    gbc.insets.right = 5;
-    gbc.weightx = 100;
-    gbc.weighty = 100;
-    add(logoImage, gbc, 0, 0, 1, 1);
+    //gbc.anchor = GridBagConstraints.CENTER;
+    //gbc.insets.bottom = 0;
+    //gbc.insets.left = 10;
+    //gbc.insets.right = 5;
+    //gbc.weightx = 1.0;
+    gbc.weighty = 0.2;
+    add(logoPanel, gbc, 0, 0, 1, 1);
 
-    gbc.fill = GridBagConstraints.NONE;
-    gbc.anchor = GridBagConstraints.CENTER;
-    gbc.insets.bottom = 5;
-    gbc.insets.left = 5;
-    gbc.insets.right = 5;
-    gbc.weightx = 100;
-    gbc.weighty = 100;
-    add(blinker, gbc, 0, 1, 1, 1);
+    //      gbc.fill = GridBagConstraints.NONE;
+    //      gbc.anchor = GridBagConstraints.CENTER;
+    //      gbc.insets.bottom = 0;
+    //      gbc.insets.left = 5;
+    //      gbc.insets.right = 5;
+    //      gbc.weightx = 100;
+    //      gbc.weighty = 100;
+    //      add(blinker, gbc, 0, 1, 1, 1);
 
-    gbc.fill = GridBagConstraints.NONE;
+    gbc.fill = GridBagConstraints.BOTH;
     gbc.anchor = GridBagConstraints.CENTER;
-    gbc.insets.bottom = 5;
-    gbc.insets.left = 5;
-    gbc.insets.right = 5;
-    gbc.weightx = 100;
-    gbc.weighty = 100;
-    add(InfoPanel.searchButton, gbc, 0, 2, 1, 1);
+    //gbc.weighty = 1.0;
+    add(satPanel, gbc, 0, 2, 1, 1);
+
+    //gbc.fill = GridBagConstraints.BOTH;
+    //gbc.anchor = GridBagConstraints.CENTER;
+    //      gbc.insets.bottom = 0;
+    //      gbc.insets.left = 5;
+    //      gbc.insets.right = 5;
+    //gbc.weightx = 0.0;
+    gbc.weighty = 0.0;
+    add(InfoPanel.searchButton, gbc, 0, 5, 1, 1);
     
-    gbc.fill = GridBagConstraints.NONE;
-    gbc.anchor = GridBagConstraints.CENTER;
-    gbc.weightx = 100;
-    gbc.weighty = 100;
-    add(xmlPrintButton, gbc, 0, 3, 1, 1);
+    //gbc.fill = GridBagConstraints.NONE;
+    //gbc.anchor = GridBagConstraints.CENTER;
+    //gbc.weightx = 100;
+    //gbc.weighty = 100;
+    add(xmlPrintButton, gbc, 0, 10, 1, 1);
 
-    gbc.fill = GridBagConstraints.NONE;
-    gbc.anchor = GridBagConstraints.CENTER;
-    gbc.weightx = 100;
-    gbc.weighty = 100;
-    add(exitButton, gbc, 0, 4, 1, 1);
-
-    gbc.fill = GridBagConstraints.BOTH;
-    gbc.anchor = GridBagConstraints.CENTER;
-    gbc.weightx = 100;
-    gbc.weighty = 100;
-    add(telescopeInfoPanel, gbc, 0, 5, 1, 1);
+    //gbc.fill = GridBagConstraints.NONE;
+    //gbc.anchor = GridBagConstraints.CENTER;
+    //gbc.weightx = 100;
+    //gbc.weighty = 100;
+    add(exitButton, gbc, 0, 15, 1, 1);
 
     gbc.fill = GridBagConstraints.BOTH;
+    gbc.anchor = GridBagConstraints.CENTER;
     gbc.weightx = 100;
-    gbc.weighty = 0;
-    hstLabel.setForeground(Color.black);
-    hstLabel.setHorizontalAlignment(SwingConstants.CENTER);
-    gbc.insets.bottom = 0;
-    gbc.insets.top = 0;
-    add(hstLabel, gbc, 0, 6, 1, 1);
+    //gbc.ipady = 30; 
+    gbc.weighty = 0.6;
+    add(telescopeInfoPanel, gbc, 0, 20, 1, 1);
+
+    //      gbc.fill = GridBagConstraints.BOTH;
+    //      gbc.weightx = 100;
+    //      gbc.weighty = 0;
+    //      hstLabel.setForeground(Color.blue);
+    //      hstLabel.setHorizontalAlignment(SwingConstants.CENTER);
+    //      gbc.insets.bottom = 0;
+    //      gbc.insets.top = 0;
+    //      add(hstLabel, gbc, 0, 6, 1, 1);
 
     gbc.fill = GridBagConstraints.BOTH;
     gbc.weightx = 100;
     gbc.weighty = 0;
     gbc.insets.left = 0;
     gbc.insets.right = 0;
-    add(timePanel, gbc, 0, 7, 1, 1);
+    add(timePanel, gbc, 0, 25, 1, 1);
+
   }
 
   /**
@@ -250,21 +246,20 @@ public class InfoPanel extends JPanel
     Color color = getBackground();
     if (source == exitButton) {
 
-      try {
-	telescopeInfoPanel.getHub().closeDcHub();
-      } catch ( ObeyNotRegisteredException onr) {
-	
+      if (TelescopeDataPanel.DRAMA_ENABLED) {
+	try {
+	  telescopeInfoPanel.getHub().closeDcHub();
+	} catch ( ObeyNotRegisteredException onr) {
+	  
+	}
       }
-      
-      //System.exit(0);
+
       qtf.exitQT();
-      //System.gc();
     }
     else if (source == xmlPrintButton) {
       localQuerytool.printXML();
     }
   }
-
-
-
 }// InfoPanel
+
+
