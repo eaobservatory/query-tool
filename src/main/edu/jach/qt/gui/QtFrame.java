@@ -446,7 +446,7 @@ public class QtFrame extends JFrame implements PopupMenuListener, ActionListener
 
     JMenu viewMenu = new JMenu ("View...");
     mbar.add(viewMenu);
-    viewMenu.setEnabled(false);
+//     viewMenu.setEnabled(false);
     viewMenu.addMenuListener(this);
 
     mbar.add( makeMenu("Edit", new Object[] {
@@ -502,7 +502,8 @@ public class QtFrame extends JFrame implements PopupMenuListener, ActionListener
 	  }
       }
       else if (source.getText().equals("View...")) {
-	  ColumnSelector colSelector = new ColumnSelector(table, this);
+	  ColumnSelector colSelector = new ColumnSelector(msbQTM);
+	  ((JMenuItem)source).setSelected(false);
 	  return;
       }
   }
