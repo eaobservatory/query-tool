@@ -48,14 +48,14 @@ public class Led extends JPanel {
      * Create the red LED button
      */
   protected JButton createLed() {
-    ClassLoader cl = ClassLoader.getSystemClassLoader();
-    URL url = cl.getResource("green_led.gif");
+    //ClassLoader cl = ClassLoader.getSystemClassLoader();
+    URL url = ClassLoader.getSystemResource("green_led.gif");
     led = new JButton(new ImageIcon(url));
     led.setBackground(Color.black);
     led.setFocusPainted(false);
     led.setBorderPainted(false);
 
-    url = cl.getResource("green_led_disabled.gif");
+    url = ClassLoader.getSystemResource("green_led_disabled.gif");
     led.setDisabledIcon(new ImageIcon(url));
     led.addActionListener(stopAction);
 
