@@ -16,6 +16,7 @@ import java.util.*;
 import javax.swing.*;
 import javax.swing.table.*;
 import javax.swing.text.*;
+import org.apache.log4j.Logger;
 
 /**
  *
@@ -23,6 +24,8 @@ import javax.swing.text.*;
  */
 public class AttributeEditor extends JDialog 
   implements ActionListener {
+
+  static Logger logger = Logger.getLogger(AttributeEditor.class);
 
   /**
    * This constructor creates the table based attribute editor.
@@ -74,7 +77,7 @@ public class AttributeEditor extends JDialog
     try {
       instName = inst.type().getReadable();
     } catch (NullPointerException nex) {
-      System.out.println ("No instrument in scope!");
+      logger.warn ("No instrument in scope!", nex);
       instName = "None";
     }
     sequence = findSequence(obs);
@@ -179,6 +182,7 @@ public class AttributeEditor extends JDialog
   private void createComponents(String attributes, String iterators, double oldFactor) {
 
     System.out.println("Editing attributes.");
+    logger.info("Editing attributes.");
     configAttributes = getConfigNames(attributes);
     configIterators  = getConfigNames(iterators);
 
@@ -367,6 +371,7 @@ public class AttributeEditor extends JDialog
       }
       closeDialog();
       System.out.println("Editing cancelled");
+      logger.info("Editing cancelled");
     } 
     else if (source == OK) {
       if (makeChanges()) {
@@ -461,9 +466,11 @@ public class AttributeEditor extends JDialog
       if (model.isChangedAt(row)) {
 	if (!doneSome) {
 	  System.out.println ("Updating attributes");
+	  logger.info("Updating attributes");
 	  doneSome = true;
 	}
 	System.out.println(model.getValueAt(row, 0) + " = '" + model.getValueAt(row, 1) + "'");
+	logger.info(model.getValueAt(row, 0) + " = '" + model.getValueAt(row, 1) + "'");
 	pair.origin().setValue((String)model.getValueAt(row, 1));
       }
       row ++;
@@ -473,9 +480,11 @@ public class AttributeEditor extends JDialog
       if (model.isChangedAt(row)) {
 	if (!doneSome) {
 	  System.out.println ("Updating attributes");
+	  logger.info("Updating attributes");
 	  doneSome = true;
 	}
 	System.out.println(model.getValueAt(row, 0) + " = '" + model.getValueAt(row, 1) + "'");
+	logger.info(model.getValueAt(row, 0) + " = '" + model.getValueAt(row, 1) + "'");
 	triplet.origin().setValue((String)model.getValueAt(row, 1));
       }
       row ++;
@@ -483,6 +492,7 @@ public class AttributeEditor extends JDialog
     
     if (!doneSome) {
       System.out.println ("No changes made");
+      logger.info("No changes made");
     }
 
     return true;
@@ -550,8 +560,10 @@ public class AttributeEditor extends JDialog
    * @author David Clarke
    */
   private void getIterAttValues (SpItem root) {
-    System.out.println("Attributes = " + configAttributes);
-    System.out.println("Iterators  = " + configIterators);
+//     System.out.println("Attributes = " + configAttributes);
+//     System.out.println("Iterators  = " + configIterators);
+    logger.info("Attributes = " + configAttributes);
+    logger.info("Iterators  = " + configIterators);
     getIterAttValues(root, "", "");
   }
 

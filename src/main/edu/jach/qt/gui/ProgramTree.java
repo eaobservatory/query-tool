@@ -121,7 +121,9 @@ final public class ProgramTree extends JPanel implements
     dropTarget=new DropTarget();
     try{
 	dropTarget.addDropTargetListener(this);
-    }catch(TooManyListenersException tmle){System.out.println("Too many listeners");}
+    }catch(TooManyListenersException tmle){
+	logger.error("Too many drop target listeners", tmle);
+    }
 
     trash = new TrashCan();
     trash.setDropTarget(dropTarget);
@@ -836,7 +838,7 @@ final public class ProgramTree extends JPanel implements
 	    // as the name suggests, starts the dragging
 	    dragSource.startDrag (event, DragSource.DefaultMoveNoDrop, text, this);
 	} else {
-	    System.out.println( "nothing was selected");   
+	    logger.warn( "nothing was selected to drag");   
 	}
     }
 

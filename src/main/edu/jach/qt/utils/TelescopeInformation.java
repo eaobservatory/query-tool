@@ -6,10 +6,13 @@ import javax.xml.parsers.*;
 import org.xml.sax.*;
 import org.apache.xerces.parsers.*;
 import org.apache.xml.serialize.*;
+import org.apache.log4j.Logger;
 import org.w3c.dom.*;
 
 public class TelescopeInformation {
     private Hashtable data = new Hashtable();
+
+    static Logger logger = Logger.getLogger(TelescopeInformation.class);
 
     public TelescopeInformation (String name) {
 	Document doc = null;
@@ -24,7 +27,7 @@ public class TelescopeInformation {
 	// Now try to build a document from this file
 	File dataFile = new File(configFile);
 	if ( !dataFile.exists() || !dataFile.canRead() ) {
-	    System.out.println("Telescope data file does not exist");
+	    logger.error("Telescope data file does not exist:" + configFile);
 	}
 
 	try {
@@ -40,16 +43,16 @@ public class TelescopeInformation {
 	    doc = parser.getDocument();
 	} 
 	catch (SAXNotRecognizedException snre) {
-	    System.out.println("Unable to ignore white-space text.");
+	    logger.error("Unable to ignore white-space text.", snre);
 	}
 	catch (SAXNotSupportedException snse) {
-	    System.out.println("Unable to ignore white-space text.");
+	    logger.error("Unable to ignore white-space text.", snse);
 	}
 	catch (SAXException sex) {
-	    System.out.println("SAX Exception on parse.");
+	    logger.error("SAX Exception on parse.", sex);
 	}
 	catch (IOException ioe) {
-	    System.out.println("IO Exception on parse.");
+	    logger.error("IO Exception on parse.", ioe);
 	}
 
 	// Now we have the document - start playing...
@@ -69,10 +72,12 @@ public class TelescopeInformation {
 	}
     }
 
+    // Find out whether the specified key exists in the data
     public boolean hasKey(Object key) {
 	return data.containsKey(((String)key).toLowerCase());
     }
 
+    // get the value associated with a specific key
     public Object getValue(Object key) {
 	boolean returnInt = false;
 	boolean returnDbl = false;
@@ -87,17 +92,23 @@ public class TelescopeInformation {
 	    char [] datum = value.toCharArray();
 	    for (int i=0; i<datum.length; i++) {
 		if (Character.isLetter(datum[i])) {
+		    // If any of the character is a letter, treat the return as a String
 		    returnStr = true;
 		    returnInt = false;
 		    returnDbl = false;
 		    break;
 		}
 		else if (datum[i] == '.') {
+		    // If we find a decimal point assume this is a double, but keep
+		    // checking in case a letter follows
 		    returnStr = false;
 		    returnInt = false;
 		    returnDbl = true;
 		}
 		else if (Character.isDigit(datum[i]) && returnDbl == false) {
+		    // If the charaacter is a number and we have not already
+		    // assumed that the value is a double, assume it is an Integer
+		    // but keep checking in case we have a string
 		    returnStr = false;
 		    returnInt = true;
 		    returnDbl = false;
@@ -105,6 +116,7 @@ public class TelescopeInformation {
 	    }
 	}
 
+	// Return the appropriate type of Object
 	if (returnStr) {
 	    return value;
 	}

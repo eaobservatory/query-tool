@@ -11,6 +11,8 @@ import java.util.*;
 import java.io.*;
 import java.text.*;
 
+import org.apache.log4j.Logger;
+
 /* Gemini imports */
 import gemini.sp.*;
 import gemini.sp.obsComp.*;
@@ -49,6 +51,9 @@ final public class DeferredProgramList extends JPanel implements
     public  static SpItem               currentItem;
     private static HashMap              fileToObjectMap = new HashMap();
 
+    static Logger logger = Logger.getLogger(DeferredProgramList.class);
+
+
     public DeferredProgramList()
     {
 	Border border=BorderFactory.createMatteBorder(2, 2, 2, 2, Color.white);
@@ -73,7 +78,7 @@ final public class DeferredProgramList extends JPanel implements
 	}
 	catch(TooManyListenersException tmle)
 	{
-	    System.out.println("Too many listeners");
+	    logger.error("Too many drop target listeners", tmle);
 	}
 	dragSource = new DragSource();
 
@@ -111,9 +116,15 @@ final public class DeferredProgramList extends JPanel implements
 			addElement(currentItem);
 		    }
 		}
-		catch (FileNotFoundException fnf) {System.out.println("File not found!");}
-		catch (IOException ioe) {System.out.println("File read error!");}
-		catch (Exception x) {System.out.println("Can not convert file!");}
+		catch (FileNotFoundException fnf) {
+		    logger.error("File not found!", fnf);
+		}
+		catch (IOException ioe) {
+		    logger.error("File read error!", ioe);
+		}
+		catch (Exception x) {
+		    logger.error("Can not convert file!", x);
+		}
 	    }
 	}
 	return;
@@ -289,7 +300,9 @@ final public class DeferredProgramList extends JPanel implements
 	    fw.flush();
 	    fw.close();
 	}
-	catch (IOException ioe) {System.out.println("Error writing file " + fName);}
+	catch (IOException ioe) {
+	    logger.error("Error writing file " + fName, ioe);
+	}
 	fileToObjectMap.put(item, fName);
     }
 
@@ -355,6 +368,7 @@ final public class DeferredProgramList extends JPanel implements
 	File deferredDir = new File (deferredDirName);
 	if (! deferredDir.exists() ) {
 	    // Try to create the directory
+	    logger.info ("Creating deferred directory " + deferredDirName);
 	    deferredDir.mkdir();
 	    return deferredFiles;
 	}
