@@ -182,6 +182,16 @@ public class TelescopeDataPanel extends JPanel implements ActionListener {
     TelescopeDataPanel.airmassValue.setText(""+output);
   }
 
+    public static void setTauTooltip(String tip) {
+	if (tip == null || tip.equals("")) {
+	    TelescopeDataPanel.csoTauValue.setToolTipText("Source = unknown");
+	}
+	else {
+	    TelescopeDataPanel.csoTauValue.setToolTipText("Source = "+tip);
+	}
+	    
+    }
+
     /**
      * Builds the components of the interface.
      * Adds buttons, labels and other panels.
