@@ -30,20 +30,25 @@ public class MSBQueryTableModel extends AbstractTableModel {
 
    public static final String MSB_SUMMARY = System.getProperty("msbSummary");
 
-   public static final String[] colNames ={
+   /*public static final String[] colNames ={
       "ProjectID",
       "SourceName",
       "Instrument",
       "Wavelength",
       "ExposureTime",
       "PI"
-   };
+      };*/
+   
+   public static final String[] colNames ={
+      "projectid",
+      "checksum",
+      "remaining",
+      "filename"
+      };
    
    public static final Class[] colClasses ={
       String.class,
       String.class,
-      String.class,
-      Integer.class,
       Integer.class,
       String.class,
    };

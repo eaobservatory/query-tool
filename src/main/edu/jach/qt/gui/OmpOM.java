@@ -39,7 +39,7 @@ public class OmpOM extends JFrame{
       OtFileIO.setXML(System.getProperty("OMP") != null);
 
       //Load OM specific configs
-      QtTools.loadConfig(new String("/home/mrippa/netroot/install/omp/QT/config/om.cfg"));
+      QtTools.loadConfig(new String(System.getProperty("omCfg")));
 
       // Need to construct UKIRT-specific items so that their SpTypes are
       // statically initialised.  Otherwise the sp classes won't know about 
@@ -69,7 +69,7 @@ public class OmpOM extends JFrame{
    }
 
    private void startOM() {
-      File file = new File("/home/mrippa/netroot/install/omp/QT/config/msb.xml");
+      File file = new File(System.getProperty("msbFile"));
       String dir = file.getParent();
       String name = file.getName();
       SpRootItem spItem = OtFileIO.fetchSp(dir, name);

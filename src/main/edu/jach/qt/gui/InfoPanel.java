@@ -27,7 +27,7 @@ public class InfoPanel extends JPanel
    //reconsider icons dir 'An absolute path!'
    private static final String LOGO_IMAGE
       //= "/home/mrippa/ompLogos/ompNewlogo2.png";
-      = "/home/mrippa/netroot/install/omp/QT/icons/QtLogo.png";
+      = System.getProperty("qtLogo");
 
    private MSBQueryTableModel msb_qtm;
    private TimePanel timePanel ;
