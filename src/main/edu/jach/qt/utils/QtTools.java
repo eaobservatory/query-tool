@@ -5,7 +5,7 @@ import gemini.sp.SpItem;
 import gemini.sp.SpObs;
 import java.io.*;
 import java.util.Properties;
-import om.util.ExecDtask;
+import om.dramaSocket.ExecDtask;
 import orac.ukirt.util.SpTranslator;
 import org.apache.log4j.Logger;
 
