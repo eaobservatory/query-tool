@@ -7,7 +7,7 @@ import gemini.sp.*;
 import java.awt.*;
 import java.util.StringTokenizer;
 import javax.swing.*;
-
+import org.apache.log4j.Logger;
 
 
 /**
@@ -24,6 +24,7 @@ import javax.swing.*;
 public class ObsListCellRenderer extends DefaultListCellRenderer {
   final static ImageIcon obsIcon = new ImageIcon(System.getProperty("IMAG_PATH")+"observation.gif");
    
+  static Logger logger = Logger.getLogger(ObsListCellRenderer.class);
   // This is the only method defined by ListCellRenderer.
   // We just reconfigure the JLabel each time we're called.
   
@@ -33,6 +34,15 @@ public class ObsListCellRenderer extends DefaultListCellRenderer {
 						boolean isSelected,      // is the cell selected
 						boolean cellHasFocus)    // the list and the cell have the focus
   {
+      if ( value == null ) {
+          logger.error("ObsListCellRenderer got a null value - this should not happen");
+          return this;
+      }
+
+      if ( !(value instanceof SpObs) ) {
+          logger.error("ObsListCellRenderer got a value of type " + value.getClass().getName() + "- this should not happen");
+          return this;
+      }
     String s = ((SpObs)value).getTitle();
     // See if this observation is from the program list and has been done
     // This is indicated by a * at the end of the title attribute
