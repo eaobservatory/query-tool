@@ -1,3 +1,0 @@
-#!/bin/csh
-master&
-ditsloadcmd /jac_sw/itsroot/install/oracda_1p0/bin/solaris/oos_list.pl
