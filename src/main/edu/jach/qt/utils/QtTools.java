@@ -131,8 +131,14 @@ public class QtTools {
     String fileProperty = new String(inst+"ExecFilename");
 
     try {
-
-      FileWriter fw = new FileWriter("/tmp/transFile");
+      String tel = null;
+      if ( System.getProperties().get("telescope") . equals("Ukirt")) {
+	tel = "/ukirtdata";
+      } else {
+	tel = "/jcmtdata";
+      } 
+      
+      FileWriter fw = new FileWriter(tel+"/epics_data/smLogs/transFile");
 
       tname=spt.translate();
       logger.debug("Translated file set to: "+System.getProperty("EXEC_PATH")+"/"+tname);
@@ -161,20 +167,22 @@ public class QtTools {
    */
   public static void loadDramaTasks(String name) {
     //starting the drama tasks
-    String[] script = new String[5];
+    String[] script = new String[6];
       
     script[0] = System.getProperty("LOAD_DHSC");
     script[1] = new String(name);
     script[2] = "-"+System.getProperty("QUICKLOOK", "noql");
     script[3] = "-"+System.getProperty("SIMULATE","simTel");
     script[4] = "-"+System.getProperty("ENGINEERING","eng");
+    script[5] = "-omp";
 
     logger.info("About to start script "+
 		 script[0]
 		 +			" "+script[1] 
 		 +			" "+script[2] 
 		 +			" "+script[3] 
-		 +                       " "+script[4]
+		 +                   " "+script[4]
+		 +                   " "+script[5]
 		 );
     
     int status = QtTools.execute(script);
