@@ -25,7 +25,7 @@ import ocs.utils.*;
  * @author <a href="mailto:mrippa@jach.hawaii.edu">Mathew Rippa</a>
  * $Id$
  */
-public class QtFrame extends JFrame implements MenuListener, ListSelectionListener{
+public class QtFrame extends JFrame implements ActionListener, MenuListener, ListSelectionListener{
 
   private static final String 
     WIDGET_CONFIG_FILE = System.getProperty("widgetFile");
@@ -37,7 +37,9 @@ public class QtFrame extends JFrame implements MenuListener, ListSelectionListen
   private int			selRow;
   private JMenuItem		saveItem;
   private JMenuItem		saveAsItem;
-  private JCheckBoxMenuItem	readonlyItem;
+  private JCheckBoxMenuItem	observability;
+  private JCheckBoxMenuItem	remaining;
+  private JCheckBoxMenuItem	allocation;
   private JSplitPane		splitPane;
   private GridBagConstraints	gbc;
   private JTabbedPane		tabbedPane;
@@ -291,8 +293,11 @@ public class QtFrame extends JFrame implements MenuListener, ListSelectionListen
       
     JMenu fileMenu = new JMenu("File");
     fileMenu.addMenuListener(this);
+
+    //JMenu constraints = 
       
-    JMenuItem openItem = new JMenuItem("Open");
+
+   JMenuItem openItem = new JMenuItem("Open");
     saveItem = new JMenuItem("Save");
     saveAsItem = new JMenuItem("Save As");
       
@@ -301,15 +306,22 @@ public class QtFrame extends JFrame implements MenuListener, ListSelectionListen
       null, "Exit" }, this)
 	     );
       
-    readonlyItem = new JCheckBoxMenuItem("Read-only");
-    mbar.add(makeMenu("Edit", new Object[] {
+    observability = new JCheckBoxMenuItem("Observability",true);
+    remaining     = new JCheckBoxMenuItem("Remaining",true);
+    allocation    = new JCheckBoxMenuItem("Allocation",true);
+
+    mbar.add( makeMenu("Edit", new Object[] {
       new JMenuItem("Cut", new ImageIcon("icons/cut.gif")),
       new JMenuItem("Copy", new ImageIcon("icons/copy.gif")),
       new JMenuItem("Paste", new ImageIcon("icons/paste.gif")),
-      null,
-      makeMenu("Options", new Object[] {  readonlyItem, null }, this)
+      null, makeMenu("Constraints", new Object[] { 
+	observability,
+	remaining,
+	allocation,
+	null 
+      }, this) 
     }, this));
-
+    
     JMenu helpMenu = new JMenu("Help");
     helpMenu.setMnemonic('H');
 
@@ -327,8 +339,8 @@ public class QtFrame extends JFrame implements MenuListener, ListSelectionListen
    * @param evt a <code>MenuEvent</code> value
    */
   public void menuSelected(MenuEvent evt) {  
-    saveItem.setEnabled(!readonlyItem.isSelected());
-    saveAsItem.setEnabled(!readonlyItem.isSelected());
+    //saveItem.setEnabled(!readonlyItem.isSelected());
+    //saveAsItem.setEnabled(!readonlyItem.isSelected());
   }
 
   /**
@@ -349,6 +361,14 @@ public class QtFrame extends JFrame implements MenuListener, ListSelectionListen
    */
   public void menuCanceled(MenuEvent evt) {
 
+  }
+
+  public void actionPerformed(ActionEvent evt) {
+
+    localQuerytool.setAllocationConstraint(!allocation.isSelected());
+    localQuerytool.setRemainingConstraint(!remaining.isSelected());
+    localQuerytool.setObservabilityConstraint(!observability.isSelected());
+    
   }
 
   /**
