@@ -42,6 +42,7 @@ public class TelescopeDataPanel extends JPanel implements ActionListener {
   private JButton updateButton;
   private InfoPanel infoPanel;
   private DcHub hub;
+  private HubImplementor csomonHI, closeHI; 
   private static String lastCSOValue = "";
   private static boolean acceptUpdates = true;
 
@@ -87,14 +88,16 @@ public class TelescopeDataPanel extends JPanel implements ActionListener {
     if (TelescopeDataPanel.DRAMA_ENABLED) {
       hub = DcHub.getHandle();
 
-      HubImplementor hi = new HubImplementor("CSOMON");
-      hi.setCallBack("edu.jach.qt.djava.CSOPathResponseHandler");
-      hi.setBuffers(900, 5, 1800, 12);
+      // CSOMON
+      csomonHI = new HubImplementor("CSOMON");
+      csomonHI.setCallBack("edu.jach.qt.djava.CSOPathResponseHandler");
+      csomonHI.setBuffers(900, 5, 1800, 12);
 
-      hub.register(hi);
+      //Closing
+      closeHI = new HubImplementor("CloseDcHub");
 
-      //hub.register("CSOMON");
-      //hub.register("TELMON");
+      hub.register(csomonHI);
+
     }
     else if (locked) {
       Object[] options = { "CONTINUE", "CANCEL" };
@@ -226,9 +229,26 @@ public class TelescopeDataPanel extends JPanel implements ActionListener {
      * Returns the current DRAMA hub.
      * @return  The current DRAMA hub created by the constructor.
      */
-  public DcHub getHub() {
-    return hub;
+  public void closeHub() {
+
+    try {
+      Thread hubThread = hub.getThread();
+
+      hub.closeDcHub(closeHI);
+      hubThread.join();
+    } 
+    catch ( ObeyNotRegisteredException onr) {
+	  
+    }
+
+    catch (InterruptedException ie) {
+
+    }
+
   }
+
+
+
     
     /**
      * Gets the tau value currently displayed on this panel.

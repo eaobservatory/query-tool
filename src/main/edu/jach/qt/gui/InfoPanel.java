@@ -310,12 +310,8 @@ public class InfoPanel extends JPanel implements ActionListener {
     if (source == exitButton) {
 
       if (TelescopeDataPanel.DRAMA_ENABLED) {
-	try {
-	  telescopeInfoPanel.getHub().closeDcHub();
-	} 
-	catch ( ObeyNotRegisteredException onr) {
-	  
-	}
+
+	telescopeInfoPanel.closeHub();
       }
 
       qtf.exitQT();
