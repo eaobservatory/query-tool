@@ -225,7 +225,7 @@ setenv DUL_DIR /jac_sw/drama/drama-v1.4.1/include/
 setenv GIT_DIR /jac_sw/drama/drama-v1.4.1/include/
 setenv DTCL_DIR /jac_sw/drama/drama-v1.4.1/include/
 
-set CLASSPATH = ../lib/qt.jar:../lib/calpahtml.jar:../lib/xercesImpl.jar:../lib/xmlParserAPIs.jar:../lib/mail.jar:../lib/activation.jar:../lib/soap.jar:/jac_sw/ot_latest/OT/install/classes:/jac_sw/ot_latest/GEMINI/install/classes:/jac_sw/itsroot/install/ompSM/javlib/ompSM.jar:/jac_sw/ot_latest/ORAC/install/classes:/jac_sw/ot_latest/OMP/install/classes:/jac_sw/ot_latest/ODB/install/classes:../lib/jsky.jar:../lib/diva.jar:../lib/junit.jar:../icons:/local/java/jdk/lib/tools.jar:/jac_sw/itsroot/install/dcHub/javalib/dcHub.jar:/jac_sw/drama/drama-v1.4.1/javalib
+set CLASSPATH = ../lib/qt.jar:../lib/calpahtml.jar:../lib/xercesImpl.jar:../lib/xmlParserAPIs.jar:../lib/mail.jar:../lib/activation.jar:../lib/soap.jar:/jac_sw/orac3/OT/install/classes:/jac_sw/orac3/GEMINI/install/classes:/jac_sw/itsroot/install/ompSM/javlib/ompSM.jar:/jac_sw/orac3/ORAC/install/classes:/jac_sw/orac3/OMP/install/classes:/jac_sw/orac3/ODB/install/classes:../lib/jsky.jar:../lib/diva.jar:../lib/junit.jar:../icons:/local/java/jdk/lib/tools.jar:/jac_sw/itsroot/install/dcHub/javalib/dcHub.jar:/jac_sw/drama/drama-v1.4.1/javalib
 
 ${JAVA} ${classic} ${xdebug} ${xnoagent} ${xrunjdwptrans} ${xbootclasspath} -Ddebug=${debug} -DDRAMA_ENABLED=${dramaEnabled} -DSIMULATE=${tosim} -DENGINEERING=${toeng} -DQUICKLOOK=${toql} -Dtelescope=${telescope} -DSOLARIS_HOST=${solHost} -DDOMAIN=`domainname` -DqtConfig=${qtConfig} -Dot.cfgdir=${instConfigDir}/ -Dot.resource.cfgdir=./ -DwidgetFile=${widgetFile} -DQT_LOG_DIR=${QT_LOG_DIR} -DDOMAIN=${domain} -DOMP -DDCHUB_TIMEOUT=${timeout} -cp ${CLASSPATH}:${instConfigDir} edu.jach.qt.app.QT
 
