@@ -150,10 +150,10 @@
 	   debug="on">
       <exclude name="qt/gui/JCheckBoxWidget.java"/>
       <classpath>
-	<pathelement location="/jac_sw/orac3/OT/install/classes" />
-	<pathelement location="/jac_sw/orac3/GEMINI/install/classes" />
-	<pathelement location="/jac_sw/orac3/OM/install/classes" />
-	<pathelement location="/jac_sw/orac3/ORAC/install/classes" />
+	<pathelement location="/home/mrippa/netroot/src/orac3/OT/install/classes" />
+	<pathelement location="/home/mrippa/netroot/src/orac3/GEMINI/install/classes" />
+	<pathelement location="/home/mrippa/netroot/src/orac3/OM/install/classes" />
+	<pathelement location="/home/mrippa/netroot/src/orac3/ORAC/install/classes" />
 	<fileset dir="${lib.dir}">
 	  <include name="*.jar"/>
 	</fileset>
@@ -183,6 +183,13 @@
         <include name="*" />
       </fileset>
     </copy>
+
+    <chmod perm="+x">
+      <fileset dir="${build.bin}">
+        <include name="*" />
+      </fileset>
+    </chmod>
+
 
   </target>
 
