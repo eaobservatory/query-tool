@@ -145,8 +145,8 @@ public class InfoPanel extends JPanel implements ActionListener {
     InfoPanel.searchButton.setBackground(java.awt.Color.gray);
 
     /*Setup the EXECUTE button*/
-    fetchMSB.setText("EXECUTE");
-    fetchMSB.setName("EXECUTE");
+    fetchMSB.setText("Send MSB");
+    fetchMSB.setName("Send MSB");
     fetchMSB.setBackground(java.awt.Color.gray);
     fetchMSB.addActionListener(this);
 
