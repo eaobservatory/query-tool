@@ -52,11 +52,11 @@ final public class QT {
    public QT () {
        if (System.getProperty("QT_LOG_DIR") == null || System.getProperty("QT_LOG_DIR").equals(""))
        {
-	   PropertyConfigurator.configure("/jac_sw/omp/QT/config/nolog4j.properties");
+	   PropertyConfigurator.configure("../../config/nolog4j.properties");
        }
        else
        {
-	 PropertyConfigurator.configure("/jac_sw/omp/QT/config/log4j.properties");
+	 PropertyConfigurator.configure("../config/log4j.properties");
        }
 
      logger.info("-------WELCOME TO THE QT----------");
@@ -142,6 +142,12 @@ final public class QT {
 
 /*
  * $Log$
+ * Revision 1.28  2005/02/24 20:30:23  dewitt
+ * Merge fro JAC_WFCAM branch and fix for fault [20050224.002]
+ *
+ * Revision 1.27.2.1  2004/10/13 18:41:53  dewitt
+ * WFCAM changes
+ *
  * Revision 1.27  2003/03/28 18:59:49  dewitt
  * Added checking MSB status on exit.  Also added a handler for SIGTERMs for future use with ocs_down script.
  *

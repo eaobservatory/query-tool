@@ -346,8 +346,25 @@ public class TelescopeDataPanel extends JPanel implements ActionListener {
 		}
 		else if (  components[i].getName().equalsIgnoreCase("observation") ) {
 		    lrtf.restartTimer();
+                    // Wait for the timer to restart
+                    while ( !(lrtf.timerRunning()) ) {
+                        try {
+                            Thread.sleep(100);
+                        }
+                        catch (InterruptedException ie ) {
+                            // break out of the loop to stop any serious problems
+                            logger.debug("Interrupted wating for timer!", ie);
+                            break;
+                        }
+                    }
+                    // Wait a bit more to make sure things have settled down
+                    try {
+                        Thread.sleep(100);
+                    }
+                    catch (InterruptedException ie ) {
+                        logger.debug("Interrupted wating for timer!", ie);
+                    } 
 		    infoPanel.getFrame().resetCurrentMSB();
-		    InfoPanel.searchButton.doClick();
 		}
 		else {
 		    ((LabeledRangeTextField)components[i]).setLowerText("");
@@ -355,5 +372,6 @@ public class TelescopeDataPanel extends JPanel implements ActionListener {
 		}
 	    }
 	}
+        InfoPanel.searchButton.doClick();
     }
 }

@@ -11,6 +11,8 @@ import orac.util.*;
 import java.io.*;
 import java.lang.reflect.*;
 import java.net.*;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 // /* Miscellaneous imports */
 import org.apache.log4j.Logger;
@@ -97,45 +99,61 @@ public class MsbClient extends SoapClient {
 	return tmp.toString();
     }
 
-  /**
-   * <code>fetchMSB</code> Fetch the msb indicated by the msbid. The
-   * SpItem will return null on failure. In the future this should
-   * throw an exception instead.
-   *
-   * @param msbid an <code>Integer</code> value of the MSB
-   * @return a <code>SpItem</code> value representing the MSB.
-   */
-  public static SpItem fetchMSB(Integer msbid) {
+    /**
+     * <code>fetchMSB</code> Fetch the msb indicated by the msbid. The
+     * SpItem will return null on failure. In the future this should
+     * throw an exception instead.
+     *
+     * @param msbid an <code>Integer</code> value of the MSB
+     * @return a <code>SpItem</code> value representing the MSB.
+     */
+    public static SpItem fetchMSB(Integer msbid) {
 
-    SpItem spItem = null;
-    try {
-	
-      logger.debug("Sending fetchMSB: "+msbid);
-      URL url = new URL(System.getProperty("msbServer"));
-      flushParameter();
-      addParameter("key", Integer.class, msbid);
-	
-      FileWriter fw = new FileWriter(System.getProperty("msbFile")+"."+System.getProperty("user.name"));
-      String spXML = (String) doCall(url, "urn:OMP::MSBServer", "fetchMSB");
-	
-      if (spXML != null ) {
-	fw.write( (String)spXML );
-	fw.close();
- 	StringReader r = new StringReader(spXML);
-	spItem = (SpItem)(new SpInputXML()).xmlToSpItem(r);
-     }
-	
-      else 
-	return spItem;
-	
-    } catch (Exception e) {
-      logger.error("queryMSB threw Exception", e);
-      e.printStackTrace();
-      return spItem;
+        SpItem spItem = null;
+        try {
+
+            logger.debug("Sending fetchMSB: "+msbid);
+            URL url = new URL(System.getProperty("msbServer"));
+            flushParameter();
+            addParameter("key", Integer.class, msbid);
+
+            FileWriter fw = new FileWriter(System.getProperty("msbFile")+"."+System.getProperty("user.name"));
+	    String input = (String) doCall(url, "urn:OMP::MSBServer", "fetchMSB");
+            //byte [] input = (byte []) doCall(url, "urn:OMP::MSBServer", "fetchMSB");
+
+            String spXML = null;
+//            if (input != null ) {
+//                if ( (char)input[0] != '<' && (char)input[1] != '?' ) {
+//                    // File is gzipped
+//                    ByteArrayInputStream bis = new ByteArrayInputStream(input);
+//                    GZIPInputStream gis = new GZIPInputStream(bis);
+//                    byte [] read = new byte[1024];
+//                    int len;
+//                    StringBuffer sb = new StringBuffer();
+//                    while ( (len = gis.read(read)) > 0) {
+//                        sb.append(new String(read, 0, len));
+//                    }
+//                    gis.close();
+//                    spXML = sb.toString();
+//                }
+//                else {
+//                    // File is not compressed
+                    spXML = new String(input);
+//                }
+                fw.write( spXML );
+                fw.close();
+                StringReader r = new StringReader(spXML);
+                spItem = (SpItem)(new SpInputXML()).xmlToSpItem(r);
+//            }
+
+        } catch (Exception e) {
+            logger.error("queryMSB threw Exception", e);
+            e.printStackTrace();
+            return spItem;
+        }
+
+        return spItem;
     }
-      
-    return spItem;
-  }
 
 
     /**

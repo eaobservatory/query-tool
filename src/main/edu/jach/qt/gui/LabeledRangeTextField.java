@@ -74,7 +74,8 @@ public class LabeledRangeTextField extends WidgetPanel
 // 	lowerBound.addActionListener(this);
 	upperBound.addKeyListener(this);
 	lowerBound.addKeyListener(this);
-	timer = new Timer(1000, this);
+	timer = new Timer(0, this);
+        timer.setDelay(1000);
 	timer.addActionListener(this);
 	startTimer();
     }

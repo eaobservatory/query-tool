@@ -178,8 +178,10 @@ public class Querytool implements Runnable, Observer {
 	    abstractButton = (JCheckBox) (iter.next());
 	    if (abstractButton.isSelected()) {
 	      item = doc.createElement("instrument");
-	      item.appendChild( doc.createTextNode( abstractButton.getText() ));
-	      root.appendChild(item);
+              if ( !abstractButton.getText().startsWith("Any") ) {
+                  item.appendChild( doc.createTextNode( abstractButton.getText() ));
+                  root.appendChild(item);
+              }
 	    }
 	  }
 	}

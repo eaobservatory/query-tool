@@ -46,17 +46,21 @@ public class ButtonPanel extends WidgetPanel  {
       buttonList = new LinkedList();
       
       setLayout(new GridLayout(3, info.getSize()/2));
+      JCheckBox wfcamTickBox = null;
       for (iterator.nextIndex(); iterator.hasNext(); iterator.nextIndex()) {
 	    next = (String)iterator.next();
 	    JCheckBox cb = new JCheckBox(next);
 	    cb.addActionListener(this);
+            if ( "WFCAM".equals(next) ) wfcamTickBox = cb;
 	    //cb.setBackground(java.awt.Color.gray);
 
 	    add(cb);
-	    if (!cb.getText().equals("Any Instrument") &&
-		!cb.getText().equals("Any Heterodyne"))
-	      buttonList.add(cb);
+            buttonList.add(cb);
       }
+//       if ( wfcamTickBox != null ) {
+//           wfcamTickBox.doClick();
+//           wfcamTickBox.setSelected(true);
+//       }
    }
    
    /**
@@ -96,6 +100,30 @@ public class ButtonPanel extends WidgetPanel  {
       }
    }
 
+   private void wfcamSelected(boolean selected) {
+       JCheckBox next;
+       for ( ListIterator iter = buttonList.listIterator(); iter.hasNext(); iter.nextIndex() ) {
+           next = (JCheckBox)iter.next();
+           // If flag is true, we need to deselect everything
+           // else and disable the
+           if ( selected ) {
+               if ( next.getText().equals("WFCAM") ) {
+                   next.setSelected(selected);
+                   next.setEnabled(selected);
+               }
+               else {
+                   next.setSelected(!selected);
+                   next.setEnabled(!selected);
+               }
+           }
+           else {
+               // WFCAM is deselected.  Just enable all other buttons
+               next.setEnabled(!selected);
+           }
+       }
+       setAttribute(myTitle, buttonList);
+   }
+
    /**
     * The <code>actionPerformed</code> method notifies the
     * WidgetDataBag of the state of all JCheckBoxes.
@@ -107,6 +135,15 @@ public class ButtonPanel extends WidgetPanel  {
      Object source = evt.getSource();
      JCheckBox temp = (JCheckBox)source;
       
+     if ( temp.getText().equals("WFCAM") ) {
+         if ( temp.isSelected() ) {
+             wfcamSelected(true);
+         }
+         else {
+             wfcamSelected(false);
+         }
+         return;
+     }
      if (temp.getText().equals("Any Instrument") ||
 	 temp.getText().equals("Any Heterodyne")) {
        if (temp.isSelected()) {
