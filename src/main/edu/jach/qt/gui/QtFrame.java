@@ -58,6 +58,7 @@ public class QtFrame extends JFrame implements PopupMenuListener, ActionListener
   private JPopupMenu		popup;
   private Hashtable             calibrationList;
   private JMenu                 calibrationMenu = new JMenu("Calibrations");
+  private WidgetPanel           _widgetPanel;
 
 
   SwingWorker msbWorker;
@@ -141,6 +142,7 @@ public class QtFrame extends JFrame implements PopupMenuListener, ActionListener
 
     //Input Panel Setup
     WidgetPanel inputPanel = new WidgetPanel(new Hashtable(), widgetBag);
+    _widgetPanel = inputPanel;
     infoPanel = new InfoPanel(msbQTM, localQuerytool, this);
 
     // Build split-pane view
@@ -575,6 +577,10 @@ public class QtFrame extends JFrame implements PopupMenuListener, ActionListener
       System.exit(0);
     }
   }
+
+    public WidgetPanel getWidgets() {
+	return _widgetPanel;
+    }
 
   // implementation of javax.swing.event.PopupMenuListener interface
 
