@@ -167,7 +167,7 @@ public class QtTools {
    *
    * @param name a <code>String</code> value
    */
-  public static void loadDramaTasks(String name) {
+  public static int loadDramaTasks(String name) {
     //starting the drama tasks
     String[] script = new String[6];
       
@@ -188,6 +188,8 @@ public class QtTools {
 		);
 
     int status = QtTools.execute(script, false, true);
+
+    return status;
   }
 
 }
