@@ -1,29 +1,32 @@
 package edu.jach.qt.gui;
 
-
-import edu.jach.qt.utils.MyTreeCellRenderer;
-import edu.jach.qt.utils.QtTools;
-import edu.jach.qt.utils.Translating; //Translating flasher
 import gemini.sp.*;
-import gemini.sp.SpItem;
+import gemini.sp.obsComp.*;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
-import java.net.URL;
+import java.net.*;
 import java.util.*;
 import javax.swing.*;
 import javax.swing.border.*;
 import javax.swing.event.*;
 import javax.swing.plaf.*;
 import javax.swing.tree.*;
-import jsky.app.ot.*;
-import om.console.*;      //this is for the sequence console
+
+import om.console.*;
+import om.util.*;
+
 import orac.jcmt.inst.*;
 import orac.jcmt.iter.*;
 import orac.jcmt.obsComp.*;
 import orac.ukirt.inst.*;
 import orac.ukirt.iter.*;
-import orac.ukirt.util.SpTranslator;
+
+import edu.jach.qt.utils.*;
+import jsky.app.ot.*;
+import ocs.utils.*;
+
 
 /**
    final public class programTree is a panel to select
@@ -56,7 +59,7 @@ final public class ProgramTree extends JPanel
     setLayout(gbl);
     gbc = new GridBagConstraints();
 
-    run=new JButton("Send for execution");
+    run=new JButton("Send for Execution");
     run.setMargin(new Insets(5,10,5,10));
     run.setEnabled(true);
     run.addActionListener(this);
@@ -64,8 +67,9 @@ final public class ProgramTree extends JPanel
     JLabel trash = new JLabel();
     try {
       setImage(trash);
-    } catch(Exception e) {e.printStackTrace();}
-
+    } catch(Exception e) {
+      e.printStackTrace();
+    }
 
     gbc.fill = GridBagConstraints.NONE;
     gbc.anchor = GridBagConstraints.CENTER;
@@ -82,6 +86,14 @@ final public class ProgramTree extends JPanel
     gbc.insets.right = 0;
     add(run, gbc, 0, 1, 1, 1);
 
+  }
+
+  public void setProjectID(String projectID) {
+    this.projectID = projectID;
+  }
+
+  public void setChecksum(String checksum) {
+    this.checkSum = checkSum;
   }
 
   public void setImage(JLabel label) throws Exception {
@@ -126,20 +138,6 @@ final public class ProgramTree extends JPanel
   public void actionPerformed (ActionEvent evt) {
     Object source = evt.getSource();
     if (source == run) {
-      if (path == null) {
-	//errorBox =new ErrorBox("You have not selected an observation!"+
-	//"\nPlease select an observation.");
-	System.err.print("You have not selected an MSB!");
-	return;
-      }
-      // 	  try {
-      // 	    System.out.println("TEST:"+path.toString());
-      // 	  } catch (NullPointerException e)
-      // 	    {
-      // 	      errorBox =new ErrorBox("You have not selected an observation!"+
-      // 				     "\nPlease select an observation object.");
-      // 	      return;
-      // 	    }
       execute();
     }
   }
@@ -155,182 +153,108 @@ final public class ProgramTree extends JPanel
    *
    */
   private void execute() {
-    SpItem item = findItem(_spItem, path.getLastPathComponent().toString());
-      
+
+    /**
+     * @param item is the selected observation
+     */
+    //SpItem item = findItem(_spItem, path.getLastPathComponent().toString());
+    
+    SpItem item = (SpItem) obsList.getSelectedValue();
+
     if (item == null) {
-      //errorBox =new ErrorBox("You have not selected an observation!"+
-      //                       "\nPlease select an observation.");
+      new ErrorBox("You have not selected an observation!"+
+		   "\nPlease select an observation.");
       System.err.print("You have not selected an MSB!");
       return;
     }
 
-    // Switch to "og" to check if selection MSB
+    // Switch to "og" to check if selection is an MSB. However, we can only send
+    // type "ob" observations since an MSB can have multiple instruments and we 
+    // execute them individually.
     if(!item.typeStr().equals("ob")) {
-      //  	    errorBox =new ErrorBox("Your selection: "+item.getTitle()+
-      //  				   " is not an observation"+
-      //  				   "\nPlease select an observation.");
+      new ErrorBox("Your selection: "+item.getTitle()+
+		   " is not an observation"+
+		   "\nPlease select an observation.");
       System.err.print("Your selection: "+item.getTitle()+ 
 		       " is not an MSB."+ 
 		       "\nPlease select an MSB.");
       return;
     } else {
       run.setEnabled(false);
-      //run.setForeground(Color.white);
-
-      SpItem observation=item;
-
+      
+      SpItem observation = item;
+      
       if(!observation.equals(null)) {
-	SpItem inst= (SpItem) SpTreeMan.findInstrument(item);
+	SpItem inst = (SpItem) SpTreeMan.findInstrument(observation);
+	
+	// *TODO* Replace this crap!
 	Translating tFlush = new Translating();
 	tFlush.start();
-	String tname=trans(observation);
+	String tname = QtTools.translate(observation, inst.type().getReadable());
 	tFlush.getFrame().dispose();
 	tFlush.stop();
-
+	
 	// Catch null sequence names - probably means translation
 	// failed:
 	if (tname == null) {
-	  //errorBox = new ErrorBox ("Translation failed. Please report this!");
+	  //new ErrorBox ("Translation failed. Please report this!");
 	  System.err.println("Translation failed. Please report this!");
 	  run.setEnabled(true);
-	  run.setForeground(Color.black);		    
 	  return;
 	}else{
 	  System.out.println ("Trans OK");
+
+	  if ( obsList.getSelectedIndex() ==  obsList.getLastVisibleIndex()) {
+
+	    MsbClient.doneMSB(projectID, checkSum);
+	    JOptionPane.showMessageDialog(null, "MSB DONE!");
+	  } // end of if ()
+	  
+	  model.remove(obsList.getSelectedIndex());
+
 	}
+      
 
 	// Prevent IRCAM3 and CGS4 from running together
+	// figure out if the same inst. is already in use or
+	// whether IRCAM3 and CGS4 would be running together
+	SequenceConsole console;
+	Vector consoleList = scm.getConsoleList().getList();
 
-	int status =
-	  QtTools.execute(new String[] {"/jac_sw/drama/drama-v1.3b6/bin/solaris/ditscmd",
-					"OOS_LIST",
-					"LISTOOS"});
-	//figure out if the same inst. is already in use or
-	//whether IRCAM3 and CGS4 would be running together
-	//  	SequenceFrame f;
-	//  	for(int i=0;i<scm.getFrameList().getList().size();i++) {
-	//  	  f = (SequenceFrame)consoleFrames.getList().elementAt(i);
-		
-	//  	  if(inst.type().getReadable().equals(f.getInstrument())) {
-	//  	    f.resetObs(observation.getTitle(),tname);
-	//  	    run.setEnabled(true);
-	//  	    run.setForeground(Color.black);
-	//  	    return;
-	//  	  }
-		
-	//  	  if(inst.type().getReadable().equals("IRCAM3") && f.getInstrument().equals("CGS4")) {
-	//  	    //new AlertBox ("IRCAM3 and CGS4 cannot run at the same time.");
-	//  	    run.setEnabled(true);
-	//  	    run.setForeground(Color.black);		    
-	//  	    return;
-	//  	  }
-		
-	//  	  if(inst.type().getReadable().equals("CGS4") && f.getInstrument().equals("IRCAM3")) {
-	//  	    //new AlertBox ("CGS4 and IRCAM3 cannot run at the same time.");
-	//  	    run.setEnabled(true);
-	//  	    run.setForeground(Color.black);		    
-	//  	    return;
-	//  	  }
-	//  	}
-	scm.spawnSequenceConsole(observation.getTitle(), inst.type().getReadable(), false);
+	for(int i=0; i<consoleList.size(); i++) {
+	  console = (SequenceConsole)consoleList.elementAt(i);
+	  
+	  if(inst.type().getReadable().equals(console.getInstrument())) {
+	    console.resetObs(observation.getTitle(), tname);
+	    run.setEnabled(true);
+	    run.setForeground(Color.black);
+	    return;
+	  }
+	  
+	  if(inst.type().getReadable().equals("IRCAM3") && 
+	     console.getInstrument().equals("CGS4")) {
+	    new AlertBox ("IRCAM3 and CGS4 cannot run at the same time.");
+	    run.setEnabled(true);
+	    return;
+	  }
+
+	  if(inst.type().getReadable().equals("CGS4") && 
+	     console.getInstrument().equals("IRCAM3")) {
+	    new AlertBox ("CGS4 and IRCAM3 cannot run at the same time.");
+	    run.setEnabled(true);
+	    return;
+	  }
+	}
+
+	QtTools.loadDramaTasks(inst.type().getReadable());
+	DcHub.getHandle().register("OOS_LIST");
+	
+	scm.showSequenceFrame();
 	run.setEnabled(true);
       }
     }
   }
-
-  //    /**  
-  //         private void creatNewRemoteFrame(SpItem observation,SpItem inst) 
-  //         is a private method to start a NEW sequence console. This is mainly
-  //         about to start a "remote" frame to form a sequence console and 
-  //         rebind it into a RMI registry.
-  //         it also starts a set of drama task which is platform-dependent.
-       
-  //         @param SpItem observation,SpItem inst
-  //         @return  none
-  //         @throws RemoteException,MalformedURLException
-       
-  //    */
-  //    private void creatNewRemoteFrame(SpItem observation, SpItem inst) {
-  //      try {
-  //        frame = new RemoteFrame(inst.type().getReadable(),
-  //  			      observation.getTitle(), consoleFrames);
-	  
-  //        //String instStr = inst.type().getReadable();
-
-  //      } 
-  //      catch (RemoteException re) {
-  //        System.out.println ("Exception in ProgramTree:"+re);
-  //      } 
-  //      catch (NullPointerException e) {
-  //        System.out.println("NullPointerException in programTree:" + e);
-  //      }
-      
-  //      //add inst into the instrument list on the OM frame
-  //      //      if (menu.getActiveInstrumentList().getItemCount()>0) {
-  //      //        String activeInst = 
-  //      //  	menu.getActiveInstrumentList().getItemAt(0).toString();
-  //      //        if (activeInst.substring(0,4).equalsIgnoreCase("None") ||
-  //      //  	  activeInst.substring(0,4).equals("    ")) {
-  //      //  	menu.getActiveInstrumentList().removeAllItems();
-  //      //        }
-  //      //      }
-
-  //      try {
-  //        //menu.getActiveInstrumentList().addItem(inst.type().getReadable());
-  //        consoleFrames.addFrameList (frame.getFrame());
-  //        loadDramaTasks (inst.type().getReadable());
-	 
-  //        //connect it to the TCS if it is the first instrument
-  //        if (consoleFrames.getList().size()==1) {
-  //  	SequenceFrame sf = (SequenceFrame) consoleFrames.getList().elementAt(0);
-  //  	sf.connectTCS();
-  //        }
-  //        if (inst.type().getReadable().equalsIgnoreCase("UFTI")) {
-  //  	//new AlertBox ("Ask your TSS to datum filter wheels and shutter. Then open shutter");
-  //        }
-  //        run.setEnabled(true);
-  //        run.setForeground(Color.black);
-	
-  //      } catch (NullPointerException e) {
-  //        System.out.println("NullPointerException in programTree");
-  //        e.printStackTrace();
-  //      }
-  //    }
   
-  
-  /**
-     String trans (SpItem observation) is a private method
-     to translate an observation java object into an exec string
-     and write it into a ascii file where is located in "EXEC_PATH"
-     directory and has a name stored in "execFilename"
-     
-     @param SpItem observation
-     @return  String a filename
-     @throws RemoteException,MalformedURLException
-     
-  */
-  private String trans (SpItem observation) {
-    SpTranslator translation = new SpTranslator((SpObs)observation);
-    translation.setSequenceDirectory(System.getProperty("EXEC_PATH"));
-    translation.setConfigDirectory(System.getProperty("CONF_PATH"));
-      
-    Properties temp = System.getProperties();
-    String tname = null;
-    try {
-      tname=translation.translate();
-
-      System.out.println("exec: "+System.getProperty("EXEC_PATH")+"/"+tname);
-      
-      temp.put(new String("execFilename"),tname);
-    }catch (NullPointerException e) {
-      System.out.println ("Translation failed!, exception was "+e);
-      e.printStackTrace();
-    } catch (Exception e) {
-      System.out.println ("Translation failed!, Missing value "+e);
-      //e.printStackTrace();
-    }
-    return tname;
-  }
 
   /**
      public void addTree(String title,SpItem sp) is a public method
@@ -381,6 +305,36 @@ final public class ProgramTree extends JPanel
       
     this.repaint();
     this.validate();
+  }
+
+  public void addList(SpItem sp) {
+
+    model = new DefaultListModel();
+
+    Vector obsVector =  SpTreeMan.findAllItems(sp, "gemini.sp.SpObs");
+    
+    Enumeration e = obsVector.elements();
+    while (e.hasMoreElements() ) {
+      model.addElement(e.nextElement());
+    } // end of while ()
+
+    obsList = new JList(model);
+    obsList.setCellRenderer(new ObsListCellRenderer());
+    
+    // Add the listbox to a scrolling pane
+    scrollPane.getViewport().removeAll();
+    scrollPane.getViewport().add(obsList);
+    scrollPane.getViewport().setOpaque(false);
+
+    gbc.fill = GridBagConstraints.BOTH;
+    //gbc.anchor = GridBagConstraints.EAST;
+    gbc.insets.bottom = 5;
+    gbc.insets.left = 10;
+    gbc.insets.right = 5;
+    gbc.weightx = 100;
+    gbc.weighty = 100;
+    add(scrollPane, gbc, 0, 0, 2, 1);
+    
   }
 
   //public MsbNode getMsbNode() {
@@ -524,12 +478,14 @@ final public class ProgramTree extends JPanel
     return null;
   }
   
-  
   public JButton getRunButton () {return run;}
    
   private GridBagConstraints gbc;
   private JButton run;
   private JTree tree;
+  private JList obsList;
+  private DefaultListModel model;
+
   private JScrollPane scrollPane= new JScrollPane();;
   private SpItem _spItem;
 
@@ -537,8 +493,9 @@ final public class ProgramTree extends JPanel
   private DefaultTreeModel treeModel;
   private TreePath path;
 
+  private String projectID, checkSum;
+
   private SequenceManager scm;
   public static final String BIN_IMAGE = System.getProperty("binImage");
   public static final String BIN_SEL_IMAGE = System.getProperty("binImage");
 }
-
