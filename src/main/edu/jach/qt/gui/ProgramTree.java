@@ -400,11 +400,17 @@ final public class ProgramTree extends JPanel implements
 		return;
 	    }
 	    else {
-		if (isDeferred) {
-		    new ExecuteInThread (item, isDeferred).start();
+		try {
+		    if (isDeferred) {
+			new ExecuteInThread (item, isDeferred).start();
+		    }
+		    else {
+			new ExecuteInThread (_spItem, isDeferred).start();
+		    }
 		}
-		else {
-		    new ExecuteInThread (_spItem, isDeferred).start();
+		catch (Exception e) {
+		    logger.error("Error running task", e);
+		    setExecutable(true);
 		}
 	    }
 	    /*
@@ -1329,9 +1335,24 @@ final public class ProgramTree extends JPanel implements
 	    boolean failed = false;
 	    msbDone = false;
 
-	    execute = ExecuteJCMT.getInstance(_item);
-	    failed = execute.run();
 	    File failFile = new File ("/jcmtdata/orac_data/deferred/.failure");
+	    execute = ExecuteJCMT.getInstance(_item);
+	    try {
+		failed = execute.run();
+	    }
+	    catch (Exception e) {
+		if (!failFile.exists()) {
+		    try { 
+			failFile.createNewFile();
+		    }
+		    catch (IOException ioe) {
+			logger.error( "Execution failed and could not return normally" );
+			setExecutable (true);
+			return;
+		    }
+		}
+	    }
+
 	    if (failFile.exists()) {
 		logger.info("Execution failed");
 		failed = true;

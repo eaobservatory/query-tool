@@ -333,6 +333,7 @@ public class QtFrame
 		  isStatusOK = new Boolean(true);
 		} catch (NullPointerException e) {
 		  isStatusOK = new Boolean(false);
+		  om.enableList(true);
 		}
 
 		return isStatusOK;  //not used yet
