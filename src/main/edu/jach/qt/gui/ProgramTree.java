@@ -312,13 +312,17 @@ final public class ProgramTree extends JPanel implements
 		}
 	
 		if ( model.isEmpty() && TelescopeDataPanel.DRAMA_ENABLED) {
-		    MsbClient.doneMSB(projectID, checkSum);
-		    JOptionPane.showMessageDialog(this, "The MSB with \n"+
-						  "Project ID: "+projectID+"\n"+
-						  "CheckSum: "+checkSum+"\n"+
-						  "has been marked as done!");
-		    // Since the MSBID has changed, redo the search...
-		    InfoPanel.searchButton.doClick();
+		    int mark = JOptionPane.showConfirmDialog(this, "Mark the MSB with \n"+
+							     "Project ID: "+projectID+"\n"+
+							     "CheckSum: "+checkSum+"\n"+
+							     "as done?",
+							     "MSB complete",
+							     JOptionPane.YES_NO_OPTION);
+		    if (mark == JOptionPane.YES_OPTION) {
+			MsbClient.doneMSB(projectID, checkSum);
+			// Since the MSBID has changed, redo the search...
+			InfoPanel.searchButton.doClick();
+		    }
 		} // end of if ()
 
 		run.setEnabled(true);
