@@ -168,12 +168,10 @@ public class QtFrame extends JFrame implements MenuListener, ListSelectionListen
 		    blinker.blinkLed(false);
 		    if ( isStatusOK.booleanValue()) {
 
-		      
 		      om.addNewTree(msbID);
-		      //om.addNewTree();
 		      System.out.println("ID is "+msbID);
-		      buildStagingPanel(msbID);
-		      
+		      buildStagingPanel();
+
 		    }
 
 		    else {
@@ -214,23 +212,24 @@ public class QtFrame extends JFrame implements MenuListener, ListSelectionListen
   }
    
 
-  public void buildStagingPanel(Integer msbID) {
+  public void buildStagingPanel() {
 
     if (tabbedPane == null) {
       tabbedPane = new JTabbedPane(SwingConstants.TOP);
       remove(splitPane);
       tabbedPane.addTab("Query", splitPane);
-      tabbedPane.addTab("MSB ID "+msbID, om.getTreePanel(msbID));
+      tabbedPane.addTab(om.getProgramName(), om.getTreePanel());
       add(tabbedPane, gbc, 1, 0, 1, 2);
       validate();
       tabbedPane.setVisible(true);
     }
     
-    else if (tabbedPane.indexOfTab("MSB ID "+msbID) == -1) {
-      tabbedPane.addTab("MSB ID "+msbID, om.getTreePanel(msbID));
+    else {
+      tabbedPane.remove(1);
+      tabbedPane.addTab(om.getProgramName(), om.getTreePanel());
     }
 
-    tabbedPane.setSelectedIndex(tabbedPane.indexOfTab("MSB ID "+msbID));
+    tabbedPane.setSelectedIndex(1);
   }
 
   /**
