@@ -97,6 +97,8 @@ public class ExecuteJCMT extends Execute {
 	try {
 	    success.createNewFile();
 	    failure.createNewFile();
+            Runtime.getRuntime().exec( "chmod 666 /jcmtdata/orac_data/deferred/.success" );
+            Runtime.getRuntime().exec( "chmod 666 /jcmtdata/orac_data/deferred/.failure" );
 	}
 	catch (IOException ioe) {
 	    logger.error("Unable to create success/fail file");
@@ -110,9 +112,10 @@ public class ExecuteJCMT extends Execute {
 	    FileWriter writer = new FileWriter (file);
 	    writer.write(_itemToExecute.toXML());
 	    writer.close();
+            Runtime.getRuntime().exec( "chmod 666 " + file.getAbsolutePath() );
 	}
 	catch (IOException ioe) {
-	    logger.error("Error writing translation file");
+	    logger.error("Error writing translation file " + file.getAbsolutePath() );
 	    //file.delete();
 	    success.delete();
 	    isRunning = false;
