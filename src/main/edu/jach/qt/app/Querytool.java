@@ -2,6 +2,7 @@ package edu.jach.qt.app;
 
 import edu.jach.qt.gui.*;
 import edu.jach.qt.utils.*;
+import gemini.sp.SpItem;
 import java.io.*;
 import java.util.*;
 import javax.swing.*;
@@ -271,8 +272,13 @@ public class Querytool implements Runnable, Observer {
    *
    * @param i an <code>Integer</code> value
    */
-  public boolean fetchMSB(Integer i) {
-    return MsbClient.fetchMSB(i);
+  public SpItem fetchMSB(Integer i) {
+
+    SpItem spItem = MsbClient.fetchMSB(i);
+
+    System.out.println("And the NEXT winner is: "+spItem);
+
+    return spItem;
   }
 
   /**
