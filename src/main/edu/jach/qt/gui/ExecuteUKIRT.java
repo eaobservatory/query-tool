@@ -96,13 +96,15 @@ public class ExecuteUKIRT extends Execute implements Runnable {
 	// whether IRCAM3 and CGS4 would be running together
 	SequenceConsole console;
 	Vector consoleList = scm.getConsoleList().getList();
-	
+
 	for(int i=0; i<consoleList.size(); i++) {
 	    console = (SequenceConsole)consoleList.elementAt(i);
 	    
 	    if(inst.type().getReadable().equals(console.getInstrument())) {
 		logger.info("TNAME IS: "+tname);
 		console.resetObs(itemToExecute.getTitle(), tname);
+
+		logger.info("tname value is: "+tname);
 		failure.delete();
 		return;
 	    }
