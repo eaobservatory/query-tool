@@ -1,14 +1,13 @@
 package edu.jach.qt.app;
 
 /* JSKY imports */
-import jsky.app.ot.*;
+
+
+
 
 /* ORAC imports */
-import orac.ukirt.util.UkirtPreTranslator;
-import orac.jcmt.util.JcmtPreTranslator;
-import orac.util.SpItemDOM;
-
 /* QT imports */
+/* Standard imports */
 import edu.jach.qt.gui.QtFrame;
 import edu.jach.qt.gui.WidgetDataBag;
 import edu.jach.qt.utils.BasicWindowMonitor;
@@ -16,11 +15,16 @@ import edu.jach.qt.utils.QtTools;
 
 /* Standard imports */
 import java.io.File;
-import java.awt.*;
-import javax.swing.UIManager;
 
-import org.apache.log4j.PropertyConfigurator;
+import java.awt.*;
+import java.lang.ClassCircularityError;
+import javax.swing.UIManager;
+import jsky.app.ot.*;
+import orac.jcmt.util.JcmtPreTranslator;
+import orac.ukirt.util.UkirtPreTranslator;
+import orac.util.SpItemDOM;
 import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 
 /**
  * This is the top most OMP-QT class.  Upon init it instantiates 
@@ -66,9 +70,15 @@ final public class QT {
 // 	     SpItemDOM.setPreTranslator(new JcmtPreTranslator("SCIENCE", "REFERENCE"));
 // 	 }
 	 OtCfg.init();
-     } catch ( Exception e) {
-       logger.fatal("PreTranslator error starting the QT");
-       e.printStackTrace();
+     } 
+     
+     catch ( Exception e) {
+       logger.fatal("PreTranslator error starting the QT", e);
+       System.exit(1);
+     }
+
+     catch ( ClassCircularityError cce) {
+       logger.fatal("Talk to SHAUN!!!: PreTranslator ClassCircularityError starting the QT", cce);
        System.exit(1);
      }
 
@@ -137,6 +147,9 @@ final public class QT {
 
 /*
  * $Log$
+ * Revision 1.19  2002/11/04 20:06:32  mrippa
+ * Catches ClassCircularityError
+ *
  * Revision 1.18  2002/10/22 00:47:03  dewitt
  * Added a shutdown hook so that the QT lock file is cleaned up even if the system exits.  May still not work in the event of a kernel panic, but we will wait and see.
  *
