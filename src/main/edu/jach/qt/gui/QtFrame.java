@@ -147,14 +147,21 @@ public class QtFrame extends JFrame implements PopupMenuListener, ActionListener
     //Build Menu
     buildMenu();
 
-    //Table setup
-    msbQTM = new MSBQueryTableModel();
-    tableSetup();
-    JScrollPane resultsPanel = new JScrollPane(table);
-
     //Input Panel Setup
     WidgetPanel inputPanel = new WidgetPanel(new Hashtable(), widgetBag);
     _widgetPanel = inputPanel;
+    //Table setup
+    doColumnQuery();
+    try {
+	msbQTM = new MSBQueryTableModel();
+    }
+    catch (Exception e) {
+	logger.error("Unable to create table model", e);
+	exitQT();
+    }
+    tableSetup();
+    JScrollPane resultsPanel = new JScrollPane(table);
+    resultsPanel.getViewport().setScrollMode(JViewport.BLIT_SCROLL_MODE); 
     infoPanel = new InfoPanel(msbQTM, localQuerytool, this);
 
     // Build split-pane view
@@ -186,9 +193,21 @@ public class QtFrame extends JFrame implements PopupMenuListener, ActionListener
 
   }
 
+    private void doColumnQuery() {
+	localQuerytool.setAllocationConstraint(true);
+	localQuerytool.setRemainingConstraint(true);
+	localQuerytool.setObservabilityConstraint(true);
+	localQuerytool.setQueue("SERV");
+	boolean result = localQuerytool.queryMSB();
+	localQuerytool.setQueue(null);
+	return;
+    }
+
   private void tableSetup() {
     final TableSorter sorter = new TableSorter(msbQTM);
     table = new JTable(sorter);
+    ToolTipManager.sharedInstance().unregisterComponent(table);
+    ToolTipManager.sharedInstance().unregisterComponent(table.getTableHeader());
     sorter.addMouseListenerToHeaderInTable(table);
     table.sizeColumnsToFit(JTable.AUTO_RESIZE_ALL_COLUMNS);
     table.setMinimumSize(new Dimension(770,275) );
@@ -208,7 +227,7 @@ public class QtFrame extends JFrame implements PopupMenuListener, ActionListener
 	  
 	  msbWorker = new SwingWorker() {
 	      Boolean isStatusOK;
-	      Integer msbID = (Integer)sorter.getValueAt(selRow, MSBQueryTableModel.MSBID);
+	      Integer msbID = new Integer ((String)sorter.getValueAt(selRow, MSBQueryTableModel.MSBID));;
 
 	      public Object construct() {
 		    
