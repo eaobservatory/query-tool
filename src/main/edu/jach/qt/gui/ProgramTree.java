@@ -385,14 +385,20 @@ final public class ProgramTree extends JPanel implements
 	  
 	  if(inst.type().getReadable().equals("IRCAM3") && 
 	     console.getInstrument().equals("CGS4")) {
-	    new AlertBox ("IRCAM3 and CGS4 cannot run at the same time.");
+	      JOptionPane.showMessageDialog (null,
+					     "IRCAM3 and CGS4 cannot run at the same time.",
+					     "",
+					     JOptionPane.ERROR_MESSAGE);
 	    run.setEnabled(true);
 	    return;
 	  }
 
 	  if(inst.type().getReadable().equals("CGS4") && 
 	     console.getInstrument().equals("IRCAM3")) {
-	    new AlertBox ("CGS4 and IRCAM3 cannot run at the same time.");
+	      JOptionPane.showMessageDialog (null,
+					     "IRCAM3 and CGS4 cannot run at the same time.",
+					     "",
+					     JOptionPane.ERROR_MESSAGE);
 	    run.setEnabled(true);
 	    return;
 	  }
