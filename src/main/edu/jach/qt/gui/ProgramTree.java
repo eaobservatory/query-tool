@@ -1,28 +1,26 @@
 package edu.jach.qt.gui;
 
-import om.console.*;      //this is for the sequence console
-import om.frameList.*;    //import frameList Java bean
-import om.dramaSocket.*;
 import edu.jach.qt.utils.*;
-
 import gemini.sp.*;
 import gemini.sp.SpItem;
+import java.awt.*;
+import java.awt.event.*;
+import java.io.*;
+import java.net.*;
+import java.rmi.*;
+import java.util.*;
+import javax.swing.*;
+import javax.swing.border.*;
+import javax.swing.event.*;
+import javax.swing.plaf.*;
+import javax.swing.tree.*;
+import jsky.app.ot.*;
+import om.console.*;      //this is for the sequence console
+import om.dramaSocket.*;
+import om.frameList.*;    //import frameList Java bean
 import orac.ukirt.inst.*;
 import orac.ukirt.iter.*;
 import orac.ukirt.util.SpTranslator;
-
-import java.util.*;
-import java.io.*;
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
-import javax.swing.plaf.*;
-import javax.swing.event.*;
-import javax.swing.tree.*;
-import javax.swing.border.*;
-
-import java.rmi.*;
-import java.net.*;
 
 /**
    final public class programTree is a panel to select
@@ -32,7 +30,7 @@ import java.net.*;
    @author M.Tan@roe.ac.uk, modified by Mathew Rippa
 */
 final public class ProgramTree extends JPanel 
-   implements TreeSelectionListener,ActionListener {
+   implements TreeSelectionListener,ActionListener,KeyListener {
 
    /** public programTree(menuSele m) is the constructor. The class
        has only one constructor so far.  a few thing are done during
@@ -45,20 +43,75 @@ final public class ProgramTree extends JPanel
    */
    public ProgramTree()  {
       Border border=BorderFactory.createMatteBorder(2, 2, 2, 2, Color.white);
-      setBorder(new TitledBorder(border, 
-				 "Fetched Science Program (SP)", 
+      setBorder(new TitledBorder(border, "Fetched Science Program (SP)", 
 				 0, 0, new Font("Roman",Font.BOLD,12),Color.black));
       setLayout(new BorderLayout() );
-      
+
+      GridBagLayout gbl = new GridBagLayout();
+      setLayout(gbl);
+      gbc = new GridBagConstraints();
+
+      //setSize(400,550);
       //menu=m;
       run=new JButton("Send for execution");
       run.setMargin(new Insets(5,10,5,10));
       run.setEnabled(true);
       run.addActionListener(this);
-      add(run,"South");
-      
+
+      JLabel trash = new JLabel();
+      try {
+	 setImage(trash);
+      } catch(Exception e) {e.printStackTrace();}
+
+
+      gbc.fill = GridBagConstraints.NONE;
+      gbc.anchor = GridBagConstraints.CENTER;
+      gbc.weightx = 100;
+      gbc.weighty = 100;
+      gbc.insets.left = 10;
+      gbc.insets.right = 0;
+      add(trash, gbc, 1, 1, 1, 1);
+
+      gbc.fill = GridBagConstraints.HORIZONTAL;
+      gbc.weightx = 100;
+      gbc.weighty = 0;
+      gbc.insets.left = 0;
+      gbc.insets.right = 0;
+      add(run, gbc, 0, 1, 1, 1);
+
       //consoleFrames.addFrameListEventListener(this);
    }
+
+   public void setImage(JLabel label) throws Exception {
+      URL url = new URL("file://"+BIN_IMAGE);
+      if(url != null) {
+	 label.setIcon(new ImageIcon(url));
+      }
+      else {
+	 label.setIcon(new ImageIcon(ProgramTree.class.getResource("file://"+BIN_IMAGE)));
+      }
+      System.out.println("Label set to: "+url);
+   }
+
+   /**
+    * Describe <code>add</code> method here.
+    *
+    * @param c a <code>Component</code> value
+    * @param gbc a <code>GridBagConstraints</code> value
+    * @param x an <code>int</code> value
+    * @param y an <code>int</code> value
+    * @param w an <code>int</code> value
+    * @param h an <code>int</code> value
+    */
+   public void add(Component c, GridBagConstraints gbc, 
+		   int x, int y, int w, int h) {
+      gbc.gridx = x;
+      gbc.gridy = y;
+      gbc.gridwidth = w;
+      gbc.gridheight = h;
+      add(c, gbc);      
+   }
+
   
    /** public void actionPerformed(ActionEvent evt) is a public method
        to react button actions. The reaction is mainly about to start a
@@ -75,7 +128,7 @@ final public class ProgramTree extends JPanel
 	 if (path == null) {
 	    //errorBox =new ErrorBox("You have not selected an observation!"+
 	    //"\nPlease select an observation.");
-	    System.err.print("You have not selected an observation!");
+	    System.err.print("You have not selected an MSB!");
 	    return;
 	 }
 	 // 	  try {
@@ -101,20 +154,20 @@ final public class ProgramTree extends JPanel
    */
    private void execute() {
       SpItem item = findItem(_spItem, path.getLastPathComponent().toString());
+      
       if (item == null) {
 	 //errorBox =new ErrorBox("You have not selected an observation!"+
 	 //                       "\nPlease select an observation.");
-	 System.err.print("You have not selected an observation!");
+	 System.err.print("You have not selected an MSB!");
 	 return;
       }
-
-      if(!item.typeStr().equals("ob")) {
+      if(!item.typeStr().equals("og")) {
 	 //  	    errorBox =new ErrorBox("Your selection: "+item.getTitle()+
 	 //  				   " is not an observation"+
 	 //  				   "\nPlease select an observation.");
 	 System.err.print("Your selection: "+item.getTitle()+ 
-			  " is not an observation"+ 
-			  "\nPlease select an observation.");
+			  " is not an MSB."+ 
+			  "\nPlease select an MSB.");
 	 return;
       } else {
 	 run.setEnabled(false);
@@ -146,32 +199,32 @@ final public class ProgramTree extends JPanel
 
 	    //figure out if the same inst. is already in use or
 	    //whether IRCAM3 and CGS4 would be running together
-	     SequenceFrame f;
-	     for(int i=0;i<consoleFrames.getList().size();i++) {
-		f = (SequenceFrame)consoleFrames.getList().elementAt(i);
+	    //  	     SequenceFrame f;
+	    //  	     for(int i=0;i<consoleFrames.getList().size();i++) {
+	    //  		f = (SequenceFrame)consoleFrames.getList().elementAt(i);
 		
-		if(inst.type().getReadable().equals(f.getInstrument())) {
-		   f.resetObs(observation.getTitle(),tname);
-		   run.setEnabled(true);
-		   run.setForeground(Color.black);
-		   return;
-		}
+	    //  		if(inst.type().getReadable().equals(f.getInstrument())) {
+	    //  		   f.resetObs(observation.getTitle(),tname);
+	    //  		   run.setEnabled(true);
+	    //  		   run.setForeground(Color.black);
+	    //  		   return;
+	    //  		}
 		
-		if(inst.type().getReadable().equals("IRCAM3") && f.getInstrument().equals("CGS4")) {
-		   //new AlertBox ("IRCAM3 and CGS4 cannot run at the same time.");
-		   run.setEnabled(true);
-		   run.setForeground(Color.black);		    
-		   return;
-		}
+	    //  		if(inst.type().getReadable().equals("IRCAM3") && f.getInstrument().equals("CGS4")) {
+	    //  		   //new AlertBox ("IRCAM3 and CGS4 cannot run at the same time.");
+	    //  		   run.setEnabled(true);
+	    //  		   run.setForeground(Color.black);		    
+	    //  		   return;
+	    //  		}
 		
-		if(inst.type().getReadable().equals("CGS4") && f.getInstrument().equals("IRCAM3")) {
-		   //new AlertBox ("CGS4 and IRCAM3 cannot run at the same time.");
-		   run.setEnabled(true);
-		   run.setForeground(Color.black);		    
-		   return;
-		}
-	     }
-	     creatNewRemoteFrame(observation, inst);
+	    //  		if(inst.type().getReadable().equals("CGS4") && f.getInstrument().equals("IRCAM3")) {
+	    //  		   //new AlertBox ("CGS4 and IRCAM3 cannot run at the same time.");
+	    //  		   run.setEnabled(true);
+	    //  		   run.setForeground(Color.black);		    
+	    //  		   return;
+	    //  		}
+	    //  	     }
+	    creatNewRemoteFrame(observation, inst);
 	 }
       }
    }
@@ -285,27 +338,50 @@ final public class ProgramTree extends JPanel
    public void addTree(SpItem sp)
    {
       _spItem=sp;
-      
+
       // Create data for the tree
       root= new DefaultMutableTreeNode(sp);
+
+      //DragDropObject ddo = new DragDropObject(sp);
+      //myObs = new MsbNode(ddo);
       
-      getItems(sp,root);
-      
+      getItems(sp, root);
+            
       // Create a new tree control
-      DefaultTreeModel treeModel = new DefaultTreeModel(root);
+      treeModel = new DefaultTreeModel(root);
       tree = new JTree( treeModel);
       
+
+      MyTreeCellRenderer tcr = new MyTreeCellRenderer();
       // Tell the tree it is being rendered by our application
-      tree.setCellRenderer( new MyTreeCellRenderer() );
+      tree.setCellRenderer(tcr);
       tree.addTreeSelectionListener(this);
-      
+      tree.addKeyListener(this);
+
       // Add the listbox to a scrolling pane
       scrollPane.getViewport().removeAll();
       scrollPane.getViewport().add(tree);
-      add(scrollPane);
+      scrollPane.getViewport().setOpaque(false);
+
+      gbc.fill = GridBagConstraints.BOTH;
+      //gbc.anchor = GridBagConstraints.EAST;
+      gbc.insets.bottom = 5;
+      gbc.insets.left = 10;
+      gbc.insets.right = 5;
+      gbc.weightx = 100;
+      gbc.weighty = 100;
+      add(scrollPane, gbc, 0, 0, 2, 1);
       
       this.repaint();
       this.validate();
+   }
+
+   //public MsbNode getMsbNode() {
+   //   return myObs;
+   // }
+
+   public JTree getTree() {
+      return tree;
    }
   
    /**
@@ -350,7 +426,48 @@ final public class ProgramTree extends JPanel
 	    // 	  }
 	 }
    }
-  
+
+   public void keyPressed(KeyEvent e) {
+      if( (e.getKeyCode() == KeyEvent.VK_DELETE))
+	 removeCurrentNode();
+      
+   }
+
+   public void keyReleased(KeyEvent e) { }
+
+   public void keyTyped(KeyEvent e) { }
+
+   /** Remove the currently selected node. */
+   public void removeCurrentNode() {
+
+      SpItem item = findItem(_spItem, path.getLastPathComponent().toString());
+
+      if( (item != null) && (item.getTitle().equals("array_tests")) ) {
+
+	 //TreePath currentSelection = tree.getSelectionPath();
+	 
+	 if (path != null) { 
+	    DefaultMutableTreeNode currentNode = 
+	       (DefaultMutableTreeNode)(path.getLastPathComponent());
+	    MutableTreeNode parent = (MutableTreeNode)(currentNode.getParent());
+	    if (parent != null) {
+	       int n = JOptionPane.showConfirmDialog(null, 
+					     "Are you shure you want to delete "+item.getTitle()+" ?", 
+					     "Deletion Requested", 
+					     JOptionPane.YES_NO_OPTION);
+	       if(n == JOptionPane.YES_OPTION)
+		  treeModel.removeNodeFromParent(currentNode);
+	       return;
+	    }
+	 }
+	 // Either there was no selection, or the root was selected.
+	 //toolkit.beep();
+      }
+      JOptionPane.showMessageDialog(null, 
+				    "You can only delete 'array_tests' at this time", 
+				    "Message", JOptionPane.ERROR_MESSAGE);
+   }
+   
    /** public void getItems (SpItem spItem,DefaultMutableTreeNode node)
        is a public method to add ALL the items of a sp object into the
        JTree *recursively*.
@@ -385,25 +502,18 @@ final public class ProgramTree extends JPanel
        @throws none
       
    */
-   private SpItem findItem (SpItem spItem, String name)
-   {
+   private SpItem findItem (SpItem spItem, String name) {
       int index = 0;
       Enumeration children = spItem.children();
       SpItem tmpItem = null;
-      while (children.hasMoreElements())
-	 {
-	    SpItem  child = (SpItem) children.nextElement();
-
-	  
-	    if(child.toString().equals(name))
-	       return child;
-	  
-	    tmpItem = findItem(child,name);
-	  
-	    if(tmpItem != null)
-	       return tmpItem;
-	 }
-      
+      while (children.hasMoreElements()) {
+	 SpItem  child = (SpItem) children.nextElement();
+	 if(child.toString().equals(name))
+	    return child;
+	 tmpItem = findItem(child,name);
+	 if(tmpItem != null)
+	    return tmpItem;
+      }
       return null;
    }
   
@@ -416,9 +526,7 @@ final public class ProgramTree extends JPanel
       @throws none
      
    */
-   private void loadDramaTasks(String name)
-   {
-      
+   private void loadDramaTasks(String name) {
       //starting the drama tasks
       String[] oos=new String[4];
       String[] moni=new String[4];
@@ -488,9 +596,9 @@ final public class ProgramTree extends JPanel
    }
   
   
-//     public void frameListAdded (frameListEvent f)
-//     {
-//     }
+   //     public void frameListAdded (frameListEvent f)
+   //     {
+   //     }
 
    /**
       Services requests to change the instrument that is connected to the 
@@ -500,68 +608,73 @@ final public class ProgramTree extends JPanel
       @throws none
      
    */
-//     public void connectedInstrumentChanged(frameListEvent f)
-//     {
-//        Object l=f.getSource();
-//        if(l==consoleFrames) {
-//  	 String connectedInstrument = 
-//  	    new String(consoleFrames.getConnectedInstrument());
+   //     public void connectedInstrumentChanged(frameListEvent f)
+   //     {
+   //        Object l=f.getSource();
+   //        if(l==consoleFrames) {
+   //  	 String connectedInstrument = 
+   //  	    new String(consoleFrames.getConnectedInstrument());
 
-//  	 if (!connectedInstrument.equals("NONE")) {
-//  	    for (int i=0; i<menu.getActiveInstrumentList().getItemCount();i++) {
-//  	       if (menu.getActiveInstrumentList().getItemAt(i).toString().equals
-//  		   (connectedInstrument)) {
-//  		  menu.getActiveInstrumentList().setSelectedItem
-//  		     (menu.getActiveInstrumentList().getItemAt(i));
-//  		  break;
-//  	       }
-//  	    }
-//  	 } else {
-//  	    sequenceFrame temp;
+   //  	 if (!connectedInstrument.equals("NONE")) {
+   //  	    for (int i=0; i<menu.getActiveInstrumentList().getItemCount();i++) {
+   //  	       if (menu.getActiveInstrumentList().getItemAt(i).toString().equals
+   //  		   (connectedInstrument)) {
+   //  		  menu.getActiveInstrumentList().setSelectedItem
+   //  		     (menu.getActiveInstrumentList().getItemAt(i));
+   //  		  break;
+   //  	       }
+   //  	    }
+   //  	 } else {
+   //  	    sequenceFrame temp;
 	    
-//  	    for(int i=0; i<consoleFrames.getList().size();i++) {
-//  	       temp = (sequenceFrame) consoleFrames.getList().elementAt(i); 
-//  	       if (temp.getInstrument().equals
-//  		   (menu.getActiveInstrumentList().getSelectedItem().toString())) {
+   //  	    for(int i=0; i<consoleFrames.getList().size();i++) {
+   //  	       temp = (sequenceFrame) consoleFrames.getList().elementAt(i); 
+   //  	       if (temp.getInstrument().equals
+   //  		   (menu.getActiveInstrumentList().getSelectedItem().toString())) {
 
-//  		  temp.connectTCS();
-//  		  break;
-//  	       } 
-//  	    }
-//  	 }
-//        }
-//     }
+   //  		  temp.connectTCS();
+   //  		  break;
+   //  	       } 
+   //  	    }
+   //  	 }
+   //        }
+   //     }
   
 
-//     public void frameListRemoved (frameListEvent f)
-//     {
-//        Object l=f.getSource();
-//        if (l==consoleFrames) {
+   //     public void frameListRemoved (frameListEvent f)
+   //     {
+   //        Object l=f.getSource();
+   //        if (l==consoleFrames) {
 	  
-//  	 menu.getActiveInstrumentList().removeAllItems();
+   //  	 menu.getActiveInstrumentList().removeAllItems();
 	  
-//  	 for (int i=0; i<consoleFrames.getList().size();i++) {
-//  	    sequenceFrame temp = 
-//  	       (sequenceFrame) consoleFrames.getList().elementAt(i);  
-//  	    menu.getActiveInstrumentList().addItem(temp.getInstrument());
-//  	 }
-//        }
-//     }
+   //  	 for (int i=0; i<consoleFrames.getList().size();i++) {
+   //  	    sequenceFrame temp = 
+   //  	       (sequenceFrame) consoleFrames.getList().elementAt(i);  
+   //  	    menu.getActiveInstrumentList().addItem(temp.getInstrument());
+   //  	 }
+   //        }
+   //     }
   
   
   
    public FrameList getFrameList() {return consoleFrames;}
    public JButton getRunButton () {return run;}
-  
+   
+   private GridBagConstraints gbc;
    private JButton run;
    private JTree tree;
    private JScrollPane scrollPane= new JScrollPane();;
    private SpItem _spItem;
+
    private DefaultMutableTreeNode root;
+   private DefaultTreeModel treeModel;
    private TreePath path;
    private FrameList consoleFrames = new FrameList();
    private RemoteFrame frame;
 
+   public static final String BIN_IMAGE = System.getProperty("binImage");
+   public static final String BIN_SEL_IMAGE = System.getProperty("binImage");
    //private menuSele menu;
    //private ErrorBox errorBox;
 }
