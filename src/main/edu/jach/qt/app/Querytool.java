@@ -342,7 +342,12 @@ public class Querytool implements Runnable, Observer {
 	  if ( next.equalsIgnoreCase("duration")) {
 	    item = doc.createElement("timeest");
 	    item.setAttribute("units","minutes");
-	  } else {
+	  } 
+	  else if (next.equalsIgnoreCase("observation")) {
+	      root = processDate(lrtf, doc, root);
+	      continue;
+	  }
+	  else {
 	    item = doc.createElement(next);
 	  }
 	  
@@ -460,5 +465,23 @@ public class Querytool implements Runnable, Observer {
   public boolean XMLisNull() {
     return (_xmlString == null);
   }
+
+    private Element processDate( LabeledRangeTextField lrtf,
+			      Document doc,
+			      Element root) {
+	Element item, sub;
+	String tmpStr;
+
+	tmpStr = lrtf.getLowerText()+"T"+lrtf.getUpperText();
+	TimeUtils tu = new TimeUtils();
+	if (tu.isValidDate(tmpStr) ) {
+	    item = doc.createElement("date");
+	    tmpStr = tu.convertLocalISODatetoUTC(tmpStr);
+	    item.appendChild (doc.createTextNode(tmpStr.trim()));
+	    root.appendChild (item); 
+	}
+
+	return root;
+    }
 
 }// Querytool
