@@ -26,7 +26,7 @@ import javax.swing.border.TitledBorder;
 public class SatPanel extends JLabel implements TimerListener {
 
   private TitledBorder satBorder;
-  private static final String SAT_WEBPAGE = System.getProperty("satellitePage");
+  private static String currentWebPage = System.getProperty("satelliteIRPage");
   private static final String IMG_PREFIX = System.getProperty("imagePrefix");
     /**
      * Constructor.
@@ -62,10 +62,18 @@ public class SatPanel extends JLabel implements TimerListener {
      * Redraws the associated image.
      */
   public void refreshIcon() {
+      URL url;
+      try {
+	  url = new URL(currentWebPage);
+      }
+      catch (Exception mue) {
+	  url = null;
+      }
+      final URL thisURL = url;
       SwingWorker worker = new SwingWorker() {
 	      public Object construct () {
 		  try {
-		      String imageSuffix = URLReader.getImageString(new URL(SAT_WEBPAGE));
+		      String imageSuffix = URLReader.getImageString(thisURL);
 		      String timeString = imageSuffix.substring(8, imageSuffix.indexOf('.'));
 		      
 		      //System.out.println("IMG=>>>"+InfoPanel.IMG_PREFIX + imageSuffix+"<<<");
@@ -76,8 +84,20 @@ public class SatPanel extends JLabel implements TimerListener {
 		  return null;
 	      }
 	  };
-      worker.start();
+      if (url != null) {
+	  worker.start();
+      }
   }
+
+    public void setDisplay (String image) {
+	if (image.equalsIgnoreCase("Water Vapour")) {
+	    currentWebPage = System.getProperty("satelliteWVPage");
+	}
+	else {
+	    currentWebPage = System.getProperty("satelliteIRPage");
+	}
+	refreshIcon();
+    }
 }// SatPanel
 
 /**
@@ -105,7 +125,8 @@ class URLReader {
 
     while (st.hasMoreTokens()) {
       String temp = st.nextToken();
-      if (temp.startsWith("SRC=ni4")) {
+      if (temp.startsWith("SRC=ni4") ||
+	  temp.startsWith("SRC=nw8")) {
 	imgString = temp.substring(4, temp.indexOf('>'));
       }
     }
