@@ -99,7 +99,7 @@ public class CalibrationList {
 
 	/* Send the query to the database */
 	String result = MsbClient.queryCalibration(writer.toString());
-	if (result == null || result.equals("") {
+	if (result == null || result.equals("")) {
 	    return null;
 	}
 
