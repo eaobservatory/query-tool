@@ -34,9 +34,12 @@ public class ObsListCellRenderer extends DefaultListCellRenderer {
     setText(s);
     boolean isDone=false;
 
-    StringTokenizer st = new StringTokenizer(s, "_done_");
-    if (st.countTokens() > 1) {
-	isDone=true;
+    StringTokenizer st = new StringTokenizer(s, "_");
+    while (st.hasMoreTokens()) {
+	if (st.nextToken().equals("done")) {
+	    isDone=true;
+	    break;
+	}
     }
 
     if (((SpObs)value).isOptional() == false) {
