@@ -60,6 +60,10 @@ public class LabeledTextField extends WidgetPanel
     return textField.getText();
   }
 
+  public void setText(String val) {
+    textField.setText(val);
+  }
+
   public Vector getList() {
     String tmpStr = getText();
     Vector result = new Vector();
