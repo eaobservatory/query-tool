@@ -40,8 +40,8 @@ public class TelescopeDataPanel extends JPanel implements ActionListener {
     seeing		= new JLabel("Seeing: ", JLabel.LEADING);
     airmass		= new JLabel("Airmass: ", JLabel.LEADING);
     csoTauValue		= new JLabel(tauString, JLabel.LEADING);
-    seeingValue		= new JLabel("0.25\"", JLabel.LEADING);
-    airmassValue	= new JLabel("1.2", JLabel.LEADING);
+    seeingValue		= new JLabel(tauString, JLabel.LEADING);
+    airmassValue	= new JLabel(tauString, JLabel.LEADING);
     updateButton	= new JButton("Set Current");
 
     if (TelescopeDataPanel.DRAMA_ENABLED) {
