@@ -1060,7 +1060,19 @@ final public class ProgramTree extends JPanel implements
 	    }
 	}
 	obsList.setEnabled(true);
-
+	if (model.isEmpty() && TelescopeDataPanel.DRAMA_ENABLED) {
+	    int mark = JOptionPane.showConfirmDialog(this, "Mark the MSB with \n"+
+						     "Project ID: "+projectID+"\n"+
+						     "CheckSum: "+checkSum+"\n"+
+						     "as done?",
+						     "MSB complete",
+						     JOptionPane.YES_NO_OPTION);
+	    if (mark == JOptionPane.YES_OPTION) {
+		MsbClient.doneMSB(projectID, checkSum);
+		// Since the MSBID has changed, redo the search...
+		InfoPanel.searchButton.doClick();
+	    }
+	} // end of if ()
     }
 
   public JButton getRunButton () {return run;}
