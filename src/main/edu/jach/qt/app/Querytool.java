@@ -133,7 +133,6 @@ public class Querytool implements Runnable, Observer {
 	root.appendChild(item);
       }
       
-	 
       for(Enumeration e = ht.keys(); e.hasMoreElements() ; ) {
 	next = ((String)e.nextElement());
 
@@ -216,6 +215,15 @@ public class Querytool implements Runnable, Observer {
 
 	    else if ( next.equalsIgnoreCase("project") )
 	      item = doc.createElement("projectid");
+
+	    else if ( next.equalsIgnoreCase("seeing") )
+	      item = doc.createElement("seeing");
+
+	    else if ( next.equalsIgnoreCase("tau" ) )
+	      item = doc.createElement("tau");
+
+	    else if ( next.equalsIgnoreCase("airmass") )
+	      item = doc.createElement("airmass");
 
 	    tmpStr = (String)n.nextElement();
 	    item.appendChild(doc.createTextNode(tmpStr.trim()));
