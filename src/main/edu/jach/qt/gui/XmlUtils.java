@@ -284,6 +284,9 @@ public class XmlUtils {
    }
 
     private static String convertStringToTime(String oldTime) {
+	if ( oldTime == null  || oldTime.length() == 0 ) {
+	    return "00h00m00s";
+	}
 	boolean hasHours   = (oldTime.indexOf('h') != -1);
 	boolean hasMinutes = (oldTime.indexOf('m') != -1);
 	boolean hasSeconds = (oldTime.indexOf('s') != -1);
