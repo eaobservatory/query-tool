@@ -21,6 +21,9 @@ import om.frameList.*;    //import frameList Java bean
 import orac.ukirt.inst.*;
 import orac.ukirt.iter.*;
 import orac.ukirt.util.SpTranslator;
+import orac.jcmt.inst.*;
+import orac.jcmt.iter.*;
+import orac.jcmt.obsComp.*;
 
 /**
    final public class programTree is a panel to select
@@ -51,8 +54,6 @@ final public class ProgramTree extends JPanel
       setLayout(gbl);
       gbc = new GridBagConstraints();
 
-      //setSize(400,550);
-      //menu=m;
       run=new JButton("Send for execution");
       run.setMargin(new Insets(5,10,5,10));
       run.setEnabled(true);
