@@ -122,9 +122,9 @@ public class InfoPanel extends JPanel implements ActionListener {
 	      Boolean isStatusOK;
 
 	      public Object construct() {
-		  if (qtf.getSelectedTab() != 0) {
-		      qtf.setSelectedTab(0);
-		  }
+// 		  if (qtf.getSelectedTab() != 0) {
+// 		      qtf.setSelectedTab(0);
+// 		  }
 		isStatusOK = new Boolean(localQuerytool.queryMSB());
 		return isStatusOK;  //not used yet
 	      }
