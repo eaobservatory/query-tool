@@ -73,6 +73,18 @@ public class MsbClient extends SoapClient {
 
   }
 
+    public static String queryCalibration(String xmlQueryString) {
+	Object tmp;
+	try {
+	    logger.debug("Sending queryMSB: "+xmlQueryString);
+	    URL url = new URL(System.getProperty("msbServer"));
+	    flushParameter();
+	    addParameter("xmlquery", String.class, xmlQueryString);
+	    tmp = doCall(url, "urn:OMP::MSBServer", "queryMSB");	    
+	}catch (Exception e) {return null;}
+	return tmp.toString();
+    }
+
   /**
    * <code>fetchMSB</code> Fetch the msb indicated by the msbid. The
    * SpItem will return null on failure. In the future this should
