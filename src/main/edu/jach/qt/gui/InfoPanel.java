@@ -133,9 +133,16 @@ public class InfoPanel extends JPanel implements ActionListener {
 	      public void finished() { 
 		logoPanel.stop();
 		if ( isStatusOK.booleanValue()) {
+		  qtf.updateColumnSizes();
 		  Thread tableFill = new Thread(msb_qtm);
 		  tableFill.start();
-		  
+		  try {
+		      tableFill.join();
+		  }
+		  catch (InterruptedException iex) {
+		      logger.warn("Problem joining tablefill thread");
+		  };
+		  qtf.setColumnSizes();
 		}
 	      }
 	    };
