@@ -8,15 +8,15 @@
 ]>
 <TelescopeData>
 	<Telescope name="ukirt">
-		<longitude>	-155.473	</longitude>
-		<latitude>	  19.826	</latitude>
+		<latitude>19.826</latitude>
+		<longitude>-155.473</longitude>
 	</Telescope>
 	<Telescope name="jcmt">
-		<longitude>	-155.473	</longitude>
-		<latitude> 	  19.826	</latitude>
+		<latitude>19.826</latitude>
+		<longitude>-155.473</longitude>
 	</Telescope>
 	<Telescope name="gemini-north">
-		<longitude>	-155.471	</longitude>
-		<latitude>	  19.820	</latitude>
+		<latitude>19.820</latitude>
+		<longitude>-155.471</longitude>
 	</Telescope>
 </TelescopeData>
