@@ -35,7 +35,9 @@ public class MsbClient extends SoapClient {
    * <code>queryMSB</code>
    * Perform a query to the MsbServer with the given query
    * String. Success will return a true value and write the msbSummary
-   * xml to file.
+   * xml to file.  A unique file will be written for each user to allow
+   * multiple users on th same machine.  This file should not be read by
+   * the code.
    *
    * @param xmlQueryString a <code>String</code> value. The xml representing the query.
    * @return a <code>boolean</code> value indicating success.
@@ -48,7 +50,11 @@ public class MsbClient extends SoapClient {
 	flushParameter();
 	addParameter("xmlquery", String.class, xmlQueryString);
 
-	FileWriter fw = new FileWriter(System.getProperty("msbSummary"));
+	String fileName = System.getProperty("msbSummary") + "." +
+	    System.getProperty("user.name");
+	System.out.println(fileName);
+
+	FileWriter fw = new FileWriter(fileName);
 	Object tmp = doCall(url, "urn:OMP::MSBServer", "queryMSB");
 
 	if (tmp != null ) {
