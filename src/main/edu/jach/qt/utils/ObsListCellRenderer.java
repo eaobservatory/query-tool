@@ -35,7 +35,7 @@ public class ObsListCellRenderer extends DefaultListCellRenderer {
     boolean isDone=false;
 
     StringTokenizer st = new StringTokenizer(s, "_done_");
-    if (st.countTokens() > 0) {
+    if (st.countTokens() > 1) {
 	isDone=true;
     }
 
