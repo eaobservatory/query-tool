@@ -18,6 +18,7 @@ import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.table.*;
 import org.apache.log4j.Logger;
+import sun.misc.*;
 
 /**
  * The <code>QtFrame</code> is responsible for how the main JFrame
@@ -84,6 +85,23 @@ public class QtFrame
     //enableEvents(AWTEvent.MOUSE_EVENT_MASK);
     GridBagLayout layout = new GridBagLayout();
     getContentPane().setLayout(layout);
+    this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+    this.addWindowListener( new WindowAdapter () {
+	    public void windowClosing(WindowEvent e) {
+		exitQT();
+	    }
+	} );
+
+    SignalHandler handler = new SignalHandler () {
+	    public void handle (Signal sig) {
+		// Handle SIGTERM
+		setVisible(false);
+		dispose();
+		System.exit(0);
+	    }
+	};
+    Signal.handle(new Signal("TERM"), handler);
+
 
     try {
 //       compInit();
@@ -112,6 +130,19 @@ public class QtFrame
    */
   public void exitQT() {
       logger.info("QT shutdown by user");
+      boolean canExit = true;
+      // See if there are any outstanding observations and ask the user what to do with them...
+      if (om != null) {
+	  canExit = om.checkProgramTree();
+      }
+      if (!canExit) {
+	  JOptionPane.showMessageDialog ( null,
+					  "Can not exit the QT until the current MSB is accepted/rejected",
+					  "Can not exit QT",
+					  JOptionPane.WARNING_MESSAGE);
+	  return;
+      }
+      
       if (DeferredProgramList.deferredFilesExist()) {
 	  Object [] options = {"Save", "Delete"};
 	  int selection = JOptionPane.showOptionDialog( null,
@@ -855,22 +886,22 @@ public class QtFrame
    * Overridden so we can exit when window is closed
    * @param e a <code>WindowEvent</code> value
    */
-  protected void processWindowEvent(WindowEvent e) {
-    super.processWindowEvent(e);
-    if (e.getID() == WindowEvent.WINDOW_CLOSING) {
-	// Delete the user cache file
-	File cacheDir = new File ("/tmp/last_user");
-	if (cacheDir.exists() && cacheDir.isDirectory() ) {
-	    File [] files = cacheDir.listFiles();
-	    for (int i=0; i<files.length; i++) {
-		if (files[i].isFile()) {
-		    files[i].delete();
-		}
-	    }
-	}
-	System.exit(0);
-    }
-  }
+//   protected void processWindowEvent(WindowEvent e) {
+//     super.processWindowEvent(e);
+//     if (e.getID() == WindowEvent.WINDOW_CLOSING) {
+// 	// Delete the user cache file
+// 	File cacheDir = new File ("/tmp/last_user");
+// 	if (cacheDir.exists() && cacheDir.isDirectory() ) {
+// 	    File [] files = cacheDir.listFiles();
+// 	    for (int i=0; i<files.length; i++) {
+// 		if (files[i].isFile()) {
+// 		    files[i].delete();
+// 		}
+// 	    }
+// 	}
+// 	exitQT();
+//     }
+//   }
 
     /**
      * Return the (code>WidgetPanel</code> from this frame.

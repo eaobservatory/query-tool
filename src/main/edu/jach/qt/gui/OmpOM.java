@@ -171,6 +171,7 @@ public class OmpOM extends JPanel{
 	    spItem = new SpInstHeterodyne();
 	    
 	    /* Init JCMT SpTypes */
+	    spItem = new SpIterChop();
 	    spItem = new orac.jcmt.inst.SpDRRecipe();
 	    spItem = new SpIterFocusObs();
 	    spItem = new SpIterFrequency();
@@ -355,6 +356,18 @@ public class OmpOM extends JPanel{
 
     return splitPane;
   }
+
+    /**
+     * See if we can shutdown the QT.  Checks whether the program tree still has
+     * an MSB which requires actioning.
+     */
+    public boolean checkProgramTree() {
+	boolean safeToExit = true;
+	if (ptree != null) {
+	    safeToExit = ptree.shutDownRequest();
+	}
+	return safeToExit;
+    }
 
     /**
      * Tests the display.

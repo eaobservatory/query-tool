@@ -102,6 +102,13 @@ final public class ProgramTree extends JPanel implements
 
     private boolean                     anObservationHasBeenDone = false;
     private boolean                     msbDone = false;  // The MSB has been either accepted or rejected
+    private File                        msbPendingFile;
+    private String                      msbPendingDir = File.separator +
+	                                                System.getProperty("telescope").trim().toLowerCase() +
+	                                                "data" + 
+	                                                File.separator +
+	                                                "orac_data" +
+	                                                File.separator;
 
     /** public programTree() is the constructor. The class
 	has only one constructor so far.  a few thing are done during
@@ -426,6 +433,9 @@ final public class ProgramTree extends JPanel implements
 		run.setEnabled(true);
 		return;
 	    }
+	}
+	if ( anObservationHasBeenDone ) {
+	    msbPendingFile = new File (msbPendingDir+projectID+"_"+checkSum+".pending");
 	}
     }
 
@@ -1019,7 +1029,6 @@ final public class ProgramTree extends JPanel implements
 		SpTreeMan.insert(spid);
 	    }
 	}
- 	System.exit(0);
 	
 	return item;
     }
@@ -1192,6 +1201,24 @@ final public class ProgramTree extends JPanel implements
 	enableList(true);
     }
 
+    /**
+     * Request whether we can shutdown the QT at this point.  It basically calls the MSBDoneDialog
+     * and will return "true" if we can shutdown, or false otherwise.
+     */
+    public boolean shutDownRequest() {
+	if ( ( System.getProperty("telescope").equalsIgnoreCase("ukirt") || // We are using ukirt
+	       instrumentContext instanceof SpInstHeterodyne )  &&          // We have a heterodyne component
+	     anObservationHasBeenDone &&                                    // At least one observation has been 
+                                                                            // done from the current MSB
+	     !msbDone &&                                                    // The MSB has not been marked as done
+	     TelescopeDataPanel.DRAMA_ENABLED ) {                           // We are not running scenario.
+	    return ( showMSBDoneDialog() );
+	}
+	else {
+	    return true;  // We can safely exit
+	}
+    }
+
     private boolean showMSBDoneDialog() {
 	boolean done = false;
 
@@ -1234,7 +1261,7 @@ final public class ProgramTree extends JPanel implements
 	else if (noDataFile.exists()) {
 	    noDataFile.delete();
 	    done=true;
-	    anObservationHasBeenDone = true;
+	    anObservationHasBeenDone = false;
 	    ((DefaultListModel)obsList.getModel()).clear();
 	    logger.info ("User selected 'No Data Taken'");
 	}
@@ -1252,6 +1279,9 @@ final public class ProgramTree extends JPanel implements
 	    anObservationHasBeenDone = false;
 	    InfoPanel.searchButton.doClick();
 	    logger.info ("User rejected MSB");
+	}
+	if ( !anObservationHasBeenDone ) {
+	    msbPendingFile.delete();
 	}
 	return done;
     }

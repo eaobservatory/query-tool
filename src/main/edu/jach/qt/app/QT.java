@@ -90,7 +90,6 @@ final public class QT {
       QtFrame qtf = new QtFrame(wdb, qt);
 
       
-      qtf.addWindowListener(new BasicWindowMonitor());
       qtf.setSize(1150,620);
       //qtf.setSize(new Dimension(1150, 600));
       qtf.setTitle("OMP Query Tool Observation Manager");
@@ -143,6 +142,9 @@ final public class QT {
 
 /*
  * $Log$
+ * Revision 1.27  2003/03/28 18:59:49  dewitt
+ * Added checking MSB status on exit.  Also added a handler for SIGTERMs for future use with ocs_down script.
+ *
  * Revision 1.26  2003/03/19 19:31:30  dewitt
  * New UKIRT instrument handling.
  *
