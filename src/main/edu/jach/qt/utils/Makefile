@@ -27,7 +27,9 @@ SOURCES = \
 	TelescopeInformation.java \
 	TimeUtils.java \
 	ExecDtask.java \
-	ErrorBox.java
+	ErrorBox.java \
+	NoSuchParameterException.java
+
 
 
 include $(BUILD)/make.tail
