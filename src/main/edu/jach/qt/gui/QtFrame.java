@@ -118,7 +118,7 @@ public class QtFrame extends JFrame implements ActionListener, MenuListener, Lis
   }
 
   private void tableSetup() {
-    TableSorter sorter = new TableSorter(msbQTM);
+    final TableSorter sorter = new TableSorter(msbQTM);
     table = new JTable(sorter);
     sorter.addMouseListenerToHeaderInTable(table);
     table.sizeColumnsToFit(JTable.AUTO_RESIZE_ALL_COLUMNS);
@@ -149,7 +149,8 @@ public class QtFrame extends JFrame implements ActionListener, MenuListener, Lis
 	      
 	      final SwingWorker worker = new SwingWorker() {
 		  Boolean isStatusOK;
-		  Integer msbID = msbQTM.getSpSummaryId(selRow);
+		  String tempMsbID = (String)sorter.getValueAt(selRow, MSBQueryTableModel.MSBID);
+ 		  Integer msbID = new Integer(tempMsbID);
 
 		  public Object construct() {
 
