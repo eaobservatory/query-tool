@@ -37,6 +37,7 @@ public class SimpleMoon {
     private TopocentricCoords tc;
 
     private TelescopeInformation ti;
+    private Calendar _cal;
 
     // Constructor - sets up current information
     /**
@@ -85,7 +86,7 @@ public class SimpleMoon {
      */
     public double getIllumination() {
 	// Get the current position of the Sun
-	Sun sun = new Sun();
+	Sun sun = new Sun(_cal);
 
 	double x1 = Math.cos(currentRA/HINR)*Math.cos(currentDec/DINR);
 	double y1 = Math.sin(currentRA/HINR)*Math.cos(currentDec/DINR);
@@ -125,8 +126,7 @@ public class SimpleMoon {
 	boolean up = true;
 
 	// get the current HA
-	Calendar local = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-	double localJD = toJulianDate(local);
+	double localJD = toJulianDate(_cal);
 	double lst = getST(localJD) + longitude/15.;
 	double haMoon = lst - currentRA;
 
@@ -152,8 +152,8 @@ public class SimpleMoon {
 	//
 	// Calculate the JD corresponding to the current UT
 	//
-	Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-	double jDate = toJulianDate(cal);
+	_cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+	double jDate = toJulianDate(_cal);
 
 	// Get the local siderial time
 	double gst = getST(jDate);
@@ -205,6 +205,7 @@ public class SimpleMoon {
 	double declination = Math.asin(tc.getz()/tc.getd());
 	currentDec = declination * DINR;
 
+
     }
 
     // Get the RA and Dec of the moon at a specified local time
@@ -222,9 +223,9 @@ public class SimpleMoon {
 	// Calculate the JD corresponding to the current UT
 	//
 	TimeUtils tu = new TimeUtils();
-	Calendar cal = tu.toCalendar(isoDateTime);
+	_cal = tu.toCalendar(isoDateTime);
 
-	double jDate = toJulianDate(cal);
+	double jDate = toJulianDate(_cal);
 
 	// Get the local siderial time
 	double gst = getST(jDate);
@@ -306,8 +307,8 @@ public class SimpleMoon {
 	double jd = Math.floor(365.25*(yr+4716));
 	jd = jd + Math.floor(30.60001*(mn+1));
 	// 	jd = jd + dy + b -1524.5;
-	jd = jd + dy + b - 1524.;
-	jd = jd + c.get(Calendar.HOUR)/24. +
+	jd = jd + dy + b - 1524.5;
+	jd = jd + c.get(Calendar.HOUR_OF_DAY)/24. +
 	    c.get(Calendar.MINUTE)/1440. +
 	    c.get(Calendar.SECOND)/86400.;
 	
@@ -588,16 +589,20 @@ public class SimpleMoon {
 	 * Constructor calculates the current RA and Dec of the Sun.
 	 */
 	public Sun() {
-	    getPosition();
+	    getPosition(Calendar.getInstance(TimeZone.getTimeZone("UTC")));
 	}
+
+        public Sun(Calendar cal) {
+            getPosition(cal);
+        }
+        
 
 	/**
 	 * Calaculate the current RA and Dec of the Sun. 
 	 * Uses  the approximation equations contained in the 
 	 * Astronomical Almanac.
 	 */
-	public void getPosition() {
-	    Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+	public void getPosition(Calendar cal) {
 	    double jDate = toJulianDate(cal);
 	    double deltaT = (jDate-JD2000);
 	    

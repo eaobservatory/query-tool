@@ -494,11 +494,28 @@ public class Querytool implements Runnable, Observer {
 		tmpStr = tu.convertLocalISODatetoUTC(tmpStr);
 		item.appendChild (doc.createTextNode(tmpStr.trim()));
 		root.appendChild (item); 
-		// Dont use the moon info
+                // Recalculate the moon
+                SimpleMoon moon = new SimpleMoon(tmpStr);
+                int moonValue = 0;
+                if ( moon.isUp() ) {
+                    if ( moon.getIllumination() < 0.25 ) {
+                        moonValue = 1;
+                    }
+                    else {
+                        moonValue = 2;
+                    }
+                }
+                else {
+		   //                    System.out.println("Moon is down");
+                }
+		// Delete any existing value and repalce with the new
 		NodeList list = root.getElementsByTagName("moon");
 		if (list.getLength() != 0) {
 		    root.removeChild(list.item(0));
 		}
+                item = doc.createElement("moon");
+                item.appendChild( doc.createTextNode(""+moonValue) );
+                root.appendChild (item);
 	    }
 	    else {
 		// We will use the current date, so set execution to true
