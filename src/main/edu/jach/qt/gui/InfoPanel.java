@@ -133,6 +133,7 @@ public class InfoPanel extends JPanel
     exitButton.addActionListener(this);
 
     gbc.fill = GridBagConstraints.BOTH;
+    //gbc.insets = new Insets(5,5,5,5);
     //gbc.anchor = GridBagConstraints.CENTER;
     //gbc.insets.bottom = 0;
     //gbc.insets.left = 10;
@@ -153,7 +154,6 @@ public class InfoPanel extends JPanel
     gbc.fill = GridBagConstraints.BOTH;
     gbc.anchor = GridBagConstraints.CENTER;
     //gbc.weighty = 1.0;
-    add(satPanel, gbc, 0, 2, 1, 1);
 
     //gbc.fill = GridBagConstraints.BOTH;
     //gbc.anchor = GridBagConstraints.CENTER;
@@ -161,6 +161,7 @@ public class InfoPanel extends JPanel
     //      gbc.insets.left = 5;
     //      gbc.insets.right = 5;
     //gbc.weightx = 0.0;
+    gbc.insets = new Insets(5,15,15,5);
     gbc.weighty = 0.0;
     add(InfoPanel.searchButton, gbc, 0, 5, 1, 1);
     
@@ -180,8 +181,11 @@ public class InfoPanel extends JPanel
     gbc.anchor = GridBagConstraints.CENTER;
     gbc.weightx = 100;
     //gbc.ipady = 30; 
+    gbc.insets = new Insets(0,0,0,0);
     gbc.weighty = 0.6;
     add(telescopeInfoPanel, gbc, 0, 20, 1, 1);
+
+    add(satPanel, gbc, 0, 30, 1, 1);
 
     //      gbc.fill = GridBagConstraints.BOTH;
     //      gbc.weightx = 100;
@@ -197,7 +201,7 @@ public class InfoPanel extends JPanel
     gbc.weighty = 0;
     gbc.insets.left = 0;
     gbc.insets.right = 0;
-    add(timePanel, gbc, 0, 25, 1, 1);
+    add(timePanel, gbc, 0, 40, 1, 1);
 
   }
 
