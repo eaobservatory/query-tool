@@ -330,11 +330,15 @@ public class Querytool implements Runnable, Observer {
    *
    * @param i an <code>Integer</code> value
    */
-  public SpItem fetchMSB(Integer i) {
+  public SpItem fetchMSB(Integer i) throws NullPointerException {
 
     SpItem spItem = MsbClient.fetchMSB(i);
 
     System.out.println("And the NEXT winner is: "+spItem);
+
+    if ( spItem == null) {
+      throw (new NullPointerException());
+    } // end of if ()
 
     return spItem;
   }
