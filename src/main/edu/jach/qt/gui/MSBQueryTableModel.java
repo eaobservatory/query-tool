@@ -26,194 +26,201 @@ import java.io.*;
 
 public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
 
-   public static final String ROOT_ELEMENT_TAG = "SpMSBSummary";
+  public static final String ROOT_ELEMENT_TAG = "SpMSBSummary";
 
-   public static final String MSB_SUMMARY = System.getProperty("msbSummary");
+  public static final String MSB_SUMMARY = System.getProperty("msbSummary");
+  public static final String MSB_SUMMARY_TEST = System.getProperty("msbSummaryTest");
 
-   /*public static final String[] colNames ={
-      "ProjectID",
-      "SourceName",
-      "Instrument",
-      "Wavelength",
-      "ExposureTime",
-      "PI"
-      };*/
+  /*public static final String[] colNames ={
+    "ProjectID",
+    "SourceName",
+    "Instrument",
+    "Wavelength",
+    "ExposureTime",
+    "PI"
+    };*/
    
-   public static final String[] colNames ={
-      "waveband",
-      "instrument",
-      "remaining",
-      "target",
-      "obscount",
-      "seeing",
-      "title",
-      "checksum",
-      "coordstype",
-      "timeest",
-      "projectid",
-      "tauband",
-      "priority",
-      };
+  public static final String[] colNames ={
+    "waveband",
+    "instrument",
+    "remaining",
+    "target",
+    "obscount",
+    //"seeing",
+    "title",
+    "checksum",
+    "coordstype",
+    "timeest",
+    "projectid",
+    //"tauband",
+    "priority",
+  };
    
-   public static final Class[] colClasses ={
-      String.class,
-      String.class,
-      Integer.class,
-      String.class,
-      String.class,
-      String.class,
-      String.class,
-      String.class,
-      String.class,
-      String.class,
-      String.class,
-      String.class,
-      String.class,
-   };
+  public static final Class[] colClasses ={
+    String.class,
+    String.class,
+    Integer.class,
+    String.class,
+    String.class,
+    //String.class,
+    String.class,
+    String.class,
+    String.class,
+    String.class,
+    String.class,
+    //String.class,
+    String.class,
+  };
 
-   public static final int 
-      WAVELENGTH          = 0,
-      INSTRUMENT          = 1,
-      REMAINING           = 2,
-      TARGET              = 3,
-      OBSCOUNT            = 4,
-      SEEING              = 5,
-      TITLE               = 6,
-      CHECKSUM            = 7,
-      COORDSTYPE          = 8,
-      TIMEEST             = 9,
-      PROJECTID           = 10,
-      TAUBAND             = 11,
-      PRIORITY            = 12;
+  public static final int 
+    WAVELENGTH          = 0,
+    INSTRUMENT          = 1,
+    REMAINING           = 2,
+    TARGET              = 3,
+    OBSCOUNT            = 4,
+    //SEEING              = 5,
+    TITLE               = 5,
+    CHECKSUM            = 6,
+    COORDSTYPE          = 7,
+    TIMEEST             = 8,
+    PROJECTID           = 9,
+    //TAUBAND             = 11,
+    PRIORITY            = 10;
 
-   //DATA
-   //DOM object to hold XML document contents
-   protected Document doc;
-   public Integer[] projectIds;
-   boolean docIsNull;
+  //DATA
+  //DOM object to hold XML document contents
+  protected Document doc;
+  public Integer[] projectIds;
+  boolean docIsNull;
 
-   //used to hold a list of TableModelListeners
-   protected java.util.List tableModelListeners = 
-      new ArrayList();        
+  //used to hold a list of TableModelListeners
+  protected java.util.List tableModelListeners = 
+    new ArrayList();        
 
-   public MSBQueryTableModel() {
-      docIsNull = true;
-      projectIds = new Integer[200];
-   }
+  public MSBQueryTableModel() {
+    docIsNull = true;
+    projectIds = new Integer[200];
+  }
 
-   public void run() {
-   /**
-      Constructor - create a DOM
-   */
+  public void run() {
+    /**
+       Constructor - create a DOM
+    */
 
-      try {
-	 DocumentBuilderFactory factory =
-	    DocumentBuilderFactory.newInstance();
-	 //factory.setValidating(true);   
-	 //factory.setNamespaceAware(true);
+    try {
+      DocumentBuilderFactory factory =
+	DocumentBuilderFactory.newInstance();
+      //factory.setValidating(true);   
+      //factory.setNamespaceAware(true);
 	 
-	 DocumentBuilder builder = factory.newDocumentBuilder();
-	 doc = builder.parse( new File(MSB_SUMMARY));
-	 docIsNull = false;
-      } catch (SAXException sxe) {
-	 // Error generated during parsing)
-	 Exception  x = sxe;
-	 if (sxe.getException() != null)
-	    x = sxe.getException();
-	 x.printStackTrace();
+      DocumentBuilder builder = factory.newDocumentBuilder();
+      doc = builder.parse( new File(MSB_SUMMARY));
+      //doc = builder.parse( new File(MSB_SUMMARY_TEST));
+      //System.out.println("doc: "+doc);
+      docIsNull = false;
+    } catch (SAXException sxe) {
+      // Error generated during parsing)
+      Exception  x = sxe;
+      if (sxe.getException() != null)
+	x = sxe.getException();
+      x.printStackTrace();
 
-      } catch(ParserConfigurationException pce) {
-	 pce.printStackTrace();
+    } catch(ParserConfigurationException pce) {
+      pce.printStackTrace();
 
-      } catch (IOException ioe) {
-	 // I/O error
-	 ioe.printStackTrace();
-      }
+    } catch (IOException ioe) {
+      // I/O error
+      ioe.printStackTrace();
+    }
       
-      fireTableChanged(null);
-   }
+    fireTableChanged(null);
+  }
 
-   //
-   // TableModel implementation
-   //
+  public Document getDoc() {
+    return doc;
+  }
 
-   /**
-      Return the number of columns for the model.
+  //
+  // TableModel implementation
+  //
 
-      @return    the number of columns in the model
-   */
-   public int getColumnCount() {
-      return colClasses.length;
-   }
-   /**
-      Return the number of persons in an XML document
+  /**
+     Return the number of columns for the model.
+
+     @return    the number of columns in the model
+  */
+  public int getColumnCount() {
+    return colClasses.length;
+  }
+  /**
+     Return the number of persons in an XML document
  
-      @return    the number or rows in the model
-   */
-   public int getRowCount() {
-      if (docIsNull) return 0;
-      return XmlUtils.getSize( doc , ROOT_ELEMENT_TAG );
-   }
+     @return    the number or rows in the model
+  */
+  public int getRowCount() {
+    if (docIsNull) return 0;
+    return XmlUtils.getSize( doc , ROOT_ELEMENT_TAG );
+  }
 
-   /**
-      Return an XML data given its location
+  /**
+     Return an XML data given its location
  
-      @param	    r   the row whose value is to be looked up
-      @param	    c 	the column whose value is to be looked up
-      @return	the value Object at the specified cell
-   */
-   public Object getValueAt(int r, int c) {
+     @param	    r   the row whose value is to be looked up
+     @param	    c 	the column whose value is to be looked up
+     @return	the value Object at the specified cell
+  */
+  public Object getValueAt(int r, int c) {
 
-      //must get row first
-      Element row = XmlUtils.getElement( doc , ROOT_ELEMENT_TAG , r );
-      projectIds[r] = new Integer(row.getAttribute("id"));
+    //must get row first
+    Element row = XmlUtils.getElement( doc , ROOT_ELEMENT_TAG , r );
+    projectIds[r] = new Integer(row.getAttribute("id"));
 
-      //must get value for column in this row
-      return XmlUtils.getValue( row , colNames[c] );
-   }
+    //must get value for column in this row
+    return XmlUtils.getValue( row , colNames[c] );
+  }
 
-   public Integer getSpSummaryId(int row) {
-      return projectIds[row];
-   }
+  public Integer getSpSummaryId(int row) {
+    return projectIds[row];
+  }
 
-   /**
-      Return the name of column for the table.
+  /**
+     Return the name of column for the table.
  
-      @param	    c   the index of column
-      @return    the name of the column
-   */
-   public String getColumnName(int c) {
-      return colNames[ c ];
-   }
-   /**
-      Return column class
+     @param	    c   the index of column
+     @return    the name of the column
+  */
+  public String getColumnName(int c) {
+    return colNames[ c ];
+  }
+  /**
+     Return column class
  
-      @parm      c the index of column
-      @return    the common ancestor class of the object values in the model.
-   */
-   public Class getColumnClass(int c) {
-      return colClasses[ c ];
-   }
+     @parm      c the index of column
+     @return    the common ancestor class of the object values in the model.
+  */
+  public Class getColumnClass(int c) {
+    return colClasses[ c ];
+  }
 
-   /**
-      Return false - table is not editable
+  /**
+     Return false - table is not editable
  
-      @param	    r	the row whose value is to be looked up
-      @param	    c	the column whose value is to be looked up
-      @return	true if the cell is editable.
-   */
-   public boolean isCellEditable(int r, int c) {
-      return false;
-   }
+     @param	    r	the row whose value is to be looked up
+     @param	    c	the column whose value is to be looked up
+     @return	true if the cell is editable.
+  */
+  public boolean isCellEditable(int r, int c) {
+    return false;
+  }
 
-   /**
-      This method is not implemented, because the table is not editable.
+  /**
+     This method is not implemented, because the table is not editable.
  
-      @param	    value		 the new value
-      @param	    r	 the row whose value is to be changed
-      @param	    c 	 the column whose value is to be changed
-   */
-   public void setValueAt(Object value, int r, int c) {
-   }
+     @param	    value		 the new value
+     @param	    r	 the row whose value is to be changed
+     @param	    c 	 the column whose value is to be changed
+  */
+  public void setValueAt(Object value, int r, int c) {
+  }
 
 }// MSBQueryTableModel
