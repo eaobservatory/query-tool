@@ -41,55 +41,61 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
     };*/
    
   public static final String[] colNames ={
-    "waveband",
-    "instrument",
-    "remaining",
-    "target",
-    "obscount",
-    //"seeing",
-    "title",
-    "checksum",
-    "coordstype",
-    "timeest",
     "projectid",
-    //"tauband",
+    "title",
+    "instrument",
+    "waveband",
+    "target",
+    "ra",
+    "coordstype",
+    "ha",
+    "timeest",
+    //"tagpriority",
     "priority",
+    "remaining",
+    "obscount",
+    "checksum",
+    "msbid",
   };
    
-  public static final Class[] colClasses ={
+  public static final Class[] colClasses = {
+    String.class,
+    String.class,
+    String.class,
+    String.class,
+    String.class,
+    String.class,
     String.class,
     String.class,
     Integer.class,
+    Integer.class,
+    Integer.class,
+    Integer.class,
     String.class,
-    String.class,
-    //String.class,
-    String.class,
-    String.class,
-    String.class,
-    String.class,
-    String.class,
-    //String.class,
-    String.class,
+    Integer.class,
   };
 
   public static final int 
-    WAVELENGTH          = 0,
-    INSTRUMENT          = 1,
-    REMAINING           = 2,
-    TARGET              = 3,
-    OBSCOUNT            = 4,
-    //SEEING              = 5,
-    TITLE               = 5,
-    CHECKSUM            = 6,
-    COORDSTYPE          = 7,
-    TIMEEST             = 8,
-    PROJECTID           = 9,
-    //TAUBAND             = 11,
-    PRIORITY            = 10;
-
+    PROJECTID           = 0,
+    TITLE               = 1,
+    INSTRUMENT          = 2,
+    WAVEBAND		= 3,
+    TARGET              = 4,
+    RA		        = 5, 
+    COORDSTYPE          = 6, 
+    HA		        = 7,
+    TIMEEST             = 8, //INT
+    //TAGPRIORITY		= 9, //INT
+    PRIORITY            = 9,  //INT
+    REMAINING           = 10, //INT
+    OBSCOUNT            = 11, //INT
+    CHECKSUM            = 12,
+    MSBID		= 13; //INT
+      
   //DATA
   //DOM object to hold XML document contents
   protected Document doc;
+  protected Element msbIndex;
   public Integer[] projectIds;
   boolean docIsNull;
 
@@ -118,6 +124,8 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
       //doc = builder.parse( new File(MSB_SUMMARY_TEST));
       //System.out.println("doc: "+doc);
       docIsNull = false;
+
+
     } catch (SAXException sxe) {
       // Error generated during parsing)
       Exception  x = sxe;
@@ -173,7 +181,9 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
 
     //must get row first
     Element row = XmlUtils.getElement( doc , ROOT_ELEMENT_TAG , r );
-    projectIds[r] = new Integer(row.getAttribute("id"));
+    //Element indexElement = msbDoc.createElement("index");
+
+    projectIds[r] = new Integer( row.getAttribute("id"));
 
     //must get value for column in this row
     return XmlUtils.getValue( row , colNames[c] );
