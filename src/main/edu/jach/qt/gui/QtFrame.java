@@ -351,30 +351,41 @@ public class QtFrame extends JFrame implements PopupMenuListener, ActionListener
       
 
     JMenuItem openItem = new JMenuItem("Open");
+    openItem.setEnabled(false);
+    JMenuItem newItem = new JMenuItem("New");
+    newItem.setEnabled(false);    
     saveItem   = new JMenuItem("Save");
+    saveItem.setEnabled(false);
     saveAsItem = new JMenuItem("Save As");
+    saveAsItem.setEnabled(false);
     exitItem   = new JMenuItem("Exit");
       
     mbar.add(makeMenu (fileMenu, new Object[] {
-      "New", openItem, null, saveItem, saveAsItem,
+      newItem, openItem, null, saveItem, saveAsItem,
       null, exitItem }, this)
 	     );
       
     observability = new JCheckBoxMenuItem("Observability",true);
     remaining     = new JCheckBoxMenuItem("Remaining",true);
     allocation    = new JCheckBoxMenuItem("Allocation",true);
+    JMenuItem cutItem = new JMenuItem("Cut", new ImageIcon("icons/cut.gif"));
+    cutItem.setEnabled(false);
+    JMenuItem copyItem = new JMenuItem("Copy", new ImageIcon("icons/copy.gif"));
+    copyItem.setEnabled(false);
+    JMenuItem pasteItem = new JMenuItem("Paste", new ImageIcon("icons/paste.gif"));
+    pasteItem.setEnabled(false);
+
+    
 
     mbar.add( makeMenu("Edit", new Object[] {
-      new JMenuItem("Cut", new ImageIcon("icons/cut.gif")),
-      new JMenuItem("Copy", new ImageIcon("icons/copy.gif")),
-      new JMenuItem("Paste", new ImageIcon("icons/paste.gif")),
-      null, makeMenu("Constraints", new Object[] { 
-	observability,
-	remaining,
-	allocation,
-	null 
-      }, this) 
-    }, this));
+	cutItem, copyItem, pasteItem,
+	    null, makeMenu("Constraints", new Object[] { 
+		observability,
+		    remaining,
+		    allocation,
+		    null 
+		    }, this) 
+	    }, this));
     
     JMenu helpMenu = new JMenu("Help");
     helpMenu.setMnemonic('H');
