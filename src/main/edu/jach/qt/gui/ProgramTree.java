@@ -1026,7 +1026,7 @@ final public class ProgramTree extends JPanel implements
 
 	    if (selectedItem == null && 
 		( System.getProperty("telescope").equalsIgnoreCase("ukirt") || instrumentContext instanceof SpInstHeterodyne) &&
-		TelescopeDataPanel.DRAMA_ENABLED) {
+																TelescopeDataPanel.DRAMA_ENABLED) {
 		msbDone = showMSBDoneDialog();
 	    }
 	    // If this is an observation then show the popup
@@ -1194,6 +1194,7 @@ final public class ProgramTree extends JPanel implements
 	File cancelFile = new File ("/tmp/cancel");
 	File acceptFile = new File ("/tmp/accept");
 	File rejectFile = new File ("/tmp/reject");
+	String title = ((SpProg)_spItem).getTitle();
 	try {
 	    cancelFile.createNewFile();
 	    acceptFile.createNewFile();
@@ -1204,6 +1205,7 @@ final public class ProgramTree extends JPanel implements
 	}
 	MSBDoneDialog mdd = new MSBDoneDialog ((Frame)parent, 
 					       projectID, 
+					       title,
 					       checkSum);
 	// See which comms file exist after accept/reject
 	if (cancelFile.exists()) {
