@@ -65,13 +65,17 @@ if !($?widgetFile) then
     exit
 endif
  
-if (! ${?IMP_SCRATCH} && (${HOST} == "lokahi")) then
+if (! ${?IMP_SCRATCH} && (${HOST} == "kiki")) then
     setenv IMP_SCRATCH /tmp
     echo "IMP_SCRATCH set to /tmp"
+else if (! ${?IMP_SCRATCH}) then
+    echo "IMP_SCRATCH is not set"
+else
+    echo "IMP_SCRATCH is set to: ${IMP_SCRATCH}"
 endif
 
 #cleanup
 
-set CLASSPATH = /jac_sw/omp/QT/lib/qt.jar:/home/mrippa/local/cc/lib/xerces.jar:/jac_sw/omp/QT/lib/mail.jar:/jac_sw/omp/QT/lib/activation.jar:/jac_sw/omp/QT/lib/soap.jar:/home/mrippa/netroot/src/orac3/OT/install/classes:/home/mrippa/netroot/src/orac3/GEMINI/install/classes:/home/mrippa/netroot/src/orac3/OM/install/classes:/home/mrippa/netroot/src/orac3/ORAC/install/classes:/home/mrippa/netroot/src/orac3/ODB/install/classes:/jac_sw/omp/QT/lib/jsky.jar:/jac_sw/omp/QT/lib/diva.jar:/jac_sw/omp/QT/lib/junit.jar:/jac_sw/omp/QT/icons
+set CLASSPATH = /jac_sw/omp/QT/lib/qt.jar:/jac_sw/omp/QT/lib/xerces.jar:/jac_sw/omp/QT/lib/mail.jar:/jac_sw/omp/QT/lib/activation.jar:/jac_sw/omp/QT/lib/soap.jar:/jac_sw/orac3/OT/install/classes:/jac_sw/orac3/GEMINI/install/classes:/jac_sw/itsroot/install/ompSM/classes:/jac_sw/orac3/ORAC/install/classes:/jac_sw/orac3/ODB/install/classes:/jac_sw/omp/QT/lib/jsky.jar:/jac_sw/omp/QT/lib/diva.jar:/jac_sw/omp/QT/lib/junit.jar:/jac_sw/omp/QT/icons:/local/java/jdk/lib/tools.jar:/jac_sw/itsroot/install/dcHub/lib/dcHub.jar:/local/progs/drama/drama_source/djava
 
 ${JAVA} ${classic} ${xdebug} ${xnoagent} ${xrunjdwptrans} ${xbootclasspath} -Ddebug=${debug} -DqtConfig=${qtConfig} -Dot.cfgdir=${instConfigDir}/ -DwidgetFile=${widgetFile} -DOMP -cp ${CLASSPATH} edu.jach.qt.app.Main &
