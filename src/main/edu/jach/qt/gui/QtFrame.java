@@ -1,16 +1,18 @@
 package edu.jach.qt.gui;
 
 /* QT imports */
+import gemini.sp.*;
 
 
 /* Miscellaneous imports */
 /* Standard imports */
 import edu.jach.qt.app.*;
 import edu.jach.qt.gui.*;
+import edu.jach.qt.utils.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
-import java.util.Hashtable;
+import java.util.*;
 import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.table.*;
@@ -54,7 +56,9 @@ public class QtFrame extends JFrame implements PopupMenuListener, ActionListener
   private Querytool		localQuerytool;
   private InfoPanel		infoPanel;
   private JPopupMenu		popup;
-  
+  private Hashtable             calibrationList;
+  private JMenu                 calibrationMenu = new JMenu("Calibrations");
+
 
   SwingWorker msbWorker;
 
@@ -308,6 +312,7 @@ public class QtFrame extends JFrame implements PopupMenuListener, ActionListener
     tabbedPane.setSelectedIndex(1);
   }
 
+
   /**
    * The <code>valueChanged</code> method is mandated by the 
    * ListSelectionListener. Called whenever the value of 
@@ -416,6 +421,16 @@ public class QtFrame extends JFrame implements PopupMenuListener, ActionListener
 				       new JMenuItem("About", 'A') },
 			this
 			));
+
+    calibrationList = CalibrationList.getCalibrations(System.getProperty("telescope"));
+    Enumeration keys = calibrationList.keys();
+    while (keys.hasMoreElements() ) {
+	JMenuItem item = new JMenuItem((String)keys.nextElement());
+	item.addActionListener(this);
+	calibrationMenu.add(item);
+    }
+    calibrationMenu.addMenuListener(this);
+    mbar.add(calibrationMenu);
   }
 
   /**
@@ -425,9 +440,22 @@ public class QtFrame extends JFrame implements PopupMenuListener, ActionListener
    * @param evt a <code>MenuEvent</code> value
    */
   public void menuSelected(MenuEvent evt) {  
-    //saveItem.setEnabled(!readonlyItem.isSelected());
-    //saveAsItem.setEnabled(!readonlyItem.isSelected());
+      JMenu source = (JMenu)evt.getSource();
+      if (source.getText().equals("Calibrations")) {
+	  Component [] cals = calibrationMenu.getMenuComponents();
+      	  if (tabbedPane != null && tabbedPane.getSelectedIndex() > 0) {
+	      for (int iloop=0;iloop<cals.length; iloop++) {
+		  cals[iloop].setEnabled(true);
+	      }
+	  }
+	  else {
+	      for (int iloop=0;iloop<cals.length; iloop++) {
+		  cals[iloop].setEnabled(false);
+	      }
+	  }
+      }
   }
+
 
   /**
    * <code>menuDeselected</code> method is an action trggered when a 
@@ -466,6 +494,14 @@ public class QtFrame extends JFrame implements PopupMenuListener, ActionListener
     
     else if ( source instanceof JMenuItem) {
 	JMenuItem thisItem = (JMenuItem)source;
+	// Check to see if this came from the calibration list
+	if (calibrationList.containsKey(thisItem.getText()) && 
+	    tabbedPane.getSelectedIndex() == 1) {
+	    // Get the "MSB" that this represents
+	    SpItem item = MsbClient.fetchMSB((Integer) calibrationList.get(thisItem.getText()));
+	    // Add it to the deferred queue
+	    DeferredProgramList.addCalibration(item);
+	}
 	if (thisItem.getText().equals("Exit"))
 	    {
 		exitQT();
