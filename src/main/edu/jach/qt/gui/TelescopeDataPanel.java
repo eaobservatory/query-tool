@@ -86,8 +86,15 @@ public class TelescopeDataPanel extends JPanel implements ActionListener {
 
     if (TelescopeDataPanel.DRAMA_ENABLED) {
       hub = DcHub.getHandle();
-      hub.register("CSOMON");
-//       hub.register("TELMON");
+
+      HubImplementor hi = new HubImplementor("CSOMON");
+      hi.setCallBack("edu.jach.qt.djava.CSOPathResponseHandler");
+      hi.setBuffers(900, 5, 1800, 12);
+
+      hub.register(hi);
+
+      //hub.register("CSOMON");
+      //hub.register("TELMON");
     }
     else if (locked) {
       Object[] options = { "CONTINUE", "CANCEL" };
