@@ -115,6 +115,8 @@ public class MSBDoneDialog extends JDialog {
 	userIdField.setText(getDefaultUserId());
 	final JLabel commentLabel    = new JLabel ("Comment");
 	final JTextArea commentArea  = new JTextArea(10,5);
+	commentArea.setLineWrap(true);
+	commentArea.setWrapStyleWord(true);
 	Object [] inputArray  = { msg, userIdLabel, userIdField,
 				  commentLabel, commentArea};
 
