@@ -252,7 +252,7 @@ public class XmlUtils {
    }
 
     public static Vector getNewModel (Document doc, String tag) {
-	if (doc == null) {
+	if (doc == null ) {
 	    return null;
 	}
 
@@ -260,6 +260,9 @@ public class XmlUtils {
 
 	// Get all of the summary nodes
 	NodeList rows = doc.getDocumentElement().getElementsByTagName(tag);
+	if (rows.getLength() == 0) {
+	    return null;
+	}
 
 	// Get the number of children in the summary - representing the number
 	// of columns to display
