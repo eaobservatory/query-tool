@@ -1,5 +1,6 @@
 package edu.jach.qt.gui;
 
+import org.apache.log4j.Logger;
 import org.w3c.dom.*;
 
 /**
@@ -12,6 +13,9 @@ import org.w3c.dom.*;
  * @version      : 1.0
  */
 public class XmlUtils {
+
+  static Logger logger = Logger.getLogger(XmlUtils.class);
+  
    /**
       Return an Element given an XML document, tag name, and index
      
@@ -94,8 +98,8 @@ public class XmlUtils {
 	 }
       }
       catch(Exception ex){
-	 System.out.println( ex );
-	 ex.printStackTrace();
+	logger.error("XmlUtils getValueAt() threw exception", ex);
+	//ex.printStackTrace();
       }
         
       return null;
@@ -108,8 +112,8 @@ public class XmlUtils {
       @param     rows    a Nodelist
    */
    public static void printNodeTypes( NodeList rows ) {
-      System.out.println( "\tenumerating NodeList (of Elements):");
-      System.out.println( "\tClass\tNT\tNV" );
+      logger.debug( "\tenumerating NodeList (of Elements):");
+      logger.debug( "\tClass\tNT\tNV" );
       //iterate a given Node list
       for( int ri = 0 ; ri < rows.getLength() ; ri++){
 	 Node n = (Node)rows.item( ri );
@@ -119,13 +123,13 @@ public class XmlUtils {
 	 else System.out.print( "\tNode" );
     
 	 //print out Node type and Node value
-	 System.out.println(
-			    "\t"+
-			    n.getNodeType() + "\t" +
-			    n.getNodeValue()
-			    );
+	 logger.debug(
+		      "\t"+
+		      n.getNodeType() + "\t" +
+		      n.getNodeValue()
+		      );
       }
-      System.out.println();
+      logger.debug("");
    }
 
 

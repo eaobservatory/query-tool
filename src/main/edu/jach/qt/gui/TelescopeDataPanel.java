@@ -7,6 +7,7 @@ import javax.swing.*;
 import javax.swing.border.*;
 import javax.swing.event.*;
 import ocs.utils.*;
+import org.apache.log4j.Logger;
 
 
 /**
@@ -19,9 +20,10 @@ import ocs.utils.*;
  */
 
 public class TelescopeDataPanel extends JPanel implements ActionListener {
+
+  static Logger logger = Logger.getLogger(TelescopeDataPanel.class);
    
   public final static boolean	DRAMA_ENABLED = "true".equals(System.getProperty("DRAMA_ENABLED"));
-
   public static String	tauString = "-----";
 
   private static JLabel csoTauValue;
@@ -144,7 +146,7 @@ public class TelescopeDataPanel extends JPanel implements ActionListener {
    * @param param1 <description>
    */
   public void actionPerformed(ActionEvent param1) {
-    System.out.println("The tau: "+ TelescopeDataPanel.csoTauValue.getText());
+    logger.debug("New tau: "+ TelescopeDataPanel.csoTauValue.getText());
         
     WidgetPanel.getAtmospherePanel().setTau(TelescopeDataPanel.csoTauValue.getText());
     //WidgetPanel.getAtmospherePanel().setSeeing(TelescopeDataPanel.seeingValue.getText());

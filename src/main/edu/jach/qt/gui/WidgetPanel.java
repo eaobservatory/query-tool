@@ -1,13 +1,19 @@
 package edu.jach.qt.gui;
 
 
+/* QT imports */
 import edu.jach.qt.app.*;
 import edu.jach.qt.utils.*;
+
+/* Standard imports */
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import java.util.*;
 import javax.swing.*;
+
+/* Miscellaneous imports */
+import org.apache.log4j.Logger;
 
 /**
  * WidgetPanel.java
@@ -25,6 +31,8 @@ import javax.swing.*;
  */
 public class WidgetPanel extends JPanel 
   implements ActionListener {
+
+  static Logger logger = Logger.getLogger(WidgetPanel.class);
 
   private TextReader tr;
   private Box b;
@@ -161,11 +169,11 @@ public class WidgetPanel extends JPanel
 	  if (widget.equals("JRadioButtonGroup") ) {
 	    panel = new RadioPanel(abbrevTable, widgetBag, info);
 	  
-	  } // end of if ()
+	  }
+
 	  else {
 	    panel = new JTextFieldPanel(abbrevTable, widgetBag, info);
-	  } // end of else
-	  
+	  }
 	  
 	  panel.setName(info.getTitle());
 	  gbc.insets.top = 0;
@@ -179,7 +187,6 @@ public class WidgetPanel extends JPanel
 	  gbc.weighty = 0;
 	  if ( info.getView() == BoxLayout.Y_AXIS) {
 	    
-
 	    if (info.getTitle().equalsIgnoreCase("Clouds") ) {
 	      add(panel, gbc, 1, 0, 2, info.getSize()+1);
 	    }
@@ -193,18 +200,19 @@ public class WidgetPanel extends JPanel
 
 	    else {
 	      //add(panel, gbc, numRadPanels, 20, 1, info.getSize()+1);
-	      //System.out.println("title: "+info.getTitle());
 	    }
 	    totalNumRadRows += info.getSize()+2;
 	  }
+
 	  else {
 	    add(panel, gbc, 0, numComponents + totalNumRadRows, 1, 2);
 	  }
 
 	  numRadPanels++;
 	}
+	
 	else {
-	  System.out.println("FAILED to set radio position!");
+	  logger.error("FAILED to set radio position!");
 	  System.exit(1);
 	}
       }
@@ -270,7 +278,6 @@ public class WidgetPanel extends JPanel
       }
       else if (next.equals("view")) {
 	view = tr.readLine();
-	System.out.println("view: "+view);
 	
 	if (view.trim().equals("X")) {
 	  info.setView(BoxLayout.X_AXIS);
@@ -327,7 +334,7 @@ public class WidgetPanel extends JPanel
    *
    */
   protected void printTable() {
-    System.out.println(abbrevTable.toString());
+    logger.debug(abbrevTable.toString());
   }
    
   /**
