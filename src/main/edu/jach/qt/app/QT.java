@@ -44,7 +44,14 @@ final public class QT {
     * frame is also set be centered on the screen.
     */
    public QT () {
-     PropertyConfigurator.configure("/jac_sw/omp/QT/config/log4j.properties");
+       if (System.getProperty("QT_LOG_DIR").equals(""))
+       {
+	   PropertyConfigurator.configure("/home/dewitt/omp/QT/config/nolog4j.properties");
+       }
+       else
+       {
+	 PropertyConfigurator.configure("/jac_sw/omp/QT/config/log4j.properties");
+       }
 
      logger.info("-------WELCOME TO THE QT----------");
      OtFileIO.setXML(System.getProperty("OMP") != null);
@@ -100,6 +107,10 @@ final public class QT {
 
 /*
  * $Log$
+ * Revision 1.15  2002/06/13 00:47:14  dewitt
+ * Modified logging so that if a user can not write to the default log dir, it
+ * only does console logging.
+ *
  * Revision 1.14  2002/05/30 22:26:26  mrippa
  * colapsed imports > 4
  * Implemented logging with log4j
