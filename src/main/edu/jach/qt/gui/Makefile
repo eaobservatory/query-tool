@@ -41,7 +41,8 @@ SOURCES = \
 	XmlUtils.java \
 	TrashCan.java \
 	DeferredProgramList.java \
-	NotePanel.java
+	NotePanel.java \
+	UTPanel.java
 
 include $(BUILD)/make.tail
 

@@ -68,6 +68,7 @@ public class InfoPanel extends JPanel implements ActionListener {
   private TelescopeDataPanel telescopeInfoPanel;
   private MSBQueryTableModel msb_qtm;
   private TimePanel timePanel;
+  private UTPanel   utPanel;
   private SatPanel satPanel;
   private Querytool localQuerytool;
   private QtFrame qtf;
@@ -107,6 +108,7 @@ public class InfoPanel extends JPanel implements ActionListener {
     exitButton		= new JButton();
     fetchMSB		= new JButton();
     timePanel		= new TimePanel();
+    utPanel		= new UTPanel();
     satPanel		= new SatPanel();
     telescopeInfoPanel	= new TelescopeDataPanel();
 
@@ -193,6 +195,12 @@ public class InfoPanel extends JPanel implements ActionListener {
     gbc.insets.right = 0;
     add(timePanel, gbc, 0, 40, 1, 1);
 
+    gbc.fill = GridBagConstraints.BOTH;
+    gbc.weightx = 100;
+    gbc.weighty = 0;
+    gbc.insets.left = 0;
+    gbc.insets.right = 0;
+    add(utPanel, gbc, 0, 60, 1, 1);
   }
 
   private void add(Component c, GridBagConstraints gbc, 
