@@ -1,78 +1,255 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <QueryResult>
-  <SpMSBSummary id="130">
-    <wavelength>8um</wavelength>
-    <instrument>Michelle</instrument>  
-    <remaining>14</remaining>
-    <target>CRL618</target>
-    <projectid>M02939T2</projectid>
-  </SpMSBSummary>
-  
-  <SpMSBSummary id="131">
-    <wavelength>8um</wavelength>
-    <instrument>Michelle</instrument>  
-    <remaining>14</remaining>
-    <target>CRL618</target>
-    <projectid>M02939T2</projectid>
-  </SpMSBSummary>
-
-  <SpMSBSummary id="144">
-    <wavelength>8um</wavelength>
-    <instrument>Michelle</instrument>  
-    <remaining>14</remaining>
-    <target>CRL618</target>
-    <projectid>M02939T2</projectid>
+  <SpMSBSummary id="17">
+    <waveband>F105B53</waveband>
+    <pol>0</pol>
+    <instrument>Michelle</instrument>
+    <telescope>UKIRT</telescope>
+    <remaining1</remaining>
+    <target>Michelle</target>
+    <obscount>1</obscount>
+    <type>i</type>
+    <seeing>1</seeing>
+    <title>abc</title>
+    <checksum>370d1fa32cce2ca2b4400ad9a98d2ad7</checksum>
+    <coordstype>CAL</coordstype>
+    <timeest>0</timeest>
+    <latest>Jan  1 2035 11:00AM</latest>
+    <projectid>M01BMFO</projectid>
+    <tauband>1</tauband>
+    <earliest>Jan  1 1971 11:00AM</earliest>
+    <priority>3</priority>
   </SpMSBSummary>
 
-  <SpMSBSummary id="174">
-    <wavelength>8um</wavelength>
-    <instrument>Michelle</instrument>  
-    <remaining>14</remaining>
-    <target>CRL618</target>
-    <projectid>M02939T2</projectid>
+  <SpMSBSummary id="32">
+    <waveband>I</waveband>
+    <pol>0</pol>
+    <instrument>UFTI</instrument>
+    <telescope>UKIRT</telescope>
+    <remaining>1</remaining>
+    <target>FS1</target>
+    <obscount>1</obscount>
+    <type>i</type>
+    <seeing>1</seeing>
+    <title>FS1_00h33m_-12d I-band</title>
+    <checksum>27ead70fae09e119876dfa78e45b138bO</checksum>
+    <coordstype>RADEC</coordstype>
+    <timeest>240</timeest>
+    <projectid>M01BTJ</projectid>
+    <latest>Jan  1 2035  1:00AM</latest>
+    <tauband>1</tauband>
+    <earliest>Jan  1 1971  1:00AM</earliest>
+    <priority>3</priority>
   </SpMSBSummary>
 
-  <SpMSBSummary id="175">
-    <wavelength>8um</wavelength>
-    <instrument>Michelle</instrument>  
-    <remaining>14</remaining>
-    <target>CRL618</target>
-    <projectid>M02939T2</projectid>
+  <SpMSBSummary id="33">
+    <waveband>1/Lp98/10</waveband>
+    <pol>1</pol>
+    <instrument>IRCAM3/CGS4/Michelle</instrument>
+    <telescope>UKIRT</telescope>
+    <remaining>6</remaining>
+    <target>mars/eek</target>
+    <obscount>3</obscount>
+    <type>i/s</type>
+    <seeing>1</seeing>
+    <title>Pol test</title>
+    <checksum>cdc423f56111e9be173eeda6cc28d49dA</checksum>
+    <coordstype>RADEC</coordstype>
+    <timeest>49.4906692504883</timeest>
+    <projectid>M01BTJ</projectid>
+    <latest>Jan  1 2035  1:00AM</latest>
+    <tauband>1</tauband>
+    <earliest>Jan  1 1971  1:00AM</earliest>
+    <priority>2</priority>
   </SpMSBSummary>
 
-  <SpMSBSummary id="176">
-    <projectid>M04552</projectid>
-    <SourceName>CRL618</SourceName>
-    <Instrument>Fabry-Perot</Instrument>  
-    <Wavelength>10um</Wavelength>
-    <ExposureTime>2.0</ExposureTime>
-    <pi>Galileo</pi>
+  <SpMSBSummary id="34">
+    <waveband>2.20000004768372</waveband>
+    <pol>0</pol>
+    <instrument>CGS4</instrument>
+    <telescope>UKIRT</telescope>
+    <remaining>1</remaining>
+    <target>BS5</target>
+    <obscount>1</obscount>
+    <type>s</type>
+    <seeing>1</seeing>
+    <title>BS5_0h6m_58d_G5V</title>
+    <checksum>e459fe51b9ecdea7aae7f755716467cbOA</checksum>
+    <coordstype>RADEC</coordstype>
+    <timeest>64</timeest>
+    <projectid>M01BTJ</projectid>
+    <latest>Jan  1 2035  1:00AM</latest>
+    <tauband>1</tauband>
+    <earliest>Jan  1 1971  1:00AM</earliest>
+    <priority>3</priority>
   </SpMSBSummary>
 
-  <SpMSBSummary id="177">
-    <projectid>M02ATEST2</projectid>
-    <SourceName>CRL618</SourceName>
-    <Instrument>Fabry-Perot</Instrument>  
-    <Wavelength>11um</Wavelength>
-    <ExposureTime>2.0</ExposureTime>
-    <pi>James Clerk Maxwell</pi>
+  <SpMSBSummary id="35">
+    <waveband>F105B53</waveband>
+    <pol>0</pol>
+    <instrument>Michelle</instrument>
+    <telescope>UKIRT</telescope>
+    <remaining>1</remaining>
+    <target>NONE SUPPLIED</target>
+    <obscount>1</obscount>
+    <type>i</type>
+    <seeing>1</seeing>
+    <title>Copy</title>
+    <checksum>77013c6318b6cba06ec7499584f205fd</checksum>
+    <coordstype>RADEC</coordstype>
+    <timeest>40.5012283325195</timeest>
+    <projectid>M01BTJ</projectid>
+    <latest>Jan  1 2035  1:00AM</latest>
+    <tauband>1</tauband>
+    <earliest>Jan  1 1971  1:00AM</earliest>
+    <priority>3</priority>
   </SpMSBSummary>
 
-  <SpMSBSummary id="192">
-    <projectid>M02ATEST2</projectid>
-    <SourceName>CRL618</SourceName>
-    <Instrument>Fabry-Perot</Instrument>  
-    <Wavelength>11um</Wavelength>
-    <ExposureTime>2.0</ExposureTime>
-    <pi>James Clerk Maxwell</pi>
+  <SpMSBSummary id="37">
+    <waveband>J98</waveband>
+    <pol>0</pol>
+    <instrument>UFTI</instrument>
+    <telescope>UKIRT</telescope>
+    <remaining>2</remaining>
+    <target>FS101</target>
+    <obscount>1</obscount>
+    <type>i</type>
+    <seeing>1</seeing>
+    <title>FS101_00h13m_30d J-band</title>
+    <checksum>759a74449fdd8c8d22227c748d96ac97O</checksum>
+    <coordstype>RADEC</coordstype>
+    <timeest>30</timeest>
+    <projectid>M01BTJ</projectid>
+    <latest>Jan  1 2035  1:00AM</latest>
+    <tauband>1</tauband>
+    <earliest>Jan  1 1971  1:00AM</earliest>
+    <priority>3</priority>
   </SpMSBSummary>
 
-  <SpMSBSummary id="193">
-    <projectid>M02ATEST2</projectid>
-    <SourceName>CRL618</SourceName>
-    <Instrument>Michelle</Instrument>  
-    <Wavelength>25um</Wavelength>
-    <ExposureTime>2.0</ExposureTime>
-    <pi>Herschel</pi>
+  <SpMSBSummary id="38">
+    <waveband>Lp98</waveband>
+    <pol>0</pol>
+    <instrument>IRCAM3</instrument>
+    <telescope>UKIRT</telescope>
+    <remaining>1</remaining>
+    <target>test</target>
+    <obscount>1</obscount>
+    <type>i</type>
+    <seeing>2</seeing>
+    <title>-</title>
+    <checksum>1d040d928406c17f39f0948136253752A</checksum>
+    <coordstype>RADEC</coordstype>
+    <timeest>0.239999994635582</timeest>
+    <projectid>M01BTJ</projectid>
+    <latest>Jan  1 2035  1:00AM</latest>
+    <tauband>2</tauband>
+    <earliest>Jan  1 1971  1:00AM</earliest>
+    <priority>3</priority>
   </SpMSBSummary>
-  
+
+  <SpMSBSummary id="39">
+    <waveband>F105B53</waveband>
+    <pol>0</pol>
+    <instrument>Michelle</instrument>
+    <telescope>UKIRT</telescope>
+    <remaining>1</remaining>
+    <target>NONE SUPPLIED</target>
+    <obscount>1</obscount>
+    <type>i</type>
+    <seeing>1</seeing>
+    <title>Copy</title>
+    <checksum>3da1576f522f33443dfe5d47f4b11fb2O</checksum>
+    <coordstype>RADEC</coordstype>
+    <timeest>40.5012283325195</timeest>
+    <projectid>M01BTJ</projectid>
+    <latest>Jan  1 2035  1:00AM</latest>
+    <tauband>1</tauband>
+    <earliest>Jan  1 1971  1:00AM</earliest>
+    <priority>3</priority>
+  </SpMSBSummary>
+
+  <SpMSBSummary id="40">
+    <waveband>2.09999990463257/-1</waveband>
+    <pol>0</pol>
+    <instrument>UFTI/CGS4</instrument>
+    <telescope>UKIRT</telescope>
+    <remaining>1</remaining>
+    <target>CGS4:Bias:Dark/Dark</target>
+    <obscount>3</obscount>
+    <type>i/s</type>
+    <seeing>1</seeing>
+    <title>Array Tests</title>
+    <checksum>59dc992988a3e66e6f588eff9cfe2c44</checksum>
+    <coordstype>CAL</coordstype>
+    <timeest>60</timeest>
+    <projectid>M01BTJ</projectid>
+    <latest>Jan  1 2035  1:00AM</latest>
+    <tauband>1</tauband>
+    <earliest>Jan  1 1971  1:00AM</earliest>
+    <priority>3</priority>
+  </SpMSBSummary>
+
+  <SpMSBSummary id="41">
+    <waveband>-1</waveband>
+    <pol>0</pol>
+    <instrument>UFTI</instrument>
+    <telescope>UKIRT</telescope>
+    <remaining>1</remaining>
+    <target>Dark</target>
+    <obscount>1</obscount>
+    <type>i</type>
+    <seeing>1</seeing>
+    <title>Uarray_tests</title>
+    <checksum>08bdb0002ffe5096f11143d076f91486</checksum>
+    <coordstype>CAL</coordstype>
+    <timeest>75</timeest>
+    <projectid>M01BMR</projectid>
+    <latest>Jan  1 2035  1:00AM</latest>
+    <tauband>1</tauband>
+    <earliest>Jan  1 1971  1:00AM</earliest>
+    <priority>3</priority>
+  </SpMSBSummary>
+
+  <SpMSBSummary id="42">
+    <waveband>2.09999990463257</waveband>
+    <pol>0</pol>
+    <instrument>CGS4</instrument>
+    <telescope>UKIRT</telescope>
+    <remaining>1</remaining>
+    <target>CGS4:Bias:Dark</target>
+    <obscount>1</obscount>
+    <type>s</type>
+    <seeing>1</seeing>
+    <title>Carray tests</title>
+    <checksum>e7f4f42dee29f3e9ec7753b7bfc71ade</checksum>
+    <coordstype>CAL</coordstype>
+    <timeest>179</timeest>
+    <projectid>M01BMR</projectid>
+    <latest>Jan  1 2035  1:00AM</latest>
+    <tauband>1</tauband>
+    <earliest>Jan  1 1971  1:00AM</earliest>
+    <priority>3</priority>
+  </SpMSBSummary>
+
+  <SpMSBSummary id="43">
+    <waveband>Lp98</waveband>
+    <pol>0</pol>
+    <instrument>IRCAM3</instrument>
+    <telescope>UKIRT</telescope>
+    <remaining>1</remaining>
+    <target>NONE SUPPLIED</target>
+    <obscount>1</obscount>
+    <type>i</type>
+    <seeing>1</seeing>
+    <title>-</title>
+    <checksum>928fd21622d4ea621c43101027d5438f</checksum>
+    <coordstype>RADEC</coordstype>
+    <timeest>0.119999997317791</timeest>
+    <projectid>M01BTIM2</projectid>
+    <latest>Jan  1 2035  1:00AM</latest>
+    <tauband>1</tauband>
+    <earliest>Jan  1 1971  1:00AM</earliest>
+    <priority>3</priority>
+  </SpMSBSummary>
+
 </QueryResult>
