@@ -1,8 +1,12 @@
 package edu.jach.qt.utils;
 
+
+import gemini.sp.SpItem;
+import gemini.sp.SpObs;
 import java.io.*;
 import java.util.Properties;
-import om.dramaSocket.ExecDtask;
+import om.util.ExecDtask;
+import orac.ukirt.util.SpTranslator;
 
 /**
  * QtTools.java
@@ -92,5 +96,41 @@ public class QtTools {
     return status;
   }
  
+
+
+
+
+  /**
+     String trans (SpItem observation) is a private method
+     to translate an observation java object into an exec string
+     and write it into a ascii file where is located in "EXEC_PATH"
+     directory and has a name stored in "execFilename"
+     
+     @param SpItem observation
+     @return  String a filename
+     
+  */
+  public static String translate(SpItem observation) {
+    SpTranslator translation = new SpTranslator((SpObs)observation);
+    translation.setSequenceDirectory(System.getProperty("EXEC_PATH"));
+    translation.setConfigDirectory(System.getProperty("CONF_PATH"));
+      
+    Properties temp = System.getProperties();
+    String tname = null;
+    try {
+      tname=translation.translate();
+
+      System.out.println("exec: "+System.getProperty("EXEC_PATH")+"/"+tname);
+      
+      temp.put(new String("execFilename"),tname);
+    }catch (NullPointerException e) {
+      System.out.println ("Translation failed!, exception was "+e);
+      e.printStackTrace();
+    } catch (Exception e) {
+      System.out.println ("Translation failed!, Missing value "+e);
+      //e.printStackTrace();
+    }
+    return tname;
+  }
   
 }
