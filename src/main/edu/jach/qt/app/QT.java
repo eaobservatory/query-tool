@@ -82,6 +82,7 @@ final public class QT {
        System.exit(1);
      }
 
+
       QtTools.loadConfig(System.getProperty("qtConfig"));
 
       WidgetDataBag wdb = new WidgetDataBag ();
@@ -118,7 +119,7 @@ final public class QT {
       qtf.setLocation(x,y);
       qtf.validate();
       qtf.setVisible(true);
-
+      /*
       Runtime rt = Runtime.getRuntime();
       rt.addShutdownHook(new Thread () {
 	      public void run () {
@@ -134,6 +135,8 @@ final public class QT {
 		  }
 	      }
 	  });
+      */
+
    }
    
    /**
@@ -157,6 +160,9 @@ final public class QT {
 
 /*
  * $Log$
+ * Revision 1.25  2003/02/20 22:44:44  dewitt
+ * Removed shutdownhook which is implicated in the QT failing to exit cleanly.
+ *
  * Revision 1.24  2003/02/20 20:30:38  dewitt
  * Added logging to try to track down shutdown problems.
  *
