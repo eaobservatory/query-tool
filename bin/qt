@@ -21,7 +21,11 @@ set toql = "ql"
 set toeng = "noeng" 
 set debug = ""
 
-set solHost = "kiki"
+if (`domainname` == "JAC.ukirt") then
+   set solHost = "kiki"
+else if (`domainname` == "JAC.Hilo") then
+   set solHost = "lokahi"
+endif
  
 while ($#argv != 0)
    switch ($argv[1])
