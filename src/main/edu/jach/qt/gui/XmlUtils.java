@@ -10,6 +10,7 @@ import org.xml.sax.helpers.DefaultHandler;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
+import org.apache.xerces.parsers.DOMParser;
 
 import org.apache.log4j.Logger;
 import org.w3c.dom.*;
@@ -365,29 +366,71 @@ public class XmlUtils {
 
     public static Vector [] getProjectData () {
 
-	SAXHandler saxHandler = new SAXHandler();
+	return getProjectData(System.getProperty("msbSummary")+"."+System.getProperty("user.name"));
 
-	SAXParserFactory factory = SAXParserFactory.newInstance();
+// 	SAXHandler saxHandler = new SAXHandler();
+
+// 	SAXParserFactory factory = SAXParserFactory.newInstance();
+// 	try {
+// 	    SAXParser parser = factory.newSAXParser();
+// 	    parser.parse( new File(System.getProperty("msbSummary")+"."+System.getProperty("user.name")), saxHandler);
+// 	}
+// 	catch (Exception t) {
+// 	    t.printStackTrace();
+// 	}
+
+// 	Vector projectIds = saxHandler.getProjectIds();
+// 	Vector priorities = saxHandler.getPriorities();
+
+// 	// Add a special project "All" to be used for displaying
+// 	// all of the returned MSBs
+// 	projectIds.add(0, "All");
+// 	priorities.add(0, new Integer(0));
+
+// 	Vector [] data = {projectIds, priorities};
+
+// 	return data;
+    }
+
+    public static Vector [] getProjectData(String xmlFileName) {
+	Document  projectDoc = null;
+	DOMParser parser     = new DOMParser();
 	try {
-	    SAXParser parser = factory.newSAXParser();
-	    parser.parse( new File(System.getProperty("msbSummary")+"."+System.getProperty("user.name")), saxHandler);
+	    parser.parse(xmlFileName);
+	    projectDoc = parser.getDocument();
 	}
-	catch (Exception t) {
-	    t.printStackTrace();
+	catch (IOException ioe) {
+	    System.err.println("IOException Reading File "+xmlFileName+".");
+	    ioe.printStackTrace();
+	    return null;
 	}
-
-	Vector projectIds = saxHandler.getProjectIds();
-	Vector priorities = saxHandler.getPriorities();
-
-	// Add a special project "All" to be used for displaying
-	// all of the returned MSBs
+	catch (SAXException sxe) {
+	    System.err.println("SAXException Reading File "+xmlFileName+".");
+	    sxe.printStackTrace();
+	    return null;
+	}
+	Vector projectIds = new Vector();
+	Vector priorities = new Vector();
+	if (projectDoc != null) {
+	    int nElements = getSize(projectDoc, "SpMSBSummary");
+	    for (int i=0; i<nElements; i++) {
+		Object value = getValue( getElement(projectDoc, "SpMSBSummary", i), "projectid");
+		if (!(projectIds.contains(value))) {
+		    projectIds.add(value);
+		    String priority = (String)getValue( getElement(projectDoc, "SpMSBSummary", i), "priority");
+		    StringTokenizer st = new StringTokenizer(priority, ".");
+		    priority = st.nextToken();
+		    Integer iPriority = new Integer(priority);
+		    priorities.add(iPriority);
+		}
+	    }
+	}
 	projectIds.add(0, "All");
 	priorities.add(0, new Integer(0));
-
 	Vector [] data = {projectIds, priorities};
-
 	return data;
     }
+
 
     public static int getProjectCount() {
 	return getProjectData()[0].size();
