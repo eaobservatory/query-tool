@@ -119,7 +119,9 @@ public class MSBDoneDialog extends JDialog {
 				     options,
 				     options[0]);
 	setContentPane(optionPane);
-	setSize(330,370);
+// 	setSize(330,370);
+	validateTree();
+	pack();
 	setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 	addWindowListener(new WindowAdapter() {
                 public void windowClosing(WindowEvent we) {
