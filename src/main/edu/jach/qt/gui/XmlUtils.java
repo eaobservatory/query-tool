@@ -283,6 +283,65 @@ public class XmlUtils {
       logger.debug("");
    }
 
+    private static String convertStringToTime(String oldTime) {
+	boolean hasHours   = (oldTime.indexOf('h') != -1);
+	boolean hasMinutes = (oldTime.indexOf('m') != -1);
+	boolean hasSeconds = (oldTime.indexOf('s') != -1);
+	StringBuffer  rtn = new StringBuffer(oldTime);
+	// Delete the seconds fields and replace other chars with colons
+	rtn.deleteCharAt(oldTime.indexOf('s'));
+	if ( hasMinutes ) {
+	    rtn.setCharAt( oldTime.indexOf('m'), ':');
+	}
+	else {
+	    rtn.insert(0, "00:"); 
+	}
+
+	if ( hasHours ) {
+	    rtn.setCharAt( oldTime.indexOf('h'), ':');
+	}
+	else {
+	    rtn.insert(0, "00:"); 
+	}
+	StringTokenizer st = new StringTokenizer (rtn.toString(), ":");
+	int index = 1;
+	String hh="00";
+	String mm="00";
+	String ss="00";
+	while ( st.hasMoreTokens() ) {
+	    String toke = st.nextToken();
+	    switch (index) {
+	    case 1:
+		if ( toke.length() < 2 ) {
+		    hh = "0"+toke;
+		}
+		else {
+		    hh = toke;
+		}
+		break;
+	    case 2:
+		if ( toke.length() < 2 ) {
+		    mm = "0"+toke;
+		}
+		else {
+		    mm = toke;
+		}
+		break;
+	    case 3:
+		if ( toke.length() < 2 ) {
+		    ss = "0"+toke;
+		}
+		else {
+		    ss = toke;
+		}
+		break;
+	    }
+	    index++;
+	}
+	return hh+"h"+mm+"m"+ss+"s";
+
+    }
+
     public static Vector getNewModel (Document doc, String tag) {
 	if (doc == null ) {
 	    return null;
@@ -342,6 +401,10 @@ public class XmlUtils {
 		    continue;
 		}
 		String value = (String)getValue(e, name);
+		if ( "timeest".equals(name)) {
+		    // Convert the string to use a standard format
+		    value = convertStringToTime(value);
+		}
 		currentModel.insertData(addHere, value);
 		addHere++;
 	    }
