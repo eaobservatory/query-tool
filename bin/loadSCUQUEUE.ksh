@@ -10,7 +10,7 @@
 #    cd $cwd;
 #    /export/data/dewitt/jcmt/ocs/queue2/scuqueue
 #fi
-
-ditscmd SCUQUEUE LOADQ $1
+echo IMP_KEY $IMP_KEY >/tmp/foo
+ditscmd SCUQUEUE ADDBACK $1
 
 exit $?
