@@ -9,7 +9,8 @@ SOURCES = \
 	Subject.java \
 	Observer.java \
 	Querytool.java \
-	QT.java
+	QT.java\
+	NoSuchParameterException.java
 
 include $(BUILD)/make.tail
 
