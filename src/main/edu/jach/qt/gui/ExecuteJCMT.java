@@ -94,7 +94,7 @@ public class ExecuteJCMT extends Execute implements Runnable {
 	// Now send this file as an argument to the translate process
 	String translator = System.getProperty("jcmtTranslator");
 	if (translator == null) {
-	    logger.error("No transation process defined");
+	    logger.error("No translation process defined");
 	    file.delete();
 	    success.delete();
 	    return;
@@ -118,6 +118,9 @@ public class ExecuteJCMT extends Execute implements Runnable {
 	    logger.debug("Error from translator: "+new String(errorMessage).trim());
 	    if (rtn != 0) {
 		logger.error("Returning with non-zero error status following translation");
+		new PopUp("Translation Error",
+			  new String(errorMessage).trim(),
+			  JOptionPane.ERROR_MESSAGE).start();
 		success.delete();
 		return;
 	    }
@@ -163,6 +166,9 @@ public class ExecuteJCMT extends Execute implements Runnable {
 	    }
 	    catch (IOException ioe) {
 		logger.error("Error executing LOADQ...", ioe);
+		new PopUp ("Error Loading Queue",
+			   new String(errorMessage),
+			   JOptionPane.ERROR_MESSAGE).start();
 		success.delete();
 		return;
 	    }
@@ -175,4 +181,23 @@ public class ExecuteJCMT extends Execute implements Runnable {
 	failure.delete();
 	return;
     }
+
+    public class PopUp extends Thread implements Serializable{
+	String _message;
+	String _title;
+        int    _errLevel;
+	public PopUp (String title, String message, int errorLevel) {
+	    _message=message;
+	    _title = title;
+	    _errLevel=errorLevel;
+	}
+
+	public void run() {
+	    JOptionPane.showMessageDialog(null,
+					  _message,
+					  _title,
+					  _errLevel);
+	}
+    }
+
 }
