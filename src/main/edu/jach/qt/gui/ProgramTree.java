@@ -927,6 +927,7 @@ final public class ProgramTree extends JPanel implements
 	    return;
 	}
 	Object selected = obsList.getSelectedValue();
+	obsList.setEnabled(false);
 	selectedItem = (SpItem)selected;
 	if ( selected != null ){
 	    SpItem tmp = _spItem.deepCopy();
@@ -1002,6 +1003,8 @@ final public class ProgramTree extends JPanel implements
 		}
 	    }
 	}
+	obsList.setEnabled(true);
+
     }
 
   public JButton getRunButton () {return run;}

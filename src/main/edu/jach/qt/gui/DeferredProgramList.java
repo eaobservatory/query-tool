@@ -609,6 +609,7 @@ final public class DeferredProgramList extends JPanel implements
 
 	    currentItem = null;
 	}
+	obsList.setEnabled(true);
 	this.dropTarget.setActive(true);
     }
 
@@ -656,6 +657,7 @@ final public class DeferredProgramList extends JPanel implements
     public void dragGestureRecognized( DragGestureEvent event) 
     {
 	SpItem selected = (SpItem) obsList.getSelectedValue();
+	obsList.setEnabled(false);
 	if (selected != null) {
 	    StringSelection text = new StringSelection( selected.toString());
 	    // Disable dropping on this window
