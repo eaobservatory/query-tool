@@ -75,6 +75,27 @@ public class TimeUtils {
 	return convertedDate;
     }
 
+    public Calendar toCalendar(String isoDateTime) {
+	Calendar cal = null;
+	if (isValidDate(isoDateTime)) {
+	    cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+	    StringTokenizer st = new StringTokenizer(isoDateTime, "-:T");
+	    String yyyy  = st.nextToken();
+	    String mn    = st.nextToken();
+	    String dd    = st.nextToken();
+	    String hh    = st.nextToken();
+	    String mm    = st.nextToken();
+	    String ss    = st.nextToken();
+	    cal.set (Calendar.YEAR, Integer.parseInt(yyyy));
+	    cal.set (Calendar.MONTH, Integer.parseInt(mn) - 1);
+	    cal.set (Calendar.DAY_OF_MONTH, Integer.parseInt(dd));
+	    cal.set (Calendar.HOUR_OF_DAY, Integer.parseInt(hh));
+	    cal.set (Calendar.MINUTE, Integer.parseInt(mm));
+	    cal.set (Calendar.SECOND, Integer.parseInt(ss));
+	}
+	return cal;
+    }
+
     private Date parseDate(String dateString) {
 	ParsePosition p = new ParsePosition(0);
 	SimpleDateFormat df = new SimpleDateFormat(isoFormat);
