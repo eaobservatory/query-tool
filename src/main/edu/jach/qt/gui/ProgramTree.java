@@ -66,6 +66,7 @@ final public class ProgramTree extends JPanel implements
 
   private GridBagConstraints		gbc;
   private JButton			run;
+  private JButton                       xpand;
   private JTree				tree;
   private static JList			        obsList;
   private DefaultListModel		model;
@@ -122,6 +123,10 @@ final public class ProgramTree extends JPanel implements
     }
     run.addActionListener(this);
 
+    xpand = new JButton("Expand Observation");
+    xpand.setMargin(new Insets(5,10,5,10));
+    xpand.addActionListener(this);
+
     dropTarget=new DropTarget();
     try{
 	dropTarget.addDropTargetListener(this);
@@ -162,6 +167,13 @@ final public class ProgramTree extends JPanel implements
     gbc.insets.right = 0;
     add(run, gbc, 0, 1, 1, 1);
 
+    gbc.fill = GridBagConstraints.HORIZONTAL;
+    gbc.weightx = 100;
+    gbc.weighty = 0;
+    gbc.insets.left = 0;
+    gbc.insets.right = 0;
+    gbc.insets.bottom = 50;
+    add(xpand, gbc, 0, 2, 1, 1);
   }
 
     /**
@@ -236,6 +248,9 @@ final public class ProgramTree extends JPanel implements
     Object source = evt.getSource();
     if (source == run) {
 	doExecute();
+    }
+    else if (source == xpand) {
+	TreeViewer tv = new TreeViewer((SpItem)obsList.getSelectedValue());
     }
 
     if (source instanceof JMenuItem) {
