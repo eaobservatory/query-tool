@@ -145,9 +145,21 @@ public class TelescopeDataPanel extends JPanel implements ActionListener {
   public void config() {
       
     setBackground(Color.black);
+
+    /*
     setBorder(BorderFactory.createTitledBorder
 	      (BorderFactory.createEtchedBorder(new Color(51, 134, 206), Color.black), "Current Info",
 	       TitledBorder.CENTER, TitledBorder.DEFAULT_POSITION));
+    */
+
+    TitledBorder border = BorderFactory.createTitledBorder (
+            BorderFactory.createLineBorder( new Color(51, 134, 206) ),
+            "Current Info",
+            TitledBorder.CENTER,
+            TitledBorder.DEFAULT_POSITION);
+    border.setTitleColor( new Color(51, 134, 206) );
+    setBorder(border);
+    
     setLayout(new GridBagLayout());
     GridBagConstraints gbc = new GridBagConstraints();
 
