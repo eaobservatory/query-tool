@@ -144,11 +144,10 @@ public class InfoPanel extends JPanel implements ActionListener {
 
     InfoPanel.searchButton.setBackground(java.awt.Color.gray);
 
-    /*Setup the EXECUTE button*/
-    fetchMSB.setText("Send MSB");
-    fetchMSB.setName("Send MSB");
-    fetchMSB.setBackground(java.awt.Color.gray);
-    fetchMSB.addActionListener(this);
+    xmlPrintButton.setText("Fetch MSB");
+    xmlPrintButton.setName("Fetch MSB");
+    xmlPrintButton.setBackground(java.awt.Color.gray);
+    xmlPrintButton.addActionListener(this);
 
     /*Setup the EXIT button*/
     exitButton.setText("Exit");
@@ -208,6 +207,11 @@ public class InfoPanel extends JPanel implements ActionListener {
   public String getXMLquery() {
     return localQuerytool.getXML();
   }
+
+    public TelescopeDataPanel getTelescopeDataPanel()
+    {
+	return telescopeInfoPanel;
+    }
 
   /* -- No longer use-- now a static const
     public String getImageFile() {
