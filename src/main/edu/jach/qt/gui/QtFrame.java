@@ -73,6 +73,10 @@ public class QtFrame extends JFrame implements ActionListener, MenuListener, Lis
 
   }
 
+  public void exitQT() {
+    dispose();
+  }
+
   /**Component initialization*/
   private void compInit() throws Exception  {
     gbc = new GridBagConstraints();
@@ -435,13 +439,14 @@ public class QtFrame extends JFrame implements ActionListener, MenuListener, Lis
     super.processWindowEvent(e);
     if (e.getID() == WindowEvent.WINDOW_CLOSING) {
 
-      try {
-	infoPanel.getCSODcHub().closeDcHub();
-      } catch (ObeyNotRegisteredException onre) {
+      //        try {
+      //  	infoPanel.getCSODcHub().closeDcHub();
+      //        } catch (ObeyNotRegisteredException onre) {
 	
-      } // end of try-catch
+      //        } // end of try-catch
       
       System.exit(0);
     }
   }
+
 }//QtFrame

@@ -30,7 +30,6 @@ import ocs.utils.DcHub;
 public class InfoPanel extends JPanel
   implements ActionListener {
 
-  //reconsider icons dir 'An absolute path!'
   private static final String LOGO_IMAGE = System.getProperty("qtLogo");
 
   private MSBQueryTableModel msb_qtm;
@@ -65,7 +64,7 @@ public class InfoPanel extends JPanel
 
     logoImage = new JLabel();
     setBackground(Color.black);
-    MatteBorder matte = new MatteBorder(4,4,4,4,Color.green);
+    MatteBorder matte = new MatteBorder(3,3,3,3,Color.green);
     setBorder(matte);
     GridBagLayout gbl = new GridBagLayout();
     setLayout(gbl);
@@ -255,9 +254,11 @@ public class InfoPanel extends JPanel
 	telescopeInfoPanel.getHub().closeDcHub();
       } catch ( ObeyNotRegisteredException onr) {
 	
-      } // end of try-catch
+      }
       
-      System.exit(0);
+      //System.exit(0);
+      qtf.exitQT();
+      //System.gc();
     }
     else if (source == xmlPrintButton) {
       localQuerytool.printXML();
