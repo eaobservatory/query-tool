@@ -39,8 +39,8 @@ public class LabeledRangeTextField extends WidgetPanel
 
     widgetLabel = new JLabel(text + ": ", JLabel.LEADING);
     if (text.equalsIgnoreCase(obsFieldName)) {
-	lowerLabel = new JLabel("Date: ",JLabel.TRAILING);
-	upperLabel = new JLabel("Time: ",JLabel.TRAILING);
+	lowerLabel = new JLabel("Date (yyyy-mm-dd): ",JLabel.TRAILING);
+	upperLabel = new JLabel("Time (hh:mm:ss): ",JLabel.TRAILING);
     }
     else {
 	lowerLabel = new JLabel("Min: ",JLabel.TRAILING);
@@ -52,8 +52,8 @@ public class LabeledRangeTextField extends WidgetPanel
     lowerBound = new JTextField();
     if ( text.equalsIgnoreCase(obsFieldName)) {
 	TimeUtils time = new TimeUtils();
-	setLowerText (time.getLocalDate());
-	setUpperText (time.getLocalTime());
+	setLowerText ("current");
+	setUpperText ("current");
     }
     setup();
   }
