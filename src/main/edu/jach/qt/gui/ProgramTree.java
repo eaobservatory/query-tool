@@ -80,8 +80,11 @@ final public class ProgramTree extends JPanel implements
     private DragSource                  dragSource=null;
     private TrashCan                    trash=null;
     public static  SpItem          selectedItem=null;
-    private final String                 editText = "Edit Attribute...";
-    private final String                 scaleText = "Scale Exposure Times...";
+    public static  SpItem          obsToDefer;
+    private SpItem                 instrumentContext;
+    private Vector                 targetContext;
+    private final String           editText = "Edit Attribute...";
+    private final String           scaleText = "Scale Exposure Times...";
     private String                 rescaleText = "Re-do Scale Exposure Times";
 
   /** public programTree() is the constructor. The class
@@ -289,10 +292,12 @@ final public class ProgramTree extends JPanel implements
       else if (selectedItem != null) {
 	  item = selectedItem;
 	  selectedItem=null;
+	  logger.info("Using item from progrm tree");
       }
       else {
 	  item = DeferredProgramList.currentItem;
 	  DeferredProgramList.currentItem=null;
+	  logger.info("Using item from deferred list.");
 	  isDeferredObs =  true;
       }
 
@@ -316,6 +321,15 @@ final public class ProgramTree extends JPanel implements
       
       if(!observation.equals(null)) {
 	SpItem inst = (SpItem) SpTreeMan.findInstrument(observation);
+	if (inst == null) {
+	    logger.error("No instrument found");
+	    System.out.println("No instrument found");
+	    run.setEnabled(true);
+	    return;
+	}
+	else {
+	    System.out.println("Instrument: "+inst.type());
+	}
 	
 	// *TODO* Replace this crap!
 	Translating tFlush = new Translating();
@@ -342,7 +356,7 @@ final public class ProgramTree extends JPanel implements
 	      DeferredProgramList.markThisObservationAsDone(item);
 	  }
 
-	  if ( model.isEmpty()) {
+	  if ( model.isEmpty() && TelescopeDataPanel.DRAMA_ENABLED) {
 	    MsbClient.doneMSB(projectID, checkSum);
 	    JOptionPane.showMessageDialog(null, "The MSB with \n"+
 					  "Project ID: "+projectID+"\n"+
@@ -452,7 +466,9 @@ final public class ProgramTree extends JPanel implements
      * @param sp  The list of obervations in the MSB.
      */
   public void addList(SpItem sp) {
+      _spItem = sp;
 
+    getContext(sp);
     model = new DefaultListModel();
 
     Vector obsVector =  SpTreeMan.findAllItems(sp, "gemini.sp.SpObs");
@@ -810,6 +826,89 @@ final public class ProgramTree extends JPanel implements
 	}
     }
 
+    private void getContext(SpItem item) {
+	Vector obs  = SpTreeMan.findAllItems(item, "gemini.sp.SpObs");
+	instrumentContext = SpTreeMan.findInstrument((SpObs)obs.firstElement());
+	targetContext     = SpTreeMan.findAllItems(item, "gemini.sp.obsComp.SpTelescopeObsComp");
+   }
+
+    /**
+     * Convert eacg observation in an SpMSB to a standalone thing.
+     * @param xmlString  The SpProg as an XML string.
+     * @return           The translated SpProg, or the original input on failure.
+     */
+    public static SpItem convertObs(SpItem item) {
+	/*
+	 * Get all of the observation, instrument and target fields
+	 */
+	SpItem _item = item;
+	SpItem msb = ((SpItem)SpTreeMan.findAllItems(_item, "gemini.sp.SpObs").firstElement()).parent();
+	Vector obs  = SpTreeMan.findAllItems(_item, "gemini.sp.SpObs");
+	Vector targ = SpTreeMan.findAllItems(_item, "gemini.sp.obsComp.SpTelescopeObsComp");
+	Vector iter = SpTreeMan.findAllItems(msb, "gemini.sp.iter.SpIterFolder");
+// 	SpObsContextItem msb  = (SpObsContextItem)((SpItem)obs.firstElement()).parent();
+	if (msb == null) {
+	    logger.warn("Current Tree does not seem to contain an observation context!");
+	    return item;
+	}
+	SpItem inst = SpTreeMan.findInstrument((SpObs)obs.firstElement());
+	if (inst == null) {
+	    logger.warn("Current Tree does not seem to contain an instrument!");
+	   return item;
+	}
+	
+	SpItem localInst;
+	SpItem localTarget;
+	SpInsertData spid;
+	Object [] objArray = obs.toArray();
+	SpObs  [] newObs = new SpObs [obs.size()];
+	for (int i=0; i<obs.size(); i++) {
+	    newObs[i] = (SpObs)objArray[i];
+	}
+	SpItem [] iterator = new SpItem [iter.size()];
+	objArray = iter.toArray();
+	for (int i=0; i<iter.size(); i++) {
+	    iterator[i] = (SpItem)objArray[i];
+	}
+	
+       	SpTreeMan.extract((SpItem []) newObs);
+       	SpTreeMan.extract((SpItem) msb);
+       	SpTreeMan.extract(iterator);
+	for (int i=0; i<obs.size(); i++) {
+	    if (SpTreeMan.findInstrumentInContext((SpObs)newObs[i]) == null) {
+		/*
+		 * The current observation does not contain an instrument
+		 * so add the already found one.
+		 */
+		spid = SpTreeMan.evalInsertInside(inst, (SpObs)newObs[i]);
+		SpTreeMan.insert(spid);
+	    }
+	    if (SpTreeMan.findTargetListInContext((SpObs)newObs[i]) == null) {
+		/*
+		 * The current observation does not contain a target
+		 * so add the already found one.
+		 */
+		spid = SpTreeMan.evalInsertInside((SpItem)targ.firstElement(), (SpObs)newObs[i]);
+		SpTreeMan.insert(spid);
+	    }
+	    /*
+	     * Now we have updated all of the obs, try and replace the obs in the tree
+	     */
+	    System.out.println(msb.toXML());
+	    System.out.println("\n\n\n");	    
+	    System.out.println(newObs[i].toXML());
+	    System.out.println("\n\n\n");	    
+	    spid = SpTreeMan.evalInsertInside(newObs[i], (SpItem)msb);
+	    SpTreeMan.insert(spid);
+	    System.out.println(msb.toXML());
+	    System.out.println("\n\n\n");
+	}
+ 	System.exit(0);
+	
+	return item;
+    }
+  
+
     class PopupListener extends MouseAdapter {
 
 	public void mousePressed (MouseEvent e) {
@@ -893,7 +992,17 @@ final public class ProgramTree extends JPanel implements
 	Object selected = obsList.getSelectedValue();
 	selectedItem = (SpItem)selected;
 	if ( selected != null ){
-	    StringSelection text = new StringSelection( selected.toString());
+	    obsToDefer   = selectedItem;
+	    SpInsertData spid;
+	    if (SpTreeMan.findInstrumentInContext(obsToDefer) == null) {
+		spid = SpTreeMan.evalInsertInside(instrumentContext, obsToDefer);
+		SpTreeMan.insert(spid);
+	    }
+	    if ( SpTreeMan.findTargetListInContext(obsToDefer) == null ) {
+		spid = SpTreeMan.evalInsertInside((SpItem)targetContext.firstElement(), obsToDefer);
+		SpTreeMan.insert(spid);
+	    }
+	    StringSelection text = new StringSelection( obsToDefer.toString());
         
 	    // as the name suggests, starts the dragging
 	    dragSource.startDrag (event, DragSource.DefaultMoveNoDrop, text, this);
