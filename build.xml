@@ -37,7 +37,7 @@
   <!--    ==================================================== -->
   <!--       Set the properties for the build area             -->
   <!--    ==================================================== -->
-  <property name="build.dir" value="/home/mrippa/netroot/install/omp/${Name}"/>
+  <property name="build.dir" value="/jac_sw/OMP/${Name}"/>
   <property name="build.classes" value="${build.dir}/classes"/>
   <property name="build.config" value="${build.dir}/config"/>
   <property name="build.icons" value="${build.dir}/icons"/>
@@ -295,6 +295,8 @@
   <!--    ==================================================== -->
   <target name="main" depends="jar">
     <!--      <antstructure output="project.dtd"/> -->
+    <echo message="EVERYTHING LOOKS GOOD!"/>
+    <echo message="Run /jac_sw/OMP/QT/bin/qt"/>
   </target>
   
 </project>
