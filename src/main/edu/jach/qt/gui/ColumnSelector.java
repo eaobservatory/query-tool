@@ -8,6 +8,8 @@ import java.lang.*;
 import java.util.*;
 import javax.swing.*;
 
+import edu.jach.qt.utils.MsbClient;
+
 
 public class ColumnSelector 
     extends JFrame 
@@ -31,7 +33,7 @@ public class ColumnSelector
 
     private void addCheckBoxes( ) {
 	columnPanel = new JPanel(new GridLayout(0,1));
-	String [] colNames = XmlUtils.getColumnNames(_msbqtm.MSB_SUMMARY);
+	String [] colNames = MsbClient.getColumnNames();
 	BitSet bits = _msbqtm.getBitSet();
 	for (int i=0; i<colNames.length; i++) {
 	    JCheckBox cb = new JCheckBox(colNames[i]);
