@@ -27,6 +27,7 @@ SOURCES = \
 	MsbNode.java \
 	OmpOM.java \
 	ProgramTree.java \
+	ProjectTableModel.java \
 	QtFrame.java \
 	RadioPanel.java \
 	SatPanel.java \
@@ -53,6 +54,7 @@ SOURCES = \
 	ExecuteUKIRT.java \
 	ExecuteJCMT.java \
 	ColumnSelector.java \
+	ProjectTableSelectionModel.java
 	TreeViewer.java
 
 include $(BUILD)/make.tail
