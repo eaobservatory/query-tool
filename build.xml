@@ -52,6 +52,7 @@
   <property name="dist.dir" value="/jac_sw/omp/${Name}"/>
   <property name="dist.classes" value="${dist.dir}/classes"/>
   <property name="dist.config" value="${dist.dir}/config"/>
+  <property name="sys.dist.config" value="/jac_sw/omp/config"/>
   <property name="dist.icons" value="${dist.dir}/icons"/>
   <property name="dist.bin" value="${dist.dir}/bin"/>
   <property name="dist.lib" value="${dist.dir}/lib"/>
@@ -261,6 +262,12 @@
     <copy todir="${dist.config}">
       <fileset dir="${config.dir}">
         <include name="**/*" />
+      </fileset>
+    </copy>
+
+    <copy todir="${sys.dist.config}">
+      <fileset dir="${config.dir}">
+        <include name="*" />
       </fileset>
     </copy>
 
