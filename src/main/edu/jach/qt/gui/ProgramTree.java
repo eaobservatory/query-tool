@@ -473,6 +473,10 @@ final public class ProgramTree extends JPanel implements
 
 		  public void mousePressed(MouseEvent e) {
 		      DeferredProgramList.clearSelection();
+		      obsList.setEnabled(false);
+		  }
+		  public void mouseReleased(MouseEvent e) {
+		      obsList.setEnabled(true);
 		  }
 	      };
 	  obsList.addMouseListener(ml);
