@@ -249,6 +249,9 @@ public class Querytool implements Runnable, Observer {
 	    else if ( next.equalsIgnoreCase("airmass") )
 	      item = doc.createElement("airmass");
 
+	    else if ( next.equalsIgnoreCase("semester") )
+	      item = doc.createElement("semester");
+
 	    tmpStr = (String)n.nextElement();
 	    item.appendChild(doc.createTextNode(tmpStr.trim()));
 	    root.appendChild( item );
