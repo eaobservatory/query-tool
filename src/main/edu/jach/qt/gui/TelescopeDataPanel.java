@@ -27,6 +27,7 @@ public class TelescopeDataPanel extends JPanel {
   private JLabel airmass;
   private JLabel airmassValue;
   private JButton updateButton;
+  private DcHub hub;
 
   public static String tauString = "-----";
 
@@ -40,7 +41,7 @@ public class TelescopeDataPanel extends JPanel {
 
     updateButton = new JButton("Set Current");
 
-    DcHub hub = new DcHub();
+    hub = DcHub.getHandle();
     hub.register("CSOMON");
   }
   
@@ -91,6 +92,10 @@ public class TelescopeDataPanel extends JPanel {
 
     add(updateButton, gbc, 0, 3, 2, 1);
             
+  }
+
+  public DcHub getHub() {
+    return hub;
   }
    
   /**
