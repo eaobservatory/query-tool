@@ -137,14 +137,6 @@ public class QtFrame
 	      }
 	  }
       }
-      if (System.getProperty("telescope").equalsIgnoreCase("ukirt") && 
-	  System.getProperty("DRAMA_ENABLED").equalsIgnoreCase("true") ) {
-	  File lockFile = new File ("/ukirtdata/orac_data/deferred/.lock");
-	  if (lockFile.exists()) {
-	      logger.info("Shutting down and deleting lock file");
-	      lockFile.delete();
-	  }
-      }
       setVisible(false);
       dispose();
       System.exit(0);

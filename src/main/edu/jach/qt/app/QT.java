@@ -119,23 +119,6 @@ final public class QT {
       qtf.setLocation(x,y);
       qtf.validate();
       qtf.setVisible(true);
-      /*
-      Runtime rt = Runtime.getRuntime();
-      rt.addShutdownHook(new Thread () {
-	      public void run () {
-		  logger.info ("Running shutdown hook");
-		  // Check if we are running the active QT on UKIRT
-		  if (System.getProperty("telescope").equalsIgnoreCase("ukirt") && 
-		      System.getProperty("DRAMA_ENABLED").equalsIgnoreCase("true") ) {
-		      File lockFile = new File ("/ukirtdata/orac_data/deferred/.lock");
-		      if (lockFile.exists()) {
-			  logger.info("Shutting down and deleting lock file");
-			  lockFile.delete();
-		      }
-		  }
-	      }
-	  });
-      */
 
    }
    
@@ -160,6 +143,9 @@ final public class QT {
 
 /*
  * $Log$
+ * Revision 1.26  2003/03/19 19:31:30  dewitt
+ * New UKIRT instrument handling.
+ *
  * Revision 1.25  2003/02/20 22:44:44  dewitt
  * Removed shutdownhook which is implicated in the QT failing to exit cleanly.
  *

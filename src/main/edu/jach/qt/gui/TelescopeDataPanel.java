@@ -64,26 +64,6 @@ public class TelescopeDataPanel extends JPanel implements ActionListener {
     airmassValue	= new JLabel(tauString, JLabel.LEADING);
     updateButton	= new JButton("Set Default");
     this.infoPanel      = panel;
-    boolean locked=false;
-
-    /*
-     * Check if a lock file exists.  If it doesn't create one, if is does,
-     * tell the user who owns the lock and try to start up in scenario mode.
-     * If we are already in scenario mode - don't bother
-     */
-
-    String lockFileName = File.separator +
-	File.separator +
-	System.getProperty("telescope") +
-	"data" +
-	File.separator +
-	System.getProperty("deferredDir")+
-	File.separator +
-	".lock";
-    File lockFile = new File (lockFileName.toLowerCase());
-    if (lockFile.exists()) {
-	locked = true;
-    }
 
     if (TelescopeDataPanel.DRAMA_ENABLED) {
       hub = DcHub.getHandle();
@@ -100,38 +80,19 @@ public class TelescopeDataPanel extends JPanel implements ActionListener {
       hub.register(csomonHI);
 
     }
-    else if (locked) {
-      Object[] options = { "CONTINUE", "CANCEL" };
-      int n = JOptionPane.
-	showOptionDialog(null, 
-			 " QT IS LOCKED!.\n\n"+
-			 "Continue will allow you to run the QT in Senario Mode.\n"+
-			 "Cancel will shutdown the QT\n" +
-			 "To run in live, cancel and remove the file "+lockFileName.toLowerCase(), 
-			 "Warning", 
-			 JOptionPane.OK_CANCEL_OPTION, 
-			 JOptionPane.WARNING_MESSAGE, null, options, options[0]);
-
-      if( (n == JOptionPane.NO_OPTION) || (n == JOptionPane.CLOSED_OPTION)) {
-	  System.exit(0);
-      }
-      else {
-	  DRAMA_ENABLED = false;
-      }
-    }
     else  {
-      Object[] options = { "CONTINUE", "CANCEL" };
-      int n = JOptionPane.
-	showOptionDialog(null, 
-			 "          NOT A DRAMA ENABLED SYSTEM!.\n\n"+
-			 "Continue will allow you to run the QT in Senario Mode.\n"+
-			 "Cancel will shutdown the QT", 
-			 "Warning", 
-			 JOptionPane.OK_CANCEL_OPTION, 
-			 JOptionPane.WARNING_MESSAGE, null, options, options[0]);
-
-      if( (n == JOptionPane.NO_OPTION) || (n == JOptionPane.CLOSED_OPTION))
-	System.exit(0);
+	Object[] options = { "CONTINUE", "CANCEL" };
+	int n = JOptionPane.
+	    showOptionDialog(null, 
+			     "          NOT A DRAMA ENABLED SYSTEM!.\n\n"+
+			     "Continue will allow you to run the QT in Senario Mode.\n"+
+			     "Cancel will shutdown the QT", 
+			     "Warning", 
+			     JOptionPane.OK_CANCEL_OPTION, 
+			     JOptionPane.WARNING_MESSAGE, null, options, options[0]);
+	
+	if( (n == JOptionPane.NO_OPTION) || (n == JOptionPane.CLOSED_OPTION))
+	    System.exit(0);
     }
     
     config();
