@@ -1207,14 +1207,20 @@ final public class ProgramTree extends JPanel implements
 	File noDataFile = new File ("/tmp/noData");
 	String title = ((SpProg)_spItem).getTitle();
 	try {
+	    cancelFile.delete();
 	    cancelFile.createNewFile();
+	    acceptFile.delete();
 	    acceptFile.createNewFile();
+	    rejectFile.delete();
 	    rejectFile.createNewFile();
+	    noDataFile.delete();
 	    noDataFile.createNewFile();
 	}
 	catch (IOException ioe) {
 	    logger.warn ("Unable to create one of the MSBDoneDialog com files");
 	}
+	String msg = "Creating MSB Done popup for Project "+projectID+", Title "+title;
+	logger.info (msg);
 	MSBDoneDialog mdd = new MSBDoneDialog ((Frame)parent, 
 					       projectID, 
 					       title,
@@ -1222,12 +1228,14 @@ final public class ProgramTree extends JPanel implements
 	// See which comms file exist after accept/reject
 	if (cancelFile.exists()) {
 	    cancelFile.delete();
+	    logger.info ("User opted to cancel");
 	}
 	else if (noDataFile.exists()) {
 	    noDataFile.delete();
 	    done=true;
 	    anObservationHasBeenDone = true;
 	    ((DefaultListModel)obsList.getModel()).clear();
+	    logger.info ("User selected 'No Data Taken'");
 	}
 	else if (acceptFile.exists()) {
 	    acceptFile.delete();
@@ -1235,12 +1243,14 @@ final public class ProgramTree extends JPanel implements
 	    anObservationHasBeenDone = false;
 	    InfoPanel.searchButton.doClick();
 	    ((DefaultListModel)obsList.getModel()).clear();
+	    logger.info("User accepted MSB");
 	}
 	else if (rejectFile.exists()) {
 	    rejectFile.delete();
 	    done = true;
 	    anObservationHasBeenDone = false;
 	    InfoPanel.searchButton.doClick();
+	    logger.info ("User rejected MSB");
 	}
 	return done;
     }
@@ -1250,6 +1260,7 @@ final public class ProgramTree extends JPanel implements
 	obsList.setEnabled(flag);
 	repaint();
     }
+
 
     public JButton getRunButton () {return run;}
 }
