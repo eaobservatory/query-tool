@@ -144,8 +144,6 @@ public class QtFrame extends JFrame implements PopupMenuListener, ActionListener
 	}
     }
 
-    //Build Menu
-    buildMenu();
 
     //Input Panel Setup
     WidgetPanel inputPanel = new WidgetPanel(new Hashtable(), widgetBag);
@@ -170,6 +168,8 @@ public class QtFrame extends JFrame implements PopupMenuListener, ActionListener
 				 inputPanel,
 				 resultsPanel);
 
+    //Build Menu
+    buildMenu();
 
 
     gbc.fill = GridBagConstraints.BOTH;
@@ -199,6 +199,9 @@ public class QtFrame extends JFrame implements PopupMenuListener, ActionListener
 	localQuerytool.setObservabilityConstraint(true);
 	localQuerytool.setQueue("SERV");
 	boolean result = localQuerytool.queryMSB();
+	localQuerytool.setAllocationConstraint(false);
+	localQuerytool.setRemainingConstraint(false);
+	localQuerytool.setObservabilityConstraint(false);
 	localQuerytool.setQueue(null);
 	return;
     }
@@ -441,7 +444,10 @@ public class QtFrame extends JFrame implements PopupMenuListener, ActionListener
     JMenuItem pasteItem = new JMenuItem("Paste", new ImageIcon("icons/paste.gif"));
     pasteItem.setEnabled(false);
 
-    
+    JMenu viewMenu = new JMenu ("View...");
+    mbar.add(viewMenu);
+    viewMenu.setEnabled(false);
+    viewMenu.addMenuListener(this);
 
     mbar.add( makeMenu("Edit", new Object[] {
 	cutItem, copyItem, pasteItem,
@@ -494,6 +500,10 @@ public class QtFrame extends JFrame implements PopupMenuListener, ActionListener
 		  cals[iloop].setEnabled(false);
 	      }
 	  }
+      }
+      else if (source.getText().equals("View...")) {
+	  ColumnSelector colSelector = new ColumnSelector(table, this);
+	  return;
       }
   }
 
