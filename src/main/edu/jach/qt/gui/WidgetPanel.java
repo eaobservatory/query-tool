@@ -184,26 +184,26 @@ public class WidgetPanel extends JPanel
 
 	  gbc.fill = GridBagConstraints.HORIZONTAL;
 	  gbc.anchor = GridBagConstraints.NORTH;
-	  gbc.weightx = 100;
+	  gbc.weightx = 50;
 	  gbc.weighty = 0;
 	  if ( info.getView() == BoxLayout.Y_AXIS) {
 	    
 	    if (info.getTitle().equalsIgnoreCase("Clouds") ) {
-	      add(panel, gbc, 1, 0, 2, info.getSize()+1);
+	      add(panel, gbc, 2, 20, 1, info.getSize()+1);
 	    }
 	    else if (info.getTitle().equalsIgnoreCase("Atmosphere") ) {
-	      add(panel, gbc, 1, 4, 2, info.getSize()+1);
+	      add(panel, gbc, 1, 4, 3, info.getSize()+1);
 	      setAtmospherePanel(panel);
 	    }
 	    else if (info.getTitle().equalsIgnoreCase("Moon") ) {
-	      add(panel, gbc, 1, 20, 2, info.getSize()+1);
+	      add(panel, gbc, 3, 20, 1, info.getSize()+1);
 	      setMoonPanel(panel);
 	    }
 	    else if (info.getTitle().equalsIgnoreCase("Country") ) {
 	      add(panel, gbc, 1, 0, 2, info.getSize()+1);
 	    }
 	    else {
-	      add(panel, gbc, numRadPanels, 20, 1, info.getSize()+1);
+	      add(panel, gbc, numRadPanels, 20,1, info.getSize()+1);
 	    }
 	    totalNumRadRows += info.getSize()+2;
 	  }
