@@ -603,7 +603,11 @@ final public class ProgramTree extends JPanel implements
 	}
 
 	obsList = new JList(model);
+// 	obsList.addFocusListener ( new FocusAdapter() {} );
+ 	ToolTipManager.sharedInstance().registerComponent(obsList);
+	ToolTipManager.sharedInstance().setDismissDelay(3000);
 	obsList.setCellRenderer(new ObsListCellRenderer());
+	obsList.setToolTipText( "<html>Optional observations are shown in GREEN<br>Calibrations which have been done are shown in BLUE<br>Suspended MSBs are shown in RED</html>");
 	MouseListener ml = new MouseAdapter()
 	    {
 		public void mouseClicked(MouseEvent e)
