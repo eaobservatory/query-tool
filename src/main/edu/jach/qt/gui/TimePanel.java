@@ -22,8 +22,12 @@ public class TimePanel extends JLabel
    public TimePanel () {
       setHorizontalAlignment(SwingConstants.CENTER);
 
-      MatteBorder matte = new MatteBorder(1,1,1,1,Color.white);
-      setBorder(matte);
+      //MatteBorder matte = new MatteBorder(1,1,1,1,Color.white);
+
+      TitledBorder border = BorderFactory.createTitledBorder
+	(BorderFactory.createLineBorder(Color.green), "HST",
+	 TitledBorder.CENTER, TitledBorder.DEFAULT_POSITION);
+      setBorder(border);
       
       this.setOpaque(true);
       Timer t = new Timer(1000);
