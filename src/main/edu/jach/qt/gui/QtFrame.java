@@ -1,9 +1,5 @@
 package edu.jach.qt.gui;
 
-//ORAC depends
-//import gemini.sp.SpInputSGML;
-//import gemini.sp.SpItem;
-//import gemini.sp.SpPhase1;
 import edu.jach.qt.app.Querytool;
 import edu.jach.qt.gui.WidgetDataBag;
 import edu.jach.qt.utils.TextReader;
@@ -18,43 +14,44 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.*;
 
 /**
- * Title:        QT
- * Description:
- * Copyright:    Copyright (c) 2001
- * Company:      JAC
- * @author Mathew Rippa
- * @version 1.0
+ * The <code>QtFrame</code> is responsible for how the main JFrame
+ * is to look.  It starts 2 panel classes InfoPanel and InputPanel
+ * adding them to the left side and top right resrectively.  Also,
+ * a JTable is created with a sort model that is sensititve to column 
+ * header clicks.  Each click sorts rows in decending order relative to 
+ * the column clicked.  A shift-click has the effect of an acsending 
+ * sort.  The JTable is placed in the bottom right of the JFrame.
+ *
+ * @author <a href="mailto:mrippa@jach.hawaii.edu">Mathew Rippa</a>
+ * $Id$
  */
-
 public class QtFrame extends JFrame implements MenuListener, ListSelectionListener{
 
    private static final String 
-      WIDGET_CONFIG_FILE = "/home/mrippa/root/install/omp/QT/config/qt.conf";
+      WIDGET_CONFIG_FILE = System.getProperty("widgetFile");
    private final static String
-      DUMMY_TABLE_DATA = "/home/mrippa/root/install/omp/QT/config/querySet.txt";
-   
-   public MSBQueryTableModel msbQTM;
-   public JTable table;
+      DUMMY_TABLE_DATA = System.getProperty("dummyTable");;
 
+   private MSBQueryTableModel msbQTM;
+   private JTable table;
    private int selRow;
-   private WidgetPanel inputPanel;
-   private WidgetDataBag widgetBag;
-   public  InfoPanel infoPanel;
    private JMenuItem saveItem;
    private JMenuItem saveAsItem;
    private JCheckBoxMenuItem readonlyItem;
+
+   private WidgetDataBag widgetBag;
    private Querytool localQuerytool;
 
-   public JFrame frame;
    /**
     * Creates a new <code>QtFrame</code> instance.
     *
+    * @param wdb a <code>WidgetDataBag</code> value
+    * @param qt a <code>Querytool</code> value
     */
    public QtFrame(WidgetDataBag wdb, Querytool qt) {
       widgetBag = wdb;
       localQuerytool = qt;
 
-      frame = this;
       enableEvents(AWTEvent.WINDOW_EVENT_MASK);
       GridBagLayout layout = new GridBagLayout();
       getContentPane().setLayout(layout);
@@ -66,20 +63,11 @@ public class QtFrame extends JFrame implements MenuListener, ListSelectionListen
 	 e.printStackTrace();
       }
 
-      //Read the config to determine the widgets
-      try{
-	 inputPanel.parseConfig(WIDGET_CONFIG_FILE);
-      }
-      catch(IOException e){ 
-	 System.out.println("Parse Failed" + e);
-      }
    }
 
    /**Component initialization*/
    private void compInit() throws Exception  {
       GridBagConstraints gbc = new GridBagConstraints();
-      setSize(new Dimension(950, 550));
-      setTitle("QT QUERY-TOOL");
 
       //Build Menu
       buildMenu();
@@ -90,8 +78,8 @@ public class QtFrame extends JFrame implements MenuListener, ListSelectionListen
       JScrollPane resultsPanel = new JScrollPane(table);
 
       //Input Panel Setup
-      inputPanel = new WidgetPanel(new Hashtable(), widgetBag);
-      infoPanel = new InfoPanel(msbQTM, localQuerytool);
+      WidgetPanel inputPanel = new WidgetPanel(new Hashtable(), widgetBag);
+      InfoPanel infoPanel = new InfoPanel(msbQTM, localQuerytool);
 
       // Build split-pane view
       JSplitPane splitPane = 
@@ -109,6 +97,15 @@ public class QtFrame extends JFrame implements MenuListener, ListSelectionListen
       gbc.weightx = 100;
       gbc.weighty = 100;
       add(splitPane, gbc, 1, 0, 1, 2);
+
+      //Read the config to determine the widgets
+      try{
+	 inputPanel.parseConfig(WIDGET_CONFIG_FILE);
+      }
+      catch(IOException e){ 
+	 System.out.println("Parse Failed" + e);
+      }
+
    }
 
    private void tableSetup() {
@@ -131,7 +128,7 @@ public class QtFrame extends JFrame implements MenuListener, ListSelectionListen
 		     OmpOM om = new OmpOM();
 		  }
 		  else
-		     JOptionPane.showMessageDialog(frame, "Must select a project summary first!");
+		     JOptionPane.showMessageDialog(null, "Must select a project summary first!");
 	       }
 	       if (SwingUtilities.isRightMouseButton(e)) {
 	  
@@ -140,6 +137,13 @@ public class QtFrame extends JFrame implements MenuListener, ListSelectionListen
 	 } );
    }
    
+   /**
+    * The <code>valueChanged</code> method is mandated by the 
+    * ListSelectionListener. Called whenever the value of 
+    * the selection changes.
+    *
+    * @param e a <code>ListSelectionEvent</code> value
+    */
    public void valueChanged(ListSelectionEvent e) {
       if (!e.getValueIsAdjusting()) {        
 	 selRow = table.getSelectedRow();
@@ -163,7 +167,8 @@ public class QtFrame extends JFrame implements MenuListener, ListSelectionListen
    }
 
    /**
-    * Describe <code>add</code> method here.
+    * This <code>add</code> method is a utility method to add
+    * the current Component to the grid bag.
     *
     * @param c a <code>Component</code> value
     * @param gbc a <code>GridBagConstraints</code> value
@@ -182,7 +187,7 @@ public class QtFrame extends JFrame implements MenuListener, ListSelectionListen
    }
    
    /**
-    * Describe <code>buildMenu</code> method here.
+    * The <code>buildMenu</code> method builds the menu system.
     *
     */
    public void buildMenu() {
@@ -221,7 +226,8 @@ public class QtFrame extends JFrame implements MenuListener, ListSelectionListen
    }
 
    /**
-    * Describe <code>menuSelected</code> method here.
+    * <code>menuSelected</code> method is an action triggered when a 
+    * menu is selected.
     *
     * @param evt a <code>MenuEvent</code> value
     */
@@ -231,7 +237,8 @@ public class QtFrame extends JFrame implements MenuListener, ListSelectionListen
    }
 
    /**
-    * Describe <code>menuDeselected</code> method here.
+    * <code>menuDeselected</code> method is an action trggered when a 
+    * menu is deselected.
     *
     * @param evt a <code>MenuEvent</code> value
     */
@@ -240,7 +247,8 @@ public class QtFrame extends JFrame implements MenuListener, ListSelectionListen
    }
 
    /**
-    * Describe <code>menuCanceled</code> method here.
+    * The <code>menuCanceled</code> method is an action triggered when a 
+    * menu is canceled.
     *
     * @param evt a <code>MenuEvent</code> value
     */
@@ -249,7 +257,8 @@ public class QtFrame extends JFrame implements MenuListener, ListSelectionListen
    }
 
    /**
-    * Describe <code>makeMenu</code> method here.
+    * The <code>makeMenu</code> method is a blackbox to make a 
+    * generic menu.
     *
     * @param parent an <code>Object</code> value
     * @param items an <code>Object[]</code> value
@@ -276,7 +285,8 @@ public class QtFrame extends JFrame implements MenuListener, ListSelectionListen
    }
 
    /**
-    * Describe <code>makeMenuItem</code> method here.
+    * The <code>makeMenuItem</code> method is a blackbox for a 
+    * generic menu item.
     *
     * @param item an <code>Object</code> value
     * @param target an <code>Object</code> value
