@@ -243,8 +243,15 @@ public class QtTools {
 	} 
 	
       }
-    } catch (IOException e) {
+
+      int rtn = p.waitFor();
+
+    } 
+    catch (IOException e) {
       logger.error("StdOut got IO exception:"+e.getMessage());
+    }
+    catch (InterruptedException ie) {
+	logger.error("oosTest process was interrupted abnormally.", ie);
     }
 
     return status;
