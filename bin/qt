@@ -157,20 +157,22 @@ while ($#argv != 0)
    endsw
 end
 
+echo Setting dates...
 set utdate = `date -u +%Y%m%d`
 set hstdate = `date +%Y%m%d-%H%M%S`
-set time = `date +%H%M%S`
+set hsttime = `date +%H%M%S`
 
+echo Setting domain...
 set domain = `domainname`
 if (`domainname` == "JAC.ukirt") then
    set solHost = "kiki"
-   set taskname = UKIRT_QT_${time}
+   set taskname = UKIRT_QT_${hsttime}
 else if (`domainname` == "JAC.jcmt") then
    set solHost = "localhost"
-   set taskname = JCMT_QT_${time}
+   set taskname = JCMT_QT_${hsttime}
 else if (`domainname` == "JAC.Hilo") then
    set solHost = ${solHost}
-   if ( $(telescope) == "jcmt" ) then
+   if ( ${telescope} == "jcmt" ) then
       set taskname="JCMT_QT"
    else
       set taskname="UKIRT_QT"
@@ -182,6 +184,7 @@ else if (`domainname` == "JAC.Hilo") then
    endif
 endif
 
+echo Checking widgetfile ...
 if !($?widgetFile) then
     printf "${usage}"
     exit 1
@@ -196,7 +199,7 @@ if ( ${LOGPATH} == "" ) then
   if ( ${domain} ==  "JAC.ukirt" || ${domain} == "JAC.jcmt" ) then
     set LOGPATH = "/jac_logs/${utdate}/OCSqt_${hstdate}"
   else
-    set LOGPATH = "/home/${user}/qtLogs"
+    set LOGPATH = "/home/${user}/qtLogs/${utdate}"
     if (! -e ${LOGPATH} ) then
       mkdir ${LOGPATH}
     endif
@@ -254,6 +257,8 @@ setenv DTCL_DIR /jac_sw/drama/CurrentRelease/include/
 set CLASSPATH = ../lib/qt.jar:../lib/calpahtml.jar:../lib/xercesImpl.jar:../lib/xmlParserAPIs.jar:../lib/mail.jar:../lib/activation.jar:../lib/soap.jar:/jac_sw/orac3/OT/install/classes:/jac_sw/orac3/GEMINI/install/classes:/jac_sw/itsroot/install/ompSM/javlib/ompSM.jar:/jac_sw/orac3/ORAC/install/classes:/jac_sw/orac3/OMP/install/classes:/jac_sw/orac3/ODB/install/classes:../lib/jsky.jar:../lib/diva.jar:../lib/junit.jar:../icons:/local/java/jdk/lib/tools.jar:/jac_sw/itsroot/install/dcHub/javalib/dcHub.jar:/jac_sw/drama/CurrentRelease/javalib
 
 ${JAVA} ${classic} ${xdebug} ${xnoagent} ${xrunjdwptrans} ${xbootclasspath} -Ddebug=${debug} -DDRAMA_ENABLED=${dramaEnabled} -DSIMULATE=${tosim} -DENGINEERING=${toeng} -DQUICKLOOK=${toql} -Dtelescope=${telescope} -DSOLARIS_HOST=${solHost} -DDOMAIN=`domainname` -DqtConfig=${qtConfig} -Dot.cfgdir=${instConfigDir}/ -Dot.resource.cfgdir=./ -DwidgetFile=${widgetFile} -DQT_LOG_DIR=${QT_LOG_DIR} -DDOMAIN=${domain} -DOMP -DDCHUB_TIMEOUT=${timeout} -DTASKNAME=${taskname} -cp ${CLASSPATH}:${instConfigDir} edu.jach.qt.app.QT
+
+#${JAVA} ${classic} ${xdebug} ${xnoagent} ${xrunjdwptrans} ${xbootclasspath} -Ddebug=${debug} -DDRAMA_ENABLED=${dramaEnabled} -DSIMULATE=${tosim} -DENGINEERING=${toeng} -DQUICKLOOK=${toql} -Dtelescope=${telescope} -DSOLARIS_HOST=${solHost} -DDOMAIN=`domainname` -DqtConfig=${qtConfig} -Dot.cfgdir=${instConfigDir}/ -Dot.resource.cfgdir=./ -DwidgetFile=${widgetFile} -DQT_LOG_DIR=${QT_LOG_DIR} -DDOMAIN=${domain} -DOMP -DDCHUB_TIMEOUT=${timeout} -cp ${CLASSPATH}:${instConfigDir} edu.jach.qt.utils.SimpleMoon
 
 tidy: 
 onintr - 
