@@ -23,7 +23,8 @@ SOURCES = \
 	DragTreeCellRenderer.java \
 	LockFile.java \
 	CalibrationList.java \
-	SimpleMoon.java
+	SimpleMoon.java \
+	TelescopeInformation.java
 
 
 include $(BUILD)/make.tail
