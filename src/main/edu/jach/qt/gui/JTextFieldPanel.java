@@ -72,10 +72,26 @@ public class JTextFieldPanel extends WidgetPanel
     }
   }
 
-  public void setTau(String val) {
-    LabeledTextField temp = (LabeledTextField) (fieldElems.getFirst());
-    temp.setText(val);
+  public void setTextField(String field, String val) {
+      ListIterator iterator = fieldElems.listIterator(0);
+      while (iterator.hasNext()) {
+	  LabeledTextField thisTextField = (LabeledTextField) iterator.next();
+	  System.out.println(thisTextField.getName());
+	  if ( thisTextField.getName().equals(field) ) {
+	      thisTextField.setText(val);
+	  }
+      }
   }
+
+   public void setTau(String val) {
+     LabeledTextField temp = (LabeledTextField) (fieldElems.getFirst());
+     temp.setText(val);
+   }
+
+//   public void setAirmass(String val) {
+//     LabeledTextField temp = (LabeledTextField) (fieldElems.getFirst());
+//     temp.setText(val);
+//   }
 
   /**
    * The <code>insertUpdate</code> adds the current text to the
