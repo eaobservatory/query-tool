@@ -134,15 +134,20 @@ public class InfoPanel extends JPanel implements ActionListener {
 		logoPanel.stop();
 		if ( isStatusOK.booleanValue()) {
 		  qtf.updateColumnSizes();
-		  Thread tableFill = new Thread(msb_qtm);
+ 		  Thread tableFill = new Thread(msb_qtm);
+		  Thread projectFill = new Thread (qtf.getProjectModel());
+		  projectFill.start();
 		  tableFill.start();
 		  try {
+		      projectFill.join();
 		      tableFill.join();
 		  }
 		  catch (InterruptedException iex) {
 		      logger.warn("Problem joining tablefill thread");
 		  };
 		  qtf.setColumnSizes();
+		  qtf.initProjectTable();
+		  msb_qtm.setProjectId("All");
 		}
 	      }
 	    };
@@ -298,7 +303,8 @@ public class InfoPanel extends JPanel implements ActionListener {
       if (TelescopeDataPanel.DRAMA_ENABLED) {
 	try {
 	  telescopeInfoPanel.getHub().closeDcHub();
-	} catch ( ObeyNotRegisteredException onr) {
+	} 
+	catch ( ObeyNotRegisteredException onr) {
 	  
 	}
       }
