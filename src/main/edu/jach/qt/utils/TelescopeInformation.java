@@ -20,7 +20,6 @@ public class TelescopeInformation {
 	
 	String configFile = configDir + File.separatorChar +
 	    System.getProperty("telescopeConfig");
-	System.out.println(configFile);
 
 	// Now try to build a document from this file
 	File dataFile = new File(configFile);
