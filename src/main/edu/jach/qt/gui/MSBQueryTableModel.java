@@ -24,7 +24,7 @@ import java.io.*;
  *
  */
 
-public class MSBQueryTableModel extends AbstractTableModel {
+public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
 
    public static final String ROOT_ELEMENT_TAG = "SpMSBSummary";
 
@@ -101,7 +101,7 @@ public class MSBQueryTableModel extends AbstractTableModel {
       projectIds = new Integer[200];
    }
 
-   public void setQuery() {
+   public void run() {
    /**
       Constructor - create a DOM
    */
