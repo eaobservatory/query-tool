@@ -100,6 +100,8 @@ final public class DeferredProgramList extends JPanel implements
      * Updates the display of the deferred observations.
      */
     public void reload() {
+	fileToObjectMap.clear();
+	model.clear();
 	getCurrentList();
 	displayList();
     }
