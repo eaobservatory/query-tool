@@ -337,7 +337,7 @@
   <!--             Create the API documentation               -->               
   <!--  ====================================================== -->
   <target name="javadoc_check">
-    <uptodate property="javadoc.notrequired" targetfile="${build.javadocs}/packages.html" >
+    <uptodate property="javadoc.notrequired" targetfile="${dist.javadocs}/packages.html" >
       <srcfiles dir= "${java.dir}" includes="**/*.java"/>
     </uptodate>
   </target>
@@ -345,10 +345,10 @@
   <target name="javadocs" depends="init, javadoc_check" 
 	  unless="javadoc.notrequired"
 	  description="Creates the API documentation">
-    <mkdir dir="${build.javadocs}"/>
+    <mkdir dir="${dist.javadocs}"/>
     <javadoc packagenames="edu.jach.qt.*"
 	     sourcepath="${java.dir}"
-	     destdir="${build.javadocs}"
+	     destdir="${dist.javadocs}"
 	     author="true"
 	     version="true"
 	     windowtitle="${Name} API"
@@ -361,7 +361,7 @@
   <!--    ==================================================== -->
   <!--                     Clean It!                           -->
   <!--    ==================================================== -->
-  <target name="clean">
+  <target name="clean" description="The default clean target. Deletes the install tree.">
     <delete dir="${build.dir}" />
     <delete dir="${build.lib}" />
   </target>
@@ -369,7 +369,7 @@
   <!--    ==================================================== -->
   <!--                     Clean It!                           -->
   <!--    ==================================================== -->
-  <target name="dist-clean">
+  <target name="dist-clean" description="The dist clean target. Deletes the dist install tree.">
     <delete dir="${dist.dir}" />
     <delete dir="${dist.lib}" />
   </target>
@@ -385,7 +385,7 @@
   <!--    ==================================================== -->
   <!--                       MAIN                              -->
   <!--    ==================================================== -->
-  <target name="main" depends="compile">
+  <target name="main" depends="compile" description="The default target built when no args passed to ant.">
     <!--      <antstructure output="project.dtd"/> -->
     <echo message="EVERYTHING LOOKS GOOD!"/>
     <echo message="Run ${build.dir}/bin/qt"/>
@@ -394,7 +394,7 @@
   <!--    ==================================================== -->
   <!--                       DIST                              -->
   <!--    ==================================================== -->
-  <target name="dist" depends="jar">
+  <target name="dist" depends="jar, javadocs">
     <!--      <antstructure output="project.dtd"/> -->
     <echo message="EVERYTHING LOOKS GOOD!"/>
     <echo message="Run ${dist.dir}/bin/qt"/>
