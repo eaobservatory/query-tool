@@ -214,6 +214,10 @@ final public class DeferredProgramList extends JPanel implements
 			}
 		    }
 		}
+
+		public void mousePressed(MouseEvent e) {
+		    ProgramTree.clearSelection();
+		}
 	    };
 	obsList.addMouseListener(ml);
 	// Add the listbox to a scrolling pane
@@ -657,6 +661,7 @@ final public class DeferredProgramList extends JPanel implements
     public void dragGestureRecognized( DragGestureEvent event) 
     {
 	SpItem selected = (SpItem) obsList.getSelectedValue();
+	ProgramTree.clearSelection();
 	obsList.setEnabled(false);
 	if (selected != null) {
 	    StringSelection text = new StringSelection( selected.toString());
