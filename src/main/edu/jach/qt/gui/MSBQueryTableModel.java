@@ -40,7 +40,7 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
       };*/
    
    public static final String[] colNames ={
-      "wavelength",
+      "waveband",
       "instrument",
       "remaining",
       "target",
