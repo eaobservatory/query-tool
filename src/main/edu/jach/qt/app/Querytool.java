@@ -150,18 +150,14 @@ public class Querytool implements Runnable, Observer {
 	  LabeledTextField ltf = (LabeledTextField) (ht.get(next));
 	  Enumeration n = ltf.getList().elements();
 	  String tmpStr;
-	  item = doc.createElement(next);
 
 	  while (n.hasMoreElements()) {
-	    if ( !next.equalsIgnoreCase("pi"))
-	      item = doc.createElement(next);
-	    else
+	    if ( next.equalsIgnoreCase("pi"))
 	      item = doc.createElement("name");
 
-	    if ( next.equalsIgnoreCase("project") ) {
+	    else if ( next.equalsIgnoreCase("project") )
 	      item = doc.createElement("projectid");
-	    }
-	    
+
 	    tmpStr = (String)n.nextElement();
 	    item.appendChild(doc.createTextNode(tmpStr.trim()));
 	    root.appendChild( item );
