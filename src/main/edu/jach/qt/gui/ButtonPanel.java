@@ -12,7 +12,9 @@ import edu.jach.qt.gui.WidgetDataBag;
 /**
  * ButtonPanel.java
  *
- *
+ * This is composite object designed for choosing instruments.
+ * JCheckboxes are used for selection and are grouped together with a
+ * titled border.  
  * Created: Tue Mar  6 11:52:13 2001
  *
  * @author <a href="mailto: "Mathew Rippa</a>
@@ -52,7 +54,8 @@ public class ButtonPanel extends WidgetPanel  {
    }
    
    /**
-    * Describe <code>setEnabled</code> method here.
+    * The <code>setEnabled</code> method enables or diables each
+    * JCheckBox depending on the value of <code>boolean</code>.
     *
     * @param booleanFlag a <code>boolean</code> value
     */
@@ -65,7 +68,8 @@ public class ButtonPanel extends WidgetPanel  {
    }
 
    /**
-    * Describe <code>setSelected</code> method here.
+    * The <code>setSelected</code> method selects or unselects each
+    * JCheckBox method depending on the value of <code>boolean</code>.
     *
     * @param flag a <code>boolean</code> value
     */
@@ -79,7 +83,8 @@ public class ButtonPanel extends WidgetPanel  {
    }
 
    /**
-    * Describe <code>actionPerformed</code> method here.
+    * The <code>actionPerformed</code> method notifies the
+    * WidgetDataBag of the state of all JCheckBoxes.
     *
     * @param evt an <code>ActionEvent</code> value
     */
