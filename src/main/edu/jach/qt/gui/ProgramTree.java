@@ -1205,7 +1205,8 @@ final public class ProgramTree extends JPanel implements
 	File acceptFile = new File ("/tmp/accept");
 	File rejectFile = new File ("/tmp/reject");
 	File noDataFile = new File ("/tmp/noData");
-	String title = ((SpProg)_spItem).getTitle();
+// 	String title = ((SpProg)_spItem).getTitle();
+	String title = ((SpMSB) SpTreeMan.findAllItems(_spItem, "gemini.sp.SpMSB").firstElement()).getTitle();
 	try {
 	    cancelFile.delete();
 	    cancelFile.createNewFile();
@@ -1219,7 +1220,7 @@ final public class ProgramTree extends JPanel implements
 	catch (IOException ioe) {
 	    logger.warn ("Unable to create one of the MSBDoneDialog com files");
 	}
-	String msg = "Creating MSB Done popup for Project "+projectID+", Title "+title;
+	String msg = "Creating MSB Done popup for Project "+projectID+", MSB "+title;
 	logger.info (msg);
 	MSBDoneDialog mdd = new MSBDoneDialog ((Frame)parent, 
 					       projectID, 
