@@ -43,7 +43,7 @@ public class LogoPanel extends JLabel implements Runnable, ActionListener {
   //Note: Container must use BorderLayout, which is the 
   //default layout manager for content panes.
   void buildUI() {
-    int fps = 5;
+    int fps = 40;
 
     //How many milliseconds between frames?
     delay = (fps > 0) ? (1000 / fps) : 100;
