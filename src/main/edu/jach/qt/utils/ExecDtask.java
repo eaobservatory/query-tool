@@ -1,10 +1,10 @@
 package edu.jach.qt.utils;
 
-import java.net.*;
 import java.io.*;
 import java.lang.*;
+import java.net.*;
 import java.util.*;
-//import om.util.ErrorBox;
+import org.apache.log4j.Logger;
 
 /**
  * ExecDtask is for staring a drama task to the client connection it
@@ -15,8 +15,9 @@ import java.util.*;
  * @author <a href="mailto:mrippa@jach.hawaii.edu">Mathew Rippa</a>
  * $Id$
  */
-final public class ExecDtask extends Thread implements java.io.Serializable
-{
+public class ExecDtask extends Thread {
+
+  static  Logger logger = Logger.getLogger(ExecDtask.class);
 
 /**
   public ExecDtask(String task) is
@@ -45,57 +46,58 @@ final public class ExecDtask extends Thread implements java.io.Serializable
 
     try
     {
-      System.out.println("TASK:"+_task[0]);
       p=temp.exec(_task);
 
       //add in new features to control task execution
-
       // redirect output from a Java "shell"to a terminal screen via
       // a separate thread.  This seems to work!
       if (output) {
-        final InputStream in=p.getInputStream();
-        final InputStream err=p.getErrorStream();
-
-	System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!HEY!");
-
 	et = new Thread() {
-	  public void run() {
-	    int c;
-	    System.out.println("Stderr Thread started");
-	    this.setPriority(MAX_PRIORITY);
-	    try {
-	      while ((c=err.read()) !=-1) {
-		System.out.print((char)(c));
-		yield();
-	      }
-	      System.out.println ("Stderr: Got "+c+" !");
-	    }catch (IOException e){
-	      System.out.println ("Stderr got IO exception:"+e.getMessage());
-	    }
-	    System.out.println("Stderr Thread stopped");
-	  }
-	};
+	    
+	    BufferedReader stdError = 
+	      new BufferedReader(new InputStreamReader(p.getErrorStream()));
+	    
+	    public void run() {
+	      String s = null;
 
-       pt = new Thread() {
-	  public void run() {
-	    int c;
-	    System.out.println("Stdout Thread started");
-	    this.setPriority(MAX_PRIORITY);
-	    try {
-	      while ((c=in.read()) !=-1) {
-		System.out.print((char)(c));
-		yield();
+	      logger.info("Stderr Thread started for: "+ getTaskString());
+	      this.setPriority(MAX_PRIORITY);
+	      try {
+		while ((s = stdError.readLine()) != null) {
+		  logger.error(s);
+		  yield();
+		}
+	      }catch (IOException e){
+		logger.error("Stderr got IO exception:"+e.getMessage());
 	      }
-	      System.out.println ("Stdout: Got "+c+" !");
-	    }catch (IOException e){
-	      System.out.println ("Stdout got IO exception:"+e.getMessage());
+	      logger.info("Stderr Thread completed for: "+ getTaskString());
 	    }
-	    System.out.println("Stdout Thread stopped");
-	  }
-	};
+	  };
 
-	et.start();
+	pt = new Thread() {
+
+	    BufferedReader stdInput = 
+	      new BufferedReader(new InputStreamReader(p.getInputStream()));
+
+	    public void run() {
+	      String s = null;
+	     
+	      logger.info("Stdout Thread started for: "+ getTaskString());
+	      this.setPriority(MAX_PRIORITY);
+	      try {
+		while ((s = stdInput.readLine()) != null) {
+		  logger.info(s);
+		  yield();
+		}
+	      }catch (IOException e){
+		logger.error("Stdout got IO exception:"+e.getMessage());
+	      }
+	      logger.info("Stdout Thread completed for: "+ getTaskString());
+	    }
+	  };
+
 	pt.start();
+	et.start();
       }
       // See if we need to wait for completion, and if so also get the
       // completion status. Added by AB 17-Apr-00
@@ -109,10 +111,11 @@ final public class ExecDtask extends Thread implements java.io.Serializable
 	  System.out.println ("Load process was interrupted!");
 	}
       }
-      if (output && waitFor) {
-	pt.stop();
-	pt.join();
-      }
+      
+      //       if (output && waitFor) {
+      // 	pt.stop();
+      //pt.join();
+      //       }
       return;
     } catch (IOException e)
     {
@@ -143,6 +146,16 @@ final public class ExecDtask extends Thread implements java.io.Serializable
   {
     if(this.isAlive())
       this.stop();
+  }
+
+  private String getTaskString() {
+    String argList = "";
+
+    for (int  i = 0; i<_task.length; i++) {
+      argList += (" " +_task[i]);
+    }
+
+    return argList;
   }
 
   private String[] _task;
