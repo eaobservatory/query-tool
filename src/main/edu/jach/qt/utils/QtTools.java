@@ -8,7 +8,7 @@ import jsky.app.ot.*;
 
 import java.io.*;
 import java.util.Properties;
-import om.util.ExecDtask;
+//import om.util.ExecDtask;
 import orac.ukirt.util.SpTranslator;
 import org.apache.log4j.Logger;
 

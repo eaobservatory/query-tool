@@ -25,7 +25,9 @@ SOURCES = \
 	CalibrationList.java \
 	SimpleMoon.java \
 	TelescopeInformation.java \
-	TimeUtils.java
+	TimeUtils.java \
+	ExecDtask.java \
+	ErrorBox.java
 
 
 include $(BUILD)/make.tail
