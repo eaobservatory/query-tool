@@ -86,6 +86,7 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
 	    currentBitSet.clear(i);
 	}
     }
+    updateColumns(currentBitSet);
     this.MSBID     = vectorOfNames.indexOf("msbid");
     this.CHECKSUM  = vectorOfNames.indexOf("checksum");
     this.PROJECTID = vectorOfNames.indexOf("projectid");
@@ -144,7 +145,7 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
     if (doc != null) {
 	logger.info("Building new model");
 	model = XmlUtils.getNewModel(doc, ROOT_ELEMENT_TAG);
-	adjustColumnData(currentBitSet);
+	updateColumns(currentBitSet);
 	logger.info("Model has "+model.size()+" projects");
 	for (int i=0; i<model.size();i++) {
 	    modelIndex.add(((XmlUtils.MSBTableModel)model.elementAt(i)).getProjectId());
@@ -366,6 +367,7 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
     private void adjustColumnData(BitSet colSet) {
 	// Get the raw model in case we have previously manipulated it.
 	model = XmlUtils.getNewModel(doc, ROOT_ELEMENT_TAG);
+	if (model == null) return;
 	// Loop through each submodel
 	for (int i=0; i< model.size(); i++) {
 	    XmlUtils.MSBTableModel current = (XmlUtils.MSBTableModel) model.elementAt(i);
