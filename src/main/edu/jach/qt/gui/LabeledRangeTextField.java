@@ -196,5 +196,9 @@ public class LabeledRangeTextField extends WidgetPanel
 	timer.stop();
     }
 
+    public boolean timerRunning() {
+	return timer.isRunning();
+    }
+
   
 }
