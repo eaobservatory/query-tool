@@ -82,6 +82,14 @@ public class QtFrame extends JFrame implements PopupMenuListener, ActionListener
       compInit();
       splitPane.validate();
       validateTree();
+
+      om = new OmpOM();
+      om.addNewTree(null);
+      buildStagingPanel();
+      om.setExecutable( localQuerytool.canExecute());
+      tabbedPane.setSelectedIndex(0);
+
+
     }
     catch(Exception e) {
       e.printStackTrace();
@@ -154,6 +162,8 @@ public class QtFrame extends JFrame implements PopupMenuListener, ActionListener
     splitPane =  new JSplitPane( JSplitPane.VERTICAL_SPLIT,
 				 inputPanel,
 				 resultsPanel);
+
+
 
     gbc.fill = GridBagConstraints.BOTH;
     //gbc.anchor = GridBagConstraints.CENTER;
@@ -454,7 +464,8 @@ public class QtFrame extends JFrame implements PopupMenuListener, ActionListener
       JMenu source = (JMenu)evt.getSource();
       if (source.getText().equals("Calibrations")) {
 	  Component [] cals = calibrationMenu.getMenuComponents();
-      	  if (tabbedPane != null && tabbedPane.getSelectedIndex() > 0) {
+//       	  if (tabbedPane != null && tabbedPane.getSelectedIndex() > 0) {
+      	  if ( tabbedPane != null ) {
 	      for (int iloop=0;iloop<cals.length; iloop++) {
 		  cals[iloop].setEnabled(true);
 	      }
@@ -508,8 +519,7 @@ public class QtFrame extends JFrame implements PopupMenuListener, ActionListener
     else if ( source instanceof JMenuItem) {
 	JMenuItem thisItem = (JMenuItem)source;
 	// Check to see if this came from the calibration list
-	if (calibrationList.containsKey(thisItem.getText()) && 
-	    tabbedPane.getSelectedIndex() == 1) {
+	if (calibrationList.containsKey(thisItem.getText())) {
 	    // Get the "MSB" that this represents
 	    SpItem item = MsbClient.fetchMSB((Integer) calibrationList.get(thisItem.getText()));
 	    // Add it to the deferred queue
