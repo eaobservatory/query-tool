@@ -27,14 +27,14 @@ import orac.util.SpItemDOM;
  *
  * $Id$
  */
-final public class Main {
+final public class QT {
 
    /**
-    * Creates a new <code>Main</code> instance which starts a 
+    * Creates a new <code>QT</code> instance which starts a 
     * Querytool, the app itself, and a QtFrame, the user interface.  The
     * frame is also set be centered on the screen.
     */
-   public Main () {
+   public QT () {
      OtFileIO.setXML(System.getProperty("OMP") != null);
 
      try {
@@ -95,11 +95,17 @@ final public class Main {
 //        catch(Exception e) {
 //  	 e.printStackTrace();
 //        }
-      new Main();
+      new QT();
    }
 } // Omp
 
 //$Log$
+//Revision 1.11  2002/04/17 03:15:47  mrippa
+//The new Main.java is now called QT.java
+//
+//Revision 1.1  2002/04/17 03:07:34  mrippa
+//Replace Main.java
+//
 //Revision 1.10  2002/03/08 10:08:14  mrippa
 //The PRE-translator thingy was added here. Everything was completely
 //broken without it!
