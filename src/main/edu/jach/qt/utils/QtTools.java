@@ -111,15 +111,15 @@ public class QtTools {
      
   */
   public static String translate(SpItem observation, String inst) {
-    SpTranslator translation = new SpTranslator((SpObs)observation);
-    translation.setSequenceDirectory(System.getProperty("EXEC_PATH"));
-    translation.setConfigDirectory(System.getProperty("CONF_PATH"));
+    SpTranslator spt = new SpTranslator((SpObs)observation);
+    spt.setSequenceDirectory(System.getProperty("EXEC_PATH"));
+    spt.setConfigDirectory(System.getProperty("CONF_PATH"));
       
     Properties temp = System.getProperties();
     String tname = null;
     String fileProperty = new String(inst+"ExecFilename");
     try {
-      tname=translation.translate();
+      tname=spt.translate();
       System.out.println("Translated file set to: "+System.getProperty("EXEC_PATH")+"/"+tname);
 
       temp.put(fileProperty,tname);
