@@ -1,0 +1,694 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>AboutTheQT</title>
+                           
+  <meta http-equiv="content-type"
+ content="text/html; charset=ISO-8859-1">
+</head>
+  <body>
+       
+<h1><img src="file:///jac_sw/omp/QT/icons/QtLogo.png" alt="QT Logo"
+ width="160" height="80">
+    <big><big><big><big><big><big><big><b><a name="Top"></a>QT Help Desk</b></big></big></big></big></big></big></big></h1>
+       
+<p><big> The OMP Query Tool (QT) is provided to allow observers at the telescope
+  (and possibly support scientists in Hilo) to query the MSB and Project
+databases   to determine the most appropriate observations to take given
+the current  weather and scheduling conditions.  </big></p>
+       
+<p><big> The QT can be thought of as a short-term scheduler. It can be used
+  to determine the best observation to take now and to allow the observer
+to  plan a single nights observing (assuming estimates of weather conditions
+ and knowledge of current instrument availability) but it will not be able
+ to estimate the mid- to long term schedule for the telescope.   </big></p>
+       
+<p><big> In addition to providing a means to query the databases the tool
+  will also be used to provide a means to store calibrations that can not
+yet  be observed.</big></p>
+<p><big>Note that only ONE query tool can be "live"&nbsp; for any telescope
+at any time. &nbsp;If you attempt to execute a Query Tool while one is already
+running, it will be brought up in scenario mode. &nbsp;This will let you
+do most things except sending items for execution. &nbsp;Locking is done
+via a lockfile, the location of which will be displayed when the tool starts
+and a lock is present.<br>
+ <br>
+    The Information contained in this help file is designed to expalin each 
+ of the features of the QT.<br>
+    </big></p>
+       
+<h3><big>1. <a href="#QueryScreen">The Query Screen</a><br>
+    </big></h3>
+       
+<blockquote><big>1.1 <a href="#Main_Menu">The Main Menu</a><br>
+    1.2 <a href="#DataPanel">Data Panel</a><br>
+    1.3 <a href="#SearchParametersPanel">Search Parameters Panel</a><br>
+   1.4 <a href="#InstrumentPanel">Instrument Panel</a><br>
+    1.5 <a href="#ResultsPanel">Results Panel</a><br>
+      </big></blockquote>
+       
+<h3><big>2.0 <a href="#StagingArea">The Staging Area Screen</a></big></h3>
+            
+<blockquote><big>2.1 <a href="#ProgramList">The Program List</a><br>
+    2.2 <a href="#DeferredList">The Deferred List</a><br>
+    2.3 <a href="#CalibrationsMenu">Calibration Observations</a><br>
+    2.4 <a href="#ObserverNotes">The Observer Notes</a><br>
+    2.5 <a href="#SendingforExecution">Sending for Execution</a><br>
+      </big></blockquote>
+<div align="left">
+<hr width="100%" size="2"><br>
+</div>
+<blockquote><big>      </big></blockquote>
+       
+<h2><a name="QueryScreen"></a><u>The Query Screen</u></h2>
+       
+<p><big>When the QT is first started the user is presented with several panels.
+  &nbsp;This section will descibe each of those panels and guide the user
+in  their use. &nbsp;The actual layout of the screen will depend on whether
+the  user is running hte QT for the JCMT or UKIRT (or any other telescope)
+since  the interface is built dynamically. &nbsp;However, some panels are
+common  to both. &nbsp;These are the Data Panel, Search Paramters Panel,
+Atmosphere  Panel, Instrument Panel and Results Panel. &nbsp;This screen
+is designed to allow users to query for suitable projects (either a specific
+project or ones meeting the query contraints). &nbsp;The user should be aware
+that the QT is dumb in that it peforms minimal error checking and relys on
+other systems to validate most of the query (the exception being the date
+search parameters). &nbsp; Each of the main components of the QT Search Window
+will now be discussed in more detail.</big></p>
+       
+<h3><a name="Main_Menu"></a><font color="#000000">T</font><font
+ color="#000000">he Main Menu</font></h3>
+       
+<p><big>The main menu Bar at the top of the screen allows the user to choose
+  between four menus as below:<br>
+    </big></p>
+       
+<h4><big>File Menu<br>
+    </big></h4>
+       
+<table cellpadding="2" cellspacing="2" border="2" width="100%">
+      <tbody>
+        <tr>
+          <td valign="top">New<br>
+          </td>
+          <td valign="top">Not currently implemented<br>
+          </td>
+        </tr>
+        <tr>
+          <td valign="top">Open<br>
+          </td>
+          <td valign="top">Not currently implemented<br>
+          </td>
+        </tr>
+        <tr>
+          <td valign="top">Save<br>
+          </td>
+          <td valign="top">Not currently implemented<br>
+          </td>
+        </tr>
+        <tr>
+          <td valign="top">Save As<br>
+          </td>
+          <td valign="top">Not currently implemented<br>
+          </td>
+        </tr>
+        <tr>
+          <td valign="top">Exit<br>
+          </td>
+          <td valign="top">Exits the QT and issues a Drama "cleanup" command.
+  &nbsp;This will kill off all DRAMA processes currently running on the local
+  machine.<br>
+          </td>
+        </tr>
+               
+  </tbody>    
+</table>
+       
+<h4><big>Edit Menu<br>
+    </big></h4>
+       
+<table cellpadding="2" cellspacing="2" border="2" width="100%">
+      <tbody>
+        <tr>
+          <td valign="top">Cut<br>
+          </td>
+          <td valign="top">Not currently implemented<br>
+          </td>
+        </tr>
+        <tr>
+          <td valign="top">Copy<br>
+          </td>
+          <td valign="top">Not currently implemented<br>
+          </td>
+        </tr>
+        <tr>
+          <td valign="top">Paste<br>
+          </td>
+          <td valign="top">Not currently implemented<br>
+          </td>
+        </tr>
+        <tr>
+          <td valign="top">Constraints<br>
+          </td>
+          <td valign="top">Allows te user to disable the following observational
+  constraints when searching:<br>
+          <font color="#000066">Observability</font> - whether the project
+ can  currently be observed.<br>
+          <font color="#000066">Remaining</font> - Whether any observation
+       <br>
+          <font color="#000066">Allocation</font> - Whether a project still 
+ has any time allocation left<br>
+          </td>
+        </tr>
+               
+  </tbody>    
+</table>
+       
+<h4><big>Help Menu<br>
+    </big></h4>
+       
+<table cellpadding="2" cellspacing="2" border="1" width="100%">
+      <tbody>
+        <tr>
+          <td valign="top">Index<br>
+          </td>
+          <td valign="top">Index of Functionality<br>
+          </td>
+        </tr>
+        <tr>
+          <td valign="top">About<br>
+          </td>
+          <td valign="top">This Help System<br>
+          </td>
+        </tr>
+               
+  </tbody>    
+</table>
+       
+<h4><big>Calibrations<br>
+    </big></h4>
+       
+<p><big>This menu is not active until a project has been retreived (See </big><a
+ href="#CalibrationsMenu">  &sect;</a><big><a href="#CalibrationsMenu">2.3</a>
+ ).<br>
+    </big></p>
+       
+<p><big><a href="#Top"><small>Return to top<br>
+   </small></a></big></p>
+     
+<hr width="100%" size="2">   
+<p><big><a href="#Top"><small><br>
+   </small></a></big></p>
+     
+<h3><a name="DataPanel"></a><u>The Data Panel&nbsp;</u></h3>
+   <a href="images/DataPanel.jpg"><img src="images/DataPanel.jpg"
+ alt="Reduced Data Panel" width="69" height="200">
+   </a><br>
+     
+<p><big>The Data Panel shows current information which could affect observations, 
+ as well as containing some of the command buttons. &nbsp;The two time panels 
+ at the bottom of the panel show UTC and local time respectively, and a satellite 
+ image of the local region is also shown to allow users to assess upcoming 
+ weather conditions. &nbsp;The "Current Info" shows current conditions if 
+they are being monitored. &nbsp;In addition, there are three command buttons. 
+&nbsp;Each item is described in more detail below.<br>
+   </big></p>
+     
+<h4><big>Search Button</big></h4>
+     
+<p><big>Once a user has selected their search criteria on the <a
+ href="#SearchParametersPanel">Search Parameters Panel</a>, &nbsp;pressing 
+ this will execute the search and return the set of results matching the criteria.
+ &nbsp;These results will appear as a selectable list in the <a
+ href="#ResultsPanel">Results Panel</a>.</big></p>
+        
+<h4><big>Fetch MSB Button</big></h4>
+     
+<p><big>Once a set of results is obtained and one selected from the list in
+the Results Panel, this button will show more detail of the selected MSB. 
+ &nbsp;This will appear as a tabbed pane, so the user can easily go back to
+ the results and select a new MSB without performing the query again.<br>
+   </big></p>
+     
+<h4><big>Exit Button</big></h4>
+     
+<p><big>Does what it says on the can..<br>
+   </big></p>
+     
+<h4><big>Current Info</big></h4>
+     
+<p><big>Displays current atmospheric and telescope information providing the
+appropriate monitoring tools are executing. &nbsp;The current set of displayed
+information is:<br>
+   </big></p>
+     
+<ol>
+     <li>CSO Tau - The optical depth of the atmosphere at 225 GHz measured
+ by the <a href="http://puuoo.caltech.edu/index.html">Caltech Submillimeter
+ Observatory</a>  at Mauna Kea</li>
+     <li>Seeing - currently not measured</li>
+     <li>Airmass - The normalised thickness of the atmosphere ranging from
+ 1 at the zenith to infinity at the horizon. &nbsp;Related to the elevation 
+ of the telecope by the fomula <i>airmass = cosec (90-elevation)</i></li>
+     
+</ol>
+     
+<p><big>If these parameters are not measured then the values will appear as
+"-----".<br>
+   </big></p>
+     
+<p><big>The "Set Current" button will set put the current values into the 
+ search criteria is applicable (see Atmospher Panel). &nbsp;In addition, it
+ will set the current brightness of the Moon in the Moon Panel (again, if
+applicable), &nbsp;and reset the Observation Date and Time on the <a
+ href="#SearchParametersPanel">Search Parameters Panel</a> to the current 
+ if they were prevously changed.<br>
+   </big></p>
+     
+<h4><big>Satellite Image</big></h4>
+     
+<p><big>In the JAC version of the tool, this shows an GOES-10 IR Image of 
+ the Hawaii Region from the <a href="http://hokukea.soest.hawaii.edu/">Mauna 
+ Kea Weather Center</a> (original data from NWS). &nbsp;This image shows the
+ brightness temperature at 10.2 to 11.2 microns; coldest cloud tops showing 
+ white.<br>
+   </big></p>
+     
+<p><big>Other images can be shown by altering the value of satellitePage entry
+in the file qtSystem.conf<br>
+   </big></p>
+     
+<h4><big>Local Time</big></h4>
+     
+<p><big>Does what it says on the can...</big><br>
+   </p>
+     
+<h4><big>UTC</big><br>
+   </h4>
+     
+<p><big>Does what it says on the can...</big><br>
+    </p>
+     
+<p><a href="#Top">Return to top</a><br>
+   </p>
+     
+<hr width="100%" size="2">   
+<p><br>
+   </p>
+     
+<h3><a name="SearchParametersPanel"></a>Search Parameters Panel<br>
+   </h3>
+     
+<p><big> </big></p>
+       
+<p><a href="images/SearchPanel.jpg"><img src="images/SearchPanel.jpg"
+ alt="Search Parmaters" width="300" height="105">
+   </a><br>
+   </p>
+    <big>The Search paramters panel allows users to define criteria on which 
+ to search the project database. &nbsp;The user can supply as much or as little
+ information as they need. &nbsp; All fields are optional - no values need
+ to be specified. <br>
+   <br>
+   </big>   
+<table cellpadding="2" cellspacing="2" border="1" width="100%">
+     <tbody>
+       <tr>
+         <td valign="top">PI or CoI<br>
+         </td>
+         <td valign="top">The surname of the Principle Investigator or Co-Investigator 
+ . &nbsp;If left blank, this is not used in searching.<br>
+         </td>
+       </tr>
+       <tr>
+         <td valign="top">Project ID<br>
+         </td>
+         <td valign="top">A&nbsp;unique Project ID. &nbsp;If left blank,
+this  is not used in searching<br>
+         </td>
+       </tr>
+       <tr>
+         <td valign="top">Semester<br>
+         </td>
+         <td valign="top">The semester for the project(s) to be returned. 
+&nbsp;If  left blank, the current semester is assumed.<br>
+         </td>
+       </tr>
+       <tr>
+         <td valign="top">Hour Angle<br>
+         </td>
+         <td valign="top">Limit the results returned to those in the specified 
+ range of hour angles. &nbsp;If left blank, this is not used in the search.<br>
+         </td>
+       </tr>
+       <tr>
+         <td valign="top">Airmass<a href="#Footnote1"><sup>1</sup></a><br>
+         </td>
+         <td valign="top">Limit results to those projects requiring airmass 
+ between specified values. &nbsp;The definition of minimum and maximum is 
+umimportant as it will be interpreted before the query (e.g. a mimmum value 
+of 1.2 and maximum of 2 wll be identical to a search with minimum of 2 and 
+maximum of 1.2). &nbsp;Allowable range is 1.0 to 3.0. &nbsp;If left blank, 
+this is not used in searching.<br>
+   If the user uses the "Set Current" facility on the <a
+ href="#DataPanel"> Data Panel</a>, this will set the airmass range to +/- 
+20% of the current airmass.<br>
+         </td>
+       </tr>
+       <tr>
+         <td valign="top">Elevation<a href="#Footnote1"><sup>1</sup></a>
+-  JCMT Only<br>
+         </td>
+         <td valign="top">Limit results to those projects requiring an elevation 
+ between specified values.  &nbsp;The definition of minimum and maximum is 
+ umimportant as it will be interpreted before the query (e.g. a mimmum value 
+ of 30 and maximum of 45 wll be identical to a search with minimum of 45 and
+ maximum of 30). &nbsp;Allowable range is 90.0 to 0.0. &nbsp;If left blank,
+ this is not used in searching.<br>
+         </td>
+       </tr>
+       <tr>
+         <td valign="top">Observation Date<br>
+         </td>
+         <td valign="top">Use this to "look ahead" to see what will be observable 
+ in the future. &nbsp;If the time (seconds field) is incrementing, the current 
+ date and time is assumed. &nbsp;Editing either field will stop the time incrementing,
+ and allow the user to type in the required information in Local Time. &nbsp;The
+ Date and time&nbsp; fields <font color="#990000">must be entered in the
+form</font>   yyyy-mm-dd and&nbsp; hh:mm:ss. &nbsp;Any error in this format
+will mean  the current time is assumed.<br>
+   Also note that if the user enters a valid date for observation, the moon 
+ tag (if available) will not be searched.<br>
+         </td>
+       </tr>
+       <tr>
+         <td valign="top">Duration<br>
+         </td>
+         <td valign="top">Limits the results to those prohjects which can 
+be  performed within the specified duration. &nbsp;Typically used towards 
+the  end of a shift to see if any short projects can be completed. &nbsp;If 
+left  blank, then project duration is not used in searching.<br>
+         </td>
+       </tr>
+       <tr>
+         <td valign="top">Clouds - UKIRT only<br>
+         </td>
+         <td valign="top">Allows users to select the current level of cloud 
+ coverage from a pre-defined selection:<br>
+                       
+      <ul>
+           <li>Photometric - no cloud clover</li>
+           <li>Thin - High level thin cirrus&nbsp;</li>
+           <li>Thick - High level thich cirrus - only bright sources can
+be  oberved</li>
+                       
+      </ul>
+   If not selected, not used in searching.<br>
+         </td>
+       </tr>
+       <tr>
+         <td valign="top">Country - JCMT only<br>
+         </td>
+         <td valign="top">Allows users to select the country owning the project. 
+ &nbsp;If not selected, not used in searching.<br>
+         </td>
+       </tr>
+       <tr>
+         <td valign="top">Atmosphere<br>
+         </td>
+         <td valign="top">Allows users to set a tau and seeing value. &nbsp;Any 
+ projects which can be performed at the specified tau and/or seeing will be
+ returned from the search. &nbsp;If left blank, these will not be used for
+ searching.<br>
+   If the user uses the "Set Current" facility on the <a
+ href="#DataPanel"> Data Panel</a>, this will set the current tau and seeing 
+(if available) in these fields.<br>
+         </td>
+       </tr>
+       <tr>
+         <td valign="top">Moon - UKIRT only<br>
+         </td>
+         <td valign="top">Allows users to set the current brightness of the 
+ moon. &nbsp;When the QT starts up it is set to the current brightness. &nbsp;Using 
+ the "Set Current" button updates this field. &nbsp;The user can override 
+the entry. <br>
+         </td>
+       </tr>
+           
+  </tbody>   
+</table>
+     
+<p><a name="Footnote1"></a>1: Note that if both Airmass and Elevation are 
+ used for searching, the results will be returned from the interscetion of 
+ these ranges.<br>
+   </p>
+     
+<p><a href="file:///home/dewitt/Documents/AboutTheQT.html#Top">Return to top</a><br>
+   </p>
+     
+<hr width="100%" size="2">   
+<p><br>
+   </p>
+     
+<h3><a name="InstrumentPanel"></a>Instrument Panel</h3>
+   The insrument panel allows users to refine searches to projects using
+specific  instruments. &nbsp; This takes the form of a checkbox. &nbsp;By
+default, all instruments are assumed. &nbsp;NOTE: For JCMT, while all instruments 
+are shown, only SCUBA will be available in the first release.<br>
+     
+<p><a href="file:///home/dewitt/Documents/AboutTheQT.html#Top">Return to top</a><br>
+    </p>
+       
+<hr width="100%" size="2">   
+<h3><a name="ResultsPanel"></a>Results Panel</h3>
+   <a href="images/ResultsPanel.jpeg"><img
+ src="images/ResultsPanel.jpeg" alt="Results Panel" width="700"
+ height="106">
+   </a><br>
+     
+<p><big>The results panel takes to form of a scrollable table as shown above 
+ with the following columns:<br>
+   </big></p>
+     
+<ul>
+     <li>ProjectID - The unique project identifier</li>
+     <li>Title &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; - Title of the project</li>
+     <li>Instrument - The instrument required for the project</li>
+     <li>Waveband - The wavelength filter to be used for the observations</li>
+     <li>Target - The name of the science target to be observed</li>
+     <li>ra - The right ascension of the taget</li>
+     <li>Coordinate System -&nbsp;</li>
+     <li>ha -</li>
+     <li>timeest</li>
+     <li>priority</li>
+     <li>remaining</li>
+     <li>obscount</li>
+     <li>checksum</li>
+     <li>msbid</li>
+     
+</ul>
+   
+<p><big>The results are initially sorted by Project ID, but the user can
+sort by any of the columns by clicking the column header. &nbsp;In addition,
+each column can be resized to allow the whole of the value to become visible.<br>
+  </big></p>
+   
+<p><big>Once a MSB is selected by clicking one of the rows, it can be sent
+ to the <a href="#StagingArea">Staging Area </a>by one of three methods:<br>
+  </big></p>
+   
+<ul>
+    <li>Clicking the "Fetch MSB" button on the Data Panel</li>
+    <li>Double clicking the row</li>
+    <li>Using the right mouse button</li>
+   
+</ul>
+   
+<p><a href="file:///home/dewitt/Documents/AboutTheQT.html#Top">Return to top</a><br>
+    </p>
+       
+<hr width="100%" size="2">  
+<h2><a name="StagingArea"></a><u>Staging Area</u></h2>
+  <a href="images/StagingArea.jpg"><img src="images/StagingArea.jpg"
+ alt="Staging Area" width="700" height="333">
+  </a><br>
+   
+<p><big>The Staging Area shows more details of a selected MSB. &nbsp;The
+Staging Area consists of the following Panels:<br>
+  </big></p>
+   
+<ul>
+    <li><big>The <a href="#DataPanel">Data Panel</a> - as described previously.
+ &nbsp;Note the from the Staging Area, the "Search" and "Fetch MSB" buttons
+ have no meaning and should not be used</big></li>
+    <li><big>the Program List - showing the current Observations to be perfomed
+ in the MSB</big></li>
+    <li><big>The Deferred List - showing deferred observations from this
+and  previous MSBs</big></li>
+    <li><big>The Observer Notes - showing notes for observing this MSB</big></li>
+    <li><big>Calibration Menu </big><br>
+    </li>
+    <li><big>Trash Can/Execution Panel</big></li>
+   
+</ul>
+  <big>The purpose of this screen is to allow users to select specific observations
+ for observation, or defer observations. &nbsp;It allows a fine level of
+control  so that it is not necessary to perform the observations in the specified
+order, but the observations can be optimised to allow most efficient use
+to telescope time.<br>
+  <br>
+  Each of these will now be looked at separately in the following sections.<br>
+  </big>  
+<p><a href="file:///home/dewitt/Documents/AboutTheQT.html#Top">Return to top</a><br>
+    </p>
+        
+<hr width="100%" size="2"><br>
+   
+<h3><a name="ProgramList"></a>The Program List<br>
+  </h3>
+  <big><img src="images/ProgramList.jpg" alt="Program List" width="398"
+ height="301">
+  <br>
+  </big>  
+<p><big>The Program List shows all of the title of the observations in the
+ selected science program. &nbsp;There may be only a single or many observations.
+ &nbsp;In the case where there are more observations than will fit on the
+screen, the panel will add a scrollbar to allow the user to view all of the
+observations.<br>
+  </big></p>
+   
+<p><big>Observations in the Program List will occur in one of two colours:<br>
+  </big></p>
+   
+<ul>
+    <li><big><font color="#3366ff">Blue</font> indicating that an observation
+ is optional</big></li>
+    <li><big>Black indicating that the observation is mandatory</big></li>
+   
+</ul>
+  <big>The difference between the two is fairly simple; optional observations
+ can be deleted (by dragging them to the Trash Can) or deferred (by dragging
+ them to the <a href="#DeferredList">Deferred List</a>). &nbsp;Typically
+this  will only be done for calibration observations. &nbsp;Mandatory observations
+ are typically observations on a science target, and can not be deleted or
+ deferred. &nbsp;Any observation which is deleted or deferred is only done
+ so 'notionally'; that is to say is the MSB is retrieved again, the observations
+ will reappear. &nbsp;So if the user accidentally deletes an observation
+is  can be retrieved by fetching the MSB again from the Query Screen.<br>
+  <br>
+  A number of other functions are available from this panel. &nbsp;<i><br>
+  </i></big>  
+<ul>
+    <li><big><i>Double<b> </b>clicking</i> on any observation will send that
+ observation for execution. &nbsp;</big></li>
+    <li><big><i>Right clicking </i>on a selected observation will allow the
+ user to edit some of the observational parameters (currently this is limited
+ to the exposure time). &nbsp;</big></li>
+   
+</ul>
+  <big>Like deferred and deleted observations, the edits are only valid to
+ the current session. &nbsp;Fetching the MSB again from the Query Screen
+will  reset the values to their originals. &nbsp;Both optional and mandatory
+observations  can be edited or sent for execution.<br>
+  </big>  
+<p><a href="file:///home/dewitt/Documents/AboutTheQT.html#Top">Return to top</a><br>
+    </p>
+        
+<hr width="100%" size="2">  
+<h3><a name="DeferredList"></a>Deferred List</h3>
+   
+<p><img src="images/DeferredList.jpg" alt="Deferred List" width="551"
+ height="252">
+  <br>
+  </p>
+   
+<p><big>The Deferred List shows the list of deferred observations. &nbsp;When
+ the QT starts up, the user is asked whether they want to use the currrent
+ set of deferred observations if any exist. &nbsp;Selecting "No" &nbsp;to
+this will delete all of the existing deferred observations from the system,
+&nbsp;otherwise the existing observations will appear in this list. &nbsp;Similary,
+on Exit, the user is asked whether they want to save any of the deferred
+observations which exist. Selecting "No" will delete any observations deferred
+during this and/or previous sessions, while "Yes" will preserve them for
+use in the next session.<br>
+  </big></p>
+   
+<p><big>Observations will appear in one of two colours:<br>
+  </big></p>
+   
+<ul>
+    <li><big>Blue indicating that the observation has been deferred but not
+ observed</big></li>
+    <li><big>Red indicating that the observation has been observed</big></li>
+   
+</ul>
+  <big>In addition, once a deferred observation has been executed, it will
+ be marked as done and time-stamped with the time at which the observation
+ was executed (in local time). &nbsp;This allows the user to redo an observation
+ at a later time for another project or use the same observation again without
+ the need to repeat it for each MSB.<br>
+  <br>
+  The Deferred List can be populated by either dragging optional observations
+ from the <a href="#ProgramList">Program List</a> to the Deferred List, or
+ selecting a standard calibration obervation from the <a
+ href="#CalibrationsMenu">Calibrations Menu</a>. &nbsp;If two identical observations 
+are entered (for istance the MSB has two identical calibrations - one before 
+and one after a science observation), it will appear only once on the deferred 
+list.<br>
+  <br>
+  Deferred Observation can only be executed by using the "Send for Execution"
+ button and are not editable is the way observations in the Program List
+are  editable. &nbsp;However, if the Observation is first edited in the Program
+ List and then copied to the deferred list, the edited values will be maintained.
+ &nbsp;Items can be deleted from this list by dragging the to the Trash Can.<br>
+ </big> 
+<p><a href="file:///home/dewitt/Documents/AboutTheQT.html#Top">Return to top</a><br>
+    </p>
+         
+<hr width="100%" size="2"> 
+<h3><big><a name="CalibrationsMenu"></a>Calibrations Menu</big></h3>
+ 
+<p><big>The calibrations menu on the main menu maenu bar is active when the 
+Staging Area is active. &nbsp;It allows users to select sets of standard calibration
+procedures for the telescope to be performed. &nbsp;On selecting an item
+from the menu, the entry is added to the <a href="#DeferredList"> deferred
+list</a> and can either be executed immediatley or at a suitable time in
+the future.</big><br>
+ </p>
+ 
+<p><a href="file:///home/dewitt/Documents/AboutTheQT.html#Top">Return to top</a><br>
+    </p>
+          
+<hr width="100%" size="2"> 
+<h3><big><a name="ObserverNotes"></a>Observer Notes</big></h3>
+   
+<p><big>This panel is for notes to aid the observer in performing the MSB. 
+&nbsp;This panel is not editable. &nbsp;It could be used, for example, to 
+specify to an oberver that the obervation times on specific items should not
+be edited. &nbsp;Each MSB may only have, at most, one observer note.</big></p>
+<p><big>Do NOT try to edit this field, on pain of certain death!</big></p>
+<p><a href="file:///home/dewitt/Documents/AboutTheQT.html#Top">Return to top</a><br>
+    </p>
+           
+<hr width="100%" size="2">
+<h3><big><a name="SendingforExecution"></a>Sending for Execution</big></h3>
+<p><big>Once you have selected an observation from either the Program or
+Deferred List, use the "Send for Execution" button to send it to the sequence
+console.<br>
+</big></p>
+<p><big>Do not try to retrieve deleted items from the trash can. &nbsp;Due
+to the efficient trash collection service in Hawaii, items are removed as
+soon as they are dumped!</big><br>
+</p>
+<p><a href="file:///home/dewitt/Documents/AboutTheQT.html#Top">Return to top</a><br>
+    </p>
+            
+<hr width="100%" size="2"><br>
+<p><br>
+</p>
+<p><big><br>
+</big><br>
+</p>
+   
+</body>
+</html>
