@@ -302,13 +302,9 @@ public class WidgetPanel extends JPanel
     if (!next.equals("")) {
       result = "";
       next.trim();
-      char[] chars = next.toCharArray();
-      for(int i=0; i<chars.length; i++) {
-	if(chars[i] <91 && chars[i] >64)
-	  result += chars[i];
-      }
-      if (result.length() < 2)
-	result += String.copyValueOf(chars,1,2);
+
+      StringTokenizer st = new StringTokenizer(next);
+      result = ((String) st.nextElement()).trim();
     }
     return result.toLowerCase();
   }
