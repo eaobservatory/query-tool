@@ -242,6 +242,6 @@ onintr -
 if ( ${scenario} == 0 ) then
  \rm ${lockDir}/.lock
 endif
-unsetenv DUL_DIR
-unsetenv GIT_DIR
-unsetenv DTCL_DIR
+
+\rm ${lockDir}/.smLock
+cleanup 
