@@ -9,40 +9,72 @@ include		makeInclude
 
 #### Targets settings
 #CLASS_FILES   =  No class files in this dir
-SUBDIRS       = src
-SUBDIRS_CLEAN = $(patsubst %,%.clean,$(SUBDIRS))
-SUBDIRS_MAKE  = $(patsubst %,%.make,$(SUBDIRS))
+LOCALDIR      = $(PWD)
+ROOTDIR       = src/main/edu/jach/qt
+#
+# DO NOT CHANGE THE ORDER BELOW
+#
+SUBDIRS       = \
+	$(ROOTDIR)/utils \
+	$(ROOTDIR)/gui \
+	$(ROOTDIR)/djava \
+	$(ROOTDIR)/app
+
+FRC=force_rebuild
 
 #### Main targets
 
 # Default
-all: $(CLASS_FILES) $(SUBDIRS_MAKE) $(INSTALL)/icons
+all: local
 
-# Cleanup
-clean: $(SUBDIRS_CLEAN)
-	$(RM) *.class
-	@echo "Cleanup done."
+install: buildsys $(FRC)
+	for dir in $(SUBDIRS); do \
+		cd $$dir; $(MAKE) "INSTALL=true" FRC=force_rebuild;cd $(LOCALDIR); \
+	done
+	$(JAR) cf $(INSTALLDIR)/lib/qt.jar -C $(SYSTEM_CLASSDIR) edu
+	@ echo "Installing icons..."
+	@ $(CP) icons/*.* $(INSTALLDIR)/icons
+	@ echo "Installing scripts..."
+	@ $(CP) bin/qt $(INSTALLDIR)/bin
+	@ echo "Installing config files..."
+	@ $(CP) -r config/* $(INSTALLDIR)/config
+	@ echo "Installing jar files..."
+	@ $(CP) -r lib/*.jar $(INSTALLDIR)/lib
 
-# Rebuild
-build: clean all
-	@echo "Rebuild done."
+local:
+	for dir in $(SUBDIRS); do \
+		cd $$dir; $(MAKE) FRC=force_rebuild; cd $(LOCALDIR); \
+	done
+	$(JAR) cf qt.jar -C install/classes edu
 
-#### Aux targets
+force_rebuild:
 
-# Files compilation
-%.class: %.java
-	$(JAVAC) $(JAVAC_FLAGS) $<
+buildsys:
+	@ echo "Installing in directory " $(INSTALLDIR)
+	@ echo "To change directory, modify VERSION in file makeInclude."
+	@ echo "Installation in 5 seconds - type cntrl-C to abort."
+	@ sleep 5
+	@ if [[ ! -d $(INSTALLDIR) ]]; then \
+		mkdir -p $(INSTALLDIR)/bin; \
+		mkdir -p $(INSTALLDIR)/classes; \
+		mkdir -p $(INSTALLDIR)/config; \
+		mkdir -p $(INSTALLDIR)/icons; \
+		mkdir -p $(INSTALLDIR)/lib; \
+	fi
 
-# Sub-directories compilation
-%.make:
-	$(MAKE) -k -C $(subst .make,,$@)
+clean:
+	$(RM) qt.jar
+	for dir in $(SUBDIRS); do \
+		cd $$dir; $(MAKE) clean; cd $(LOCALDIR); \
+	done
 
-# Sub-directories cleanup
-%.clean:
-	$(MAKE) -k -C $(subst .clean,,$@) clean
 
-# Phony Targets
-.PHONY: clean build help
+sysclean:
+	$(RM) $(INSTALLDIR)/lib/qt.jar
+	for dir in $(SUBDIRS); do \
+		cd $$dir; $(MAKE) sysclean; cd $(LOCALDIR); \
+	done
+
 
 #### Help
 help:
@@ -51,10 +83,8 @@ help:
 	@echo "where targets include:"
 	@echo ""
 	@echo "  help           display this help"
-	@echo "  all            compile all (default)"
-	@echo "  clean          remove all class files"
-	@echo "  build          rebuild all inconditionnally"
-	@echo "  <class file>   compile the given file"
-	@echo "  <subdir>.make  compile the given subdir"
-	@echo "  <subdir>.clean clean the given subdir"
+	@echo "  all            compile all locally (default)"
+	@echo "  clean          remove all local class and jar files"
+	@echo "  install        compile all and install"
+	@echo "  sysclean       remove cll installed class and jar files"
 
