@@ -142,12 +142,12 @@ public class ExecuteJCMT extends Execute implements Runnable {
 		rt = Runtime.getRuntime();
 		String command;
 		if (super.isDeferred) {
- 		    command = "/jac_sw/omp/QT/bin/insertSCUQUEUE.ksh "+ new String (odfFile);
+ 		    command = "/jac_sw/omp/QT/bin/insertSCUQUEUE.ksh "+ new String(odfFile).trim();
 		}
 		else {
-		    command = "/jac_sw/omp/QT/bin/loadSCUQUEUE.ksh "+ new String (odfFile);
+		    command = "/home/dewitt/omp/QT/bin/loadSCUQUEUE.ksh "+ new String(odfFile).trim();
 		}
-		logger.debug ("Running command "+command+" &");
+		logger.debug ("Running command "+command);
 		Process p = rt.exec(command);
 		InputStream istream = p.getInputStream();
 		InputStream estream = p.getErrorStream();
@@ -156,8 +156,8 @@ public class ExecuteJCMT extends Execute implements Runnable {
 		p.waitFor();
 		int rtn = p.exitValue();
 		logger.info("LoadSCUQUEUE returned with exit status "+rtn);
-		logger.debug("Output from LoadSCUQUEUE: "+new String(odfFile));
-		logger.debug("Error from LoadSCUQUEUE: "+new String(errorMessage));
+		logger.debug("Output from LoadSCUQUEUE: "+new String(odfFile).trim());
+		logger.debug("Error from LoadSCUQUEUE: "+new String(errorMessage).trim());
 		if (rtn != 0) {
 		    logger.error("Error loading queue");
 		    new PopUp ("Load Error",
