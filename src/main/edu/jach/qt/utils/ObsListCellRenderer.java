@@ -3,6 +3,7 @@ package edu.jach.qt.utils;
 import om.util.OracColor;
 import gemini.sp.*;
 import java.awt.*;
+import java.util.StringTokenizer;
 import javax.swing.*;
 
 
@@ -31,14 +32,23 @@ public class ObsListCellRenderer extends DefaultListCellRenderer {
   {
     String s = ((SpObs)value).getTitle();
     setText(s);
-    if (((SpObs)value).isOptional() == false)
-	{
-	    setForeground(list.getForeground());
-	}
-    else
-	{
-	    setForeground(Color.blue);
-	}
+    boolean isDone=false;
+
+    StringTokenizer st = new StringTokenizer(s, "_done_");
+    if (st.countTokens() > 0) {
+	isDone=true;
+    }
+
+    if (((SpObs)value).isOptional() == false) {
+	setForeground(list.getForeground());
+    }
+    else if (isDone) {
+	setForeground(Color.red);
+    }
+    else {
+	setForeground(Color.blue);
+    }
+
     setText(s);
     setIcon(obsIcon);
 
