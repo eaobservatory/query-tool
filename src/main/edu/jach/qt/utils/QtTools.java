@@ -153,7 +153,7 @@ public class QtTools {
 			+			" "+script[1] 
 			+			" "+script[2] 
 			+			" "+script[3] 
-			//+                       " "+script[4]
+			+                       " "+script[4]
 			);
 
     int status = QtTools.execute(script);
