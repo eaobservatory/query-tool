@@ -51,7 +51,8 @@ SOURCES = \
 	HelpPage.java \
 	Execute.java \
 	ExecuteUKIRT.java \
-	ExecuteJCMT.java
+	ExecuteJCMT.java \
+	ColumnSelector.java
 
 include $(BUILD)/make.tail
 
