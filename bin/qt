@@ -5,6 +5,7 @@ onintr tidy
 set JAVA		= /local/java/jdk/bin/java
 set baseOTConfigDir	= /jac_sw/orac3/OT/install/cfg
 set qtConfig	        = /jac_sw/omp/QT/config/qtSystem.conf
+#set qtConfig	        = /home/dewitt/omp/QT/config/qtSystem.conf
 
 set usage		= "Usage: $0 <telescope> [-h] [-options] \n\nwhere telescope is:\n\tukirt\t\tspecifies the UKIRT widget set\n\tjcmt\t\tspecifies the jcmt widget set\n\nand options include:\n\t-hilo <solaris_host>\t\tspecifies we are running in hilo and sets the solaris host\n\t-config <file>\tspecies the absolute path to the \042file\042 used for this session\n\t-scenario\tspecifies scenario mode (does not depend on drama)\n\n"
 
@@ -86,6 +87,7 @@ while ($#argv != 0)
       case -hilo:
         shift
         set qtConfig = /jac_sw/omp/QT/config/qtSystem.conf
+#        set qtConfig = /home/dewitt/omp/QT/config/qtSystem.conf
 	set solHost = $argv[1]
         echo Global configs to be used
 	echo Solaris host is ${solHost}
@@ -108,6 +110,7 @@ while ($#argv != 0)
         breaksw
       case ukirt:
         set widgetFile   = /jac_sw/omp/QT/config/qtUkirtWidget.conf
+#        set widgetFile   = /home/dewitt/omp/QT/config/qtUkirtWidget.conf
 	set instConfigDir = ${baseOTConfigDir}/ukirt
 	set telescope	  = Ukirt
         echo Telescope set to use ukirt widget set
@@ -115,6 +118,7 @@ while ($#argv != 0)
         breaksw
       case jcmt:
         set widgetFile   = /jac_sw/omp/QT/config/qtJcmtWidget.conf
+#        set widgetFile   = /home/dewitt/omp/QT/config/qtJcmtWidget.conf
 	set instConfigDir = ${baseOTConfigDir}/jcmt
 	set telescope	  = Jcmt
         echo Telescope set to use jcmt widget set
@@ -130,7 +134,7 @@ end
 
 if ( ${scenario} == 0 ) then
     # Check if the lock already exists - if it does, dont do anything...
-    echo "Starting lock processin"
+    echo "Starting lock processing"
     switch ( $telescope )
 	case Ukirt:
 	    set lockDir = /ukirtdata/orac_data/deferred
@@ -206,9 +210,10 @@ else
    set run = $status
 
    #If csomon is not running && we're on solaris, start it.
-   if ($run != 0 && $OS == "SunOS") then
+   if ($run != 0 ) then
       echo "Starting CSOMON"
-      getcso.pl &
+      /jac_sw/itsroot/src/oracda/scripts/getcso.pl &
+#      /home/dewitt/bin/telmon.pl &
    else
       echo "CSOMON already running - will not start"
    endif
@@ -218,9 +223,10 @@ setenv DUL_DIR /local/progs/drama/release/dul/r0_10_1/
 setenv GIT_DIR /local/progs/drama/release/git/r0_9_2/
 setenv DTCL_DIR /local/progs/drama/release/dtcl/r1_2_3/
 
-set CLASSPATH = /jac_sw/omp/QT/lib/qt.jar:/jac_sw/omp/QT/lib/xerces.jar:/jac_sw/omp/QT/lib/mail.jar:/jac_sw/omp/QT/lib/activation.jar:/jac_sw/omp/QT/lib/soap.jar:/jac_sw/orac3/OT/install/classes:/jac_sw/orac3/GEMINI/install/classes:/jac_sw/itsroot/install/ompSM/classes:/jac_sw/orac3/ORAC/install/classes:/jac_sw/orac3/OMP/install/classes:/jac_sw/orac3/ODB/install/classes:/jac_sw/omp/QT/lib/jsky.jar:/jac_sw/omp/QT/lib/diva.jar:/jac_sw/omp/QT/lib/junit.jar:/jac_sw/omp/QT/icons:/local/java/jdk/lib/tools.jar:/jac_sw/itsroot/install/dcHub/lib/dcHub.jar:/local/progs/drama/drama_source/djava:/jac_sw/orac3/OM/install/classes
 
-${JAVA} ${classic} ${xdebug} ${xnoagent} ${xrunjdwptrans} ${xbootclasspath} -Ddebug=${debug} -DDRAMA_ENABLED=${dramaEnabled} -DSIMULATE=${tosim} -DENGINEERING=${toeng} -DQUICKLOOK=${toql} -Dtelescope=${telescope} -DSOLARIS_HOST=${solHost} -DDOMAIN=`domainname` -DqtConfig=${qtConfig} -Dot.cfgdir=${instConfigDir}/ -DwidgetFile=${widgetFile} -DQT_LOG_DIR=${QT_LOG_DIR} -DOMP -DDCHUB_TIMEOUT=${timeout} -cp ${CLASSPATH} edu.jach.qt.app.QT
+set CLASSPATH = /home/dewitt/omp/QT/lib/qt.jar:/jac_sw/omp/QT/lib/xerces.jar:/jac_sw/omp/QT/lib/mail.jar:/jac_sw/omp/QT/lib/activation.jar:/jac_sw/omp/QT/lib/soap.jar:/jac_sw/orac3/OT/install/classes:/jac_sw/orac3/GEMINI/install/classes:/jac_sw/itsroot/install/ompSM/classes:/jac_sw/orac3/ORAC/install/classes:/jac_sw/orac3/OMP/install/classes:/jac_sw/orac3/ODB/install/classes:/jac_sw/omp/QT/lib/jsky.jar:/jac_sw/omp/QT/lib/diva.jar:/jac_sw/omp/QT/lib/junit.jar:/jac_sw/omp/QT/icons:/local/java/jdk/lib/tools.jar:/jac_sw/itsroot/install/dcHub/lib/dcHub.jar:/local/progs/drama/drama_source/djava:/jac_sw/orac3/OM/install/classes
+
+${JAVA} ${classic} ${xdebug} ${xnoagent} ${xrunjdwptrans} ${xbootclasspath} -Ddebug=${debug} -DDRAMA_ENABLED=${dramaEnabled} -DSIMULATE=${tosim} -DENGINEERING=${toeng} -DQUICKLOOK=${toql} -Dtelescope=${telescope} -DSOLARIS_HOST=${solHost} -DDOMAIN=`domainname` -DqtConfig=${qtConfig} -Dot.cfgdir=${instConfigDir}/ -Dot.resource.cfgdir=./ -DwidgetFile=${widgetFile} -DQT_LOG_DIR=${QT_LOG_DIR} -DOMP -DDCHUB_TIMEOUT=${timeout} -cp ${CLASSPATH}:${instConfigDir} edu.jach.qt.app.QT
 
 tidy: 
 onintr - 
