@@ -215,6 +215,7 @@ public class OmpOM extends JPanel{
       NotePanel notes = new NotePanel();
       notes.setNote(spItem);
       JSplitPane dsp = new JSplitPane(JSplitPane.VERTICAL_SPLIT, deferredList, notes);
+      dsp.setDividerLocation(250);
 //     JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, ptree, new DeferredProgramList());
       JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, ptree, dsp);
       return splitPane;
