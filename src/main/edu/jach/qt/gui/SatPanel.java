@@ -30,7 +30,7 @@ public class SatPanel extends JLabel implements TimerListener {
     setHorizontalAlignment(SwingConstants.CENTER);
 
     satBorder = BorderFactory.createTitledBorder
-      (BorderFactory.createLineBorder(Color.green), "Loading Sat...",
+      (BorderFactory.createLineBorder(new Color(51, 134, 206)), "Loading Sat...",
        TitledBorder.CENTER, TitledBorder.DEFAULT_POSITION);
 
     setBorder(satBorder);
