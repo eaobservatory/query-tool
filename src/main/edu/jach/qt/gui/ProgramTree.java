@@ -80,6 +80,9 @@ final public class ProgramTree extends JPanel implements
     private DragSource                  dragSource=null;
     private TrashCan                    trash=null;
     public static  SpItem          selectedItem=null;
+    private final String                 editText = "Edit Attribute...";
+    private final String                 scaleText = "Scale Exposure Times...";
+    private String                 rescaleText = "Re-do Scale Exposure Times";
 
   /** public programTree(menuSele m) is the constructor. The class
       has only one constructor so far.  a few thing are done during
@@ -124,6 +127,19 @@ final public class ProgramTree extends JPanel implements
     trash.setDropTarget(dropTarget);
 
     dragSource = new DragSource();
+
+    // Create a popup menu 
+    popup = new JPopupMenu();
+    edit = new JMenuItem (editText);
+    edit.addActionListener(this);
+    popup.add (edit);
+    scale = new JMenuItem (scaleText);
+    scale.addActionListener(this);
+    popup.add (scale);
+    scaleAgain = new JMenuItem (rescaleText);
+    scaleAgain.addActionListener(this);
+    scaleAgain.setEnabled(false);
+    popup.add (scaleAgain);
 
     gbc.fill = GridBagConstraints.NONE;
     gbc.anchor = GridBagConstraints.CENTER;
@@ -192,7 +208,20 @@ final public class ProgramTree extends JPanel implements
   public void actionPerformed (ActionEvent evt) {
     Object source = evt.getSource();
     if (source == run) {
-      execute();
+	execute();
+    }
+
+    if (source instanceof JMenuItem) {
+	JMenuItem thisItem = (JMenuItem) source;
+	if ( thisItem.getText().equals(editText) ) {
+	    editAttributes();
+	} 
+	else if ( thisItem.getText().equals(scaleText) ) {
+	    scaleAttributes();
+	} 
+	else if ( thisItem.getText().equals(rescaleText) ) {
+	    rescaleAttributes();   
+	}
     }
   }
   
@@ -332,7 +361,7 @@ final public class ProgramTree extends JPanel implements
 	  }
 	}
 
-	if ( System.getProperty("os.name").equals("SunOS")) {
+	if ( System.getProperty("os.name").equals("SunOS") && TelescopeDataPanel.DRAMA_ENABLED) {
 	  QtTools.loadDramaTasks(inst.type().getReadable());
 	  DcHub.getHandle().register("OOS_LIST");
 	}
@@ -411,9 +440,14 @@ final public class ProgramTree extends JPanel implements
 	{
 	    public void mouseClicked(MouseEvent e)
 	    {
-		if (e.getClickCount() == 2)
-		    {
-			execute();
+		if (e.getClickCount() == 2) {
+		    execute();
+		}
+		else if (e.getClickCount() == 1 && 
+			 (e.getModifiers() & InputEvent.BUTTON1_MASK) == InputEvent.BUTTON1_MASK ) {
+		    if (selectedItem != obsList.getSelectedValue() ) {
+			// Select the new item
+			selectedItem = (SpItem) obsList.getSelectedValue();
 		    }
 		else if (e.getClickCount() == 1)
 		    {
@@ -427,9 +461,12 @@ final public class ProgramTree extends JPanel implements
 			    selectedItem = null;
 			}
 		    }
+		}
 	    }
 	};
     obsList.addMouseListener(ml);
+    MouseListener popupListener = new PopupListener();
+    obsList.addMouseListener(popupListener);
 
     dragSource.createDefaultDragGestureRecognizer(obsList,
 						  DnDConstants.ACTION_MOVE,
@@ -582,6 +619,163 @@ final public class ProgramTree extends JPanel implements
     return null;
   }
 
+    /**
+     * private void disableRun()
+     *
+     * Disable the run option whilst other things are happening
+     *
+     **/
+    private void disableRun() {
+	run.setEnabled(false);
+	run.setForeground(Color.white);
+    }
+
+
+    /**
+     * private void enableRun()
+     *
+     * Enable the run option once other things have stopped
+     *
+     **/
+    private void enableRun() {
+	run.setEnabled(true);
+	run.setForeground(Color.black);
+    }
+
+
+    /**
+     * private void editAttributes()
+     *
+     * Invokes the attribute editor on the current item, as long as that
+     * item is an observation.
+     **/
+    private void editAttributes() {
+	
+
+	// Recheck that this is an observation
+	if (selectedItem.type()==SpType.OBSERVATION) {
+
+	    disableRun();
+
+	    SpObs observation = (SpObs) selectedItem;
+
+	    if (!observation.equals(null)) {
+		new AttributeEditor(observation, new javax.swing.JFrame(), true).show();
+	    } 
+	    else {
+		JOptionPane.showMessageDialog(null,
+					      "Current selection is not an observation.",
+					      "Not an Obs!",
+					      JOptionPane.INFORMATION_MESSAGE);
+	    }
+	    enableRun();
+	}
+    }
+ 
+    /**
+     * private void scaleAttributes()
+     *
+     * Invokes the attribute scaler on the current item, as long as that
+     * item is an observation.
+     **/
+    private void scaleAttributes() {
+	if (selectedItem == null || selectedItem.type() != SpType.OBSERVATION ) {
+	    return;
+	}
+	
+	disableRun();
+	    
+	SpObs observation = (SpObs) selectedItem;
+	if (!observation.equals(null)) {
+	    new AttributeEditor(observation, new javax.swing.JFrame(), true,
+				"EXPTIME",
+				haveScaled.contains(observation),
+				lastScaleFactor(),
+				false).show();
+	    double sf = AttributeEditor.scaleFactorUsed();
+	    if (sf > 0) {
+		haveScaled.addElement(observation);
+		scaleFactors.addElement(new Double(sf));
+		scaleAgain.setEnabled(true);
+		rescaleText = "Re-do Scale Exposure Times (x" + sf + ")";
+		scaleAgain.setText(rescaleText);
+	    }
+	} 
+	else {
+	    JOptionPane.showMessageDialog(null,
+					  "Current selection is not an observation.",
+					  "Not an Obs!",
+					  JOptionPane.INFORMATION_MESSAGE);
+	}
+	enableRun();
+    }
+    
+  
+    /**
+     * private void rescaleAttributes()
+     *
+     * Reinvokes the attribute scaler on the current item, as long as that
+     * item is an observation.
+     **/
+    private void rescaleAttributes() {
+	if (selectedItem == null || selectedItem.type() != SpType.OBSERVATION ) {
+	    return;
+	}
+	
+	disableRun();
+	
+	SpObs observation = (SpObs) selectedItem;
+	if (!observation.equals(null)) {
+	    new AttributeEditor(observation, new javax.swing.JFrame(), true,
+				"EXPTIME",
+				haveScaled.contains(observation),
+				lastScaleFactor(),
+				true).show();
+	    double sf = AttributeEditor.scaleFactorUsed();
+	    if (sf > 0) {
+		haveScaled.addElement(observation);
+		scaleFactors.addElement(new Double(sf));
+	    }
+	} 
+	else {
+	    JOptionPane.showMessageDialog(null,
+					  "Current selection is not an observation.",
+					  "Not an Obs!",
+					  JOptionPane.INFORMATION_MESSAGE);
+	}
+	enableRun();
+    }
+
+    private Double lastScaleFactor() {
+	if (scaleFactors.size() == 0) {
+	    if (AttributeEditor.scaleFactorUsed() > 0) {
+		return new Double(AttributeEditor.scaleFactorUsed());
+	    } 
+	    else {
+		return new Double(1.0); 
+	    }
+	} 
+	else {
+	    return (Double)scaleFactors.elementAt(scaleFactors.size()-1);
+	}
+    }
+
+    class PopupListener extends MouseAdapter {
+
+	public void mousePressed (MouseEvent e) {
+
+	    // If this was not the right button just return immediately.
+	    if (! e.isPopupTrigger() || selectedItem == null) {
+		return;
+	    }
+	    
+	    // If this is an observation then show the popup
+	    if (selectedItem.type()==SpType.OBSERVATION) {
+		popup.show (e.getComponent(), e.getX(), e.getY());
+	    }   
+	}	
+    }    
+
     /* Drop Target Interface */
     public void dragEnter(DropTargetDragEvent evt){
     }
@@ -608,8 +802,6 @@ final public class ProgramTree extends JPanel implements
 	    JOptionPane.showMessageDialog(null,
 					  "Can not delete a mandatory observation!"
 					  );
-	    selectedItem = null;
-	    obsList.clearSelection();
 	    return;
 	}
 	
@@ -628,6 +820,10 @@ final public class ProgramTree extends JPanel implements
      */
   
     public void dragGestureRecognized( DragGestureEvent event) {
+	InputEvent ipe = event.getTriggerEvent();
+	if (ipe.getModifiers() != ipe.BUTTON1_MASK ) {
+	    return;
+	}
 	Object selected = obsList.getSelectedValue();
 	selectedItem = (SpItem)selected;
 	if ( selected != null ){
@@ -668,5 +864,11 @@ final public class ProgramTree extends JPanel implements
     }
 
   public JButton getRunButton () {return run;}
+  private Vector haveScaled   = new Vector(); 
+  private Vector scaleFactors = new Vector(); 
+  private JMenuItem edit;
+  private JMenuItem scale;
+  private JMenuItem scaleAgain;
+  private JPopupMenu popup;
 
 }
