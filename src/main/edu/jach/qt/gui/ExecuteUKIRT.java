@@ -49,7 +49,7 @@ public class ExecuteUKIRT extends Execute implements Runnable {
 	SpItem itemToExecute;
 	if (!isDeferred) {
 	    itemToExecute = ProgramTree.selectedItem;
-	    logger.info("Executing observatin from Program List");
+	    logger.info("Executing observation from Program List");
 	}
 	else {
 	    itemToExecute = DeferredProgramList.currentItem;
@@ -189,9 +189,13 @@ public class ExecuteUKIRT extends Execute implements Runnable {
 	  //}
 
 	if ( System.getProperty("os.name").equals("SunOS") && TelescopeDataPanel.DRAMA_ENABLED) {
-	  QtTools.loadDramaTasks(inst.type().getReadable());
+	    if (QtTools.loadDramaTasks(inst.type().getReadable()) == 0){
+		failure.delete();
+	    }
+	    else {
+		success.delete();
+	    }
 	}
 	
-	failure.delete();
     }
 }
