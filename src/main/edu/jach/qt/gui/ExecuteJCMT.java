@@ -51,6 +51,7 @@ public class ExecuteJCMT extends Execute implements Runnable {
 	    return;
 	}
 
+	logger.info("Executing observation "+_itemToExecute.getTitle());
 	File file = new File (jcmtDir + File.separator + "ExecuteMe.xml");
 	try {
 	    FileWriter writer = new FileWriter (file);
@@ -90,6 +91,7 @@ public class ExecuteJCMT extends Execute implements Runnable {
 	    System.out.println("Output from translator: "+new String(odfFile).trim());
 	    System.out.println("Error from translator: "+new String(errorMessage).trim());
 	    if (rtn != 0) {
+		System.out.println("Returning with non-zero error status following translation");
 		success.delete();
 		return;
 	    }
