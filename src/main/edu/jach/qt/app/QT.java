@@ -42,6 +42,9 @@ final public class QT {
 
       // Validate frames that have preset sizes
       qtf.validate();
+      
+      // Pack frmaes otherwise
+      //qtf.pack();
 
       //Fill screen if the screen is smaller that qtfSize.
       if (frameSize.height > screenSize.height) {
@@ -77,6 +80,9 @@ final public class QT {
 } // Omp
 
 //$Log$
+//Revision 1.5  2001/09/29 05:34:50  mrippa
+//Frame centers on screen.
+//
 //Revision 1.4  2001/09/20 01:58:07  mrippa
 //Added QtTools.loadConfig("config.qt.conf"); which loads
 //the main config file for the QT.
