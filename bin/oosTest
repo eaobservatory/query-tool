@@ -36,8 +36,8 @@ else if ($activeTest) then
    set run = $status;
    
    if ($run != 0) then
-      echo "$testInst IS NOT RUNNING"
+      echo "$testInst IS INACTIVE"
    else
-      echo "$testInst IS RUNNING"
+      echo "$testInst IS ACTIVE"
    endif
 endif 
