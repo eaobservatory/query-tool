@@ -30,6 +30,7 @@ public class MsbClient extends SoapClient {
    public static boolean queryMSB(String xmlQueryString) {
       try {
 	 URL url = new URL(System.getProperty("msbServer"));
+	 flushParameter();
 	 addParameter("xmlquery", String.class, xmlQueryString);
 	 //addParameter("maxreturn", Integer.class, new Integer(2));
 	 //System.out.println(doCall(url, "urn:OMP::MSBServer", "queryMSB"));
@@ -61,6 +62,7 @@ public class MsbClient extends SoapClient {
 	System.out.println(""+msbid);
 	
 	 URL url = new URL("http://www.jach.hawaii.edu/JAClocal/cgi-bin/msbsrv.pl");
+	 flushParameter();
 	 addParameter("key", Integer.class, msbid);
 	 //System.out.println(doCall(url, "urn:OMP::MSBServer", "fetchMSB"));
 
@@ -94,6 +96,7 @@ public class MsbClient extends SoapClient {
       try {
 	
 	 URL url = new URL("http://www.jach.hawaii.edu/JAClocal/cgi-bin/msbsrv.pl");
+	 flushParameter();
 	 addParameter("projID", String.class, projID);
 	 addParameter("checksum", String.class, checksum);
 
