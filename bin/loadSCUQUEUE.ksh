@@ -10,7 +10,25 @@
 #    cd $cwd;
 #    /export/data/dewitt/jcmt/ocs/queue2/scuqueue
 #fi
+function domozilla {
+    mozilla -remote "ping()"
+    if [[ $? != 0 ]]; then
+	echo Launching mozilla
+	mozilla $1 &
+    else
+	mozilla -remote "openFILE($1)"
+    fi
+    sleep 2
+    mozilla -remote "ping()"
+#    exit $?
+}
+
+
 echo IMP_KEY $IMP_KEY >/tmp/foo
-ditscmd SCUQUEUE ADDBACK $1
+
+case $1 in
+    *.html) domozilla $1;;
+    * ) ditscmd SCUQUEUE ADDBACK $1;;
+esac
 
 exit $?
