@@ -44,6 +44,7 @@ public class SimpleMoon {
 	getCurrentPosition(isoDateTime);
     }
 
+    // Get the faction illuminated
     public double getIllumination() {
 	// Get the current position of the Sun
 	Sun sun = new Sun();
@@ -72,6 +73,7 @@ public class SimpleMoon {
 	return illuminated;
     }
 
+    // Find out whether the moon is up
     public boolean isUp() {
 	// Calculates the current altitude - if -ve returns false
 	boolean up = true;
@@ -93,6 +95,7 @@ public class SimpleMoon {
 	return up;
     }
 
+    // Get the current RA and Dec os the moon
     private void getCurrentPosition() {
 	//
 	// Calculate the JD corresponding to the current UT
@@ -152,6 +155,7 @@ public class SimpleMoon {
 
     }
 
+    // Get the RA and Dec of the moon at a specified local time
     private void getCurrentPosition(String isoDateTime) {
 	//
 	// Calculate the JD corresponding to the current UT
@@ -214,6 +218,7 @@ public class SimpleMoon {
     }
 
 
+    // Convert a calendar class to a Julian Date
     private double toJulianDate(Calendar c) {
 	//
 	// Using eqn by Meeus (eqn 7.1)
@@ -241,6 +246,7 @@ public class SimpleMoon {
 	return jd;
     }
 
+    // Get the siderial time corresponding to a specified Julian Date
     private double getST(double jDate) {
 
 	double jDays = Math.floor(jDate);
@@ -266,6 +272,13 @@ public class SimpleMoon {
 	return gst;
     }
 
+    /*
+     * Inner class which will gold the geocentric position of an object.
+     * It holds the directional cosines (l, m and n), and then rectangular
+     * coordinates (x, y, z), as well as the distance in earth radii
+     *
+     * Public methods exist to get each parameter
+     */
     class GeocentricCoords {
 	private double _l;
 	private double _m;
@@ -316,8 +329,15 @@ public class SimpleMoon {
 	    System.out.println("Directional Cosines: ("+_l+","+_m+","+_n+")");
 	    System.out.println("Rectangluar coords : ("+_x+","+_y+","+_z+")");
 	}
-    }
+    } // End of Inner class GeocentricCoords
 
+    /*
+     * Inner class which will gold the topocentric position of an object.
+     * It holds the directional cosines (l, m and n), and then rectangular
+     * coordinates (x, y, z), as well as the distance in earth radii
+     *
+     * Public methods exist to get each parameter
+     */
     class TopocentricCoords {
 	private double _x;
 	private double _y;
@@ -368,8 +388,13 @@ public class SimpleMoon {
 	public void print() {
 	    System.out.println("Rectangluar coords : ("+_x+","+_y+","+_z+")");
 	}
-    }
+    } // End of Inner class TopocentricCoords
 
+    /*
+     * Inner class holding information on the loation of the sun.  Needed for
+     * calculating the illuminated fraction of the moon.  Has a public contructor
+     * which gets the current RA and DEC and methods for getting the RA and Dec.
+     */
     class Sun {
 	public double currentRA;
 	public double currentDec;
@@ -410,7 +435,7 @@ public class SimpleMoon {
 	public double getDec() {
 	    return currentDec;
 	}
-    }
+    } // End of Inner Class Sun
 
     public static void main (String [] args) {
 
