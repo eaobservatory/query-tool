@@ -49,23 +49,25 @@ public class TelescopeDataPanel extends JPanel implements ActionListener {
 
     else {
       Object[] options = { "CONTINUE", "CANCEL" };
-      int n = JOptionPane.showOptionDialog(null, 
-					   "          NOT A DRAMA ENABLED SYSTEM!.\n\n"+
-					   "Continue will allow you to run the QT in Senario Mode.\n"+
-					   "Cancel will shutdown the QT", 
-					   "Warning", 
-					   JOptionPane.OK_CANCEL_OPTION, 
-					   JOptionPane.WARNING_MESSAGE, null, options, options[0]);
+      int n = JOptionPane.
+	showOptionDialog(null, 
+			 "          NOT A DRAMA ENABLED SYSTEM!.\n\n"+
+			 "Continue will allow you to run the QT in Senario Mode.\n"+
+			 "Cancel will shutdown the QT", 
+			 "Warning", 
+			 JOptionPane.OK_CANCEL_OPTION, 
+			 JOptionPane.WARNING_MESSAGE, null, options, options[0]);
 
       if( (n == JOptionPane.NO_OPTION) || (n == JOptionPane.CLOSED_OPTION))
 	System.exit(0);
-
     }
+    
+    config();
   }
   
   public static void setTau(double val) {
-    
-    //The arg to following constructor is a pattern for formating
+  
+    //The arg in the following constructor is a pattern for formating
     DecimalFormat myFormatter = new DecimalFormat("0.000");
     String output = myFormatter.format(val);
 
@@ -76,7 +78,7 @@ public class TelescopeDataPanel extends JPanel implements ActionListener {
       
     setBackground(Color.black);
     setBorder(BorderFactory.createTitledBorder
-	      (BorderFactory.createEtchedBorder(Color.green, Color.black), "Current Info",
+	      (BorderFactory.createEtchedBorder(new Color(51, 134, 206), Color.black), "Current Info",
 	       TitledBorder.CENTER, TitledBorder.DEFAULT_POSITION));
     setLayout(new GridBagLayout());
     GridBagConstraints gbc = new GridBagConstraints();
