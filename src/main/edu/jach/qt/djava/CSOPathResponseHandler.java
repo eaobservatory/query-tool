@@ -39,8 +39,10 @@ public class CSOPathResponseHandler extends DramaPath.ResponseHandler {
     //task.MsgOut("Got path to task "+path.TaskName() +".");
     logger.info("Got path to task "+path.TaskName() +".");
     
+    String[] params = new String[] {"CSOSRC", "CSOTAU"};
+    
     // Start the monitor operation.
-    DramaMonitor Monitor = new DramaMonitor(path, new QT_MonResponse(cr), true, "CSOTAU");
+    DramaMonitor Monitor = new DramaMonitor(path, new QT_MonResponse(cr), false, params);
 
     // We have sent a new message, so return true.
     return true;
@@ -67,6 +69,9 @@ public class CSOPathResponseHandler extends DramaPath.ResponseHandler {
 
 /*
  * $Log$
+ * Revision 1.9  2003/02/20 01:59:30  dewitt
+ * Added monitoring of CSOSRC from CSOMON
+ *
  * Revision 1.8  2002/07/29 22:40:10  dewitt
  * Updated commenting.
  *

@@ -41,6 +41,11 @@ public class QT_MonResponse extends MonitorResponse {
       TelescopeDataPanel.setTau(value.RealValue(name));
     }
 
+    if (name.equals("CSOSRC")) {
+	logger.info("CSO Source updated to "+value.StringValue(name));
+	TelescopeDataPanel.setTauTooltip(value.StringValue(name));
+    }
+
     if (name.equals("AIRMASS")) {
       
       logger.info("AIRMASS update: "+value.RealValue(name));
