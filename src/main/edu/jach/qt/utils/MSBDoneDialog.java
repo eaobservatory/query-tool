@@ -99,11 +99,13 @@ public class MSBDoneDialog extends JDialog {
 
     public MSBDoneDialog (Frame parent, 
 			  String projectID,
+			  String title,
 			  String checksum) {
 	super(parent, true);
 	
 	String msg = "Mark MSB with \n"+ 
 	    "Project Id "+projectID+ "\n" +
+	    "and title "+ title+ "\n" +
 	    "as complete?";
 
 	final String projId = projectID;
