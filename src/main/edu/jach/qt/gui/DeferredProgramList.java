@@ -172,6 +172,9 @@ final public class DeferredProgramList extends JPanel implements
 	// This is a hack to fix fault [20021030.002].  It shouldn't happen but hopefully
 	// this will make sure...
 	obsList.setEnabled(true);
+	obsList.setSelectedIndex(obsList.getModel().getSize()-1);
+	currentItem = (SpItem) obsList.getSelectedValue();
+	ProgramTree.clearSelection();
 	
     }
 
