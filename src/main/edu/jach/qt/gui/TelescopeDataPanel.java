@@ -309,6 +309,7 @@ public class TelescopeDataPanel extends JPanel implements ActionListener {
 	    }
 	}
 
+	infoPanel.getFrame().setMenuDefault();
 
 	WidgetPanel widgetPanel = infoPanel.getFrame().getWidgets();
 	Component [] components = widgetPanel.getComponents();
