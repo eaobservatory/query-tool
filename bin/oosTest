@@ -1,0 +1,13 @@
+#!/bin/csh
+
+set testInst = $argv[1]
+
+ditsgetinfo -running $testInst
+set run = $status;
+
+if ($run != 0) then
+   echo "$testInst IS NOT RUNNING"
+else
+   echo "$testInst IS RUNNING"
+endif
+
