@@ -76,7 +76,6 @@ public class JTextFieldPanel extends WidgetPanel
       ListIterator iterator = fieldElems.listIterator(0);
       while (iterator.hasNext()) {
 	  LabeledTextField thisTextField = (LabeledTextField) iterator.next();
-	  System.out.println(thisTextField.getName());
 	  if ( thisTextField.getName().equals(field) ) {
 	      thisTextField.setText(val);
 	  }
