@@ -179,10 +179,13 @@ public class WidgetPanel extends JPanel
 	  if ( info.getView() == BoxLayout.Y_AXIS) {
 	    if (info.getTitle().equals("Tau") ) {
 	      add(panel, gbc, numRadPanels-1, 30, 1, info.getSize()+1);
-	    } // end of if ()
+	    }
+	    if (info.getTitle().equalsIgnoreCase("Clouds") ) {
+	      add(panel, gbc, 2, 2, 2, info.getSize()+1);
+	    }
 	    else {
 	      add(panel, gbc, numRadPanels, 20, 1, info.getSize()+1);
-	    } // end of if ()else
+	    }
 	    totalNumRadRows += info.getSize()+2;
 	  }
 	  else {
