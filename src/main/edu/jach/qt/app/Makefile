@@ -13,9 +13,6 @@ SOURCES = \
 
 include $(BUILD)/make.tail
 
-circular:
-
-
 # Phony Targets
 .PHONY: clean build help
 
