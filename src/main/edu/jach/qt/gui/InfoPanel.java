@@ -1,7 +1,10 @@
 package edu.jach.qt.gui;
 
+/* QT imports */
 import edu.jach.qt.app.Querytool;
 import edu.jach.qt.utils.*;
+
+/* Standard imports */
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
@@ -9,8 +12,11 @@ import java.lang.Boolean;
 import javax.swing.*;
 import javax.swing.border.*;
 import javax.swing.event.*;
+
 import ocs.utils.DcHub;
 import ocs.utils.ObeyNotRegisteredException;
+import org.apache.log4j.Logger;
+
 /**
  * InfoPanel.java
  *
@@ -22,6 +28,8 @@ import ocs.utils.ObeyNotRegisteredException;
  * $Id$
  */
 public class InfoPanel extends JPanel implements ActionListener {
+
+  static Logger logger = Logger.getLogger(InfoPanel.class);
 
   /**
    * The constant <code>LOGO_IMAGE</code> specifies the String
@@ -63,7 +71,7 @@ public class InfoPanel extends JPanel implements ActionListener {
   private SatPanel satPanel;
   private Querytool localQuerytool;
   private QtFrame qtf;
-  private JButton xmlPrintButton;
+  //private JButton xmlPrintButton;
   private JButton exitButton;
   private JButton fetchMSB;
 
@@ -95,13 +103,14 @@ public class InfoPanel extends JPanel implements ActionListener {
   private void compInit() {
     GridBagConstraints gbc = new GridBagConstraints();
 
-    xmlPrintButton	= new JButton();
+    //xmlPrintButton	= new JButton();
     exitButton		= new JButton();
     fetchMSB		= new JButton();
     timePanel		= new TimePanel();
     satPanel		= new SatPanel();
     telescopeInfoPanel	= new TelescopeDataPanel();
 
+    /*Setup the SEARCH button*/
     InfoPanel.searchButton.setText("Search");
     InfoPanel.searchButton.setName("Search");
     InfoPanel.searchButton.addActionListener(new ActionListener() {
@@ -124,7 +133,10 @@ public class InfoPanel extends JPanel implements ActionListener {
 		}
 	      }
 	    };
+	  logger.info("Query Sent");
 
+	  localQuerytool.printXML();
+      
 	  logoPanel.start();
 	  worker.start();  //required for SwingWorker 3
 	}
@@ -132,11 +144,13 @@ public class InfoPanel extends JPanel implements ActionListener {
 
     InfoPanel.searchButton.setBackground(java.awt.Color.gray);
 
-    xmlPrintButton.setText("Execute");
-    xmlPrintButton.setName("Execute");
-    xmlPrintButton.setBackground(java.awt.Color.gray);
-    xmlPrintButton.addActionListener(this);
+    /*Setup the EXECUTE button*/
+    fetchMSB.setText("EXECUTE");
+    fetchMSB.setName("EXECUTE");
+    fetchMSB.setBackground(java.awt.Color.gray);
+    fetchMSB.addActionListener(this);
 
+    /*Setup the EXIT button*/
     exitButton.setText("Exit");
     exitButton.setName("Exit");
     exitButton.setBackground(java.awt.Color.gray);
@@ -144,12 +158,6 @@ public class InfoPanel extends JPanel implements ActionListener {
 
     gbc.fill = GridBagConstraints.BOTH;
     gbc.anchor = GridBagConstraints.CENTER;
-    //gbc.insets = new Insets(5,5,5,5);
-    //gbc.anchor = GridBagConstraints.CENTER;
-    //gbc.insets.bottom = 0;
-    //gbc.insets.left = 10;
-    //gbc.insets.right = 5;
-    //gbc.weightx = 1.0;
     gbc.weighty = 0.2;
     add(logoPanel, gbc, 0, 0, 1, 1);
 
@@ -157,18 +165,10 @@ public class InfoPanel extends JPanel implements ActionListener {
     gbc.anchor = GridBagConstraints.CENTER;
     gbc.insets = new Insets(5,15,5,15);
     gbc.weighty = 0.0;
+        
+    /*Add all the buttons*/
     add(InfoPanel.searchButton, gbc, 0, 5, 1, 1);
-    
-    //gbc.fill = GridBagConstraints.NONE;
-    //gbc.anchor = GridBagConstraints.CENTER;
-    //gbc.weightx = 100;
-    //gbc.weighty = 100;
-    add(xmlPrintButton, gbc, 0, 10, 1, 1);
-
-    //gbc.fill = GridBagConstraints.NONE;
-    //gbc.anchor = GridBagConstraints.CENTER;
-    //gbc.weightx = 100;
-    //gbc.weighty = 100;
+    add(fetchMSB, gbc, 0, 10, 1, 1);
     add(exitButton, gbc, 0, 15, 1, 1);
 
     gbc.fill = GridBagConstraints.BOTH;
@@ -248,8 +248,8 @@ public class InfoPanel extends JPanel implements ActionListener {
 
       qtf.exitQT();
     }
-    else if (source == xmlPrintButton) {
-      localQuerytool.printXML();
+    else if (source == fetchMSB) {
+      qtf.sendToStagingArea();
     }
   }
 }// InfoPanel
