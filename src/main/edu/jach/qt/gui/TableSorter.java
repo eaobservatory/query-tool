@@ -2,10 +2,12 @@ package edu.jach.qt.gui;
 
 // Imports for picking up mouse events from the JTable. 
 import java.awt.event.*;
+import java.awt.Cursor;
 import java.util.*;
 import javax.swing.JTable;
 import javax.swing.event.TableModelEvent;
 import javax.swing.table.*;
+import javax.swing.*;
 
 import org.apache.log4j.Logger;
 
@@ -238,11 +240,18 @@ public class TableSorter extends TableMap {
       checkModel();
 
       compares = 0;
-      n2sort();
+      qsort();
+      //n2sort();
       // qsort(0, indexes.length-1);
-      //shuttlesort((int[])indexes.clone(), indexes, 0, indexes.length);
+      shuttlesort((int[])indexes.clone(), indexes, 0, indexes.length);
       logger.debug("Compares: "+compares);
    }
+
+    /**
+     * Performs a quicksort on a table
+     */
+    public void qsort() {
+    }
 
     /**
      * Perform an N-squared sort on a table.
@@ -381,9 +390,11 @@ public class TableSorter extends TableMap {
      * Add a mouse listener to the column headers.
      * @param table   The table to add the listener to.
      */
-   public void addMouseListenerToHeaderInTable(JTable table) { 
+   public void addMouseListenerToHeaderInTable(final JTable table) { 
       final TableSorter sorter = this; 
       final JTable tableView = table; 
+      ToolTipManager.sharedInstance().unregisterComponent(table);
+      ToolTipManager.sharedInstance().unregisterComponent(table.getTableHeader());
       tableView.setColumnSelectionAllowed(false); 
       MouseAdapter listMouseListener = new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
