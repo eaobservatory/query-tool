@@ -138,6 +138,10 @@ final public class ProgramTree extends JPanel implements
 	run=new JButton("Send for Execution");
 	run.setMargin(new Insets(5,10,5,10));
 	run.setEnabled(TelescopeDataPanel.DRAMA_ENABLED);
+	if ( !run.isEnabled() ) {
+	    run.setToolTipText("Disabled as DRAMA is not running");
+	    ToolTipManager.sharedInstance().setInitialDelay(250);
+	}
 	run.addActionListener(this);
 
 	xpand = new JButton("Expand Observation");
@@ -229,11 +233,15 @@ final public class ProgramTree extends JPanel implements
      * @param  flag  <code>true</code> to enable execution.
      */
     public static void setExecutable (boolean flag) {
-	if (!TelescopeDataPanel.DRAMA_ENABLED) {
-	    run.setEnabled(false);
-	}
-	else {
+	if (TelescopeDataPanel.DRAMA_ENABLED) {
 	    run.setEnabled(flag);
+	    if ( flag == false ) {
+		run.setToolTipText ( "Disabled due to edited time constraint" );
+		ToolTipManager.sharedInstance().setInitialDelay(250);
+	    }
+	    else {
+		run.setToolTipText ( null );
+	    }
 	}
     }
 
