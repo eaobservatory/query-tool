@@ -87,6 +87,7 @@ public class TelescopeDataPanel extends JPanel implements ActionListener {
 
     if (TelescopeDataPanel.DRAMA_ENABLED) {
       hub = DcHub.getHandle();
+      hub.setParentComponent(this); // Use for ErrorBox dialogs in the hub.
 
       // CSOMON
       csomonHI = new HubImplementor("CSOMON");
