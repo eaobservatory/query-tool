@@ -8,6 +8,7 @@ import edu.jach.qt.gui.*;
 import edu.jach.qt.utils.*;
 
 /* Standard imports */
+import java.awt.Color;
 import java.io.*;
 import java.util.*;
 import javax.swing.*;
@@ -40,490 +41,505 @@ import org.w3c.dom.*;
  * @version 1.0 */
 public class Querytool implements Runnable, Observer {
 
-  static Logger logger = Logger.getLogger(Querytool.class);
+    static Logger logger = Logger.getLogger(Querytool.class);
 
-  private String _xmlString;
-  private WidgetDataBag bag;
+    private String _xmlString;
+    private WidgetDataBag bag;
 
-  private final String OBSERVABILITY_DISABLED = "observability";
-  private final String REMAINING_DISABLED     = "remaining";
-  private final String ALLOCATION_DISABLED    = "allocation";
-  private final String QUEUE                  = "semester";
+    private final String OBSERVABILITY_DISABLED = "observability";
+    private final String REMAINING_DISABLED     = "remaining";
+    private final String ALLOCATION_DISABLED    = "allocation";
+    private final String QUEUE                  = "semester";
 
-  private boolean remaining, observability, allocation,_q;
-  private String _queue;
+    private boolean remaining, observability, allocation,_q;
+    private String _queue;
 
-  /**
-   * Creates a new <code>Querytool</code> instance.
-   *
-   * @param bag a <code>WidgetDataBag</code> value
-   */
-  public Querytool (WidgetDataBag bag) {
-    this.bag = bag;
-    bag.addObserver(this);
-  }
+    /**
+     * Creates a new <code>Querytool</code> instance.
+     *
+     * @param bag a <code>WidgetDataBag</code> value
+     */
+    public Querytool (WidgetDataBag bag) {
+        this.bag = bag;
+        bag.addObserver(this);
+    }
 
-  /**
-   * Describe <code>setObservabilityConstraint</code> method here.
-   *
-   * @param flag a <code>boolean</code> value that sets the state of
-   * the observability constraint.
-   */
-  public void setObservabilityConstraint(boolean flag) {
-    observability = flag;
-    buildXML(bag.getHash());
-  }
+    /**
+     * Describe <code>setObservabilityConstraint</code> method here.
+     *
+     * @param flag a <code>boolean</code> value that sets the state of
+     * the observability constraint.
+     */
+    public void setObservabilityConstraint(boolean flag) {
+        observability = flag;
+        buildXML(bag.getHash());
+    }
 
-  /**
-   * Describe <code>setRemainingConstraint</code> method here.
-   *
-   * @param flag a <code>boolean</code> value that sets the state of
-   * the remaining constraint.
-   */
-  public void setRemainingConstraint(boolean flag) {
-    remaining = flag;
-    buildXML(bag.getHash());
-  }
+    /**
+     * Describe <code>setRemainingConstraint</code> method here.
+     *
+     * @param flag a <code>boolean</code> value that sets the state of
+     * the remaining constraint.
+     */
+    public void setRemainingConstraint(boolean flag) {
+        remaining = flag;
+        buildXML(bag.getHash());
+    }
 
-  /**
-   * Describe <code>setAllocationConstraint</code> method here.
-   *
-   * @param flag a <code>boolean</code> value that sets the state of
-   * the allocation constraint.
-   */
-  public void setAllocationConstraint(boolean flag) {
-    allocation = flag;
-    buildXML(bag.getHash());
-  }
+    /**
+     * Describe <code>setAllocationConstraint</code> method here.
+     *
+     * @param flag a <code>boolean</code> value that sets the state of
+     * the allocation constraint.
+     */
+    public void setAllocationConstraint(boolean flag) {
+        allocation = flag;
+        buildXML(bag.getHash());
+    }
 
     public void setQueue(String q) {
-	if (q != null && q != "") {
-	    _q = true;
-	    _queue = q;
-	}
-	else {
-	    _q = false;
-	}
-	buildXML(bag.getHash());
-	return;
+        if (q != null && q != "") {
+            _q = true;
+            _queue = q;
+        }
+        else {
+            _q = false;
+        }
+        buildXML(bag.getHash());
+        return;
     }
 
-  /**
-   * The <code>update</code> method is used to trigger
-   * an action if a change is "Observed" in the "Subject".
-   * This is the only method mandated by the Observer 
-   * interface.
-   *
-   * @param o a <code>Subject</code> value
-   */
-  public void update(Subject o) {
-    if (o == bag) {
-      buildXML(bag.getHash());
+    /**
+     * The <code>update</code> method is used to trigger
+     * an action if a change is "Observed" in the "Subject".
+     * This is the only method mandated by the Observer 
+     * interface.
+     *
+     * @param o a <code>Subject</code> value
+     */
+    public void update(Subject o) {
+        if (o == bag) {
+            buildXML(bag.getHash());
+        }
     }
-  }
 
-  /**
-   * The <code>buildXML</code> method is triggerd by any 
-   * Subject update.  If the gui state changes, this method
-   * rebuilds the _xmlString.
-   *
-   * @param ht a <code>Hashtable</code> value
-   */
-  public void buildXML(Hashtable ht) throws NullPointerException {
-    try {
-      String next = "";
-      Document doc = new DocumentImpl();
-      Element root = doc.createElement("MSBQuery");
-      Element item, sub;
-      JToggleButton abstractButton;
-      Object obj;
-
-
-      item = doc.createElement("telescope");
-      item.appendChild( doc.createTextNode(System.getProperty("telescope")) );
-      root.appendChild(item);
+    /**
+     * The <code>buildXML</code> method is triggerd by any 
+     * Subject update.  If the gui state changes, this method
+     * rebuilds the _xmlString.
+     *
+     * @param ht a <code>Hashtable</code> value
+     */
+    public void buildXML(Hashtable ht) throws NullPointerException {
+        try {
+            String next = "";
+            Document doc = new DocumentImpl();
+            Element root = doc.createElement("MSBQuery");
+            Element item, sub;
+            JToggleButton abstractButton;
+            Object obj;
 
 
-      if (_q) {
-	item = doc.createElement("semester");
-	item.appendChild( doc.createTextNode(_queue) );
-	root.appendChild(item);
-      }
-
-      if (observability) {
-	item = doc.createElement("disableconstraint");
-	item.appendChild( doc.createTextNode(OBSERVABILITY_DISABLED) );
-	root.appendChild(item);
-      }
-
-      if (allocation) {
-	item = doc.createElement("disableconstraint");
-	item.appendChild( doc.createTextNode(ALLOCATION_DISABLED) );
-	root.appendChild(item);
-      }
-      
-      if (remaining) {
-	item = doc.createElement("disableconstraint");
-	item.appendChild( doc.createTextNode(REMAINING_DISABLED) );
-	root.appendChild(item);
-      }
-      
-      for(Enumeration e = ht.keys(); e.hasMoreElements() ; ) {
-	next = ((String)e.nextElement());
-
-	if (next.equalsIgnoreCase("instruments")) {
-	  for (ListIterator iter = ((LinkedList)(ht.get(next))).listIterator(0); 
-	       iter.hasNext(); 
-	       iter.nextIndex()) {
-	    abstractButton = (JCheckBox) (iter.next());
-	    if (abstractButton.isSelected()) {
-	      item = doc.createElement("instrument");
-              if ( !abstractButton.getText().startsWith("Any") ) {
-                  item.appendChild( doc.createTextNode( abstractButton.getText() ));
-                  root.appendChild(item);
-              }
-	    }
-	  }
-	}
-	else if(next.equalsIgnoreCase("Moon")) {
-
-	  item = doc.createElement(next);
-	  for (ListIterator iter = ((LinkedList)(ht.get(next))).listIterator(0); 
-	       iter.hasNext(); 
-	       iter.nextIndex()) {
-	    abstractButton = (JRadioButton) (iter.next());
-	    if (abstractButton.isSelected()) {
-	      String tmpMoon = abstractButton.getText().trim();
-	      String moon = "";
-	      if ( tmpMoon.equals("Dark")) {
-		moon = "0";
-	      }
-	      else if (tmpMoon.equals("Grey")) {
-		moon = "1";
-	      }
-	      else {
-		moon = "2";
-	      } // end of else
-		  
-	      item.appendChild(doc.createTextNode(moon));
-	    }
-	  }
-	}
-	else if(next.equalsIgnoreCase("Clouds")) {
-	  item = doc.createElement("cloud");
-	  for (ListIterator iter = ((LinkedList)(ht.get(next))).listIterator(0); 
-	       iter.hasNext(); 
-	       iter.nextIndex()) {
-	    abstractButton = (JRadioButton) (iter.next());
-	    if (abstractButton.isSelected()) {
-	      String tmpCloud = abstractButton.getText().trim();
-	      String cloud = "";
-	      if ( tmpCloud.equals("Clear")) {
-		cloud = "0";
-	      }
-	      else if (tmpCloud.equals("Thin")) {
-		cloud = "1";
-	      }
-	      else if (tmpCloud.equals("Thick")) {
-		cloud = "2";
-	      }
-
-	      else {
-		throw (new NoSuchParameterException ("Clouds does not contain element "+tmpCloud));
-	      } 
-	      		  
-	      item.appendChild(doc.createTextNode(cloud));
-	    }
-	  }
-	}
-	else if(next.equalsIgnoreCase("Atmospheric Conditions")) {
-	  item = doc.createElement(next);
-	  for (ListIterator iter = ((LinkedList)(ht.get(next))).listIterator(0); 
-	       iter.hasNext(); 
-	       iter.nextIndex()) {
-
-	    //abstractButton = (JRadioButton) (iter.next());
-	    logger.debug("ATMOS: "+(String)iter.next());
-		
-	    //  		if (abstractButton.isSelected()) {
-	    //  		  String seeing = abstractButton.getText();
-	    //  		  item.appendChild(doc.createTextNode(moon));
-	  }
-	}
-	else if (next.equalsIgnoreCase("country")) {
-	    item = doc.createElement(next);
-	    for (ListIterator iter = ((LinkedList)(ht.get(next))).listIterator(0); 
-		 iter.hasNext(); 
-		 iter.nextIndex()) {
-		abstractButton = (JRadioButton) (iter.next());
-		if (abstractButton.isSelected()) {
-		    if (abstractButton.getText().equalsIgnoreCase("any")) {
-		    }
-		    else {
-			item.appendChild( doc.createTextNode( abstractButton.getText() ));
-			root.appendChild(item);
-		    }
-		}
-	    }
-	}
-	else if (ht.get(next) instanceof LinkedList ) {
-	  item = doc.createElement(next);
-	  for (ListIterator iter = ((LinkedList)(ht.get(next))).listIterator(0); 
-	       iter.hasNext(); 
-	       iter.nextIndex()) {
-		
-	    obj = iter.next();
-	    if (obj instanceof JComboBox) {
-	      String textField = (String) (iter.next());
-	      obj = (JComboBox)obj;
-	      if(!textField.equals("")) {
-		sub = doc.createElement((String) (((JComboBox)obj).getSelectedItem())) ;
-		sub.appendChild( doc.createTextNode(textField));
-		item.appendChild(sub);
-	      }
-	    }
-	  }
-	}
-	else if (ht.get(next) instanceof LabeledTextField ) {
-	  LabeledTextField ltf = (LabeledTextField) (ht.get(next));
-	  Enumeration n = ltf.getList().elements();
-	  String tmpStr;
-
-	  while (n.hasMoreElements()) {
-	    if ( next.equalsIgnoreCase("pi"))
-		{
-		    item = doc.createElement("name");
-		}
-
-	    else if ( next.equalsIgnoreCase("project") )
-		{
-		    item = doc.createElement("projectid");
-		}
-
-	    else if ( next.equalsIgnoreCase("seeing") )
-		{
-		    item = doc.createElement("seeing");
-		}
-
-	    else if ( next.equalsIgnoreCase("tau" ) )
-		{
-		    item = doc.createElement("tau");
-		}
-
-	    else if ( next.equalsIgnoreCase("airmass") )
-		{
-		    item = doc.createElement("airmass");
-		}
-
-	    else if ( next.equalsIgnoreCase("semester") )
-		{
-		    item = doc.createElement("semester");
-		}
-	    tmpStr = (String)n.nextElement();
-	    item.appendChild(doc.createTextNode(tmpStr.trim()));
-	    root.appendChild( item );
-	  } // end of while ()
-	}
-
-	else if (ht.get(next) instanceof LabeledRangeTextField ) {
-	  
-	  LabeledRangeTextField lrtf = (LabeledRangeTextField) (ht.get(next));
-	  String tmpStr;
-
-	  // Temporary and very inefficient code fix.  
-	  // Gets over a problem of removing these from the item from the bag.
-	  if (lrtf.getLowerText().equals("") &&
-	      lrtf.getUpperText().equals(""))
-	      {
-		  continue;
-	      }
+            item = doc.createElement("telescope");
+            item.appendChild( doc.createTextNode(System.getProperty("telescope")) );
+            root.appendChild(item);
 
 
-	  if ( next.equalsIgnoreCase("duration")) {
-	    item = doc.createElement("timeest");
-	    item.setAttribute("units","minutes");
-	  } 
-	  else if (next.equalsIgnoreCase("observation")) {
-	      root = processDate(lrtf, doc, root);
-	      continue;
-	  }
-	  else {
-	    item = doc.createElement(next);
-	  }
-	  
-	  if ( next.equals("hour")) {
-	    item = doc.createElement("ha");
-	  } // end of if ()
-	  
-	  
-	  tmpStr = lrtf.getLowerText();
-	  sub = doc.createElement("min") ;
-	  sub.appendChild( doc.createTextNode(tmpStr.trim().toLowerCase()));
-	  item.appendChild(sub);
+            if (_q) {
+                item = doc.createElement("semester");
+                item.appendChild( doc.createTextNode(_queue) );
+                root.appendChild(item);
+            }
 
-	
-	  tmpStr = lrtf.getUpperText();
-	  sub = doc.createElement("max");
-	  sub.appendChild(doc.createTextNode(tmpStr.trim().toLowerCase()));
-	  item.appendChild(sub);
+            if (observability) {
+                item = doc.createElement("disableconstraint");
+                item.appendChild( doc.createTextNode(OBSERVABILITY_DISABLED) );
+                root.appendChild(item);
+            }
 
-	  root.appendChild( item );
-	}
-	
-	//  	else if (next.equalsIgnoreCase("photometric")) {
-	//  	  item = doc.createElement("cloud");
-	//  	  String tmp = (String)ht.get(next);
+            if (allocation) {
+                item = doc.createElement("disableconstraint");
+                item.appendChild( doc.createTextNode(ALLOCATION_DISABLED) );
+                root.appendChild(item);
+            }
 
-	//  	  if (tmp.equals("true") ) {
-	//  	    item.appendChild( doc.createTextNode("0"));
-	//  	  }else {
-	//  	    item.appendChild( doc.createTextNode("1"));
-	//  	  }
-	//  	}
-	
-	
-	else {
-	  item = null;
-	  throw (new NullPointerException("A widget in the InputPanel has data, but has not been set!"));
-	} // end of else
-	
-	root.appendChild( item );
-      }
+            if (remaining) {
+                item = doc.createElement("disableconstraint");
+                item.appendChild( doc.createTextNode(REMAINING_DISABLED) );
+                root.appendChild(item);
+            }
 
-     doc.appendChild(root);
+            for(Enumeration e = ht.keys(); e.hasMoreElements() ; ) {
+                next = ((String)e.nextElement());
 
-      OutputFormat    format  = new OutputFormat( doc,"UTF-8",true );   //Serialize DOM
-      StringWriter  stringOut = new StringWriter();        //Writer will be a String
-      XMLSerializer    serial = new XMLSerializer( stringOut, format );
-      serial.asDOMSerializer();                            // As a DOM Serializer
-      serial.serialize( doc.getDocumentElement() );
-	 
-      _xmlString = stringOut.toString();
-    } 
-    
-    catch ( Exception ex ) {
-      logger.error(ex.getMessage(), ex);
-    }
-    
-  }
+                if (next.equalsIgnoreCase("instruments")) {
+                    for (ListIterator iter = ((LinkedList)(ht.get(next))).listIterator(0); 
+                            iter.hasNext(); 
+                            iter.nextIndex()) {
+                        abstractButton = (JCheckBox) (iter.next());
+                        if (abstractButton.isSelected()) {
+                            item = doc.createElement("instrument");
+                            if ( !abstractButton.getText().startsWith("Any") ) {
+                                item.appendChild( doc.createTextNode( abstractButton.getText() ));
+                                root.appendChild(item);
+                            }
+                        }
+                    }
+                }
+                else if (next.equalsIgnoreCase("semesters") ) {
+                    for (ListIterator iter = ((LinkedList)(ht.get(next))).listIterator(0);
+                            iter.hasNext();
+                            iter.nextIndex()) {
+                        abstractButton = (JCheckBox) (iter.next());
+                        if (abstractButton.isSelected()) {
+                            item = doc.createElement("semester");
+                            if ( !abstractButton.getText().equalsIgnoreCase("current") ) {
+                                item.appendChild( doc.createTextNode( abstractButton.getText() ));
+                                root.appendChild(item);
+                            }
+                        }
+                    }
+                }
+                else if(next.equalsIgnoreCase("Moon")) {
 
-  /**
-   * The <code>getXML</code> method returns the _xmlString.
-   *
-   * @return a <code>String</code> value
-   */
-  public String getXML() {
-    return _xmlString;
-  }
+                    item = doc.createElement(next);
+                    for (ListIterator iter = ((LinkedList)(ht.get(next))).listIterator(0); 
+                            iter.hasNext(); 
+                            iter.nextIndex()) {
+                        abstractButton = (JRadioButton) (iter.next());
+                        if (abstractButton.isSelected()) {
+                            String tmpMoon = abstractButton.getText().trim();
+                            String moon = "";
+                            if ( tmpMoon.equals("Dark")) {
+                                moon = "0";
+                            }
+                            else if (tmpMoon.equals("Grey")) {
+                                moon = "2";
+                            }
+                            else {
+                                moon = "26";
+                            } // end of else
 
-  /**
-   * The <code>printXML</code> method is a utility to the current
-   * _xmlString.
-   */
-  public void printXML() {
-    logger.debug( _xmlString ); //Spit out DOM as a String
-  }
+                            item.appendChild(doc.createTextNode(moon));
+                        }
+                    }
+                }
+                else if(next.equalsIgnoreCase("Clouds")) {
+                    item = doc.createElement("cloud");
+                    for (ListIterator iter = ((LinkedList)(ht.get(next))).listIterator(0); 
+                            iter.hasNext(); 
+                            iter.nextIndex()) {
+                        abstractButton = (JRadioButton) (iter.next());
+                        if (abstractButton.isSelected()) {
+                            String tmpCloud = abstractButton.getText().trim();
+                            String cloud = "";
+                            if ( tmpCloud.equals("Clear")) {
+                                cloud = "0";
+                            }
+                            else if (tmpCloud.equals("Thin")) {
+                                cloud = "20";
+                            }
+                            else if (tmpCloud.equals("Thick")) {
+                                cloud = "100";
+                            }
 
-  /**
-   * The <code>queryMSB</code> method starts the SOAP client.
-   * A successful query will write all MSB Summaries to file.
-   */
-  public void run() {
-    //QuerytoolClient qtc = new QuerytoolClient();
-    MsbClient.queryMSB(_xmlString);
-  }
+                            else {
+                                throw (new NoSuchParameterException ("Clouds does not contain element "+tmpCloud));
+                            } 
 
-  /**
-   * The <code>queryMSB</code> method starts the SOAP client.
-   * A successful query will write all MSB Summaries to file and 
-   * return true.
-   */
-  public boolean queryMSB() {
-    return MsbClient.queryMSB(_xmlString);
-  }
+                            item.appendChild(doc.createTextNode(cloud));
+                        }
+                    }
+                }
+                else if(next.equalsIgnoreCase("Atmospheric Conditions")) {
+                    item = doc.createElement(next);
+                    for (ListIterator iter = ((LinkedList)(ht.get(next))).listIterator(0); 
+                            iter.hasNext(); 
+                            iter.nextIndex()) {
 
-  /**
-   * The <code>fetchMSB</code> method starts the SOAP client.
-   * A successful fetch will start the lower level OMP-OM sequence.
-   *
-   * @param i an <code>Integer</code> value
-   */
-  public SpItem fetchMSB(Integer i) throws NullPointerException {
+                        logger.debug("ATMOS: "+(String)iter.next());
 
-    SpItem spItem = MsbClient.fetchMSB(i);
+                    }
+                }
+                else if (next.equalsIgnoreCase("country")) {
+                    item = doc.createElement(next);
+                    for (ListIterator iter = ((LinkedList)(ht.get(next))).listIterator(0); 
+                            iter.hasNext(); 
+                            iter.nextIndex()) {
+                        abstractButton = (JRadioButton) (iter.next());
+                        if (abstractButton.isSelected()) {
+                            if (abstractButton.getText().equalsIgnoreCase("any")) {
+                            }
+                            else {
+                                item.appendChild( doc.createTextNode( abstractButton.getText() ));
+                                root.appendChild(item);
+                            }
+                        }
+                    }
+                }
+                else if (ht.get(next) instanceof LinkedList ) {
+                    item = doc.createElement(next);
+                    for (ListIterator iter = ((LinkedList)(ht.get(next))).listIterator(0); 
+                            iter.hasNext(); 
+                            iter.nextIndex()) {
 
-    if ( spItem == null) {
-      throw (new NullPointerException());
-    } // end of if ()
+                        obj = iter.next();
+                        if (obj instanceof JComboBox) {
+                            String textField = (String) (iter.next());
+                            obj = (JComboBox)obj;
+                            if(!textField.equals("")) {
+                                sub = doc.createElement((String) (((JComboBox)obj).getSelectedItem())) ;
+                                sub.appendChild( doc.createTextNode(textField));
+                                item.appendChild(sub);
+                            }
+                        }
+                    }
+                }
+                else if (ht.get(next) instanceof LabeledTextField ) {
+                    LabeledTextField ltf = (LabeledTextField) (ht.get(next));
+                    Enumeration n = ltf.getList().elements();
+                    String tmpStr;
 
-    return spItem;
-  }
+                    while (n.hasMoreElements()) {
+                        if ( next.equalsIgnoreCase("pi"))
+                        {
+                            item = doc.createElement("name");
+                        }
 
-  /**
-   * <code>XMLisNull</code> is a test for a null _xmlString.
-   *
-   * @return a <code>boolean</code> value
-   */
-  public boolean XMLisNull() {
-    return (_xmlString == null);
-  }
+                        else if ( next.equalsIgnoreCase("project") )
+                        {
+                            item = doc.createElement("projectid");
+                        }
 
-    private Element processDate (LabeledRangeTextField lrtf,
-				 Document doc,
-				 Element root) {
-	Element item, sub;
-	String tmpStr;
+                        else if ( next.equalsIgnoreCase("seeing") )
+                        {
+                            item = doc.createElement("seeing");
+                        }
 
-	// Make sure the specified time is in a valid format and 
-	// if not, "make it so number 1"
-	String time = lrtf.getUpperText();
-	StringTokenizer st = new StringTokenizer(time, ":");
-	if (st.countTokens() == 1) {
-	    time = time + ":00:00";
-	}
-	else if (st.countTokens() == 2) {
-	    time = time + ":00";
-	}
-	
-	tmpStr = lrtf.getLowerText()+"T"+time;
+                        else if ( next.equalsIgnoreCase("tau" ) )
+                        {
+                            item = doc.createElement("tau");
+                        }
 
-	if (! lrtf.timerRunning() ) {
-	    TimeUtils tu = new TimeUtils();
-	    if (tu.isValidDate(tmpStr) ) {
-		item = doc.createElement("date");
-		tmpStr = tu.convertLocalISODatetoUTC(tmpStr);
-		item.appendChild (doc.createTextNode(tmpStr.trim()));
-		root.appendChild (item); 
-                // Recalculate the moon
-                SimpleMoon moon = new SimpleMoon(tmpStr);
-                int moonValue = 0;
-                if ( moon.isUp() ) {
-                    if ( moon.getIllumination() < 0.25 ) {
-                        moonValue = 1;
+                        else if ( next.equalsIgnoreCase("airmass") )
+                        {
+                            item = doc.createElement("airmass");
+                        }
+
+//                         else if ( next.equalsIgnoreCase("semester") )
+//                         {
+//                             item = doc.createElement("semester");
+//                         }
+                        else if ( next.equalsIgnoreCase("brightness") ) {
+                            item = doc.createElement("sky");
+                        }
+                        tmpStr = (String)n.nextElement();
+                        item.appendChild(doc.createTextNode(tmpStr.trim()));
+                        root.appendChild( item );
+                    } // end of while ()
+                }
+
+                else if (ht.get(next) instanceof LabeledRangeTextField ) {
+
+                    LabeledRangeTextField lrtf = (LabeledRangeTextField) (ht.get(next));
+                    String tmpStr;
+
+                    // Temporary and very inefficient code fix.  
+                    // Gets over a problem of removing these from the item from the bag.
+                    if (lrtf.getLowerText().equals("") &&
+                            lrtf.getUpperText().equals(""))
+                    {
+                        continue;
+                    }
+
+
+                    if ( next.equalsIgnoreCase("duration")) {
+                        item = doc.createElement("timeest");
+                        item.setAttribute("units","minutes");
+                    } 
+                    else if (next.equalsIgnoreCase("observation")) {
+                        root = processDate(lrtf, doc, root);
+                        continue;
                     }
                     else {
-                        moonValue = 2;
+                        item = doc.createElement(next);
                     }
+
+                    if ( next.equals("hour")) {
+                        item = doc.createElement("ha");
+                    } // end of if ()
+
+
+                    tmpStr = lrtf.getLowerText();
+                    sub = doc.createElement("min") ;
+                    sub.appendChild( doc.createTextNode(tmpStr.trim().toLowerCase()));
+                    item.appendChild(sub);
+
+
+                    tmpStr = lrtf.getUpperText();
+                    sub = doc.createElement("max");
+                    sub.appendChild(doc.createTextNode(tmpStr.trim().toLowerCase()));
+                    item.appendChild(sub);
+
+                    root.appendChild( item );
+                }
+
+                //  	else if (next.equalsIgnoreCase("photometric")) {
+                //  	  item = doc.createElement("cloud");
+                //  	  String tmp = (String)ht.get(next);
+
+                //  	  if (tmp.equals("true") ) {
+                //  	    item.appendChild( doc.createTextNode("0"));
+                //  	  }else {
+                //  	    item.appendChild( doc.createTextNode("1"));
+                //  	  }
+                //  	}
+
+
+                else {
+                    item = null;
+                    throw (new NullPointerException("A widget in the InputPanel has data, but has not been set!"));
+                } // end of else
+
+                root.appendChild( item );
+            }
+
+            doc.appendChild(root);
+
+            OutputFormat    format  = new OutputFormat( doc,"UTF-8",true );   //Serialize DOM
+            StringWriter  stringOut = new StringWriter();        //Writer will be a String
+            XMLSerializer    serial = new XMLSerializer( stringOut, format );
+            serial.asDOMSerializer();                            // As a DOM Serializer
+            serial.serialize( doc.getDocumentElement() );
+
+            _xmlString = stringOut.toString();
+        } 
+
+        catch ( Exception ex ) {
+            logger.error(ex.getMessage(), ex);
+        }
+
+    }
+
+    /**
+     * The <code>getXML</code> method returns the _xmlString.
+     *
+     * @return a <code>String</code> value
+     */
+    public String getXML() {
+        return _xmlString;
+    }
+
+    /**
+     * The <code>printXML</code> method is a utility to the current
+     * _xmlString.
+     */
+    public void printXML() {
+        logger.debug( _xmlString ); //Spit out DOM as a String
+    }
+
+    /**
+     * The <code>queryMSB</code> method starts the SOAP client.
+     * A successful query will write all MSB Summaries to file.
+     */
+    public void run() {
+        //QuerytoolClient qtc = new QuerytoolClient();
+        MsbClient.queryMSB(_xmlString);
+    }
+
+    /**
+     * The <code>queryMSB</code> method starts the SOAP client.
+     * A successful query will write all MSB Summaries to file and 
+     * return true.
+     */
+    public boolean queryMSB() {
+        return MsbClient.queryMSB(_xmlString);
+    }
+
+    /**
+     * The <code>fetchMSB</code> method starts the SOAP client.
+     * A successful fetch will start the lower level OMP-OM sequence.
+     *
+     * @param i an <code>Integer</code> value
+     */
+    public SpItem fetchMSB(Integer i) throws NullPointerException {
+
+        SpItem spItem = MsbClient.fetchMSB(i);
+
+        if ( spItem == null) {
+            throw (new NullPointerException());
+        } // end of if ()
+
+        return spItem;
+    }
+
+    /**
+     * <code>XMLisNull</code> is a test for a null _xmlString.
+     *
+     * @return a <code>boolean</code> value
+     */
+    public boolean XMLisNull() {
+        return (_xmlString == null);
+    }
+
+    private Element processDate (LabeledRangeTextField lrtf,
+            Document doc,
+            Element root) {
+        Element item, sub;
+        String tmpStr;
+
+        // Make sure the specified time is in a valid format and 
+        // if not, "make it so number 1"
+        String time = lrtf.getUpperText();
+        StringTokenizer st = new StringTokenizer(time, ":");
+        if (st.countTokens() == 1) {
+            time = time + ":00:00";
+        }
+        else if (st.countTokens() == 2) {
+            time = time + ":00";
+        }
+
+        tmpStr = lrtf.getLowerText()+"T"+time;
+
+        TimeUtils tu = new TimeUtils();
+        if (tu.isValidDate(tmpStr) ) {
+            if ( !lrtf.timerRunning() ) {
+                item = doc.createElement("date");
+                tmpStr = tu.convertLocalISODatetoUTC(tmpStr);
+                item.appendChild (doc.createTextNode(tmpStr.trim()));
+                root.appendChild (item); 
+            }
+            // Recalculate the moon if the user has not overridden the default,
+            // otherwise leave it as it is
+            if ( WidgetPanel.getMoonPanel() != null && WidgetPanel.getMoonPanel().getBackground() != Color.darkGray ) {
+                SimpleMoon moon;
+                if ( lrtf.timerRunning() ) {
+                    moon = new SimpleMoon();
                 }
                 else {
-		   //                    System.out.println("Moon is down");
+                    moon = new SimpleMoon(tmpStr);
                 }
-		// Delete any existing value and repalce with the new
-		NodeList list = root.getElementsByTagName("moon");
-		if (list.getLength() != 0) {
-		    root.removeChild(list.item(0));
-		}
+                double moonValue = 0;
+                if ( moon.isUp() ) {
+                    moonValue = moon.getIllumination()*100;
+                }
+                else {
+                    //                    System.out.println("Moon is down");
+                }
+                // Delete any existing value and repalce with the new
+                NodeList list = root.getElementsByTagName("moon");
+                if (list.getLength() != 0) {
+                    root.removeChild(list.item(0));
+                }
                 item = doc.createElement("moon");
                 item.appendChild( doc.createTextNode(""+moonValue) );
                 root.appendChild (item);
-	    }
-	    else {
-		// We will use the current date, so set execution to true
-	    }
-	}
-	else {
-	}
-	return root;
+            }
+            else {
+                // We will use the current date, so set execution to true
+            }
+        }
+    return root;
     }
 
 }// Querytool
