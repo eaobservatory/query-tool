@@ -1321,6 +1321,7 @@ final public class ProgramTree extends JPanel implements
 
     public class ExecuteInThread extends Thread {
 	SpItem _item;
+        SpItem _deferredItem;
 	boolean _isDeferred;
 
 	public ExecuteInThread ( SpItem item, boolean deferred ) {
@@ -1336,6 +1337,7 @@ final public class ProgramTree extends JPanel implements
 		if ( spID != null ) {
 		    SpTreeMan.insert(spID);
 		}
+                _deferredItem = item;
 		_item = (SpItem)root;
 	    }
 	    else {
@@ -1427,8 +1429,9 @@ final public class ProgramTree extends JPanel implements
 		}
 	    }
 	    else if (!failed) {
-		DeferredProgramList.markThisObservationAsDone(_item);
+		DeferredProgramList.markThisObservationAsDone(_deferredItem);
 	    }
+            _deferredItem = null;
 	    setExecutable (true);
 	    logger.debug ( "Enabling run button since the ExecuteJCMT task has completed" );
 	}
