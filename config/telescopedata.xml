@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE TelescopeData [
+	<!ELEMENT TelescopeData (Telescope*) >
+	<!ELEMENT Telescope (latitude, longitude) >
+	<!ELEMENT latitude  (#PCDATA) >
+	<!ELEMENT longitude (#PCDATA) >
+	<!ATTLIST Telescope name CDATA #REQUIRED>
+]>
+<TelescopeData>
+	<Telescope name="ukirt">
+		<longitude>	-155.473	</longitude>
+		<latitude>	  19.826	</latitude>
+	</Telescope>
+	<Telescope name="jcmt">
+		<longitude>	-155.473	</longitude>
+		<latitude> 	  19.826	</latitude>
+	</Telescope>
+	<Telescope name="gemini-north">
+		<longitude>	-155.471	</longitude>
+		<latitude>	  19.820	</latitude>
+	</Telescope>
+</TelescopeData>
