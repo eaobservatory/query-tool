@@ -30,7 +30,9 @@ import org.apache.log4j.Logger;
  * @author <a href="mailto:mrippa@jach.hawaii.edu">Mathew Rippa</a>
  * $Id$
  */
-public class QtFrame extends JFrame implements PopupMenuListener, ActionListener, MenuListener, ListSelectionListener{
+public class QtFrame 
+    extends JFrame 
+    implements PopupMenuListener, ActionListener, MenuListener, ListSelectionListener {
 
   private static final String 
     WIDGET_CONFIG_FILE = System.getProperty("widgetFile");
@@ -801,5 +803,6 @@ public class QtFrame extends JFrame implements PopupMenuListener, ActionListener
   public void popupMenuCanceled(PopupMenuEvent param1) {
     // TODO: implement this javax.swing.event.PopupMenuListener method
   }
+
 
 }//QtFrame
