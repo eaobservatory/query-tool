@@ -1386,7 +1386,8 @@ final public class ProgramTree extends JPanel implements
 		    // For heterodyne, mark all the observation as done and bring up the popup
 		    for (int i=0; i<obsList.getModel().getSize(); i++) {
 			markAsDone(i);
-			if (TelescopeDataPanel.DRAMA_ENABLED) {
+			if (TelescopeDataPanel.DRAMA_ENABLED &&
+		            System.getProperty("DOMAIN").equals("JAC.jcmt") ) {
 			    anObservationHasBeenDone = true;
 			    msbPendingFile = new File (msbPendingDir+projectID+"_"+checkSum+".pending");
 			    msbDone = showMSBDoneDialog();
