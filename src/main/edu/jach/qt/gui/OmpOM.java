@@ -166,7 +166,7 @@ public class OmpOM extends JPanel{
 	}
 	else if (telescope.equalsIgnoreCase("jcmt")) {
 	    /* Init JCMT Instruments */
-	    spItem = new SpInstSCUBA();
+	    SpItem spItem = new SpInstSCUBA();
 	    spItem = new SpInstHeterodyne();
 	    
 	    /* Init JCMT SpTypes */
