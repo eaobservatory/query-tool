@@ -7,6 +7,7 @@ import gemini.sp.SpItem;
 import gemini.sp.SpProg;
 import orac.util.SpItemDOM;
 import orac.util.SpItemUtilities;
+import orac.util.SpInputXML;
 
 import java.lang.reflect.*;
 import orac.util.*;
@@ -61,54 +62,59 @@ public class MsbClient extends SoapClient {
       try {
 	System.out.println(""+msbid);
 	
-	 URL url = new URL("http://www.jach.hawaii.edu/JAClocal/cgi-bin/msbsrv.pl");
-	 flushParameter();
-	 addParameter("key", Integer.class, msbid);
-	 //System.out.println(doCall(url, "urn:OMP::MSBServer", "fetchMSB"));
-
-	 FileWriter fw = new FileWriter(System.getProperty("msbFile"));
-	 String spXML = (String) doCall(url, "urn:OMP::MSBServer", "fetchMSB");
-
-	 if (spXML != null ) {
-	   
-	   //System.out.println("The msb says:\n "+ spXML);
-	   
-	   StringReader r = new StringReader(spXML);
-	   SpItemDOM dom = new SpItemDOM (r);
-	   spItem = dom.getSpItem();
-
-	   fw.write( (String)spXML );
-	   fw.close();
-	 } // end of if ()
-
-	 else 
-	   return spItem;
-	 
+	//URL url = new URL("http://www.jach.hawaii.edu/JAClocal/cgi-bin/msbsrv.pl");
+	URL url = new URL(System.getProperty("msbServer"));
+	flushParameter();
+	addParameter("key", Integer.class, msbid);
+	//System.out.println(doCall(url, "urn:OMP::MSBServer", "fetchMSB"));
+	
+	FileWriter fw = new FileWriter(System.getProperty("msbFile"));
+	String spXML = (String) doCall(url, "urn:OMP::MSBServer", "fetchMSB");
+	
+	if (spXML != null ) {
+	  
+	  //System.out.println("The msb says:\n "+ spXML);
+	  
+	  StringReader r = new StringReader(spXML);
+	  
+	  //SpItemDOM dom = new SpItemDOM (r);
+	  //spItem = dom.getSpItem();
+	  
+	  
+	  spItem = (SpItem)(new SpInputXML()).xmlToSpItem(r);
+	  
+	  fw.write( (String)spXML );
+	  fw.close();
+	} // end of if ()
+	
+	else 
+	  return spItem;
+	
       } catch (Exception e) {
 	e.printStackTrace();
 	return spItem;
       }
-
+      
       return spItem;
    }
 
   public static void doneMSB(String projID, String checksum) {
-      try {
+    try {
 	
-	 URL url = new URL("http://www.jach.hawaii.edu/JAClocal/cgi-bin/msbsrv.pl");
-	 flushParameter();
-	 addParameter("projID", String.class, projID);
-	 addParameter("checksum", String.class, checksum);
+      URL url = new URL(System.getProperty("msbServer"));
+      flushParameter();
+      addParameter("projID", String.class, projID);
+      addParameter("checksum", String.class, checksum);
 
-	 Object tmp = doCall(url, "urn:OMP::MSBServer", "doneMSB");
+      Object tmp = doCall(url, "urn:OMP::MSBServer", "doneMSB");
 
-	 if (tmp != null ) {
-	   // tmp has something with success
-	 }
-
-      } catch (Exception e) {
-	e.printStackTrace();
+      if (tmp != null ) {
+	// tmp has something with success
       }
-      return;
-   }
+
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return;
+  }
 }
