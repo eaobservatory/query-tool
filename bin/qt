@@ -7,6 +7,7 @@ cd `dirname $0`
 set JAVA		= /local/java/jdk/bin/java
 set baseOTConfigDir	= /jac_sw/orac3/OT/install/cfg
 set qtConfig	        = ../config/qtSystem.conf
+set LOGPATH             = ""
 
 set usage		= "Usage: $0 <telescope> [-h] [-options] \n\nwhere telescope is:\n\tukirt\t\tspecifies the UKIRT widget set\n\tjcmt\t\tspecifies the jcmt widget set\n\nand options include:\n\t-hilo <solaris_host>\t\tspecifies we are running in hilo and sets the solaris host\n\t-config <file>\tspecies the absolute path to the \042file\042 used for this session\n\t-scenario\tspecifies scenario mode (does not depend on drama)\n\n"
 
@@ -114,6 +115,11 @@ while ($#argv != 0)
 	echo Solaris host is ${solHost}
         shift
         breaksw
+      case -logdir
+        shift
+	set LOGPATH = $argv[1]
+	shift
+	breaksw
       case -scenario
         set scenario = 1
 	set solHost = ""
@@ -171,18 +177,26 @@ if !($?widgetFile) then
 endif
 
 #setenv LOGPATH "/ukirtdata/epics_data/qtLogs/"
-if (${telescope} == "Ukirt" ) then
-	setenv LOGPATH "/ukirtdata/epics_data/qtLogs/"
-else if (${telescope} == "Jcmt") then
-	setenv LOGPATH "/jcmtdata/epics_data/qtLogs/"
-else
-	setenv LOGPATH "/dev/null/"
+# if the user has specified a logdir, write the file into that
+# location.  Otherwise set up a default LOGPATH
+if ( ${LOGPATH} == "" ) then
+  if ( ${domain} ==  "JAC.ukirt" || ${domain} == "JAC.jmct" ) then
+    set LOGPATH = "/jac_logs"
+  else
+    set LOGPATH = "/home/${user}/qtLogs"
+    if (! -e ${LOGPATH} ) then
+      mkdir ${LOGPATH}
+    endif
+  endif
 endif
+
+set utdate = `date -u +%Y%m%d`
+set hstdate = `date +%Y%m%d-%H%M%S`
 
 #Make the log directory
 if (-dwx ${LOGPATH} ) then
-   setenv QT_LOG_DIR ${LOGPATH}`date +%Y%m%d-%H%M%S`
-   mkdir ${QT_LOG_DIR}
+   setenv QT_LOG_DIR "${LOGPATH}/${utdate}/OCSqt_${hstdate}"
+   mkdir -p ${QT_LOG_DIR}
    echo "This QT and (S)equence (M)anager session will be logged in ${QT_LOG_DIR}."
 else
    echo ${LOGPATH} does not exist - no log files will be written for this session. 
