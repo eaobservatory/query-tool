@@ -373,6 +373,17 @@ final public class ProgramTree extends JPanel implements
 
     obsList = new JList(model);
     obsList.setCellRenderer(new ObsListCellRenderer());
+    MouseListener ml = new MouseAdapter()
+	{
+	    public void mouseClicked(MouseEvent e)
+	    {
+		if (e.getClickCount() == 2)
+		    {
+			execute();
+		    }
+	    }
+	};
+    obsList.addMouseListener(ml);
 
     dragSource.createDefaultDragGestureRecognizer(obsList,
 						  DnDConstants.ACTION_MOVE,
