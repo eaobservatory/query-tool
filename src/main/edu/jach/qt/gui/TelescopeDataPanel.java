@@ -61,7 +61,7 @@ public class TelescopeDataPanel extends JPanel implements ActionListener {
     csoTauValue		= new JLabel(tauString, JLabel.LEADING);
     seeingValue		= new JLabel(tauString, JLabel.LEADING);
     airmassValue	= new JLabel(tauString, JLabel.LEADING);
-    updateButton	= new JButton("Set Current");
+    updateButton	= new JButton("Set Default");
     this.infoPanel      = panel;
     boolean locked=false;
 
@@ -313,7 +313,12 @@ public class TelescopeDataPanel extends JPanel implements ActionListener {
 	WidgetPanel widgetPanel = infoPanel.getFrame().getWidgets();
 	Component [] components = widgetPanel.getComponents();
 	for (int i=0; i<widgetPanel.getComponentCount(); i++ ) {
-	    if ( components[i] instanceof LabeledRangeTextField ) {
+	    System.out.println("Found component class "+ components[i].getClass().toString());
+	    System.out.println("Found component name "+ components[i].getName());
+	    if ( components[i] instanceof LabeledTextField ) {
+		((LabeledTextField)components[i]).setText("");
+	    }
+	    else if ( components[i] instanceof LabeledRangeTextField ) {
 		LabeledRangeTextField lrtf = (LabeledRangeTextField) components[i];
 		if ( components[i].getName().equalsIgnoreCase("airmass") ) {
 		    if (!TelescopeDataPanel.airmassValue.getText().equals(tauString)) {
@@ -335,13 +340,19 @@ public class TelescopeDataPanel extends JPanel implements ActionListener {
 			catch ( NumberFormatException nfe ) {
 			}
 		    }
+		    else {
+			lrtf.setLowerText("");
+			lrtf.setUpperText("");
+		    }
 		}
 		else if (  components[i].getName().equalsIgnoreCase("observation") ) {
 		    TimeUtils tu = new TimeUtils();
 		    lrtf.startTimer();
-// 		    lrtf.setLowerText("current");
-// 		    lrtf.setUpperText("current");
 		    infoPanel.getQuery().setExecutable(true);
+		}
+		else {
+		    ((LabeledRangeTextField)components[i]).setLowerText("");
+		    ((LabeledRangeTextField)components[i]).setUpperText("");
 		}
 	    }
 	}
