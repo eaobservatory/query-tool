@@ -157,13 +157,24 @@ while ($#argv != 0)
    endsw
 end
 
+set utdate = `date -u +%Y%m%d`
+set hstdate = `date +%Y%m%d-%H%M%S`
+set time = `date +%H%M%S`
+
 set domain = `domainname`
 if (`domainname` == "JAC.ukirt") then
    set solHost = "kiki"
+   set taskname = UKIRT_QT_${time}
 else if (`domainname` == "JAC.jcmt") then
    set solHost = "localhost"
+   set taskname = JCMT_QT_${time}
 else if (`domainname` == "JAC.Hilo") then
    set solHost = ${solHost}
+   if ( $(telescope) == "jcmt" ) then
+      set taskname="JCMT_QT"
+   else
+      set taskname="UKIRT_QT"
+   endif
    if (${solHost} == "UNDEF") then
       echo "\n\nIn Hilo you must specify -hilo <solaris_host> || -scenario"
       printf "${usage}"
@@ -180,11 +191,9 @@ endif
 # if the user has specified a logdir, write the file into that
 # location.  Otherwise set up a default LOGPATH
 
-set utdate = `date -u +%Y%m%d`
-set hstdate = `date +%Y%m%d-%H%M%S`
 
 if ( ${LOGPATH} == "" ) then
-  if ( ${domain} ==  "JAC.ukirt" || ${domain} == "JAC.jmct" ) then
+  if ( ${domain} ==  "JAC.ukirt" || ${domain} == "JAC.jcmt" ) then
     set LOGPATH = "/jac_logs/${utdate}/OCSqt_${hstdate}"
   else
     set LOGPATH = "/home/${user}/qtLogs"
@@ -244,7 +253,7 @@ setenv DTCL_DIR /jac_sw/drama/CurrentRelease/include/
 
 set CLASSPATH = ../lib/qt.jar:../lib/calpahtml.jar:../lib/xercesImpl.jar:../lib/xmlParserAPIs.jar:../lib/mail.jar:../lib/activation.jar:../lib/soap.jar:/jac_sw/orac3/OT/install/classes:/jac_sw/orac3/GEMINI/install/classes:/jac_sw/itsroot/install/ompSM/javlib/ompSM.jar:/jac_sw/orac3/ORAC/install/classes:/jac_sw/orac3/OMP/install/classes:/jac_sw/orac3/ODB/install/classes:../lib/jsky.jar:../lib/diva.jar:../lib/junit.jar:../icons:/local/java/jdk/lib/tools.jar:/jac_sw/itsroot/install/dcHub/javalib/dcHub.jar:/jac_sw/drama/CurrentRelease/javalib
 
-${JAVA} ${classic} ${xdebug} ${xnoagent} ${xrunjdwptrans} ${xbootclasspath} -Ddebug=${debug} -DDRAMA_ENABLED=${dramaEnabled} -DSIMULATE=${tosim} -DENGINEERING=${toeng} -DQUICKLOOK=${toql} -Dtelescope=${telescope} -DSOLARIS_HOST=${solHost} -DDOMAIN=`domainname` -DqtConfig=${qtConfig} -Dot.cfgdir=${instConfigDir}/ -Dot.resource.cfgdir=./ -DwidgetFile=${widgetFile} -DQT_LOG_DIR=${QT_LOG_DIR} -DDOMAIN=${domain} -DOMP -DDCHUB_TIMEOUT=${timeout} -cp ${CLASSPATH}:${instConfigDir} edu.jach.qt.app.QT
+${JAVA} ${classic} ${xdebug} ${xnoagent} ${xrunjdwptrans} ${xbootclasspath} -Ddebug=${debug} -DDRAMA_ENABLED=${dramaEnabled} -DSIMULATE=${tosim} -DENGINEERING=${toeng} -DQUICKLOOK=${toql} -Dtelescope=${telescope} -DSOLARIS_HOST=${solHost} -DDOMAIN=`domainname` -DqtConfig=${qtConfig} -Dot.cfgdir=${instConfigDir}/ -Dot.resource.cfgdir=./ -DwidgetFile=${widgetFile} -DQT_LOG_DIR=${QT_LOG_DIR} -DDOMAIN=${domain} -DOMP -DDCHUB_TIMEOUT=${timeout} -DTASKNAME=${taskname} -cp ${CLASSPATH}:${instConfigDir} edu.jach.qt.app.QT
 
 tidy: 
 onintr - 
