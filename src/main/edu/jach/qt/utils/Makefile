@@ -20,6 +20,7 @@ SOURCES = \
 	../gui/DragDropObject.java \
 	../gui/MsbNode.java \
 	DragTreeCellRenderer.java \
+	LockFile.java
 
 
 include $(BUILD)/make.tail
