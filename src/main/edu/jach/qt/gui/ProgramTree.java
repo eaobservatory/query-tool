@@ -272,6 +272,21 @@ final public class ProgramTree extends JPanel implements
 		if (failFile.exists()) {
 		    failed = true;
 		}
+		if (!isDeferred && !failed) {
+		    model.remove(obsList.getSelectedIndex());
+		}
+		else if (!failed) {
+		    DeferredProgramList.markThisObservationAsDone(item);
+		}
+	
+		if ( model.isEmpty() && TelescopeDataPanel.DRAMA_ENABLED) {
+		    MsbClient.doneMSB(projectID, checkSum);
+		    JOptionPane.showMessageDialog(null, "The MSB with \n"+
+						  "Project ID: "+projectID+"\n"+
+						  "CheckSum: "+checkSum+"\n"+
+						  "has been marked as done!");
+		} // end of if ()
+
 		run.setEnabled(true);
 	    }
 	    catch (Exception e) {
@@ -296,6 +311,15 @@ final public class ProgramTree extends JPanel implements
 		if (failFile.exists()) {
 		    failed = true;
 		}
+		if (!isDeferred && !failed) {
+		    model.clear();
+		    _spItem = null;
+		    selectedItem = null;
+		}
+		else if (!failed) {
+		    DeferredProgramList.markThisObservationAsDone(item);
+		}
+	
 		run.setEnabled(true);
 	    }
 	    catch (Exception e) {
@@ -304,20 +328,6 @@ final public class ProgramTree extends JPanel implements
 		return;
 	    }
 	}
-	if (!isDeferred && !failed) {
-	    model.remove(obsList.getSelectedIndex());
-	}
-	else if (!failed) {
-	    DeferredProgramList.markThisObservationAsDone(item);
-	}
-	
-	if ( model.isEmpty() && TelescopeDataPanel.DRAMA_ENABLED) {
-	    MsbClient.doneMSB(projectID, checkSum);
-	    JOptionPane.showMessageDialog(null, "The MSB with \n"+
-					  "Project ID: "+projectID+"\n"+
-					  "CheckSum: "+checkSum+"\n"+
-					  "has been marked as done!");
-	} // end of if ()
     }
   
   /**
