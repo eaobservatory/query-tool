@@ -205,8 +205,8 @@ public class QtTools {
 	tel = "/jcmtdata";
       } 
       
-      //FileWriter fw = new FileWriter(tel+"/epics_data/smLogs/transFile");
-      FileWriter fw = new FileWriter("/home/dewitt/sequences/transFile");
+      FileWriter fw = new FileWriter(tel+"/epics_data/smLogs/transFile");
+      //FileWriter fw = new FileWriter("/home/dewitt/sequences/transFile");
 
       tname=spt.translate();
       logger.debug("Translated file set to: "+System.getProperty("EXEC_PATH")+"/"+tname);
@@ -218,7 +218,7 @@ public class QtTools {
 		   System.getProperty("EXEC_PATH")+"/"+tname);
       
     } catch (NullPointerException e) {
-      logger.fatal("Translation failed!, exception was "+e);
+      logger.fatal("Translation failed!, exception was "+e, e);
     } catch ( IOException ioe) {
       logger.fatal("Writting translated file name to transFile failed ", ioe);
     } catch (Exception e) {
