@@ -3,12 +3,14 @@ package edu.jach.qt.gui;
 import java.awt.*;
 import java.awt.event.*;
 import java.text.*;
+import java.util.*;
 import javax.swing.*;
 import javax.swing.border.*;
 import javax.swing.event.*;
 import ocs.utils.*;
 import org.apache.log4j.Logger;
 import edu.jach.qt.utils.LockFile;
+import edu.jach.qt.utils.*;
 
 
 /**
@@ -189,6 +191,41 @@ public class TelescopeDataPanel extends JPanel implements ActionListener {
 	}
     //WidgetPanel.getAtmospherePanel().setSeeing(TelescopeDataPanel.seeingValue.getText());
     //WidgetPanel.getAtmospherePanel().setAirmass(TelescopeDataPanel.airmassValue.getText());
+
+
+      SimpleMoon moon = new SimpleMoon();
+      boolean dark = false;
+      boolean grey = false;
+      boolean bright = false;
+	
+      if (moon.isUp() == false ) {
+	  dark = true;
+      }
+      else if (moon.getIllumination() < 0.25) {
+	  grey = true;
+      }
+      else {
+	  bright = true;
+      }
+      RadioPanel moonPanel = WidgetPanel.getMoonPanel();
+      ListIterator iter = moonPanel.radioElems.listIterator(0);
+      while (iter.hasNext()) {
+	  JToggleButton abstractButton = (JRadioButton)iter.next();
+	  if (abstractButton.getText().equalsIgnoreCase("dark") && dark == true) {
+	      abstractButton.setSelected(true);
+	      abstractButton.doClick();
+	  }
+	  else if (abstractButton.getText().equalsIgnoreCase("Grey") && grey == true) {
+	      abstractButton.setSelected(true);
+	      abstractButton.doClick();
+	  }
+	  else if (abstractButton.getText().equalsIgnoreCase("Bright") && bright == true) {
+	      abstractButton.setSelected(true);
+	      abstractButton.doClick();
+	  }
+	  //WidgetPanel.getAtmospherePanel().setSeeing(TelescopeDataPanel.seeingValue.getText());
+	  //WidgetPanel.getAtmospherePanel().setAirmass(TelescopeDataPanel.airmassValue.getText());
+      }
   }
    
 }
