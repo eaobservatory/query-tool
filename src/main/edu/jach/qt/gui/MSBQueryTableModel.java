@@ -31,24 +31,30 @@ public class MSBQueryTableModel extends AbstractTableModel {
    public static final String MSB_SUMMARY = System.getProperty("msbSummary");
 
    public static final String[] colNames ={
-      "projectid",
-      "checksum",
-      "remaining",
-      "filename"
+      "ProjectID",
+      "SourceName",
+      "Instrument",
+      "Wavelength",
+      "ExposureTime",
+      "PI"
    };
    
    public static final Class[] colClasses ={
       String.class,
       String.class,
+      String.class,
+      Integer.class,
       Integer.class,
       String.class,
    };
 
    public static final int 
       PROJECTID          = 0,
-      CHECKSUM           = 1,
-      REMAINING          = 2,
-      FILENAME           = 3;
+      SOURCENAME           = 1,
+      INSTRUMENT          = 2,
+      WAVELENGTH           = 3,
+      EXPOSURETIME        =4,
+      PI                  =5;
 
    //DATA
    //DOM object to hold XML document contents

@@ -57,7 +57,7 @@ public class RadioPanel extends WidgetPanel
 
    private void config() {
       iterator = myElems.listIterator(0);
-
+      setOpaque(false);
       setBorder(BorderFactory.createTitledBorder
 		(BorderFactory.createEtchedBorder(), myTitle,
 		 TitledBorder.CENTER, TitledBorder.DEFAULT_POSITION));
@@ -66,6 +66,9 @@ public class RadioPanel extends WidgetPanel
 	 next = (String)iterator.next();
 	 rb = new JRadioButton(next);
 	 rb.addActionListener(this);
+	 //rb.setBackground(java.awt.Color.gray);
+	 //rb.setForeground(java.awt.Color.green);
+	 
 	 add(rb);
 	 rb.setAlignmentX(rb.CENTER_ALIGNMENT);
 	 group.add(rb);

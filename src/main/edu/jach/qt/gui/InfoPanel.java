@@ -26,7 +26,8 @@ public class InfoPanel extends JPanel
 
    //reconsider icons dir 'An absolute path!'
    private static final String LOGO_IMAGE
-      = "/home/mrippa/netroot/install/omp/QT/icons/omp_logo1.gif";
+      //= "/home/mrippa/ompLogos/ompNewlogo2.png";
+      = "/home/mrippa/netroot/install/omp/QT/icons/QtLogo.png";
 
    private MSBQueryTableModel msb_qtm;
    private TimePanel timePanel ;
@@ -36,8 +37,8 @@ public class InfoPanel extends JPanel
    JButton searchButton = new JButton();
    JButton xmlPrintButton = new JButton();
    JButton exitButton = new JButton();
-   ImagePanel imagePanel;
-
+   //ImagePanel imagePanel;
+   JLabel logoImage;
 
    /**
     * Creates a new <code>InfoPanel</code> instance.
@@ -49,17 +50,22 @@ public class InfoPanel extends JPanel
       msb_qtm = msbQTM;
       localQuerytool = qt;
       //setSize(new Dimension(300, 550));
-      setBackground(Color.gray);
-      MatteBorder matte = new MatteBorder(2,2,2,2,Color.black);
+      setMinimumSize(new Dimension(175, 550));
+      setPreferredSize(new Dimension(288, 550));
+
+      logoImage = new JLabel();
+      setBackground(Color.black);
+      MatteBorder matte = new MatteBorder(4,4,4,4,Color.green);
       setBorder(matte);
       GridBagLayout gbl = new GridBagLayout();
       setLayout(gbl);
 
       try {
+	 setImage();
 	 /* Set the OMP logo*/
-	 Image image1 = setLogo();
-	 imagePanel = new ImagePanel(image1);
-      } catch(FileNotFoundException fnfe) {
+	 //Image image1 = setLogo();
+	 //imagePanel = new ImagePanel(image1);
+      } catch(Exception fnfe) {
 	 System.out.println("ERROR: "+fnfe.getMessage());
       }
       compInit();
@@ -74,6 +80,16 @@ public class InfoPanel extends JPanel
       return theImage;
    }
 
+   public void setImage() throws Exception {
+      URL url = new URL("file://"+LOGO_IMAGE);
+      if(url != null) {
+	 logoImage.setIcon(new ImageIcon(url));
+      }
+      else {
+	 logoImage.setIcon(new ImageIcon(InfoPanel.class.getResource("file://"+LOGO_IMAGE)));
+      }
+   }
+
    /**
     * Describe <code>compInit</code> method here.
     *
@@ -81,9 +97,13 @@ public class InfoPanel extends JPanel
    public void compInit() {
       GridBagConstraints gbc = new GridBagConstraints();
       timePanel = new TimePanel();
+
+      TelescopeDataPanel telescopeInfoPanel = new TelescopeDataPanel();
+      telescopeInfoPanel.config();
       
       searchButton.setText("Search");
       searchButton.setName("Search");
+      searchButton.setBackground(java.awt.Color.gray);
       searchButton.addActionListener(new ActionListener() {
 	    public void actionPerformed(ActionEvent e) {
 	       localQuerytool.queryMSB();
@@ -92,21 +112,23 @@ public class InfoPanel extends JPanel
 	 } );
       xmlPrintButton.setText("Execute");
       xmlPrintButton.setName("Execute");
+      xmlPrintButton.setBackground(java.awt.Color.gray);
       xmlPrintButton.addActionListener(this);
 
       exitButton.setText("Exit");
       exitButton.setName("Exit");
+      exitButton.setBackground(java.awt.Color.gray);
       exitButton.addActionListener(this);
 
 
       gbc.fill = GridBagConstraints.BOTH;
-      //gbc.anchor = GridBagConstraints.CENTER;
+      gbc.anchor = GridBagConstraints.EAST;
       gbc.insets.bottom = 5;
-      gbc.insets.left = 5;
+      gbc.insets.left = 10;
       gbc.insets.right = 5;
       gbc.weightx = 100;
       gbc.weighty = 100;
-      add(imagePanel, gbc, 0, 0, 1, 1);
+      add(logoImage, gbc, 0, 0, 1, 1);
 
       gbc.fill = GridBagConstraints.NONE;
       gbc.anchor = GridBagConstraints.CENTER;
@@ -130,20 +152,26 @@ public class InfoPanel extends JPanel
       add(exitButton, gbc, 0, 3, 1, 1);
 
       gbc.fill = GridBagConstraints.BOTH;
+      gbc.anchor = GridBagConstraints.CENTER;
+      gbc.weightx = 100;
+      gbc.weighty = 100;
+      add(telescopeInfoPanel, gbc, 0, 4, 1, 1);
+
+      gbc.fill = GridBagConstraints.BOTH;
       gbc.weightx = 100;
       gbc.weighty = 0;
       hstLabel.setForeground(Color.black);
       hstLabel.setHorizontalAlignment(SwingConstants.CENTER);
       gbc.insets.bottom = 0;
       gbc.insets.top = 0;
-      add(hstLabel, gbc, 0, 4, 1, 1);
+      add(hstLabel, gbc, 0, 5, 1, 1);
 
       gbc.fill = GridBagConstraints.BOTH;
       gbc.weightx = 100;
       gbc.weighty = 0;
       gbc.insets.left = 0;
       gbc.insets.right = 0;
-      add(timePanel, gbc, 0, 5, 1, 1);
+      add(timePanel, gbc, 0, 6, 1, 1);
 
 
    }
@@ -207,9 +235,6 @@ class ImagePanel extends JPanel {
 
     public void paintComponent(Graphics g) {
         super.paintComponent(g); //paint background
-
-        //Draw image at its natural size first.
-        //g.drawImage(image, 0, 0, this); //85x62 image
 
         //Now draw the image scaled.
         g.drawImage(image, 0, 0, this);

@@ -38,6 +38,8 @@ public class ButtonPanel extends WidgetPanel  {
       super(ht, wdb);
       myTitle = title;
       iterator = options.listIterator(0);
+      //setBackground(java.awt.Color.gray);
+
       setBorder(BorderFactory.createTitledBorder
 		(BorderFactory.createEtchedBorder(), myTitle,
 		 TitledBorder.CENTER, TitledBorder.DEFAULT_POSITION));
@@ -48,6 +50,8 @@ public class ButtonPanel extends WidgetPanel  {
 	    next = (String)iterator.next();
 	    JCheckBox cb = new JCheckBox(next);
 	    cb.addActionListener(this);
+	    //cb.setBackground(java.awt.Color.gray);
+
 	    add(cb);
 	    buttonList.add(cb);
       }

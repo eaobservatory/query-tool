@@ -42,8 +42,11 @@ public class LabeledTextField extends WidgetPanel
    }
 	
    private void setup() {
+      //setBackground(java.awt.Color.gray);
       name = label.getText().trim();
-
+      textField.setHorizontalAlignment(JTextField.LEFT);
+      label.setForeground(Color.black);
+      
       this.setLayout(new GridLayout(1,2));
       add(label);
 

@@ -51,6 +51,8 @@ public class WidgetPanel extends JPanel
    public WidgetPanel(Hashtable ht, WidgetDataBag wdb) {
       abbrevTable = ht;
       widgetBag = wdb;
+      
+      //setBackground(java.awt.Color.gray);
    }
 
    /**
@@ -86,9 +88,9 @@ public class WidgetPanel extends JPanel
 	    //next = tr.readLine();
 	    tr.readLine();
 	    gbc.fill = GridBagConstraints.HORIZONTAL;
-	    gbc.anchor = GridBagConstraints.NORTH;
+	    gbc.anchor = GridBagConstraints.WEST;
 	    gbc.weightx = 100;
-	    gbc.weighty = 100;
+	    gbc.weighty = 0;
 	    gbc.insets.top = 10;
 	    gbc.insets.bottom = 5;
 	    gbc.insets.left = 10;
@@ -96,7 +98,7 @@ public class WidgetPanel extends JPanel
 	    addTextFields("Labeled", gbc);
 	 }
 
-	 else if (widget.equals("JRangeField")) {
+	 else if (widget.equals("JMinMaxField")) {
 	    tr.readLine();
 	    gbc.fill = GridBagConstraints.HORIZONTAL;
 	    gbc.anchor = GridBagConstraints.NORTH;
@@ -106,13 +108,26 @@ public class WidgetPanel extends JPanel
 	    gbc.insets.bottom = 5;
 	    gbc.insets.left = 10;
 	    gbc.insets.right = 5;
+	    addTextFields("MinMax", gbc);
+	 }
+
+	 else if (widget.equals("JRangeField")) {
+	    tr.readLine();
+	    gbc.fill = GridBagConstraints.HORIZONTAL;
+	    gbc.anchor = GridBagConstraints.NORTH;
+	    gbc.weightx = 100;
+	    gbc.weighty = 0;
+	    gbc.insets.top = 9;
+	    gbc.insets.bottom = 5;
+	    gbc.insets.left = 10;
+	    gbc.insets.right = 15;
 	    addTextFields("Range", gbc);
 	 }
 
 	 //JCheckBox
 	 else if (widget.equals("JCheckBox")) {
-	    gbc.fill = GridBagConstraints.NONE;
-	    gbc.anchor = GridBagConstraints.CENTER;
+	    gbc.fill = GridBagConstraints.HORIZONTAL;
+	    gbc.anchor = GridBagConstraints.WEST;
 	    gbc.weightx = 100;
 	    gbc.weighty = 0;
 	    int num =0;
@@ -122,7 +137,9 @@ public class WidgetPanel extends JPanel
 	       if (next.equals("[EndSection]"))
 		  break;
 	       cb[num] = new JCheckBox(next);
-	       cb[num].setHorizontalAlignment(SwingConstants.LEFT);
+	       cb[num].setHorizontalAlignment(SwingConstants.CENTER);
+	       //cb[num].setBackground(java.awt.Color.gray);
+
 
 	       cb[num].addActionListener(this);
        	       add(cb[num], gbc, 1, radioList.size()+1+num, 1, 1);
@@ -187,8 +204,12 @@ public class WidgetPanel extends JPanel
 		gbc, 0, numComponents, 1, 1);
 	    //widgetBag.put(tmp, "");
 	 }
-	 else if(type.equals("Range")) {
+	 else if(type.equals("MinMax")) {
 	    add(new LabeledMinMaxTextField(abbrevTable, widgetBag, next),
+		gbc, 0, numComponents, 1, 1);
+	 }
+	 else if(type.equals("Range")) {
+	    add(new LabeledRangeTextField(abbrevTable, widgetBag, next),
 		gbc, 0, numComponents, 1, 1);
 	 }
       }while (true);

@@ -34,11 +34,13 @@ public class LabeledMinMaxTextField extends LabeledTextField {
    }
 
    private void setup() {
+      //setBackground(java.awt.Color.gray);
       this.setLayout(new GridLayout (1,3));
       add(label);
 
       rangeList.addItem("Max");
       rangeList.addItem("Min");
+      //rangeList.setBackground(java.awt.Color.gray);
       rangeList.setSelectedIndex(0);
       rangeList.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
