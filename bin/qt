@@ -199,11 +199,11 @@ else
       setenv IMP_SCRATCH /tmp
       echo "IMP_SCRATCH set to ${IMP_SCRATCH}"
    else
-      if (${IMP_SCRATCH} != "/tmp") then
-         echo "***ERROR: IMP_SCRATCH is set to: ${IMP_SCRATCH} "
-         echo "\tIt should be set to /tmp. Fix this and try again."
-	 exit 1
-      endif
+	 if (${IMP_SCRATCH} != "/tmp") then
+      echo "IMP_SCRATCH NOT SET TO /tmp"
+      echo "Hope you know what you are doing!!"
+      echo "This will probably only work for software testing"
+	endif
    endif
 
    # We want ample IMP_transmitter buffer space
