@@ -40,7 +40,7 @@ final public class DeferredProgramList extends JPanel implements
 {
     private DropTarget                  dropTarget=null;
     private DragSource                  dragSource=null;
-    private static JList			obsList;
+    private static JList		obsList;
     private GridBagConstraints		gbc;
     private String                      deferredFileName;
     private JScrollPane			scrollPane = new JScrollPane();
@@ -139,6 +139,11 @@ final public class DeferredProgramList extends JPanel implements
 	}
     }
 
+    public static void clearSelection() {
+	obsList.clearSelection();
+	currentItem = null;
+    }
+
     public void displayList()
     {
 	obsList = new JList (model);
@@ -163,6 +168,7 @@ final public class DeferredProgramList extends JPanel implements
 			if (currentItem != obsList.getSelectedValue() ) {
 			    // Select the new item
 			    currentItem = (SpItem) obsList.getSelectedValue();
+			    ProgramTree.clearSelection();
 			}
 			else {
 			    obsList.clearSelection();
