@@ -33,8 +33,8 @@ public class ExecuteUKIRT extends Execute implements Runnable {
 
     public void run () {
 	System.out.println("Starting execution...");
-	File success = new File ("/jcmtdata/orac_data/deferred/.success");
-	File failure = new File ("/jcmtdata/orac_data/deferred/.failure");
+	File success = new File ("/ukirtdata/orac_data/deferred/.success");
+	File failure = new File ("/ukirtdata/orac_data/deferred/.failure");
 	success.delete();
 	failure.delete();
 	try {
@@ -101,6 +101,7 @@ public class ExecuteUKIRT extends Execute implements Runnable {
 	    console = (SequenceConsole)consoleList.elementAt(i);
 	    
 	    if(inst.type().getReadable().equals(console.getInstrument())) {
+		logger.info("TNAME IS: "+tname);
 		console.resetObs(itemToExecute.getTitle(), tname);
 		failure.delete();
 		return;
@@ -129,12 +130,12 @@ public class ExecuteUKIRT extends Execute implements Runnable {
 
 	if ( System.getProperty("os.name").equals("SunOS") && TelescopeDataPanel.DRAMA_ENABLED) {
 	    QtTools.loadDramaTasks(inst.type().getReadable());
-	    DcHub.getHandle().register("OOS_LIST");
+	    //DcHub.getHandle().register("OOS_LIST");
 	}
 	
 	//DcHub.getHandle().register("OOS_LIST");
 	
-	scm.showSequenceFrame();
+	//scm.showSequenceFrame();
 	failure.delete();
     }
 }
