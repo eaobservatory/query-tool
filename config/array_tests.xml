@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<SpProg>
+  <ItemData name="new" package="gemini.sp" subtype="none" type="pr"/>
+  <title>Array tests</title>
+  <MetaData>
+    <gui>
+      <collapsed>false</collapsed>
+      <filename>array_tests.xml</filename>
+    </gui>
+  </MetaData>
+  <country>Greece</country>
+  <projectID>42</projectID>
+  <pi>Frossie</pi>
+  <SpMSB remaining="1">
+    <ItemData name="new" package="gemini.sp" subtype="msb" type="og"/>
+    <SpSiteQualityObsCompRef idref="0"/>
+    <MetaData>
+      <gui>
+        <collapsed>false</collapsed>
+      </gui>
+    </MetaData>
+    <priority>Low</priority>
+    <SpTelescopeObsCompRef idref="0"/>
+    <SpSiteQualityObsComp id="0">
+      <ItemData name="new" package="gemini.sp.obsComp"
+        subtype="schedInfo" type="oc"/>
+      <seeing>1</seeing>
+      <MetaData>
+        <unique>true</unique>
+        <gui>
+          <collapsed>false</collapsed>
+        </gui>
+      </MetaData>
+      <tauBand>1</tauBand>
+    </SpSiteQualityObsComp>
+    <SpTelescopeObsComp id="0">
+      <ItemData name="new" package="gemini.sp.obsComp"
+        subtype="targetList" type="oc"/>
+      <base>
+        <target type="science">
+          <targetName>[VV96] J235959.3-000203</targetName>
+          <hmsdegSystem type="J2000">
+            <c1>23:59:59.4</c1>
+            <c2>-00:02:02</c2>
+          </hmsdegSystem>
+        </target>
+      </base>
+      <MetaData>
+        <unique>true</unique>
+        <gui>
+          <collapsed>false</collapsed>
+          <selectedTelescopePos>Base</selectedTelescopePos>
+        </gui>
+      </MetaData>
+      <base>
+        <target type="guide">
+          <targetName/>
+          <hmsdegSystem type="J2000">
+            <c1>23:59:59.4</c1>
+            <c2>-0:02:02.0</c2>
+          </hmsdegSystem>
+        </target>
+      </base>
+    </SpTelescopeObsComp>
+    <SpObs msb="false" optional="false" remaining="1">
+      <ItemData name="new" package="gemini.sp" subtype="none" type="ob"/>
+      <SpSiteQualityObsCompRef idref="0"/>
+      <chainedToNext>false</chainedToNext>
+      <SpInstUFTIRef idref="2"/>
+      <SpDRRecipeRef idref="3"/>
+      <chainedToPrev>false</chainedToPrev>
+      <title>ufti_array_tests</title>
+      <MetaData>
+        <gui>
+          <collapsed>false</collapsed>
+        </gui>
+      </MetaData>
+      <standard>false</standard>
+      <SpNote>
+        <ItemData name="new" package="gemini.sp" subtype="none" type="no"/>
+        <MetaData>
+          <gui>
+            <collapsed>false</collapsed>
+          </gui>
+        </MetaData>
+        <note>The UFTI configuration to use the blank filter in the
+          component below</note>
+      </SpNote>
+      <SpInstUFTI id="2">
+        <ItemData name="new" package="orac.ukirt.inst"
+          subtype="inst.UFTI" type="oc"/>
+        <posAngle>0.0</posAngle>
+        <instPort>East</instPort>
+        <MetaData>
+          <version>1.0</version>
+          <unique>true</unique>
+          <gui>
+            <collapsed>false</collapsed>
+          </gui>
+        </MetaData>
+        <readoutArea>1024x1024</readoutArea>
+        <coadds>2</coadds>
+        <sourceMag>none</sourceMag>
+        <instAper>
+          <value>8.13</value>
+          <value>-0.23</value>
+          <value>0.0</value>
+          <value>2.222</value>
+        </instAper>
+        <polariser>none</polariser>
+        <filter>Blank</filter>
+        <exposureTime>60.0</exposureTime>
+        <acqMode>Normal+NDSTARE</acqMode>
+      </SpInstUFTI>
+      <SpNote>
+        <ItemData name="new" package="gemini.sp" subtype="none" type="no"/>
+        <MetaData>
+          <gui>
+            <collapsed>false</collapsed>
+          </gui>
+        </MetaData>
+        <note>Use the ARRAY_TESTS data-reduction recipe.</note>
+      </SpNote>
+      <SpDRRecipe id="3">
+        <ItemData name="new" package="orac.ukirt.inst"
+          subtype="DRRecipe" type="oc"/>
+        <DarkInGroup>true</DarkInGroup>
+        <ArcInGroup>false</ArcInGroup>
+        <SkyRecipe>ARRAY_TESTS</SkyRecipe>
+        <ObjectRecipe>ARRAY_TESTS</ObjectRecipe>
+        <FlatRecipe>REDUCE_FLAT</FlatRecipe>
+        <BiasRecipe>REDUCE_BIAS</BiasRecipe>
+        <MetaData>
+          <unique>true</unique>
+          <gui>
+            <collapsed>false</collapsed>
+          </gui>
+        </MetaData>
+        <DRRecipe>ARRAY_TESTS</DRRecipe>
+        <DarkRecipe>ARRAY_TESTS</DarkRecipe>
+        <SkyInGroup>false</SkyInGroup>
+        <ObjectInGroup>false</ObjectInGroup>
+        <ArcRecipe>REDUCE_ARC</ArcRecipe>
+        <BiasInGroup>false</BiasInGroup>
+        <FlatInGroup>false</FlatInGroup>
+        <title>ARRAY_TESTS</title>
+      </SpDRRecipe>
+      <SpIterFolder>
+        <ItemData name="new" package="gemini.sp.iter" subtype="none" type="if"/>
+        <MetaData>
+          <gui>
+            <collapsed>false</collapsed>
+          </gui>
+        </MetaData>
+        <SpNote>
+          <ItemData name="new" package="gemini.sp" subtype="none" type="no"/>
+          <MetaData>
+            <gui>
+              <collapsed>false</collapsed>
+            </gui>
+          </MetaData>
+          <note>Take three 5-second darks, so that the first one can be
+            thrown away</note>
+        </SpNote>
+        <SpIterDarkObs>
+          <ItemData name="new" package="orac.ukirt.iter"
+            subtype="darkObs" type="ic"/>
+          <coadds>1</coadds>
+          <exposureTime>5.0</exposureTime>
+          <MetaData>
+            <gui>
+              <collapsed>false</collapsed>
+            </gui>
+          </MetaData>
+          <repeatCount>3</repeatCount>
+        </SpIterDarkObs>
+        <SpNote>
+          <ItemData name="new" package="gemini.sp" subtype="none" type="no"/>
+          <MetaData>
+            <gui>
+              <collapsed>false</collapsed>
+            </gui>
+          </MetaData>
+          <note>Now do a 60-second dark - using the dark observe
+            iterator           below to change the exposure time. </note>
+          <title>now do a long dark</title>
+        </SpNote>
+        <SpIterDarkObs>
+          <ItemData name="new" package="orac.ukirt.iter"
+            subtype="darkObs" type="ic"/>
+          <coadds>1</coadds>
+          <exposureTime>60.0</exposureTime>
+          <MetaData>
+            <gui>
+              <collapsed>false</collapsed>
+            </gui>
+          </MetaData>
+          <repeatCount>1</repeatCount>
+        </SpIterDarkObs>
+        <SpIterObserve>
+          <ItemData name="new" package="gemini.sp.iter"
+            subtype="observe" type="ic"/>
+          <repeatCount>1</repeatCount>
+          <MetaData>
+            <gui>
+              <collapsed>false</collapsed>
+            </gui>
+          </MetaData>
+        </SpIterObserve>
+      </SpIterFolder>
+    </SpObs>
+  </SpMSB>
+</SpProg>
