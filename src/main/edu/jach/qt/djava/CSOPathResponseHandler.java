@@ -42,7 +42,7 @@ public class CSOPathResponseHandler extends DramaPath.ResponseHandler {
     String[] params = new String[] {"CSOSRC", "CSOTAU"};
     
     // Start the monitor operation.
-    DramaMonitor Monitor = new DramaMonitor(path, new QT_MonResponse(cr), false, params);
+    DramaMonitor Monitor = new DramaMonitor(path, new QT_MonResponse(cr), true, params);
 
     // We have sent a new message, so return true.
     return true;
@@ -69,6 +69,9 @@ public class CSOPathResponseHandler extends DramaPath.ResponseHandler {
 
 /*
  * $Log$
+ * Revision 1.10  2003/02/27 23:24:53  dewitt
+ * Made sure that CSO values are u[pdated immediately on startup.
+ *
  * Revision 1.9  2003/02/20 01:59:30  dewitt
  * Added monitoring of CSOSRC from CSOMON
  *
