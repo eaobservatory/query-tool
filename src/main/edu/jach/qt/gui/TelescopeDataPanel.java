@@ -103,7 +103,6 @@ public class TelescopeDataPanel extends JPanel implements ActionListener {
 	  System.exit(0);
       }
       else {
-	  hub.closeDcHub();
 	  DRAMA_ENABLED = false;
       }
     }
