@@ -272,8 +272,9 @@ public class TelescopeDataPanel extends JPanel implements ActionListener {
 		}
 		else if (  components[i].getName().equalsIgnoreCase("observation") ) {
 		    TimeUtils tu = new TimeUtils();
-		    lrtf.setLowerText("current");
-		    lrtf.setUpperText("current");
+		    lrtf.startTimer();
+// 		    lrtf.setLowerText("current");
+// 		    lrtf.setUpperText("current");
 		    infoPanel.getQuery().setExecutable(true);
 		}
 	    }
