@@ -17,6 +17,7 @@ SOURCES = \
 	SpClient.java \
 	TextReader.java \
 	Translating.java \
+	../gui/XmlUtils.java \
 	../gui/DragDropObject.java \
 	../gui/MsbNode.java \
 	DragTreeCellRenderer.java \
