@@ -44,7 +44,7 @@ public class GuiTest extends JFCTestCase{
       windows = helper.getWindows();
 
       try {
-	 mainWindow = helper.getWindow("QT QUERY-TOOL");
+	 mainWindow = helper.getWindow("OMP Query Tool Observation Manager");
 	 assertNotNull("Main window NULL!", mainWindow);
 
 	 InfoPanel infoPanel = (InfoPanel)JFCTestHelper.findComponent(InfoPanel.class, mainWindow, 0);
