@@ -4,12 +4,13 @@ import java.awt.*;
 import java.awt.event.*;
 import java.text.*;
 import java.util.*;
+import java.io.*;
 import javax.swing.*;
 import javax.swing.border.*;
 import javax.swing.event.*;
 import ocs.utils.*;
 import org.apache.log4j.Logger;
-import edu.jach.qt.utils.LockFile;
+//import edu.jach.qt.utils.LockFile;
 import edu.jach.qt.utils.*;
 
 
@@ -53,19 +54,18 @@ public class TelescopeDataPanel extends JPanel implements ActionListener {
      * tell the user who owns the lock and try to start up in scenario mode.
      * If we are already in scenario mode - don't bother
      */
-    if (DRAMA_ENABLED) {
-	if (LockFile.exists()) {
-	    if (! (LockFile.owner().equals(System.getProperty("user.name")))) {
-		// The current lock belongs to someone else
-		String message = "QT locked by user "+LockFile.owner();
-		JOptionPane.showMessageDialog(null, "Starting is scenario mode", message, JOptionPane.WARNING_MESSAGE);
-		TelescopeDataPanel.DRAMA_ENABLED = false;
-		locked = true;
-	    }
-	}
-	else {
-	    LockFile.createLock();
-	}
+
+    String lockFileName = File.separator +
+	File.separator +
+	System.getProperty("telescope") +
+	"data" +
+	File.separator +
+	System.getProperty("deferredDir")+
+	File.separator +
+	".lock";
+    File lockFile = new File (lockFileName.toLowerCase());
+    if (lockFile.exists()) {
+	locked = true;
     }
 
     if (TelescopeDataPanel.DRAMA_ENABLED) {
@@ -73,8 +73,22 @@ public class TelescopeDataPanel extends JPanel implements ActionListener {
       hub.register("CSOMON");
       //hub.register("TELMON");
     }
+    else if (locked) {
+      Object[] options = { "CONTINUE", "CANCEL" };
+      int n = JOptionPane.
+	showOptionDialog(null, 
+			 " QT IS LOCKED!.\n\n"+
+			 "Continue will allow you to run the QT in Senario Mode.\n"+
+			 "Cancel will shutdown the QT\n" +
+			 "To run in live, cancel and remove the file "+lockFileName.toLowerCase(), 
+			 "Warning", 
+			 JOptionPane.OK_CANCEL_OPTION, 
+			 JOptionPane.WARNING_MESSAGE, null, options, options[0]);
 
-    else if (!locked) {
+      if( (n == JOptionPane.NO_OPTION) || (n == JOptionPane.CLOSED_OPTION))
+	System.exit(0);
+    }
+    else  {
       Object[] options = { "CONTINUE", "CANCEL" };
       int n = JOptionPane.
 	showOptionDialog(null, 
