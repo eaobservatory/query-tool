@@ -1312,7 +1312,10 @@ final public class ProgramTree extends JPanel implements
 	    }
 
 	    if (failFile.exists()) {
-		logger.info("Execution failed");
+		logger.info("Execution failed, Check log messages");
+		new PopUp ("JCMT Execution Gailed",
+			   "Failed to send project for execution; check log entries",
+			   JOptionPane.ERROR_MESSAGE).start();
 		failed = true;
 	    }
 	    if (!_isDeferred && !failed) {
@@ -1348,5 +1351,26 @@ final public class ProgramTree extends JPanel implements
 	    setExecutable (true);
 	    logger.debug ( "Enabling run button since the ExecuteJCMT task has completed" );
 	}
+
+	public class PopUp extends Thread{
+	    String _message;
+	    String _title;
+	    int    _errLevel;
+	    
+	    public PopUp (String title, String message, int errorLevel) {
+		_message=message;
+		_title = title;
+		_errLevel=errorLevel;
+	    }
+
+	    public void run() {
+		JOptionPane.showMessageDialog(null,
+					      _message,
+					      _title,
+					      _errLevel);
+	    }
+	}
+	    
     }
+
 }

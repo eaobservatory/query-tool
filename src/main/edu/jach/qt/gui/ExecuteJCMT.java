@@ -149,9 +149,9 @@ public class ExecuteJCMT extends Execute {
 	    logger.debug("Error from translator: "+new String(errorMessage).trim());
 	    if (rtn != 0) {
 		logger.error("Returning with non-zero error status following translation");
-		new PopUp("Translation Error",
-			  new String(errorMessage).trim(),
-			  JOptionPane.ERROR_MESSAGE).start();
+// 		new PopUp("Translation Error",
+// 			  new String(errorMessage).trim(),
+// 			  JOptionPane.ERROR_MESSAGE).start();
 		success.delete();
 		isRunning = false;
 		return true;
@@ -201,9 +201,9 @@ public class ExecuteJCMT extends Execute {
 		    logger.debug("Error from LoadSCUQUEUE: "+new String(errorMessage).trim());
 		    if (rtn != 0) {
 			logger.error("Error loading queue");
-			new PopUp ("Load Error",
-				   new String(errorMessage).trim(),
-				   JOptionPane.ERROR_MESSAGE).start();
+// 			new PopUp ("Load Error",
+// 				   new String(errorMessage).trim(),
+// 				   JOptionPane.ERROR_MESSAGE).start();
 			success.delete();
 			isRunning = false;
 			return true;
@@ -212,9 +212,9 @@ public class ExecuteJCMT extends Execute {
 	    }
 	    catch (IOException ioe) {
 		logger.error("Error executing LOADQ...", ioe);
-		new PopUp ("Error Loading Queue",
-			   new String(errorMessage),
-			   JOptionPane.ERROR_MESSAGE).start();
+// 		new PopUp ("Error Loading Queue",
+// 			   new String(errorMessage),
+// 			   JOptionPane.ERROR_MESSAGE).start();
 		success.delete();
 		isRunning = false;
 		return true;

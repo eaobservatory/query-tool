@@ -95,18 +95,20 @@ public class ExecuteUKIRT extends Execute implements Runnable {
 		logger.debug("Output from loadUKIRT: "+new String(stdout).trim());
 		if (rtn != 0) {
 		    logger.error("Error loading UKIRT task");
-		    new PopUp ("Load Error",
-			       new String (stderr).trim(),
-			       JOptionPane.ERROR_MESSAGE).start();
+		    logger.error(new String(stderr).trim());
+// 		    new PopUp ("Load Error",
+// 			       new String (stderr).trim(),
+// 			       JOptionPane.ERROR_MESSAGE).start();
 		    success.delete();
 		    return;
 		}	 
 	    }
 	    catch (IOException ioe) {
 		logger.error("Error executing loadUKIRT...", ioe);
-		new PopUp ("Error loading UKIRT task",
-			   new String(stderr).trim(),
-			   JOptionPane.ERROR_MESSAGE).start();
+		logger.error(new String(stderr).trim());
+// 		new PopUp ("Error loading UKIRT task",
+// 			   new String(stderr).trim(),
+// 			   JOptionPane.ERROR_MESSAGE).start();
 		success.delete();
 		return;
 	    }
