@@ -60,7 +60,7 @@ public class MsbClient extends SoapClient {
 
 	 if (tmp != null ) {
 	   
-	   //System.out.println("The msb says:\n "+ tmp);
+	   System.out.println("The msb says:\n "+ tmp);
 	   
 	   fw.write( (String)tmp );
 	   fw.close();
