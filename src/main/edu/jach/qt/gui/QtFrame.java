@@ -145,7 +145,8 @@ public class QtFrame extends JFrame implements ActionListener, MenuListener, Lis
 		if (om == null)
 		  om = new OmpOM();
 
-		final Led blinker = infoPanel.getBlinker();
+		//final Led blinker = infoPanel.getBlinker();
+		
 		final SwingWorker worker = new SwingWorker() {
 		    Boolean isStatusOK;
 		    Integer msbID = (Integer)sorter.getValueAt(selRow, MSBQueryTableModel.MSBID);
@@ -164,11 +165,12 @@ public class QtFrame extends JFrame implements ActionListener, MenuListener, Lis
 
 		    //Runs on the event-dispatching thread.
 		    public void finished() { 
-		      blinker.blinkLed(false);
+		      //blinker.blinkLed(false);
+		      InfoPanel.logoPanel.stop();
 
 		      if ( isStatusOK.booleanValue()) {
 			om.addNewTree(msbID);
-			System.out.println("ID is "+msbID);
+			//System.out.println("ID is "+msbID);
 			buildStagingPanel();
 		      }
 
@@ -181,12 +183,13 @@ public class QtFrame extends JFrame implements ActionListener, MenuListener, Lis
 		String projectid = (String) sorter.getValueAt(selRow, MSBQueryTableModel.PROJECTID);
 		String checksum = (String) sorter.getValueAt(selRow, MSBQueryTableModel.CHECKSUM);
 
-		System.out.println(">>>>>>MSB INFO is: "+projectid+", "+checksum);
+		//System.out.println(">>>>>>MSB INFO is: "+projectid+", "+checksum);
 		om.setProjectID(projectid);
 		om.setChecksum(checksum);
 
-		blinker.blinkLed(true);
+		//blinker.blinkLed(true);
 		//blinkThread.start();
+		InfoPanel.logoPanel.start();
 		worker.start();  //required for SwingWorker 3
 
 	      }
