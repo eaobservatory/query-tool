@@ -17,7 +17,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.beans.*;
 
-import edu.jach.qt.gui.InfoPanel;
 
 public class MSBDoneDialog extends JDialog {
     private String userId  = null;
