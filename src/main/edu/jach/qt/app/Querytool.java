@@ -121,6 +121,7 @@ public class Querytool implements Runnable, Observer {
       JToggleButton abstractButton;
       Object obj;
 
+
       item = doc.createElement("telescope");
       item.appendChild( doc.createTextNode(System.getProperty("telescope")) );
       root.appendChild(item);
@@ -183,7 +184,6 @@ public class Querytool implements Runnable, Observer {
 	  }
 	}
 	else if(next.equalsIgnoreCase("Clouds")) {
-
 	  item = doc.createElement("cloud");
 	  for (ListIterator iter = ((LinkedList)(ht.get(next))).listIterator(0); 
 	       iter.hasNext(); 
@@ -245,22 +245,34 @@ public class Querytool implements Runnable, Observer {
 
 	  while (n.hasMoreElements()) {
 	    if ( next.equalsIgnoreCase("pi"))
-	      item = doc.createElement("name");
+		{
+		    item = doc.createElement("name");
+		}
 
 	    else if ( next.equalsIgnoreCase("project") )
-	      item = doc.createElement("projectid");
+		{
+		    item = doc.createElement("projectid");
+		}
 
 	    else if ( next.equalsIgnoreCase("seeing") )
-	      item = doc.createElement("seeing");
+		{
+		    item = doc.createElement("seeing");
+		}
 
 	    else if ( next.equalsIgnoreCase("tau" ) )
-	      item = doc.createElement("tau");
+		{
+		    item = doc.createElement("tau");
+		}
 
 	    else if ( next.equalsIgnoreCase("airmass") )
-	      item = doc.createElement("airmass");
+		{
+		    item = doc.createElement("airmass");
+		}
 
 	    else if ( next.equalsIgnoreCase("semester") )
-	      item = doc.createElement("semester");
+		{
+		    item = doc.createElement("semester");
+		}
 
 	    tmpStr = (String)n.nextElement();
 	    item.appendChild(doc.createTextNode(tmpStr.trim()));
@@ -272,6 +284,15 @@ public class Querytool implements Runnable, Observer {
 	  
 	  LabeledRangeTextField lrtf = (LabeledRangeTextField) (ht.get(next));
 	  String tmpStr;
+
+	  // Temporary and very inefficient code fix.  
+	  // Gets over a problem of removing these from the item from the bag.
+	  if (lrtf.getLowerText().equals("") &&
+	      lrtf.getUpperText().equals(""))
+	      {
+		  continue;
+	      }
+
 
 	  if ( next.equalsIgnoreCase("duration")) {
 	    item = doc.createElement("timeest");
