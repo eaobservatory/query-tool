@@ -90,11 +90,13 @@ final public class ProgramTree extends JPanel implements
     private final String                editText = "Edit Attribute...";
     private final String                scaleText = "Scale Exposure Times...";
     private String                      rescaleText = "Re-do Scale Exposure Times";
+    private final String                engString = "Send for Engineering";
     private Vector                      haveScaled   = new Vector(); 
     private Vector                      scaleFactors = new Vector(); 
     private JMenuItem                   edit;
     private JMenuItem                   scale;
     private JMenuItem                   scaleAgain;
+    private JMenuItem                   sendToEng;
     private JPopupMenu                  scalePopup;
 
     private JPopupMenu                  msbDonePopup;
@@ -136,16 +138,7 @@ final public class ProgramTree extends JPanel implements
 	GridBagLayout gbl = new GridBagLayout();
 	setLayout(gbl);
 	gbc = new GridBagConstraints();
-
-	run=new JButton("Send for Engineering");
-	run.setMargin(new Insets(5,10,5,10));
-	run.setEnabled(TelescopeDataPanel.DRAMA_ENABLED);
-	if ( !run.isEnabled() ) {
-	    run.setToolTipText("Disabled as DRAMA is not running");
-	    ToolTipManager.sharedInstance().setInitialDelay(250);
-	}
-	run.addActionListener(this);
-
+      
 	engButton = new JButton("Send to Queue");
 	engButton.setMargin(new Insets(5,10,5,10));
 	engButton.setEnabled(TelescopeDataPanel.DRAMA_ENABLED);
@@ -180,6 +173,9 @@ final public class ProgramTree extends JPanel implements
 	scaleAgain.addActionListener(this);
 	scaleAgain.setEnabled(false);
 	scalePopup.add (scaleAgain);
+	sendToEng = new JMenuItem(engString);
+	sendToEng.addActionListener(this);
+	scalePopup.add (sendToEng);
 
 	msbDonePopup = new JPopupMenu();
 	msbDoneMenuItem = new JMenuItem(msbDoneText);
@@ -208,15 +204,7 @@ final public class ProgramTree extends JPanel implements
 	gbc.insets.left = 0;
 	gbc.insets.right = 0;
 	gbc.insets.bottom = 20;
-	add(run, gbc, 0, 2, 1, 1);
-
-	gbc.fill = GridBagConstraints.HORIZONTAL;
-	gbc.weightx = 100;
-	gbc.weighty = 0;
-	gbc.insets.left = 0;
-	gbc.insets.right = 0;
-	gbc.insets.bottom = 20;
-	add(xpand, gbc, 0, 3, 1, 1);
+	add(xpand, gbc, 0, 2, 1, 1);
     }
 
     /**
@@ -252,15 +240,15 @@ final public class ProgramTree extends JPanel implements
     public static void setExecutable (boolean flag) {
 	if (TelescopeDataPanel.DRAMA_ENABLED) {
 	    logger.debug ( "In ProgramTree.setExecutable(); setting run.enabled to "+flag);
-	    run.setEnabled(flag);
+	    engButton.setEnabled(flag);
 	    if ( flag == false ) {
 		Exception e = new Exception ();
 		logger.debug ( "Flag set to false by ",e );
-		run.setToolTipText ( "Disabled due to edited time constraint" );
+		engButton.setToolTipText ( "Disabled due to edited time constraint" );
 		ToolTipManager.sharedInstance().setInitialDelay(250);
 	    }
 	    else {
-		run.setToolTipText ( null );
+		engButton.setToolTipText ( null );
 	    }
 	}
     }
@@ -311,11 +299,7 @@ final public class ProgramTree extends JPanel implements
     */
     public void actionPerformed (ActionEvent evt) {
 	Object source = evt.getSource();
-	if (source == run) {
-            _useQueue = false;
-	    doExecute();
-	}
-	else if (source == xpand) {
+	if (source == xpand) {
 	    SpItem itemToXpand;
 	    if (selectedItem == null && DeferredProgramList.currentItem == null) {
 		return;
@@ -350,6 +334,10 @@ final public class ProgramTree extends JPanel implements
 	    else if ( thisItem.getText().equals(rescaleText) ) {
 		rescaleAttributes();   
 	    }
+	    else if ( thisItem.getText().equals( engString ) ) {
+		_useQueue = false;
+                doExecute();
+            }
 	    else if (thisItem.getText().equals(msbDoneText)) {
 		if (projectID != null && 
 		    projectID != ""   &&
@@ -384,7 +372,7 @@ final public class ProgramTree extends JPanel implements
 	    item = DeferredProgramList.currentItem;
 	}
 	setExecutable(false);
-	run.setToolTipText("Run button disabled during execution");
+	engButton.setToolTipText("Run button disabled during execution");
 	if (System.getProperty("telescope").equalsIgnoreCase("ukirt")) {
 	    try {
 		ExecuteUKIRT execute = new ExecuteUKIRT(_useQueue);
@@ -452,7 +440,7 @@ final public class ProgramTree extends JPanel implements
 	    if ( ExecuteJCMT.isRunning() ) {
 		setExecutable (false);
 		logger.debug ( "Disabling run button since ExecuteJCMT is still running" );
-		run.setToolTipText("Button disabled during execution");
+		engButton.setToolTipText("Button disabled during execution");
 		return;
 	    }
 	    else {
@@ -640,6 +628,7 @@ final public class ProgramTree extends JPanel implements
 		public void mouseClicked(MouseEvent e)
 		{
 		    if (e.getClickCount() == 2) {
+			_useQueue = true;
 			doExecute();
 		    }
 		    else if (e.getClickCount() == 1 && 
@@ -748,16 +737,7 @@ final public class ProgramTree extends JPanel implements
 	    {
 		// Display the full selection path
 		path = tree.getSelectionPath();
-
-		// The next section is with a view to possible
-		// exposure time changes. Don't use until we know want we want
-		// for sure.
-		// 	  if(path.getLastPathComponent().toString().length()>14) {
-		// 	    if(path.getLastPathComponent().toString().substring(0,14).equals("ot_ukirt.inst.")) {
-		// 	      new newExposureTime(_spItem);
-		// 	    }
-		// 	  }
-	    }
+            }
     }
 
     /**
@@ -1337,7 +1317,7 @@ final public class ProgramTree extends JPanel implements
     }
 
 
-    public JButton getRunButton () {return run;}
+    public JButton getRunButton () {return engButton;}
 
     public class ExecuteInThread extends Thread {
 	SpItem _item;

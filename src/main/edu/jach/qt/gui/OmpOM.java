@@ -330,7 +330,7 @@ public class OmpOM extends JPanel{
       NotePanel notes = new NotePanel();
 //       notes.setNote(spItem);
       JSplitPane dsp = new JSplitPane(JSplitPane.VERTICAL_SPLIT, deferredList, notes);
-      dsp.setDividerLocation(250);
+      dsp.setDividerLocation(150);
       JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, ptree, dsp);
       if (ptree.getCurrentItem() != null) {
 	  notes.setNote(ptree.getCurrentItem());

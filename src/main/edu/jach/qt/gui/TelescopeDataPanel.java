@@ -80,21 +80,6 @@ public class TelescopeDataPanel extends JPanel implements ActionListener {
       hub.register(csomonHI);
 
     }
-    else  {
-	Object[] options = { "CONTINUE", "CANCEL" };
-	int n = JOptionPane.
-	    showOptionDialog(this, 
-			     "          NOT A DRAMA ENABLED SYSTEM!.\n\n"+
-			     "Continue will allow you to run the QT in Senario Mode.\n"+
-			     "Cancel will shutdown the QT", 
-			     "Warning", 
-			     JOptionPane.OK_CANCEL_OPTION, 
-			     JOptionPane.WARNING_MESSAGE, null, options, options[0]);
-	
-	if( (n == JOptionPane.NO_OPTION) || (n == JOptionPane.CLOSED_OPTION))
-	    System.exit(0);
-    }
-    
     config();
   }
   

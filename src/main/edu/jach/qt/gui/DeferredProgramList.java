@@ -43,7 +43,8 @@ import edu.jach.qt.utils.*;
 final public class DeferredProgramList extends JPanel implements
     DropTargetListener,
     DragSourceListener,
-    DragGestureListener
+    DragGestureListener,
+    ActionListener
 {
     private DropTarget                  dropTarget=null;
     private DragSource                  dragSource=null;
@@ -54,6 +55,9 @@ final public class DeferredProgramList extends JPanel implements
     private DefaultListModel		model;
     public  static SpItem               currentItem;
     private static HashMap              fileToObjectMap = new HashMap();
+    private JPopupMenu                  engMenu = new JPopupMenu();
+    private JMenuItem                   engItem = new JMenuItem ("Send for Engineering");
+    private boolean                     _useQueue = true;
 
     static Logger logger = Logger.getLogger(DeferredProgramList.class);
 
@@ -89,6 +93,9 @@ final public class DeferredProgramList extends JPanel implements
 	    logger.error("Too many drop target listeners", tmle);
 	}
 	dragSource = new DragSource();
+
+	engMenu.add ( engItem );
+	engItem.addActionListener ( this );
 
 	// Set up the initial drop target
 	scrollPane.getViewport().setDropTarget(dropTarget);
@@ -234,7 +241,12 @@ final public class DeferredProgramList extends JPanel implements
 		}
 
 		public void mousePressed(MouseEvent e) {
-		    ProgramTree.clearSelection();
+		    if ( e.isPopupTrigger() && currentItem != null ) {
+			engMenu.show( e.getComponent(), e.getX(), e.getY() );
+		    }
+		    else {
+		        ProgramTree.clearSelection();
+		    }
 		}
 	    };
 	obsList.addMouseListener(ml);
@@ -342,7 +354,7 @@ final public class DeferredProgramList extends JPanel implements
 	if (System.getProperty("telescope").equalsIgnoreCase("ukirt")) {
 	    try {
 		logger.info("Sending observation "+currentItem.getTitle()+" for execution.");
-		ExecuteUKIRT execute = new ExecuteUKIRT(true);
+		ExecuteUKIRT execute = new ExecuteUKIRT(_useQueue);
 		t = new Thread (execute, "UKIRT Execution Thread");
 
 		// Start the process and wait for it to complete
@@ -350,7 +362,8 @@ final public class DeferredProgramList extends JPanel implements
 		t.start();
 		t.join();
 // 		logger.info("Thread "+t.getName()+" stopped.");
-
+                // Reset _useQueue
+		_useQueue = true;
 		// Now check the result
 		File failFile = new File ("/ukirtdata/orac_data/deferred/.failure");
 		File successFile = new File ("/ukirtdata/orac_data/deferred/.success");
@@ -747,6 +760,13 @@ final public class DeferredProgramList extends JPanel implements
 				 text,
 				 this
 				 );
+	}
+    }
+
+    public void actionPerformed (ActionEvent e) {
+	if ( e.getSource() == engItem ) {
+            _useQueue = false;
+	    execute();
 	}
     }
 
