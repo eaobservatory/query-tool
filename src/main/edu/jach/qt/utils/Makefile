@@ -28,7 +28,8 @@ SOURCES = \
 	TimeUtils.java \
 	ExecDtask.java \
 	ErrorBox.java \
-	NoSuchParameterException.java
+	NoSuchParameterException.java \
+	OracColor.java
 
 
 
