@@ -89,54 +89,53 @@ final public class QT {
     * @param args a <code>String[]</code> value
     */
    public static void main(String[] args) {
-//        try {
-//  	 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-//        }
-//        catch(Exception e) {
-//  	 e.printStackTrace();
-//        }
       new QT();
    }
 } // Omp
 
-//$Log$
-//Revision 1.12  2002/04/17 03:29:32  mrippa
-//Replaced Main.java with QT.java
-//
-//Revision 1.11  2002/04/17 03:15:47  mrippa
-//The new Main.java is now called QT.java
-
-//Revision 1.10  2002/03/08 10:08:14  mrippa
-//The PRE-translator thingy was added here. Everything was completely
-//broken without it!
-//
-//Revision 1.9  2002/02/24 06:50:56  mrippa
-//Reset Window size of the QtFrame.
-//
-//Revision 1.8  2001/11/24 04:56:20  mrippa
-//Added a BasicWindowMonitor so as to cleanly exit the QT.
-//
-//Revision 1.7  2001/11/05 18:58:16  mrippa
-//New system wide config file is read in.
-//
-//Revision 1.6  2001/10/20 04:12:11  mrippa
-//The main config file is now in $install/omp/QT/config/qt.conf
-//
-//Revision 1.5  2001/09/29 05:34:50  mrippa
-//Frame centers on screen.
-//
-//Revision 1.4  2001/09/20 01:58:07  mrippa
-//Added QtTools.loadConfig("config.qt.conf"); which loads
-//the main config file for the QT.
-//
-//Revision 1.3  2001/09/18 21:53:39  mrippa
-//All classes and methods documented.
-//
-//Revision 1.2  2001/09/07 01:18:10  mrippa
-//The QT now supports a query of the MSB server retrieving a MSB summaries.
-//The summaries are displayed in a JTable which listens for double clicks
-//on the rows, corresponding to the MSB ID for that summary.  The MSB is
-//then translated and given to the OM for lower level processing.
-//
-//Revision 1.1.1.1  2001/08/28 02:53:45  mrippa
-//Import of QT
+/*
+ * $Log$
+ * Revision 1.13  2002/04/17 03:35:24  mrippa
+ * Removed needless comments
+ *
+ * Revision 1.12  2002/04/17 03:29:32  mrippa
+ * Replaced Main.java with QT.java
+ *
+ * Revision 1.11  2002/04/17 03:15:47  mrippa
+ * The new Main.java is now called QT.java
+ *
+ * Revision 1.10  2002/03/08 10:08:14  mrippa
+ * The PRE-translator thingy was added here. Everything was completely
+ * broken without it!
+ *
+ * Revision 1.9  2002/02/24 06:50:56  mrippa
+ * Reset Window size of the QtFrame.
+ *
+ * Revision 1.8  2001/11/24 04:56:20  mrippa
+ * Added a BasicWindowMonitor so as to cleanly exit the QT.
+ *
+ * Revision 1.7  2001/11/05 18:58:16  mrippa
+ * New system wide config file is read in.
+ *
+ * Revision 1.6  2001/10/20 04:12:11  mrippa
+ * The main config file is now in $install/omp/QT/config/qt.conf
+ *
+ * Revision 1.5  2001/09/29 05:34:50  mrippa
+ * Frame centers on screen.
+ *
+ * Revision 1.4  2001/09/20 01:58:07  mrippa
+ * Added QtTools.loadConfig("config.qt.conf"); which loads
+ * the main config file for the QT.
+ *
+ * Revision 1.3  2001/09/18 21:53:39  mrippa
+ * All classes and methods documented.
+ *
+ * Revision 1.2  2001/09/07 01:18:10  mrippa
+ * The QT now supports a query of the MSB server retrieving a MSB summaries.
+ * The summaries are displayed in a JTable which listens for double clicks
+ * on the rows, corresponding to the MSB ID for that summary.  The MSB is
+ * then translated and given to the OM for lower level processing.
+ *
+ * Revision 1.1.1.1  2001/08/28 02:53:45  mrippa
+ * Import of QT
+ */
