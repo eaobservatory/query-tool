@@ -96,7 +96,6 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
 
     public void setProjectId(String project) {
 	_projectId = project;
-	System.out.println("Firing table changed");
 	fireTableChanged(null);
     }
 
@@ -143,10 +142,10 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
     }
 
     if (doc != null) {
-	System.out.println("Building new model");
+	logger.info("Building new model");
 	model = XmlUtils.getNewModel(doc, ROOT_ELEMENT_TAG);
 	adjustColumnData(currentBitSet);
-	System.out.println("Model has "+model.size()+" elements");
+	logger.info("Model has "+model.size()+" projects");
 	for (int i=0; i<model.size();i++) {
 	    modelIndex.add(((XmlUtils.MSBTableModel)model.elementAt(i)).getProjectId());
 	}
@@ -193,12 +192,12 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
   public int getRowCount() {
       int rowCount = 0;
       if (model == null || model.size() == 0 || _projectId == null) {
-	  System.out.println("Returning 0 rows");
-	  System.out.println("\tmodel: "+model);
-	  if (model != null) {
-	      System.out.println("\tsize: "+model.size());
-	  }
-	  System.out.println("\tproject: "+_projectId);
+// 	  logger.info("Returning 0 rows");
+// 	  System.out.println("\tmodel: "+model);
+// 	  if (model != null) {
+// 	      System.out.println("\tsize: "+model.size());
+// 	  }
+// 	  System.out.println("\tproject: "+_projectId);
 	  return rowCount;
       }
       if (_projectId.equalsIgnoreCase("all")) {
@@ -320,7 +319,6 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
 	for (int i=0; i< colNames.length; i++) {
 	    colVector.add((Object)colNames[i]);
 	    classVector.add((Object)colClassName[i]);
-	    System.out.println("("+colNames[i]+","+colClassName[i]+")");
 	}
 	// Now manipulate the vector
 	for (int i=colNames.length-1; i >= 0; i--) {
