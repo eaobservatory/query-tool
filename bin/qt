@@ -115,7 +115,8 @@ while ($#argv != 0)
         shift
         breaksw
       default:
-        echo "No such option"
+        echo "No such option "$argv[1]
+	printf "${usage}" 
         exit 1
         breaksw
    endsw
@@ -148,9 +149,8 @@ if (-dwx ${LOGPATH} ) then
    mkdir ${QT_LOG_DIR}
    echo "\n\n\n***This QT and (S)equence (M)anager session will be logged in ${QT_LOG_DIR}.***\n\n\n"
 else
-   echo ${LOGPATH} does not exist
-   printf "${usage}"
-   exit 1   
+   echo ${LOGPATH} does not exist - no log files will be written for this session. 
+   setenv QT_LOG_DIR
 endif
 
 
@@ -195,7 +195,7 @@ setenv DUL_DIR /local/progs/drama/release/dul/r0_10_1/
 setenv GIT_DIR /local/progs/drama/release/git/r0_9_2/
 setenv DTCL_DIR /local/progs/drama/release/dtcl/r1_2_3/
 
-set CLASSPATH = /jac_sw/omp/QT/lib/qt.jar:/jac_sw/omp/QT/lib/xerces.jar:/jac_sw/omp/QT/lib/mail.jar:/jac_sw/omp/QT/lib/activation.jar:/jac_sw/omp/QT/lib/soap.jar:/jac_sw/orac3/OT/install/classes:/jac_sw/orac3/GEMINI/install/classes:/jac_sw/itsroot/install/ompSM/classes:/jac_sw/orac3/ORAC/install/classes:/jac_sw/orac3/OMP/install/classes:/jac_sw/orac3/ODB/install/classes:/jac_sw/omp/QT/lib/jsky.jar:/jac_sw/omp/QT/lib/diva.jar:/jac_sw/omp/QT/lib/junit.jar:/jac_sw/omp/QT/icons:/local/java/jdk/lib/tools.jar:/jac_sw/itsroot/install/dcHub/lib/dcHub.jar:/local/progs/drama/drama_source/djava
+set CLASSPATH = /home/dewitt/omp/QT/qt.jar:/jac_sw/omp/QT/lib/xerces.jar:/jac_sw/omp/QT/lib/mail.jar:/jac_sw/omp/QT/lib/activation.jar:/jac_sw/omp/QT/lib/soap.jar:/jac_sw/orac3/OT/install/classes:/jac_sw/orac3/GEMINI/install/classes:/jac_sw/itsroot/install/ompSM/classes:/jac_sw/orac3/ORAC/install/classes:/jac_sw/orac3/OMP/install/classes:/jac_sw/orac3/ODB/install/classes:/jac_sw/omp/QT/lib/jsky.jar:/jac_sw/omp/QT/lib/diva.jar:/jac_sw/omp/QT/lib/junit.jar:/jac_sw/omp/QT/icons:/local/java/jdk/lib/tools.jar:/jac_sw/itsroot/install/dcHub/lib/dcHub.jar:/local/progs/drama/drama_source/djava
 
 ${JAVA} ${classic} ${xdebug} ${xnoagent} ${xrunjdwptrans} ${xbootclasspath} -Ddebug=${debug} -DDRAMA_ENABLED=${dramaEnabled} -DSIMULATE=${tosim} -DENGINEERING=${toeng} -DQUICKLOOK=${toql} -Dtelescope=${telescope} -DSOLARIS_HOST=${solHost} -DDOMAIN=`domainname` -DqtConfig=${qtConfig} -Dot.cfgdir=${instConfigDir}/ -DwidgetFile=${widgetFile} -DQT_LOG_DIR=${QT_LOG_DIR} -DOMP -cp ${CLASSPATH} edu.jach.qt.app.QT
 
