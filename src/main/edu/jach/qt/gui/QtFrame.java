@@ -330,6 +330,16 @@ public class QtFrame extends JFrame implements PopupMenuListener, ActionListener
     }
     
   }
+
+    public int getSelectedTab() {
+	return tabbedPane.getSelectedIndex();
+    }
+
+    public void setSelectedTab(int tab) {
+	if ( (tabbedPane.getTabCount() - 1) >= tab) {
+	    tabbedPane.setSelectedIndex(tab);
+	}
+    }
    
 
     /**
@@ -554,6 +564,10 @@ public class QtFrame extends JFrame implements PopupMenuListener, ActionListener
 	    SpItem item = MsbClient.fetchMSB((Integer) calibrationList.get(thisItem.getText()));
 	    // Add it to the deferred queue
 	    DeferredProgramList.addCalibration(item);
+	    // Set the tabbed pane to show the Staging Area
+	    if (tabbedPane.getTabCount() > 1) {
+		tabbedPane.setSelectedIndex(tabbedPane.getTabCount()-1);
+	    }
 	}
 	else if ( thisItem.getText().equalsIgnoreCase("Index") ) {
 	    HelpPage helpPage = new HelpPage();
