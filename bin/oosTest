@@ -1,13 +1,43 @@
-#!/bin/csh
+#!//usr/local/bin/tcsh
 
-set testInst = $argv[1]
 
-ditsgetinfo -running $testInst
-set run = $status;
+set testInst = ""
+set stateTest = 0
+set activeTest = 0
 
-if ($run != 0) then
-   echo "$testInst IS NOT RUNNING"
-else
-   echo "$testInst IS RUNNING"
-endif
+while ($#argv != 0)
+   switch ($argv[1])
+      case -instrument
+	shift
+	set testInst = $argv[1]
+	shift
+	breaksw
+      case -state:
+	shift
+	set state = $argv[1]
+	set stateTest = 1
+	shift
+        breaksw
+      case -active:
+	set activeTest = 1
+	shift
+	breaksw
+      default:
+        exit 1
+        breaksw
+   endsw
+end
 
+if ($stateTest) then
+   ditscmd -g $testInst $state 
+
+else if ($activeTest) then 
+   ditsgetinfo -running $testInst
+   set run = $status;
+   
+   if ($run != 0) then
+      echo "$testInst IS NOT RUNNING"
+   else
+      echo "$testInst IS RUNNING"
+   endif
+endif 
