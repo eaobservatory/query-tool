@@ -457,12 +457,12 @@ final public class ProgramTree extends JPanel implements
 
 	if ( System.getProperty("os.name").equals("SunOS") && TelescopeDataPanel.DRAMA_ENABLED) {
 	  QtTools.loadDramaTasks(inst.type().getReadable());
-	  DcHub.getHandle().register("OOS_LIST");
+	  //DcHub.getHandle().register("OOS_LIST");
 	}
 	
 	//DcHub.getHandle().register("OOS_LIST");
-	
-	scm.showSequenceFrame();
+	//scm.showSequenceFrame();
+
 	run.setEnabled(true);
       }
     }
