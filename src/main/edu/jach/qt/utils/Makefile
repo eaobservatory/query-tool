@@ -12,6 +12,7 @@ SOURCES = \
 	ErrorBox.java \
 	ExecDtask.java \
 	InvalidUserException.java \
+	HTMLViewer.java \
 	LockFile.java \
 	MSBDoneDialog.java \
 	MsbClient.java \
