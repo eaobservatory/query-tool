@@ -431,8 +431,7 @@ public class XmlUtils {
 	    projectDoc = parser.getDocument();
 	}
 	catch (IOException ioe) {
-	    System.err.println("IOException Reading File "+xmlFileName+".");
-	    ioe.printStackTrace();
+	    System.err.println("WARNING: IOException Reading File "+xmlFileName+".");
 	    return null;
 	}
 	catch (SAXException sxe) {

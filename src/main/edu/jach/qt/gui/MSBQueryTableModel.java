@@ -384,8 +384,10 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
     }
 
     public void clear() {
-	model.removeAllElements();
-	modelIndex.removeAllElements();
+	if (model != null) {
+	    model.removeAllElements();
+	    modelIndex.removeAllElements();
+	}
 	updateColumns(currentBitSet);
     }
 

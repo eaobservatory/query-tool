@@ -1280,7 +1280,7 @@ final public class ProgramTree extends JPanel implements
 	    InfoPanel.searchButton.doClick();
 	    logger.info ("User rejected MSB");
 	}
-	if ( !anObservationHasBeenDone ) {
+	if ( !anObservationHasBeenDone && msbPendingFile != null ) {
 	    msbPendingFile.delete();
 	}
 	return done;

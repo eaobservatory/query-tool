@@ -122,6 +122,11 @@ public class InfoPanel extends JPanel implements ActionListener {
     InfoPanel.searchButton.setName("Search");
     InfoPanel.searchButton.addActionListener(new ActionListener() {
 	public void actionPerformed(ActionEvent e) {
+	    qtf.updateColumnSizes();
+	    qtf.getModel().clear();
+	    qtf.getProjectModel().clear();
+	    qtf.repaint(0);
+
 	  final SwingWorker worker = new SwingWorker() {
 	      Boolean isStatusOK;
 
@@ -133,7 +138,7 @@ public class InfoPanel extends JPanel implements ActionListener {
 	      //Runs on the event-dispatching thread.
 	      public void finished() { 
 		if ( isStatusOK.booleanValue()) {
-		  qtf.updateColumnSizes();
+// 		  qtf.updateColumnSizes();
 
  		  Thread tableFill = new Thread(msb_qtm);
 		  tableFill.start();

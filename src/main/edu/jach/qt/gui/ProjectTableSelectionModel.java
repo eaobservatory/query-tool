@@ -24,7 +24,7 @@ class ProjectTableSelectionModel
 	// Get the MSBQueryTableModel
 	String projectID = (String)_qtf.getProjectModel().getValueAt(getMinSelectionIndex(), 0);
 	if (projectID == null || projectID.equals("") || projectID.startsWith("-")) return;
-  	_qtf.updateColumnSizes();
+//   	_qtf.updateColumnSizes();
 	_qtf.getModel().setProjectId(projectID);
   	_qtf.setColumnSizes();
     }
