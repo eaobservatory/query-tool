@@ -22,12 +22,12 @@ public class MsbClient extends SoapClient {
 
    public static void queryMSB(String xmlQueryString) {
       try {
-	 URL url = new URL("http://www.jach.hawaii.edu/JAClocal/cgi-bin/msbsrv.pl");
+	 URL url = new URL(System.getProperty("msbServer"));
 	 addParameter("xmlquery", String.class, xmlQueryString);
 	 //addParameter("maxreturn", Integer.class, new Integer(2));
 	 //System.out.println(doCall(url, "urn:OMP::MSBServer", "queryMSB"));
 
-	 FileWriter fw = new FileWriter("/home/mrippa/netroot/install/omp/QT/config/msbSummary.xml");
+	 FileWriter fw = new FileWriter(System.getProperty("msbSummary"));
 	 fw.write(doCall(url, "urn:OMP::MSBServer", "queryMSB"));
 	 fw.close();
       } catch (Exception e) {e.printStackTrace();}
@@ -40,7 +40,7 @@ public class MsbClient extends SoapClient {
 	 addParameter("key", Integer.class, msbid);
 	 //System.out.println(doCall(url, "urn:OMP::MSBServer", "fetchMSB"));
 
-	 FileWriter fw = new FileWriter("/home/mrippa/netroot/install/omp/QT/config/msb.xml");
+	 FileWriter fw = new FileWriter(System.getProperty("msbFile"));
 	 fw.write(doCall(url, "urn:OMP::MSBServer", "fetchMSB"));
 	 fw.close();
 	 
