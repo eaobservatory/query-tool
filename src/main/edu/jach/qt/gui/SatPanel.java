@@ -2,6 +2,7 @@ package edu.jach.qt.gui;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Image;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.lang.Exception;
@@ -85,9 +86,14 @@ public class SatPanel extends JLabel implements TimerListener {
 		  try {
 		      String imageSuffix = URLReader.getImageString(thisURL);
 		      String timeString = imageSuffix.substring(imageSuffix.lastIndexOf("/")+1, imageSuffix.lastIndexOf("/")+13);
+
+                      // Make sure we scale the image
+                      ImageIcon icon = new ImageIcon(new URL(InfoPanel.IMG_PREFIX + imageSuffix));
+                      icon.setImage( icon.getImage().getScaledInstance(112, 90, Image.SCALE_DEFAULT) );
 		      
 		      //System.out.println("IMG=>>>"+InfoPanel.IMG_PREFIX + imageSuffix+"<<<");
-		      setIcon(new ImageIcon(new URL(InfoPanel.IMG_PREFIX + imageSuffix)));
+		      //setIcon(new ImageIcon(new URL(InfoPanel.IMG_PREFIX + imageSuffix)));
+		      setIcon(icon);
 		      
 		      satBorder.setTitle(timeString+" UTC");
 		  } catch ( Exception e) { } 
