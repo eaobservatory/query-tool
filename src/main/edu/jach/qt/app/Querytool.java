@@ -159,13 +159,13 @@ public class Querytool implements Runnable, Observer {
 
       if (allocation) {
 	item = doc.createElement("disableconstraint");
-	item.appendChild( doc.createTextNode(REMAINING_DISABLED) );
+	item.appendChild( doc.createTextNode(ALLOCATION_DISABLED) );
 	root.appendChild(item);
       }
       
       if (remaining) {
 	item = doc.createElement("disableconstraint");
-	item.appendChild( doc.createTextNode(ALLOCATION_DISABLED) );
+	item.appendChild( doc.createTextNode(REMAINING_DISABLED) );
 	root.appendChild(item);
       }
       
