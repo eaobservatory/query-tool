@@ -76,7 +76,6 @@ class TreeViewer {
 	otTree.resetProg((SpRootItem)root);
 	otTree.spItemsAdded(root, itemArray, (SpItem)null);
 	EventListener [] listeners = otTree.getTree().getListeners(KeyListener.class);
-	System.out.println("Found "+listeners.length+" keyevent listeners");
 	for (int i=0; i< listeners.length; i++) {
 	    otTree.getTree().removeKeyListener((KeyListener)listeners[i]);
 	}
