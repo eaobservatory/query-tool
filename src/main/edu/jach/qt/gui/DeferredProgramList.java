@@ -155,7 +155,7 @@ final public class DeferredProgramList extends JPanel implements
 
     /**
      * Add a calibration observation from the Calibrations Menu to the list.
-     * @parsm cal  The calibration observation to add.
+     * @param cal  The calibration observation to add.
      */
     public static void addCalibration (SpItem cal) {
 	cal.getTable().set("project", "CAL");
@@ -169,6 +169,10 @@ final public class DeferredProgramList extends JPanel implements
 	    makePersistent(thisObs);
 	    ((DefaultListModel)obsList.getModel()).addElement(thisObs);
 	}
+	// This is a hack to fix fault [20021030.002].  It shouldn't happen but hopefully
+	// this will make sure...
+	obsList.setEnabled(true);
+	
     }
 
     /**
