@@ -31,7 +31,7 @@ public class CSOPathResponseHandler extends DramaPath.ResponseHandler {
     logger.info("Got path to task "+path.TaskName() +".");
     
     // Start the monitor operation.
-    DramaMonitor Monitor = new DramaMonitor(path, new CSO_MonResponse(cr), true, "CSOTAU");
+    DramaMonitor Monitor = new DramaMonitor(path, new QT_MonResponse(cr), true, "CSOTAU");
 
     // We have sent a new message, so return true.
     return true;
@@ -54,6 +54,9 @@ public class CSOPathResponseHandler extends DramaPath.ResponseHandler {
 
 /*
  * $Log$
+ * Revision 1.7  2002/07/02 21:36:23  mrippa
+ * Changed CSO_MonResponse to QT_MonResponse
+ *
  * Revision 1.6  2002/04/20 02:52:17  mrippa
  * Updated Log
  *
