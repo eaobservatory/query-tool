@@ -75,7 +75,7 @@ final public class ProgramTree extends JPanel implements
   private DefaultTreeModel		treeModel;
   private TreePath			path;
   private String			projectID, checkSum;
-  private SequenceManager		scm;
+//   private SequenceManager		scm;
     private DropTarget                  dropTarget=null;
     private DragSource                  dragSource=null;
     private TrashCan                    trash=null;
@@ -98,7 +98,7 @@ final public class ProgramTree extends JPanel implements
   */
   public ProgramTree()  {
 
-    scm = SequenceManager.getHandle();
+//     scm = SequenceManager.getHandle();
 
     // Ensure nothing is selected 
     selectedItem = null;

@@ -52,7 +52,6 @@ final public class DeferredProgramList extends JPanel implements
     private String                      deferredFileName;
     private JScrollPane			scrollPane = new JScrollPane();
     private DefaultListModel		model;
-    private SequenceManager		scm;
     public  static SpItem               currentItem;
     private static HashMap              fileToObjectMap = new HashMap();
 
