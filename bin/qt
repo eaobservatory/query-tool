@@ -152,7 +152,6 @@ else
    setenv QT_LOG_DIR
 endif
 
-
 #Test for scenario mode
 if (! ${?IMP_STARTUP} || ${scenario}) then
    set dramaEnabled = "false"
@@ -170,7 +169,7 @@ else
    endif
 
    # We want ample IMP_transmitter buffer space
-   setenv IMP_NET_KBYTES 5120
+   setenv IMP_NET_KBYTES 10000
 
    # If we're on a Linux box start the master task
    set OS  = `uname -s`
@@ -178,10 +177,9 @@ else
 
    # check whether the CSO task is running
    ditsgetinfo -running CSOMON
-
    set run = $status
 
-   #If csomon in not running && we're on solaris, start it.
+   #If csomon is not running && we're on solaris, start it.
    if ($run != 0 && $OS == "SunOS") then
       echo "Starting CSOMON"
       getcso.pl &
