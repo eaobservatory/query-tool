@@ -42,7 +42,12 @@ SOURCES = \
 	TrashCan.java \
 	DeferredProgramList.java \
 	NotePanel.java \
-	UTPanel.java
+	UTPanel.java \
+	AIVTriplet.java \
+	AVPair.java \
+	AttributeOrigin.java \
+	AttributeEditor.java \
+	AttributeTableModel.java
 
 include $(BUILD)/make.tail
 
