@@ -1,27 +1,36 @@
 package edu.jach.qt.app;
 
-import  org.w3c.dom.*;
-import  org.apache.xerces.dom.DocumentImpl;
-import  org.apache.xerces.dom.DOMImplementationImpl;
-import  org.w3c.dom.Document;
-import  org.apache.xml.serialize.OutputFormat;
-import  org.apache.xml.serialize.Serializer;
-import  org.apache.xml.serialize.SerializerFactory;
-import  org.apache.xml.serialize.XMLSerializer;
-import  java.io.*;
-
-import edu.jach.qt.gui.WidgetDataBag;
+import java.io.*;
 import java.util.*;
 import javax.swing.*;
 
+import edu.jach.qt.gui.WidgetDataBag;
+import edu.jach.qt.utils.*;
+import org.apache.xerces.dom.DOMImplementationImpl;
+import org.apache.xerces.dom.DocumentImpl;
+import org.apache.xml.serialize.OutputFormat;
+import org.apache.xml.serialize.Serializer;
+import org.apache.xml.serialize.SerializerFactory;
+import org.apache.xml.serialize.XMLSerializer;
+import org.w3c.dom.*;
+import org.w3c.dom.Document;
+
 /**
- * Querytool.java
+ * The <code>Querytool</code> is main driver for the application side
+ * of the OMP-QT.  It <em>Observes</em> the WidgetDataBag class 
+ * (or Subject)on the gui side and is called an "observer" class.  As
+ * such, it implements the Observer interface.  As an effect, the Querytool 
+ * class has knowledge of changes to the primary attribute of the 
+ * WidgetDataBag class, simply a Hashtable tracking the state of all 
+ * Widgets contained in the bag.
+
+ * This Observer Subject relationship allows instantaneous updates of the 
+ * state of the GUI.  The state data is represented in XML and a new  
+ * xmlString is written upon a gui state change.  As this seems inefficient,
+ * I see it as the only way to get instantaneous results.
  *
- *
- * Created: Sat Mar 24 12:51:56 2001
- *
- * @author <a href="mailto: "Mathew Rippa</a>
- * @version
+ * @author <a href="mailto:mrippa@jach.hawaii.edu">Mathew Rippa</a>
+ * @version 1.0
  */
 public class Querytool implements Observer {
 
@@ -39,7 +48,10 @@ public class Querytool implements Observer {
    }
 
    /**
-    * Describe <code>update</code> method here.
+    * The <code>update</code> method is used to trigger
+    * an action if a change is "Observed" in the "Subject".
+    * This is the only method mandated by the Observer 
+    * interface.
     *
     * @param o a <code>Subject</code> value
     */
@@ -50,7 +62,9 @@ public class Querytool implements Observer {
    }
 
    /**
-    * Describe <code>buildXML</code> method here.
+    * The <code>buildXML</code> method is triggerd by any 
+    * Subject update.  If the gui state changes, this method
+    * rebuilds the xmlString.
     *
     * @param ht a <code>Hashtable</code> value
     */
@@ -131,27 +145,50 @@ public class Querytool implements Observer {
       }
    }
 
+   /**
+    * The <code>getXML</code> method returns the xmlString.
+    *
+    * @return a <code>String</code> value
+    */
    public String getXML() {
       return xmlString;
    }
 
+   /**
+    * The <code>printXML</code> method is a utility to the current
+    * xmlString.
+    */
    public void printXML() {
       System.out.println( xmlString ); //Spit out DOM as a String
    }
 
+   /**
+    * The <code>queryMSB</code> method starts the SOAP client.
+    * A successful query will write all MSB Summaries to file.
+    */
    public void queryMSB() {
-      QuerytoolClient qtc = new QuerytoolClient();
-      qtc.queryMSB(xmlString);
+      //QuerytoolClient qtc = new QuerytoolClient();
+      MsbClient.queryMSB(xmlString);
    }
 
+   /**
+    * The <code>fetchMSB</code> method starts the SOAP client.
+    * A successful fetch will start the lower level OMP-OM sequence.
+    *
+    * @param i an <code>Integer</code> value
+    */
    public void fetchMSB(Integer i) {
-      QuerytoolClient qtc = new QuerytoolClient();
-      qtc.fetchMSB(i);
+      //QuerytoolClient qtc = new QuerytoolClient();
+      MsbClient.fetchMSB(i);
    }
 
+   /**
+    * <code>XMLisNull</code> is a test for a null xmlString.
+    *
+    * @return a <code>boolean</code> value
+    */
    public boolean XMLisNull() {
       return (xmlString == null);
    }
-
 
 }// Querytool

@@ -1,25 +1,24 @@
 package edu.jach.qt.app;
 
 /**
- * Subject.java
+ * Interface <code>Subject</code> is implemented by the WidgetDataBag
+ * class.  
  *
- *
- * Created: Mon Jul 23 12:09:12 2001
- *
- * @author <a href="mailto: "Mathew Rippa</a>
- * @version
+ * @author <a href="mailto:mrippa@jach.hawaii.edu">Mathew Rippa</a>
  */
 
 public interface Subject {
    /**
-    * Describe <code>addObserver</code> method here.
+    * The <code>addObserver</code> method adds Observers to 
+    * the list that will be notified of subject changes.
     *
     * @param o an <code>Observer</code> value
     */
    public void addObserver( Observer o );
 
    /**
-    * Describe <code>removeObserver</code> method here.
+    * The <code>removeObserver</code> method removes Observers 
+    * from the list that will be notified of subject changes.
     *
     * @param o an <code>Observer</code> value
     */

@@ -1,18 +1,15 @@
 package edu.jach.qt.app;
 
 /**
- * Observer.java
+ * Interface <code>Observer</code> is implemented by the Querytool
+ * object.
  *
- *
- * Created: Mon Jul 23 12:09:12 2001
- *
- * @author <a href="mailto: "Mathew Rippa</a>
- * @version
+ * @author <a href="mailto:mrippa@jach.hawaii.edu">Mathew Rippa</a>
  */
-
 public interface Observer {
    /**
-    * Describe <code>update</code> method here.
+    * The <code>update</code> method is a callback for a 
+    * any Subject noting a change in its sensitive attributes.
     *
     * @param o a <code>Subject</code> value
     */
