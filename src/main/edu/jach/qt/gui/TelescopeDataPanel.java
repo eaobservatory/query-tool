@@ -136,7 +136,7 @@ public class TelescopeDataPanel extends JPanel implements ActionListener {
     DecimalFormat myFormatter = new DecimalFormat("0.000");
     String output = myFormatter.format(val);
 
-    if (acceptUpdates) {
+    if (acceptUpdates && !output.equals(tauString)) {
 	if (lastCSOValue.equals("")) {
 	    lastCSOValue = output;
 	    if (WidgetPanel.getAtmospherePanel() != null) {
@@ -152,7 +152,7 @@ public class TelescopeDataPanel extends JPanel implements ActionListener {
 							  output);
 	}
 	else if (!(lastCSOValue.equals(WidgetPanel.getAtmospherePanel().getText("tau:")))) {
-	acceptUpdates = false;
+	    acceptUpdates = false;
 	}
     }
     TelescopeDataPanel.csoTauValue.setText(""+output);
