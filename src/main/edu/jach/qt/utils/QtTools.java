@@ -149,11 +149,11 @@ public class QtTools {
     script[4] = "-"+System.getProperty("ENGINEERING","eng");
 
     System.out.println ("About to start script "+
-			script[0]+
-			" "+script[1]+
-			" "+script[2]+
-			" "+script[3]+
-			//" "+script[4]
+			script[0]
+			+			" "+script[1] 
+			+			" "+script[2] 
+			+			" "+script[3] 
+			//+                       " "+script[4]
 			);
 
     int status = QtTools.execute(script);
