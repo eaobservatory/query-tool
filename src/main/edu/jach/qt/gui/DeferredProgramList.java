@@ -9,6 +9,7 @@ import java.awt.datatransfer.*;
 import java.awt.event.*;
 import java.util.*;
 import java.io.*;
+import java.text.*;
 
 /* Gemini imports */
 import gemini.sp.*;
@@ -244,7 +245,7 @@ final public class DeferredProgramList extends JPanel implements
 	add(c, gbc);      
     }
 
-    private void makePersistent(SpItem item)
+    private static void makePersistent(SpItem item)
     {
 	// Stores this observation in it own unique file in the deferred directory
 	// First make the filename
@@ -270,7 +271,7 @@ final public class DeferredProgramList extends JPanel implements
 	fileToObjectMap.put(item, fName);
     }
 
-    private String makeFilenameForThisItem(SpItem item)
+    private static String makeFilenameForThisItem(SpItem item)
     {
 	String fName = new String();
 	Date now = new Date();
@@ -365,6 +366,30 @@ final public class DeferredProgramList extends JPanel implements
 	}
 	return;
     }
+
+    public static void markThisObservationAsDone (SpItem thisObservation)
+    {
+	// Add a dat-time stamp to the title
+	String currentTitle = thisObservation.getTitle();
+	SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd'T'HHmmss");	
+	Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+	String observationTime = df.format(cal.getTime());
+	String newTitle = currentTitle + "_done_" + observationTime;
+	thisObservation.setTitleAttr(newTitle);
+
+	// Delete the old entry and replace by the current
+	String fileToRemove = (String) fileToObjectMap.get(obsList.getSelectedValue());
+	File f = new File (fileToRemove);
+	f.delete();
+	fileToObjectMap.remove(obsList.getSelectedValue());
+	((DefaultListModel)obsList.getModel()).removeElementAt(obsList.getSelectedIndex());
+	currentItem = null;
+
+	makePersistent(thisObservation);
+
+	((DefaultListModel)obsList.getModel()).addElement(thisObservation);
+    }
+
 
     /*
      * Add the event listeners
