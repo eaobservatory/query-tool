@@ -456,6 +456,23 @@ public class QtFrame extends JFrame implements PopupMenuListener, ActionListener
       newItem, openItem, null, saveItem, saveAsItem,
       null, exitItem }, this)
 	     );
+
+
+    JMenu viewMenu = new JMenu ("View");
+    mbar.add(viewMenu);
+    JMenuItem columnItem = new JMenuItem("Columns...");
+    columnItem.addActionListener(this);
+    JMenu satMenu = new JMenu("Satallite Image");
+    JMenuItem irItem = new JMenuItem("Infra Red");
+    irItem.addActionListener(this);
+    JMenuItem wvItem = new JMenuItem("Water Vapour");
+    wvItem.addActionListener(this);
+    satMenu.add(irItem);
+    satMenu.add(wvItem);
+    viewMenu.add(columnItem);
+    viewMenu.add(satMenu);
+
+
       
     observability = new JCheckBoxMenuItem("Observability",true);
     remaining     = new JCheckBoxMenuItem("Remaining",true);
@@ -466,11 +483,6 @@ public class QtFrame extends JFrame implements PopupMenuListener, ActionListener
     copyItem.setEnabled(false);
     JMenuItem pasteItem = new JMenuItem("Paste", new ImageIcon("icons/paste.gif"));
     pasteItem.setEnabled(false);
-
-    JMenu viewMenu = new JMenu ("View...");
-    mbar.add(viewMenu);
-//     viewMenu.setEnabled(false);
-    viewMenu.addMenuListener(this);
 
     mbar.add( makeMenu("Edit", new Object[] {
 	cutItem, copyItem, pasteItem,
@@ -587,6 +599,16 @@ public class QtFrame extends JFrame implements PopupMenuListener, ActionListener
 	}
 	else if (thisItem.getText().equalsIgnoreCase("Exit") ) {
 	    exitQT();
+	}
+	else if (thisItem.getText().equalsIgnoreCase("Columns...") ) {
+	    ColumnSelector colSelector = new ColumnSelector(msbQTM);
+	    return;
+	}
+	else if (thisItem.getText().equalsIgnoreCase("Infra Red") ) {
+	    infoPanel.getSatPanel().setDisplay(thisItem.getText());
+	}
+	else if (thisItem.getText().equalsIgnoreCase("Water Vapour")) {
+	    infoPanel.getSatPanel().setDisplay(thisItem.getText());
 	}
     }
     else if (source instanceof JButton) {
