@@ -442,9 +442,6 @@ public class XmlUtils {
 		    // rid of them
 		}
 		else {
-		    System.out.println("Found project "+s);
-		    System.out.println("\tAt position "+start);
-		    System.out.println("\tOf length "+length);
 		    ids.add(s);
 		    getNextPriority = true;
 		}
