@@ -73,6 +73,7 @@ public class ExecuteJCMT extends Execute implements Runnable {
 	    return;
 	}
 	byte [] odfFile = new byte [1024];
+	byte [] errorMessage = new byte [1024];
 	Runtime rt;
 	// Do the translation
 	try {
@@ -82,19 +83,21 @@ public class ExecuteJCMT extends Execute implements Runnable {
 	    Process p = rt.exec(command);
 	    InputStream istream = p.getInputStream();
 	    istream.read(odfFile);
-	    System.out.println(new String (odfFile));
+	    InputStream estream = p.getErrorStream();
+	    estream.read(errorMessage);
 	    int rtn = p.waitFor();
-	    System.out.println("Process returned with exit status "+rtn);
+	    System.out.println("Translator returned with exit status "+rtn);
+	    System.out.println("Output from translator: "+new String(odfFile));
+	    System.out.println("Error from translator: "+new String(errorMessage));
+	    if (rtn != 0) return;
 	}
 	catch (InterruptedException ie) {
 	    logger.error ("Translation exited prematurely...", ie);
-	    file.delete();
 	    success.delete();
 	    return;
 	}
 	catch (IOException ioe) {
 	    logger.error("Error executing translator...", ioe);
-	    file.delete();
 	    success.delete();
 	    return;
 	}
@@ -107,8 +110,14 @@ public class ExecuteJCMT extends Execute implements Runnable {
 		String command = "/jac_sw/omp/QT/bin/loadSCUQUEUE.ksh "+ new String (odfFile);
 		System.out.println ("Running command "+command+" &");
 		Process p = rt.exec(command);
+		InputStream istream = p.getInputStream();
+		InputStream estream = p.getErrorStream();
+		istream.read(odfFile);
+		estream.read(errorMessage);
 		int rtn = p.exitValue();
-		System.out.println("Process returned with exit status "+rtn);
+		System.out.println("LoadSCUQUEUE returned with exit status "+rtn);
+		System.out.println("Output from LoadSCUQUEUE: "+new String(odfFile));
+		System.out.println("Error from LoadSCUQUEUE: "+new String(errorMessage));
 		if (rtn != 0) {
 		    logger.error("Non-zero exit condition returned from LOADQ - "+rtn);
 		    success.delete();
