@@ -89,6 +89,22 @@ public class QtFrame extends JFrame implements PopupMenuListener, ActionListener
    *
    */
   public void exitQT() {
+      if (DeferredProgramList.deferredFilesExist()) {
+	  Object [] options = {"Save", "Delete"};
+	  int selection = JOptionPane.showOptionDialog( null,
+							"Deferred observations currently exist. Save?",
+							"Deferred observations exist",
+							JOptionPane.DEFAULT_OPTION,
+							JOptionPane.QUESTION_MESSAGE,
+							null,
+							options,
+							options[0]
+							);
+	  if (selection == 1) {
+	      // This should be the delete option I think
+	      DeferredProgramList.deleteAllFiles();
+	  }
+      }
     setVisible(false);
     dispose();
     System.exit(0);
@@ -97,6 +113,19 @@ public class QtFrame extends JFrame implements PopupMenuListener, ActionListener
   /**Component initialization*/
   private void compInit() throws Exception  {
     gbc = new GridBagConstraints();
+
+    // Check whether deferred Observations currently exist and ask the user if he wants to
+    // use these.  If they don't then delete the current files
+    if (DeferredProgramList.obsExist()) {
+	int selection = JOptionPane.showConfirmDialog(null,
+						      "Use current Deferred Observations?",
+						      "Deferred Observations Exist",
+						      JOptionPane.YES_NO_OPTION
+						      );
+	if (selection == JOptionPane.NO_OPTION) {
+	    DeferredProgramList.deleteAllFiles();
+	}
+    }
 
     //Build Menu
     buildMenu();
@@ -202,8 +231,6 @@ public class QtFrame extends JFrame implements PopupMenuListener, ActionListener
 	    }; //End inner class
 
 	  if (SwingUtilities.isLeftMouseButton(e) && e.getClickCount() == 2) {
-	    if (TelescopeDataPanel.DRAMA_ENABLED) {
-
 	      if (selRow != -1) {
 
 		msbWorker.start();
@@ -213,12 +240,6 @@ public class QtFrame extends JFrame implements PopupMenuListener, ActionListener
 		JOptionPane.showMessageDialog(null, "Must select a project summary first!");
 
 	      }
-	    }
-
-	    else {
-	      JOptionPane.showMessageDialog(null, "NOT A DRAMA SYSTEM. MSB EXECUTION DISABLED.");
-	      logger.warn("NOT A DRAMA SYSTEM. MSB EXECUTION DISABLED.");
-	    }
 	  }
 
 	  else if (SwingUtilities.isRightMouseButton(e) && e.getClickCount() == 1) {
