@@ -1,59 +1,32 @@
-BUILD     = ../../../../../../..
-include	    $(BUILD)/makeInclude
-
-PACKAGE	    = $(QT_PACKAGE)/utils
-
 #### Targets settings
+
+TOP = ../../../../../../..
+
+PACKAGE = edu/jach/qt/utils
 
 SOURCES = \
 	BasicWindowMonitor.java \
 	Bench.java \
 	Blocker.java \
-	SoapClient.java \
+	CalibrationList.java \
+	ErrorBox.java \
+	ExecDtask.java \
+	InvalidUserException.java \
+	LockFile.java \
+	MSBDoneDialog.java \
 	MsbClient.java \
 	MyTreeCellRenderer.java \
-	ObsListCellRenderer.java \
-	QtTools.java \
-	SpClient.java \
-	TextReader.java \
-	Translating.java \
-	../gui/XmlUtils.java \
-	../gui/DragDropObject.java \
-	../gui/MsbNode.java \
-	DragTreeCellRenderer.java \
-	LockFile.java \
-	CalibrationList.java \
-	SimpleMoon.java \
-	TelescopeInformation.java \
-	TimeUtils.java \
-	ExecDtask.java \
-	ErrorBox.java \
 	NoSuchParameterException.java \
-	InvalidUserException.java \
+	ObsListCellRenderer.java \
 	OracColor.java \
-	MSBDoneDialog.java
+	QtTools.java \
+	SimpleMoon.java \
+	SoapClient.java \
+	SpClient.java \
+	TelescopeInformation.java \
+	TextReader.java \
+	TimeUtils.java \
+	Translating.java
 
-
-
-include $(BUILD)/make.tail
-
-
-
-# Phony Targets
-.PHONY: clean build help
-
-#### Help
-help:
-	@echo "Usage: make [targets...]"
-	@echo ""
-	@echo "where targets include:"
-	@echo ""
-	@echo "  help           display this help"
-	@echo "  all            compile all (default)"
-	@echo "  clean          remove all class files"
-	@echo "  build          rebuild all inconditionnally"
-	@echo "  <class file>   compile the given file"
-	@echo "  <subdir>.make  compile the given subdir"
-	@echo "  <subdir>.clean clean the given subdir"
-
+include ${TOP}/Makefile
 
