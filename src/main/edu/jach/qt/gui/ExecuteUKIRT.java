@@ -104,7 +104,13 @@ public class ExecuteUKIRT extends Execute implements Runnable {
 	    byte [] stderr = new byte [1024];
 	    try {
 		Runtime rt = Runtime.getRuntime();
-		String command = "/jac_sw/omp/QT/bin/loadUKIRT.ksh "+tname;
+		String command;
+		if ( super.isDeferred ) {
+		    command = "/jac_sw/omp/QT/bin/insertOCSQUEUE.ksh " + tname;
+		}
+		else {
+		    command = "/jac_sw/omp/QT/bin/loadUKIRT.ksh " + tname;
+		}
 		logger.debug ("Running command "+command);
 		Process p = rt.exec(command);
 		InputStream istream = p.getInputStream();
@@ -113,8 +119,8 @@ public class ExecuteUKIRT extends Execute implements Runnable {
 		estream.read(stderr);
 		p.waitFor();
 		int rtn = p.exitValue();
-		logger.info ("loadUKIRT task returned a value of "+rtn);
-		logger.debug("Output from loadUKIRT: "+new String(stdout).trim());
+		logger.info (command + " returned a value of " + rtn);
+		logger.debug("Output from " + command + ": "+new String(stdout).trim());
 		if (rtn != 0) {
 		    logger.error("Error loading UKIRT task");
 		    logger.error(new String(stderr).trim());
