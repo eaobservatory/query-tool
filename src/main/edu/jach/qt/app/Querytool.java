@@ -48,8 +48,10 @@ public class Querytool implements Runnable, Observer {
   private final String OBSERVABILITY_DISABLED = "observability";
   private final String REMAINING_DISABLED     = "remaining";
   private final String ALLOCATION_DISABLED    = "allocation";
+  private final String QUEUE                  = "semester";
 
-  private boolean remaining, observability, allocation;
+  private boolean remaining, observability, allocation,_q;
+  private String _queue;
   private boolean areResultsExecutable = true;
 
   /**
@@ -95,6 +97,18 @@ public class Querytool implements Runnable, Observer {
     buildXML(bag.getHash());
   }
 
+    public void setQueue(String q) {
+	if (q != null && q != "") {
+	    _q = true;
+	    _queue = q;
+	}
+	else {
+	    _q = false;
+	}
+	buildXML(bag.getHash());
+	return;
+    }
+
   /**
    * The <code>update</code> method is used to trigger
    * an action if a change is "Observed" in the "Subject".
@@ -129,6 +143,13 @@ public class Querytool implements Runnable, Observer {
       item = doc.createElement("telescope");
       item.appendChild( doc.createTextNode(System.getProperty("telescope")) );
       root.appendChild(item);
+
+
+      if (_q) {
+	item = doc.createElement("semester");
+	item.appendChild( doc.createTextNode(_queue) );
+	root.appendChild(item);
+      }
 
       if (observability) {
 	item = doc.createElement("disableconstraint");
@@ -404,11 +425,10 @@ public class Querytool implements Runnable, Observer {
 	  throw (new NullPointerException("A widget in the InputPanel has data, but has not been set!"));
 	} // end of else
 	
-
 	root.appendChild( item );
       }
 
-      doc.appendChild(root);
+     doc.appendChild(root);
 
       OutputFormat    format  = new OutputFormat( doc,"UTF-8",true );   //Serialize DOM
       StringWriter  stringOut = new StringWriter();        //Writer will be a String
