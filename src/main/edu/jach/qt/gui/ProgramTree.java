@@ -234,7 +234,8 @@ final public class ProgramTree extends JPanel implements
   public void actionPerformed (ActionEvent evt) {
     Object source = evt.getSource();
     if (source == run) {
-	execute();
+// 	execute();
+	doExecute();
     }
 
     if (source instanceof JMenuItem) {
@@ -250,6 +251,60 @@ final public class ProgramTree extends JPanel implements
 	}
     }
   }
+
+    public void doExecute() {
+	SpItem item = null;
+	boolean isDeferred = false;
+	boolean failed = false;
+
+	if (selectedItem == null) {
+	    isDeferred =  true;
+	    item = DeferredProgramList.currentItem;
+	}
+	run.setEnabled(false);
+	if (System.getProperty("telescope").equalsIgnoreCase("ukirt")) {
+	    try {
+		ExecuteUKIRT execute = new ExecuteUKIRT();
+		Thread t = new Thread(execute);
+		t.start();
+		t.join();
+		File failFile = new File ("/ukirtdata/orac_data/deferred/.failure");
+		if (failFile.exists()) {
+		    failed = true;
+		}
+		run.setEnabled(true);
+	    }
+	    catch (Exception e) {logger.error("Failed to execute");}
+	}
+	else if (System.getProperty("telescope").equalsIgnoreCase("jcmt")) {
+	    try {
+		ExecuteJCMT execute = new ExecuteJCMT(_spItem);
+		Thread t = new Thread(execute);
+		t.start();
+		t.join();
+		File failFile = new File ("/jcmtdata/orac_data/deferred/.failure");
+		if (failFile.exists()) {
+		    failed = true;
+		}
+		run.setEnabled(true);
+	    }
+	    catch (Exception e) {logger.error("Failed to execute");}
+	}
+	if (!isDeferred && !failed) {
+	    model.remove(obsList.getSelectedIndex());
+	}
+	else if (!failed) {
+	    DeferredProgramList.markThisObservationAsDone(item);
+	}
+	
+	if ( model.isEmpty() && TelescopeDataPanel.DRAMA_ENABLED) {
+	    MsbClient.doneMSB(projectID, checkSum);
+	    JOptionPane.showMessageDialog(null, "The MSB with \n"+
+					  "Project ID: "+projectID+"\n"+
+					  "CheckSum: "+checkSum+"\n"+
+					  "has been marked as done!");
+	} // end of if ()
+    }
   
   /**
    * The <code>execute</code> method kick off a sequencer.  The
@@ -323,12 +378,8 @@ final public class ProgramTree extends JPanel implements
 	SpItem inst = (SpItem) SpTreeMan.findInstrument(observation);
 	if (inst == null) {
 	    logger.error("No instrument found");
-	    System.out.println("No instrument found");
 	    run.setEnabled(true);
 	    return;
-	}
-	else {
-	    System.out.println("Instrument: "+inst.type());
 	}
 	
 	// *TODO* Replace this crap!
@@ -385,22 +436,22 @@ final public class ProgramTree extends JPanel implements
 	  
 	  if(inst.type().getReadable().equals("IRCAM3") && 
 	     console.getInstrument().equals("CGS4")) {
-	      JOptionPane.showMessageDialog (null,
-					     "IRCAM3 and CGS4 cannot run at the same time.",
-					     "",
-					     JOptionPane.ERROR_MESSAGE);
-	    run.setEnabled(true);
-	    return;
+	      JOptionPane.showMessageDialog(null,
+					    "IRCAM3 and CGS4 cannot run at the same time.",
+					    "",
+					    JOptionPane.ERROR_MESSAGE);
+	      run.setEnabled(true);
+	      return;
 	  }
 
 	  if(inst.type().getReadable().equals("CGS4") && 
 	     console.getInstrument().equals("IRCAM3")) {
-	      JOptionPane.showMessageDialog (null,
-					     "IRCAM3 and CGS4 cannot run at the same time.",
-					     "",
-					     JOptionPane.ERROR_MESSAGE);
-	    run.setEnabled(true);
-	    return;
+	      JOptionPane.showMessageDialog(null,
+					    "IRCAM3 and CGS4 cannot run at the same time.",
+					    "",
+					    JOptionPane.ERROR_MESSAGE);
+	      run.setEnabled(true);
+	      return;
 	  }
 	}
 
@@ -491,7 +542,7 @@ final public class ProgramTree extends JPanel implements
 	    public void mouseClicked(MouseEvent e)
 	    {
 		if (e.getClickCount() == 2) {
-		    execute();
+		    doExecute();
 		}
 		else if (e.getClickCount() == 1 && 
 			 (e.getModifiers() & InputEvent.BUTTON1_MASK) == InputEvent.BUTTON1_MASK ) {
@@ -628,17 +679,31 @@ final public class ProgramTree extends JPanel implements
    */
     public void removeCurrentNode() {
 
-	Object item = obsList.getSelectedValue();
+	SpObs item = (SpObs)obsList.getSelectedValue();
 
-	if (item == null)  {
-	    JOptionPane.showMessageDialog(null,
-					  "No Observation to remove",
-					  "Message", JOptionPane.INFORMATION_MESSAGE);
-	    return;
+ 	Vector obsV = SpTreeMan.findAllItems(_spItem, "gemini.sp.SpObs");
+	int i;
+	SpObs [] obsToDelete = {(SpObs)obsV.elementAt(obsList.getSelectedIndex())};
+	try {
+	    if ( item != null && SpTreeMan.evalExtract(obsToDelete) == true) {
+		SpTreeMan.extract(obsToDelete);
+		((DefaultListModel)obsList.getModel()).removeElementAt(obsList.getSelectedIndex());
+	    }
+	    else if (item == null) {
+		JOptionPane.showMessageDialog(null,
+					      "No Observation to remove",
+					      "Message", JOptionPane.INFORMATION_MESSAGE);
+		return;
+	    }
+	    else {
+		JOptionPane.showMessageDialog(null,
+					      "Encountered a problem deleting this observation",
+					      "Message", JOptionPane.WARNING_MESSAGE);
+	    }
 	}
-
-	((DefaultListModel)obsList.getModel()).removeElementAt(obsList.getSelectedIndex());
-	
+	catch (Exception e) {
+	    logger.error ("Exception encountered while deleting observation", e);
+	}
     }
    
   /**
@@ -900,14 +965,10 @@ final public class ProgramTree extends JPanel implements
 	    /*
 	     * Now we have updated all of the obs, try and replace the obs in the tree
 	     */
-	    System.out.println(msb.toXML());
-	    System.out.println("\n\n\n");	    
-	    System.out.println(newObs[i].toXML());
-	    System.out.println("\n\n\n");	    
-	    spid = SpTreeMan.evalInsertInside(newObs[i], (SpItem)msb);
-	    SpTreeMan.insert(spid);
-	    System.out.println(msb.toXML());
-	    System.out.println("\n\n\n");
+	    if (SpTreeMan.evalExtract(item) == true) {
+		spid = SpTreeMan.evalInsertInside(newObs[i], (SpItem)msb);
+		SpTreeMan.insert(spid);
+	    }
 	}
  	System.exit(0);
 	
@@ -998,16 +1059,20 @@ final public class ProgramTree extends JPanel implements
 	Object selected = obsList.getSelectedValue();
 	selectedItem = (SpItem)selected;
 	if ( selected != null ){
-	    obsToDefer   = selectedItem;
+	    SpItem tmp = _spItem.deepCopy();
+	    obsToDefer   = selectedItem.deepCopy();
 	    SpInsertData spid;
-	    if (SpTreeMan.findInstrumentInContext(obsToDefer) == null) {
+	    if (SpTreeMan.findInstrumentInContext(obsToDefer) == null && instrumentContext !=  null) {
 		spid = SpTreeMan.evalInsertInside(instrumentContext, obsToDefer);
 		SpTreeMan.insert(spid);
 	    }
-	    if ( SpTreeMan.findTargetListInContext(obsToDefer) == null ) {
+	    if ( SpTreeMan.findTargetListInContext(obsToDefer) == null  && 
+		 targetContext != null &&
+		 targetContext.size() != 0) {
 		spid = SpTreeMan.evalInsertInside((SpItem)targetContext.firstElement(), obsToDefer);
 		SpTreeMan.insert(spid);
 	    }
+	    _spItem = tmp;
 	    StringSelection text = new StringSelection( obsToDefer.toString());
         
 	    // as the name suggests, starts the dragging
