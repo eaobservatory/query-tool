@@ -37,6 +37,7 @@ final public class NotePanel extends JPanel {
 	textPanel = new JTextArea();
 	textPanel.setEditable(false);
 	textPanel.setLineWrap(true);
+	textPanel.setWrapStyleWord(true);
 
 	JScrollPane scrollPane = new JScrollPane(textPanel);
 	scrollPane.setVerticalScrollBarPolicy (JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
