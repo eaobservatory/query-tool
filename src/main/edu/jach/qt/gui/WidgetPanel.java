@@ -1,14 +1,12 @@
 package edu.jach.qt.gui;
 
 
-import edu.jach.qt.app.Querytool;
-import edu.jach.qt.utils.TextReader;
+import edu.jach.qt.app.*;
+import edu.jach.qt.utils.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.IOException;
-import java.util.Hashtable;
-import java.util.LinkedList;
-import java.util.StringTokenizer;
+import java.io.*;
+import java.util.*;
 import javax.swing.*;
 
 /**
@@ -26,339 +24,388 @@ import javax.swing.*;
  * $Id$
  */
 public class WidgetPanel extends JPanel 
-   implements ActionListener {
+  implements ActionListener {
 
-   private TextReader tr;
-   private Box b;
-   private LinkedList radioList;
-   private int numComponents = 0;
-   private JCheckBox[] cb = new JCheckBox[3];
-   private Hashtable abbrevTable;
-   private WidgetDataBag widgetBag;
+  private TextReader tr;
+  private Box b;
+  private LinkedList radioList;
+  private int numComponents = 0;
+  private JCheckBox[] cb = new JCheckBox[3];
+  protected Hashtable abbrevTable;
+  protected WidgetDataBag widgetBag;
+  private int totalNumRadRows = 0;
+  private int numRadPanels = 0;
 
-   /**
-    * Describe variable <code>instrumentPanel</code> here.
-    *
-    */
-   public ButtonPanel instrumentPanel;
+  /**
+   * Describe variable <code>instrumentPanel</code> here.
+   *
+   */
+  public ButtonPanel instrumentPanel;
 
-   /**
-    * Creates a new <code>WidgetPanel</code> instance.
-    *
-    * @param ht a <code>Hashtable</code> value
-    * @param wdb a <code>WidgetDataBag</code> value
-    */
-   public WidgetPanel(Hashtable ht, WidgetDataBag wdb) {
-      abbrevTable = ht;
-      widgetBag = wdb;
+  /**
+   * Creates a new <code>WidgetPanel</code> instance.
+   *
+   * @param ht a <code>Hashtable</code> value
+   * @param wdb a <code>WidgetDataBag</code> value
+   */
+  public WidgetPanel(Hashtable ht, WidgetDataBag wdb) {
+    abbrevTable = ht;
+    widgetBag = wdb;
       
-      //setBackground(java.awt.Color.gray);
-   }
+    //setBackground(java.awt.Color.gray);
+  }
 
-   /**
-    * The <code>parseConfig</code> method is the single method
-    * responsible for configuring Widgets at runtime.  It parses the
-    * config/qtWidgets.conf file and sets up the determined widgets as 
-    * described by the current layout manager.
-    *
-    * @param file a <code>String</code> value
-    * @exception IOException if an error occurs
-    */
-   public void parseConfig(String file) throws IOException {
+  /**
+   * The <code>parseConfig</code> method is the single method
+   * responsible for configuring Widgets at runtime.  It parses the
+   * config/qtWidgets.conf file and sets up the determined widgets as 
+   * described by the current layout manager.
+   *
+   * @param file a <code>String</code> value
+   * @exception IOException if an error occurs
+   */
+  public void parseConfig(String file) throws IOException {
 
-      GridBagLayout layout = new GridBagLayout();
-      setLayout(layout);
+    GridBagLayout layout = new GridBagLayout();
+    setLayout(layout);
 
-      GridBagConstraints gbc = new GridBagConstraints();
-      String widget, next, tmp;
+    GridBagConstraints gbc = new GridBagConstraints();
+    String widget, next, tmp;
 
-      tr = new TextReader(file);
-      while (tr.ready()) {
+    tr = new TextReader(file);
+    while (tr.ready()) {
 
-	 //skip over comments
-	 while(tr.peek() == '#') {
-	    tr.readLine();
-	 }
+      //skip over comments
+      while(tr.peek() == '#') {
+	tr.readLine();
+      }
 	 
-	 //which widget?
-	 widget = tr.readWord();
+      //which widget?
+      widget = tr.readWord();
 	 
-	 //JLabeldTextField
-	 if (widget.equals("JTextField")) {
-	    //next = tr.readLine();
-	    tr.readLine();
-	    gbc.fill = GridBagConstraints.HORIZONTAL;
-	    gbc.anchor = GridBagConstraints.WEST;
-	    gbc.weightx = 100;
-	    gbc.weighty = 0;
-	    gbc.insets.top = 10;
-	    gbc.insets.bottom = 5;
-	    gbc.insets.left = 10;
-	    gbc.insets.right = 5;
-	    addTextFields("Labeled", gbc);
-	 }
+      //JLabeldTextField
+      if (widget.equals("JTextField")) {
+	//next = tr.readLine();
+	tr.readLine();
+	gbc.fill = GridBagConstraints.HORIZONTAL;
+	gbc.anchor = GridBagConstraints.WEST;
+	gbc.weightx = 100;
+	gbc.weighty = 0;
+	gbc.insets.top = 10;
+	gbc.insets.bottom = 5;
+	gbc.insets.left = 10;
+	gbc.insets.right = 5;
+	addTextFields("Labeled", gbc);
+      }
 
-	 else if (widget.equals("JMinMaxField")) {
-	    tr.readLine();
-	    gbc.fill = GridBagConstraints.HORIZONTAL;
-	    gbc.anchor = GridBagConstraints.NORTH;
-	    gbc.weightx = 100;
-	    gbc.weighty = 0;
-	    gbc.insets.top = 5;
-	    gbc.insets.bottom = 5;
-	    gbc.insets.left = 10;
-	    gbc.insets.right = 5;
-	    addTextFields("MinMax", gbc);
-	 }
+      else if (widget.equals("JMinMaxField")) {
+	tr.readLine();
+	gbc.fill = GridBagConstraints.HORIZONTAL;
+	gbc.anchor = GridBagConstraints.NORTH;
+	gbc.weightx = 100;
+	gbc.weighty = 0;
+	gbc.insets.top = 5;
+	gbc.insets.bottom = 5;
+	gbc.insets.left = 10;
+	gbc.insets.right = 5;
+	addTextFields("MinMax", gbc);
+      }
 
-	 else if (widget.equals("JRangeField")) {
-	    tr.readLine();
-	    gbc.fill = GridBagConstraints.HORIZONTAL;
-	    gbc.anchor = GridBagConstraints.NORTH;
-	    gbc.weightx = 100;
-	    gbc.weighty = 0;
-	    gbc.insets.top = 9;
-	    gbc.insets.bottom = 5;
-	    gbc.insets.left = 10;
-	    gbc.insets.right = 15;
-	    addTextFields("Range", gbc);
-	 }
+      else if (widget.equals("JRangeField")) {
+	tr.readLine();
+	gbc.fill = GridBagConstraints.HORIZONTAL;
+	gbc.anchor = GridBagConstraints.NORTH;
+	gbc.weightx = 100;
+	gbc.weighty = 0;
+	gbc.insets.top = 9;
+	gbc.insets.bottom = 5;
+	gbc.insets.left = 10;
+	gbc.insets.right = 15;
+	addTextFields("Range", gbc);
+      }
 
-	 //JCheckBox
-	 else if (widget.equals("JCheckBox")) {
-	    gbc.fill = GridBagConstraints.HORIZONTAL;
-	    gbc.anchor = GridBagConstraints.WEST;
-	    gbc.weightx = 100;
-	    gbc.weighty = 0;
-	    int num =0;
-	    next = tr.readLine();
-	    do {
-	       next = tr.readLine();
-	       if (next.equals("[EndSection]"))
-		  break;
-	       cb[num] = new JCheckBox(next);
-	       cb[num].setHorizontalAlignment(SwingConstants.CENTER);
-	       //cb[num].setBackground(java.awt.Color.gray);
+      //JCheckBox
+      else if (widget.equals("JCheckBox")) {
+	gbc.fill = GridBagConstraints.HORIZONTAL;
+	gbc.anchor = GridBagConstraints.WEST;
+	gbc.weightx = 100;
+	gbc.weighty = 0;
+	int num =0;
+	next = tr.readLine();
+	do {
+	  next = tr.readLine();
+	  if (next.equals("[EndSection]"))
+	    break;
+	  cb[num] = new JCheckBox(next);
+	  cb[num].setHorizontalAlignment(SwingConstants.CENTER);
+	  //cb[num].setBackground(java.awt.Color.gray);
 
+	  cb[num].addActionListener(this);
+	  add(cb[num], gbc, 1, num, 2, 1);
+	  num++;
+	  tmp = abbreviate(next);
+	  abbrevTable.put(next, tmp);
+	  //widgetBag.put(tmp, "false");
+	}while (true);
+      }
 
-	       cb[num].addActionListener(this);
-       	       add(cb[num], gbc, 1, radioList.size()+1+num, 1, 1);
-	       num++;
-	       tmp = abbreviate(next);
-	       abbrevTable.put(next, tmp);
-	       //widgetBag.put(tmp, "false");
-	    }while (true);
-	 }
+      //JRadioButton Panel
+      else if (widget.equals("JRadioButtonGroup") || widget.equals("JTextFieldGroup")) {
+	//radioList = new LinkedList();
+	CompInfo info = makeList();
 
-	 //JRadioButton Panel
-	 else if (widget.equals("JRadioButtonGroup")) {
-	    radioList = new LinkedList();
-	    String groupTitle = makeList(radioList);
+	WidgetPanel panel;
 
-	    RadioPanel jRadioPanel = new RadioPanel(abbrevTable, widgetBag, groupTitle, radioList);
-	    jRadioPanel.setName(groupTitle);
-	    gbc.insets.top = 0;
-	    gbc.insets.bottom = 0;
-	    gbc.insets.left = 0;
-	    gbc.insets.right = 0;
+	if ( info.getView() != -1) {
+	  if (widget.equals("JRadioButtonGroup") ) {
+	    panel = new RadioPanel(abbrevTable, widgetBag, info);
+	  
+	  } // end of if ()
+	  else {
+	    panel = new JTextFieldPanel(abbrevTable, widgetBag, info);
+	  } // end of else
+	  
+	  
+	  panel.setName(info.getTitle());
+	  gbc.insets.top = 0;
+	  gbc.insets.bottom = 0;
+	  gbc.insets.left = 0;
+	  gbc.insets.right = 0;
 
-	    gbc.fill = GridBagConstraints.HORIZONTAL;
-	    gbc.anchor = GridBagConstraints.NORTH;
-	    gbc.weightx = 100;
-	    gbc.weighty = 0;
-	    add(jRadioPanel, gbc, 1, 0, 1, radioList.size());
-	 }
+	  gbc.fill = GridBagConstraints.HORIZONTAL;
+	  gbc.anchor = GridBagConstraints.NORTH;
+	  gbc.weightx = 100;
+	  gbc.weighty = 0;
+	  if ( info.getView() == BoxLayout.Y_AXIS) {
+	    if (info.getTitle().equals("Tau") ) {
+	      add(panel, gbc, numRadPanels-1, 30, 1, info.getSize()+1);
+	    } // end of if ()
+	    else {
+	      add(panel, gbc, numRadPanels, 20, 1, info.getSize()+1);
+	    } // end of if ()else
+	    totalNumRadRows += info.getSize()+2;
+	  }
+	  else {
+	    add(panel, gbc, 0, numComponents + totalNumRadRows, 1, 2);
+	  } // end of else
 
-	 //JCheckBoxGroup
-	 else if (widget.equals("JCheckBoxGroup")) {
-	    LinkedList checkList = new LinkedList();
-	    String groupTitle = makeList(checkList);
+	  numRadPanels++;
+	} // end of if ()
+	else {
+	  System.out.println("FAILED to set radio position!");
+	  System.exit(1);
+	} // end of else
+      }
+
+      //JCheckBoxGroup
+      else if (widget.equals("JCheckBoxGroup")) {
+	//LinkedList checkList = new LinkedList();
+	CompInfo info = makeList();
 	    
-	    instrumentPanel = new ButtonPanel(abbrevTable, widgetBag, groupTitle, checkList);
-	    gbc.fill = GridBagConstraints.BOTH;
-	    //gbc.anchor = GridBagConstraints.NORTH;
-	    gbc.weightx = 100;
-	    gbc.weighty = 100;
-	    gbc.insets.left = 10;
-	    add(instrumentPanel, gbc, 0, numComponents-3, 2, 1);
-	 }
+	instrumentPanel = new ButtonPanel(abbrevTable, widgetBag, info);
+	gbc.fill = GridBagConstraints.BOTH;
+	//gbc.anchor = GridBagConstraints.NORTH;
+	gbc.weightx = 100;
+	gbc.weighty = 100;
+	gbc.insets.left = 10;
+	add(instrumentPanel, gbc, 0, 30, 2, 1);
+      }
 
-	 else if(!widget.equals("[Section]"))
-	    break;
+      else if(!widget.equals("[Section]"))
+	break;
 
-      }//end while
-   }//parseConfig
+    }//end while
 
-   private void addTextFields(String type, GridBagConstraints gbc) {
-      String next, tmp;
-      do {
-	 next = tr.readLine();
-	 if (next.equals("[EndSection]"))
-	    break;
-	 tmp = abbreviate(next);
-	 //System.out.println("[next]:"+ next +"[tmp]: "+tmp);
-	 abbrevTable.put(next, tmp);
-	 
-	 if(type.equals("Labeled")) {
-	    add(new LabeledTextField(abbrevTable, widgetBag, next),
-		gbc, 0, numComponents, 1, 1);
-	    //widgetBag.put(tmp, "");
-	 }
-	 else if(type.equals("MinMax")) {
-	    add(new LabeledMinMaxTextField(abbrevTable, widgetBag, next),
-		gbc, 0, numComponents, 1, 1);
-	 }
-	 else if(type.equals("Range")) {
-	    add(new LabeledRangeTextField(abbrevTable, widgetBag, next),
-		gbc, 0, numComponents, 1, 1);
-	 }
-      }while (true);
-   }
+    validateTree();
 
-   private String makeList (LinkedList list) {
-      String next, title = "";
+  }//parseConfig
+
+  private void addTextFields(String type, GridBagConstraints gbc) {
+    String next, tmp;
+    do {
       next = tr.readLine();
-      do{
-	 next = tr.readLine();
-	 if (next.equals("GroupTitle")) {
-	    title = tr.readLine();
-	    addTableEntry(title);
-	 }
-	 else if (next.equals("[EndSection]"))
-	    break;
-	 else {
-	    list.add(next);
-	    addTableEntry(next);
-	    //widgetBag.put(tmp, "false");
-	 }
-      }while(true);
-      return title;
-   }
-
-   /**
-    * The <code>addTableEntry</code> method is used to keep track of
-    * key:value relationships between the JLabel of a widget(Key) and its
-    * abbreviation (value).
-    *
-    * @param entry a <code>String</code> value
-    */
-   public void addTableEntry(String entry) {
-      String tmp = "";
-      tmp = abbreviate(entry);
-      abbrevTable.put(entry, tmp);
-   }
-
-   /**
-    * The <code>abbreviate</code> method is used to convert the text
-    * in a widget JLabel to an abbreviation used in the xml description.
-    *
-    * @param next a <code>String</code> value
-    * @return a <code>String</code> value
-    */
-   public String abbreviate(String next) {
-      String result = "ERROR";
-      if (!next.equals("")) {
-	 result = "";
-	 next.trim();
-	 char[] chars = next.toCharArray();
-	 for(int i=0; i<chars.length; i++) {
-	    if(chars[i] <91 && chars[i] >64)
-	       result += chars[i];
-	 }
-	 if (result.length() < 2)
-	    result += String.copyValueOf(chars,1,2);
+      if (next.equals("[EndSection]"))
+	break;
+      tmp = abbreviate(next);
+      abbrevTable.put(next, tmp);
+	 
+      if(type.equals("Labeled")) {
+	add(new LabeledTextField(abbrevTable, widgetBag, next),
+	    gbc, 0, numComponents, 1, 1);
       }
-      return result.toUpperCase();
-   }
+      else if(type.equals("MinMax")) {
+	add(new LabeledMinMaxTextField(abbrevTable, widgetBag, next),
+	    gbc, 0, numComponents, 1, 1);
+      }
+      else if(type.equals("Range")) {
+	add(new LabeledRangeTextField(abbrevTable, widgetBag, next),
+	    gbc, 0, numComponents, 1, 1);
+      }
+    }while (true);
+  }
 
-   /**
-    * The code>printTable</code> method here gives subJPanels the
-    * ability to print the current abbreviation table.
-    *
-    */
-   protected void printTable() {
-      System.out.println(abbrevTable.toString());
-   }
+  private CompInfo makeList () {
+    String next, view, tmpTitle = "";
+    CompInfo info = new CompInfo();
+
+    next = tr.readLine();
+    do{
+      next = tr.readLine();
+      if (next.equals("GroupTitle")) {
+	tmpTitle = tr.readLine();
+	info.setTitle(tmpTitle);
+	addTableEntry(tmpTitle);
+      }
+      else if (next.equals("view")) {
+	view = tr.readLine();
+	System.out.println("view: "+view);
+	
+	if (view.trim().equals("X")) {
+	  info.setView(BoxLayout.X_AXIS);
+	} else if (view.trim().equals("Y")) {
+	  info.setView(BoxLayout.Y_AXIS);
+	}
+      }
+      else if (next.equals("[EndSection]"))
+	break;
+      else {
+	info.addElem(next);
+	addTableEntry(next);
+	//widgetBag.put(tmp, "false");
+      }
+    }while(true);
+    return info;
+  }
+
+  /**
+   * The <code>addTableEntry</code> method is used to keep track of
+   * key:value relationships between the JLabel of a widget(Key) and its
+   * abbreviation (value).
+   *
+   * @param entry a <code>String</code> value
+   */
+  public void addTableEntry(String entry) {
+    String tmp = "";
+    tmp = abbreviate(entry);
+    abbrevTable.put(entry, tmp);
+  }
+
+  /**
+   * The <code>abbreviate</code> method is used to convert the text
+   * in a widget JLabel to an abbreviation used in the xml description.
+   *
+   * @param next a <code>String</code> value
+   * @return a <code>String</code> value
+   */
+  public String abbreviate(String next) {
+    String result = "ERROR";
+    if (!next.equals("")) {
+      result = "";
+      next.trim();
+      char[] chars = next.toCharArray();
+      for(int i=0; i<chars.length; i++) {
+	if(chars[i] <91 && chars[i] >64)
+	  result += chars[i];
+      }
+      if (result.length() < 2)
+	result += String.copyValueOf(chars,1,2);
+    }
+    return result.toLowerCase();
+  }
+
+  /**
+   * The code>printTable</code> method here gives subJPanels the
+   * ability to print the current abbreviation table.
+   *
+   */
+  protected void printTable() {
+    System.out.println(abbrevTable.toString());
+  }
    
-   /**
-    * The <code>add</code> method here is a utility for adding widgets
-    * or subJPanels to the WdgetPanel.  The layout manager is a
-    * GridBag and the current contraints (gbc) are passed to this method.
-    *
-    * @param c a <code>Component</code> value
-    * @param gbc a <code>GridBagConstraints</code> value
-    * @param x an <code>int</code> value
-    * @param y an <code>int</code> value
-    * @param w an <code>int</code> value
-    * @param h an <code>int</code> value
-    */
-   public void add(Component c, GridBagConstraints gbc, 
-		   int x, int y, int w, int h) {
-      gbc.gridx = x;
-      gbc.gridy = y;
-      gbc.gridwidth = w;
-      gbc.gridheight = h;
-      add(c, gbc);
-      numComponents++;
-   }
+  /**
+   * The <code>add</code> method here is a utility for adding widgets
+   * or subJPanels to the WdgetPanel.  The layout manager is a
+   * GridBag and the current contraints (gbc) are passed to this method.
+   *
+   * @param c a <code>Component</code> value
+   * @param gbc a <code>GridBagConstraints</code> value
+   * @param x an <code>int</code> value
+   * @param y an <code>int</code> value
+   * @param w an <code>int</code> value
+   * @param h an <code>int</code> value
+   */
+  public void add(Component c, GridBagConstraints gbc, 
+		  int x, int y, int w, int h) {
+    gbc.gridx = x;
+    gbc.gridy = y;
+    gbc.gridwidth = w;
+    gbc.gridheight = h;
+    add(c, gbc);
+    numComponents++;
+  }
 
-   /**
-    * This <code>actionPerformed</code> method is mandated by
-    * ActionListener and is need particularly for the 2 checkbox
-    * widgets "Any Instrument" and "Photometric Whether Conditions".
-    * All other objects in this JPanel are themselves sub-JPanels and
-    * the actionPerformed methods are implemented in their respective
-    * classes.  All subJPanels extend WidgetPanel.
-    *
-    * @param evt an <code>ActionEvent</code> value
-    */
-   public void actionPerformed( ActionEvent evt) {
-      Object source = evt.getSource();
+  /**
+   * This <code>actionPerformed</code> method is mandated by
+   * ActionListener and is need particularly for the 2 checkbox
+   * widgets "Any Instrument" and "Photometric Whether Conditions".
+   * All other objects in this JPanel are themselves sub-JPanels and
+   * the actionPerformed methods are implemented in their respective
+   * classes.  All subJPanels extend WidgetPanel.
+   *
+   * @param evt an <code>ActionEvent</code> value
+   */
+  public void actionPerformed( ActionEvent evt) {
+    Object source = evt.getSource();
       
-      if (source.equals(cb[0])) {
-	 widgetBag.put(abbrevTable.get(cb[0].getLabel()), ""+cb[0].isSelected());
+    if (source.equals(cb[0])) {
+      widgetBag.put(abbrevTable.get(cb[0].getText()), ""+cb[0].isSelected());
+    }
+
+    if (source.equals(cb[1])) {
+      if (cb[1].isSelected()) {
+	instrumentPanel.setSelected(false);
+	instrumentPanel.setEnabled(false);
       }
-
-      if (source.equals(cb[1])) {
-	 if (cb[1].isSelected()) {
-	    instrumentPanel.setSelected(false);
-	    instrumentPanel.setEnabled(false);
-	 }
-	 else {
-	    instrumentPanel.setEnabled(true);
-	    instrumentPanel.setSelected(false);
-	 }
-	 //widgetBag.put(abbrevTable.get(cb[1].getLabel()), ""+cb[1].isSelected());
+      else {
+	instrumentPanel.setEnabled(true);
+	instrumentPanel.setSelected(false);
       }
-   }
+      //widgetBag.put(abbrevTable.get(cb[1].getLabel()), ""+cb[1].isSelected());
+    }
+  }
 
-   /**
-    * Provided for convienince, <code>setAttribute</code> method with
-    * this signature is supported but not encouraged.  All classes
-    * using this methods should move towards the (String, LinkedList)
-    * signature as meand of updateing widget state to the
-    * WidgetDataBag object.
-    *
-    * @param key a <code>String</code> value
-    * @param value a <code>String</code> value
-    */
-   public void setAttribute(String key, String value) {
-      widgetBag.put(abbrevTable.get(key), value);
-   }
+  /**
+   * Provided for convienince, <code>setAttribute</code> method with
+   * this signature is supported but not encouraged.  All classes
+   * using this methods should move towards the (String, LinkedList)
+   * signature as meand of updateing widget state to the
+   * WidgetDataBag object.
+   *
+   * @param key a <code>String</code> value
+   * @param value a <code>String</code> value
+   */
+  public void setAttribute(String key, String value) {
+    widgetBag.put(abbrevTable.get(key), value);
+  }
 
-   /**
-    * The primary means of notifying observers of widget state
-    * changes. The <code>setAttribute</code> method triggers all
-    * observers' update method.  The update method of respective
-    * observers can be implemented in different ways, however the only
-    * known observer to date is app/Querytool which rewrites the XML
-    * description of this panels state.
-    *
-    * @param title a <code>String</code> value
-    * @param list a <code>LinkedList</code> value
-    */
-   public void setAttribute(String title, LinkedList list) {
-      widgetBag.put(abbrevTable.get(title), list);
-   }
+  public void setAttribute(String key, Object obj) {
+    widgetBag.put(abbrevTable.get(key), obj);
+  }
+
+
+  /**
+   * The primary means of notifying observers of widget state
+   * changes. The <code>setAttribute</code> method triggers all
+   * observers' update method.  The update method of respective
+   * observers can be implemented in different ways, however the only
+   * known observer to date is app/Querytool which rewrites the XML
+   * description of this panels state.
+   *
+   * @param title a <code>String</code> value
+   * @param list a <code>LinkedList</code> value
+   */
+  public void setAttribute(String title, LinkedList list) {
+    widgetBag.put(abbrevTable.get(title), list);
+  }
 
 }// WidgetPanel
