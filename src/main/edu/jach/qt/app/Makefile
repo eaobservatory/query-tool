@@ -1,5 +1,5 @@
 #### Targets settings
-TOP = ../../../../../../..
+TOP = ../../../../../..
 
 PACKAGE = edu/jach/qt/app
 
