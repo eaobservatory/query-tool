@@ -527,6 +527,7 @@ final public class ProgramTree extends JPanel implements
 	    // observations to perform
 	    if ( model != null   && 
 		 msbDone == false &&
+		 System.getProperty("telescope").equalsIgnoreCase("ukirt")  && 
 		 anObservationHasBeenDone == true &&
 		 TelescopeDataPanel.DRAMA_ENABLED ) {
 		msbDone = showMSBDoneDialog();
@@ -1011,11 +1012,14 @@ final public class ProgramTree extends JPanel implements
 		return;
 	    }
 
-	    if (selectedItem == null) {
+	    if (selectedItem == null && 
+		System.getProperty("telescope").equalsIgnoreCase("ukirt") &&
+		TelescopeDataPanel.DRAMA_ENABLED) {
 		msbDone = showMSBDoneDialog();
 	    }
 	    // If this is an observation then show the popup
-	    else if (selectedItem.type()==SpType.OBSERVATION) {
+	    else if (selectedItem != null &&
+		     selectedItem.type()==SpType.OBSERVATION) {
 		scalePopup.show (e.getComponent(), e.getX(), e.getY());
 	    }   
 	}	
