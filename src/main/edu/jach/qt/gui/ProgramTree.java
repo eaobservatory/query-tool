@@ -97,6 +97,7 @@ final public class ProgramTree extends JPanel implements
       @throws none 
   */
   public ProgramTree()  {
+
     scm = SequenceManager.getHandle();
 
     // Ensure nothing is selected 
@@ -234,7 +235,6 @@ final public class ProgramTree extends JPanel implements
   public void actionPerformed (ActionEvent evt) {
     Object source = evt.getSource();
     if (source == run) {
-// 	execute();
 	doExecute();
     }
 
@@ -329,168 +329,6 @@ final public class ProgramTree extends JPanel implements
 	    }
 	}
     }
-  
-  /**
-   * The <code>execute</code> method kick off a sequencer.  The
-   * following things will occur:
-   * 1. It first translates the SP into an exec and sets the resulting
-   *    file name as a system property.
-   * 2. It checks to see what other sequencers are running by running
-   *    ditscmd -g OOS_LIST OOSLIST.
-   * 3. The sequence console is run up reflecting results of test in (2).
-   *
-   */
-  private void execute() {
-
-    /**
-     * @param item is the selected observation
-     */
-    //SpItem item = findItem(_spItem, path.getLastPathComponent().toString());
-      SpItem item;
-      boolean isDeferredObs = false;
-      if (selectedItem != null && DeferredProgramList.currentItem != null) {
-// 	  new ErrorBox("You may only select one observation!"+
-// 		       "\nPlease deselect an observation.");
-	  JOptionPane.showMessageDialog(null,
-					"You may only select one observation!",
-					"Please deselect an observation.",
-					JOptionPane.ERROR_MESSAGE);
-	  // logger.error("Multiple observations selected!");
-	  return;
-      }
-      else if (selectedItem == null && DeferredProgramList.currentItem == null){
-// 	  new ErrorBox("You have not selected an observation!"+
-// 		       "\nPlease select an observation.");
-	  JOptionPane.showMessageDialog(null,
-					"You have not selected an observation!",
-					"Please select an observation.",
-					JOptionPane.ERROR_MESSAGE);
-	  logger.error("You have not selected an MSB!");
-	  return;
-      }
-      else if (selectedItem != null) {
-	  item = selectedItem;
-	  selectedItem=null;
-	  logger.info("Using item from progrm tree");
-      }
-      else {
-	  item = DeferredProgramList.currentItem;
-	  DeferredProgramList.currentItem=null;
-	  logger.info("Using item from deferred list.");
-	  isDeferredObs =  true;
-      }
-
-    // Switch to "og" to check if selection is an MSB. However, we can only send
-    // type "ob" observations since an MSB can have multiple instruments and we 
-    // execute them individually.
-    if(!item.typeStr().equals("ob")) {
-//       new ErrorBox("Your selection: "+item.getTitle()+ " is not an observation"+
-// 		   "\nPlease select an observation.");
-	  JOptionPane.showMessageDialog(null,
-					"Your selection: "+item.getTitle()+ " is not an observation",
-					"Please select an observation.",
-					JOptionPane.ERROR_MESSAGE);
-      logger.error("Your selection: "+item.getTitle()+ " is not an MSB."+ 
-		   "\nPlease select an MSB.");
-      return;
-    } else {
-      run.setEnabled(false);
-      
-      SpItem observation = item;
-      
-      if(!observation.equals(null)) {
-	SpItem inst = (SpItem) SpTreeMan.findInstrument(observation);
-	if (inst == null) {
-	    logger.error("No instrument found");
-	    run.setEnabled(true);
-	    return;
-	}
-	
-	// *TODO* Replace this crap!
-	Translating tFlush = new Translating();
-	tFlush.start();
-
-	String tname = QtTools.translate(observation, inst.type().getReadable());
-	tFlush.getFrame().dispose();
-	tFlush.stop();
-	
-	// Catch null sequence names - probably means translation
-	// failed:
-	if (tname == null) {
-	  //new ErrorBox ("Translation failed. Please report this!");
-	  logger.error("Translation failed. Please report this!");
-	  run.setEnabled(true);
-	  return;
-	}else{
-	  logger.info("Trans OK");
-
-	  if (!isDeferredObs) {
-	      model.remove(obsList.getSelectedIndex());
-	  }
-	  else {
-	      DeferredProgramList.markThisObservationAsDone(item);
-	  }
-
-	  if ( model.isEmpty() && TelescopeDataPanel.DRAMA_ENABLED) {
-	    MsbClient.doneMSB(projectID, checkSum);
-	    JOptionPane.showMessageDialog(null, "The MSB with \n"+
-					  "Project ID: "+projectID+"\n"+
-					  "CheckSum: "+checkSum+"\n"+
-					  "has been marked as done!");
-	  } // end of if ()
-	  
-	}
-      
-
-	// Prevent IRCAM3 and CGS4 from running together
-	// figure out if the same inst. is already in use or
-	// whether IRCAM3 and CGS4 would be running together
-	SequenceConsole console;
-	Vector consoleList = scm.getConsoleList().getList();
-
-	for(int i=0; i<consoleList.size(); i++) {
-	  console = (SequenceConsole)consoleList.elementAt(i);
-	  
-	  if(inst.type().getReadable().equals(console.getInstrument())) {
-	    console.resetObs(observation.getTitle(), tname);
-	    run.setEnabled(true);
-	    run.setForeground(Color.black);
-	    return;
-	  }
-	  
-	  if(inst.type().getReadable().equals("IRCAM3") && 
-	     console.getInstrument().equals("CGS4")) {
-	      JOptionPane.showMessageDialog(null,
-					    "IRCAM3 and CGS4 cannot run at the same time.",
-					    "",
-					    JOptionPane.ERROR_MESSAGE);
-	      run.setEnabled(true);
-	      return;
-	  }
-
-	  if(inst.type().getReadable().equals("CGS4") && 
-	     console.getInstrument().equals("IRCAM3")) {
-	      JOptionPane.showMessageDialog(null,
-					    "IRCAM3 and CGS4 cannot run at the same time.",
-					    "",
-					    JOptionPane.ERROR_MESSAGE);
-	      run.setEnabled(true);
-	      return;
-	  }
-	}
-
-	if ( System.getProperty("os.name").equals("SunOS") && TelescopeDataPanel.DRAMA_ENABLED) {
-	  QtTools.loadDramaTasks(inst.type().getReadable());
-	  //DcHub.getHandle().register("OOS_LIST");
-	}
-	
-	//DcHub.getHandle().register("OOS_LIST");
-	//scm.showSequenceFrame();
-
-	run.setEnabled(true);
-      }
-    }
-  }
   
 
   /**
