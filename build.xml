@@ -12,10 +12,11 @@
   <!-- ================================================ -->
   <!--   Set the properties related to the source tree  -->
   <!-- ================================================ -->
-<!--    <property name="build.sysclasspath" value="first"/> -->
+  <!--    <property name="build.sysclasspath" value="first"/> -->
 
   <property name="build.compiler" value="jikes"/>
-  <property name="build.compiler.emacs" value="true"/>    
+  <property name="build.compiler.emacs" value="true"/>
+
   <property name="masterbuild.logdir" value="/home/mrippa/tmp/logs"/>
   <property name="junit.results" value="test-results" />
 
@@ -37,7 +38,7 @@
   <!--    ==================================================== -->
   <!--       Set the properties for the build area             -->
   <!--    ==================================================== -->
-  <property name="build.dir" value="/home/mrippa/root/install/omp/QT"/>
+  <property name="build.dir" value="/home/mrippa/netroot/install/omp/QT"/>
   <property name="build.classes" value="${build.dir}/classes"/>
   <property name="build.config" value="${build.dir}/config"/>
   <property name="build.icons" value="${build.dir}/icons"/>
@@ -134,8 +135,7 @@
 
     <javac srcdir="${tests.dir}"
 	   destdir="${build.tests}"
-	   debug="${debug}"
-	   deprecation="${deprecation}" >
+	   debug="${debug}" >
       <classpath>
 	<pathelement location="${build.classes}" />
 	<fileset dir="${build.lib}">
@@ -184,6 +184,7 @@
   <target name="compile" depends="mkdeps">
     <javac srcdir="${java.dir}/" 
 	   destdir="${build.classes}" 
+	   deprecation="off"
 	   debug="on">
       <exclude name="edu/jach/qt/gui/MsbNode.java"/>
       <exclude name="edu/jach/qt/gui/DragDropObject.java"/>
@@ -208,7 +209,7 @@
 
     <copy todir="${build.config}">
       <fileset dir="${config.dir}">
-        <include name="**/*" />
+        <include name="*" />
       </fileset>
     </copy>
 
@@ -229,6 +230,9 @@
         <include name="*" />
       </fileset>
     </chmod>
+
+    <chmod dir="${build.dir}" perm="g+w" includes="**/*"/>
+
   </target>
 
   <!--    ==================================================== -->
@@ -279,7 +283,7 @@
 
     <copy todir="${dist.bin}">
       <fileset dir="${bin.dir}">
-        <include name="*" />
+        <include name="qt" />
       </fileset>
     </copy>
 
