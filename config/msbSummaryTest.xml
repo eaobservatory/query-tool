@@ -1,0 +1,78 @@
+<QueryResult>
+  <SpMSBSummary id="130">
+    <wavelength>8um</wavelength>
+    <instrument>Michelle</instrument>  
+    <remaining>14</remaining>
+    <target>CRL618</target>
+    <projectid>M02939T2</projectid>
+  </SpMSBSummary>
+  
+  <SpMSBSummary id="131">
+    <wavelength>8um</wavelength>
+    <instrument>Michelle</instrument>  
+    <remaining>14</remaining>
+    <target>CRL618</target>
+    <projectid>M02939T2</projectid>
+  </SpMSBSummary>
+
+  <SpMSBSummary id="144">
+    <wavelength>8um</wavelength>
+    <instrument>Michelle</instrument>  
+    <remaining>14</remaining>
+    <target>CRL618</target>
+    <projectid>M02939T2</projectid>
+  </SpMSBSummary>
+
+  <SpMSBSummary id="174">
+    <wavelength>8um</wavelength>
+    <instrument>Michelle</instrument>  
+    <remaining>14</remaining>
+    <target>CRL618</target>
+    <projectid>M02939T2</projectid>
+  </SpMSBSummary>
+
+  <SpMSBSummary id="175">
+    <wavelength>8um</wavelength>
+    <instrument>Michelle</instrument>  
+    <remaining>14</remaining>
+    <target>CRL618</target>
+    <projectid>M02939T2</projectid>
+  </SpMSBSummary>
+
+  <SpMSBSummary id="176">
+    <projectid>M04552</projectid>
+    <SourceName>CRL618</SourceName>
+    <Instrument>Fabry-Perot</Instrument>  
+    <Wavelength>10um</Wavelength>
+    <ExposureTime>2.0</ExposureTime>
+    <pi>Galileo</pi>
+  </SpMSBSummary>
+
+  <SpMSBSummary id="177">
+    <projectid>M02ATEST2</projectid>
+    <SourceName>CRL618</SourceName>
+    <Instrument>Fabry-Perot</Instrument>  
+    <Wavelength>11um</Wavelength>
+    <ExposureTime>2.0</ExposureTime>
+    <pi>James Clerk Maxwell</pi>
+  </SpMSBSummary>
+
+  <SpMSBSummary id="192">
+    <projectid>M02ATEST2</projectid>
+    <SourceName>CRL618</SourceName>
+    <Instrument>Fabry-Perot</Instrument>  
+    <Wavelength>11um</Wavelength>
+    <ExposureTime>2.0</ExposureTime>
+    <pi>James Clerk Maxwell</pi>
+  </SpMSBSummary>
+
+  <SpMSBSummary id="193">
+    <projectid>M02ATEST2</projectid>
+    <SourceName>CRL618</SourceName>
+    <Instrument>Michelle</Instrument>  
+    <Wavelength>25um</Wavelength>
+    <ExposureTime>2.0</ExposureTime>
+    <pi>Herschel</pi>
+  </SpMSBSummary>
+  
+</QueryResult>
