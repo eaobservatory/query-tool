@@ -1,7 +1,5 @@
-buildcycleinfo
-log.xml
-modificationset.xml
 test-results
 depcache
 app
 gui
+utils
