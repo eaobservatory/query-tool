@@ -41,3 +41,5 @@ else if ($activeTest) then
       echo "$testInst IS ACTIVE"
    endif
 endif 
+
+exit $?
