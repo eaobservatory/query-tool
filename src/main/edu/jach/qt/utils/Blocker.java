@@ -9,8 +9,7 @@ public class Blocker extends EventQueue {
    private Component[] restrictedComponents;
    private Vector helperVector;
    private boolean inBlockedState = false;
-   private EventQueue sysQ = 
-      Toolkit.getDefaultToolkit().getSystemEventQueue();
+    private EventQueue sysQ;
    private boolean alreadyBlockedOnce = false;
    private static Blocker instance = null;
 
@@ -23,6 +22,10 @@ public class Blocker extends EventQueue {
 
    private Blocker() {
       restrictedComponents = null;
+      Toolkit tk = Toolkit.getDefaultToolkit();
+      if (tk != null) {
+	  sysQ = tk.getSystemEventQueue();
+      }
    }
 
    private void reset() {
