@@ -169,7 +169,19 @@ public class XmlUtils {
 	// Get the MSB element
 	Element msb = getElement(doc, "SpMSB", 0);
 	// Get the attribute checksum
-	checksum = msb.getAttribute("checksum");
+	if (msb != null) {
+	    checksum = msb.getAttribute("checksum");
+	}
+	else {
+	    // See if this is an obs which is a MSB
+	    Element obs = getElement(doc,"SpObs", 0);
+	    if (obs != null) {
+		checksum = obs.getAttribute("checksum");
+	    }
+	}
+	if (checksum == null) {
+	    logger.error("Unable to determine checksum");
+	}
 	return checksum;
     }
 
