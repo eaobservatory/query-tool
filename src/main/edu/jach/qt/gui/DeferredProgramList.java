@@ -125,6 +125,20 @@ final public class DeferredProgramList extends JPanel implements
 	displayList();
     }
 
+    public static void addCalibration (SpItem cal) {
+	cal.getTable().set("project", "CAL");
+	cal.getTable().set("msbid", "CAL");
+	// A calibration observation is an SpProg - need to convert to an SpObs
+	Vector theseObs = SpTreeMan.findAllItems(cal, "gemini.sp.SpObs");
+	SpItem thisObs = (SpItem)theseObs.firstElement();
+	thisObs.getTable().set("project", "CAL");
+	thisObs.getTable().set("msbid", "CAL");
+	if (!isDuplicate(thisObs)) {
+	    makePersistent(thisObs);
+	    ((DefaultListModel)obsList.getModel()).addElement(thisObs);
+	}
+    }
+
     public void displayList()
     {
 	obsList = new JList (model);
@@ -216,12 +230,14 @@ final public class DeferredProgramList extends JPanel implements
 	
     }
 
-    private boolean isDuplicate (SpItem obs)
+    public static boolean isDuplicate (SpItem obs)
     {
 	boolean isDuplicate=false;
+	obs.getTable().set("project", "CAL");
+	obs.getTable().set("msbid", "CAL");
 	String currentObs = obs.toXML();
-	for (int i=0; i<model.size();i++) {
-	    String thisObs = ((SpItem)(model.elementAt(i))).toXML();
+	for (int i=0; i<((DefaultListModel)obsList.getModel()).size();i++) {
+	    String thisObs = ((SpItem)(((DefaultListModel)obsList.getModel()).elementAt(i))).toXML();
 	    if (thisObs.equals(currentObs)){
 		isDuplicate=true;
 		break;
@@ -275,7 +291,7 @@ final public class DeferredProgramList extends JPanel implements
     {
 	String fName = new String();
 	Date now = new Date();
-	String title = item.getTitleAttr();
+	String title = item.getTitle();
 	StringTokenizer st = new StringTokenizer(title);
 	while (st.hasMoreTokens()) {
 	    fName = fName+st.nextToken();
