@@ -1,6 +1,7 @@
-test-results
-depcache
 app
-gui
-utils
+classes
+depcache
 djava
+gui
+test-results
+utils
