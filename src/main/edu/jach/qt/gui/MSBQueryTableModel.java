@@ -46,11 +46,10 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
     "instrument",
     "waveband",
     "target",
-    "ra",
+    //"ra",
     "coordstype",
-    "ha",
+    //"ha",
     "timeest",
-    //"tagpriority",
     "priority",
     "remaining",
     "obscount",
@@ -59,20 +58,20 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
   };
    
   public static final Class[] colClasses = {
-    String.class,
-    String.class,
-    String.class,
-    String.class,
-    String.class,
-    String.class,
-    String.class,
-    String.class,
-    Integer.class,
-    Integer.class,
-    Integer.class,
-    Integer.class,
-    String.class,
-    Integer.class,
+    String.class,	//0
+    String.class,	//1
+    String.class,	//2
+    String.class,	//3
+    String.class,	//4
+    //String.class,	//5
+    String.class,	//6
+    //String.class,	//7
+    Integer.class,	//8
+    Integer.class,	//9
+    Integer.class,	//10
+    Integer.class,	//11
+    String.class,	//12
+    Integer.class,	//13
   };
 
   public static final int 
@@ -81,16 +80,15 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
     INSTRUMENT          = 2,
     WAVEBAND		= 3,
     TARGET              = 4,
-    RA		        = 5, 
-    COORDSTYPE          = 6, 
-    HA		        = 7,
-    TIMEEST             = 8, //INT
-    //TAGPRIORITY		= 9, //INT
-    PRIORITY            = 9,  //INT
-    REMAINING           = 10, //INT
-    OBSCOUNT            = 11, //INT
-    CHECKSUM            = 12,
-    MSBID		= 13; //INT
+    //RA		        = 5, 
+    COORDSTYPE          = 5, //6, 
+    //HA		        = 7,
+    TIMEEST             = 6,//8, //INT
+    PRIORITY            = 7, //9,  //INT
+    REMAINING           = 8, //10, //INT
+    OBSCOUNT            = 9, //11, //INT
+    CHECKSUM            = 10, //12,
+    MSBID		= 11; //13; //INT
       
   //DATA
   //DOM object to hold XML document contents
