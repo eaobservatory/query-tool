@@ -92,7 +92,6 @@ public class ColumnSelector
      */
     public void actionPerformed(ActionEvent evt) {
 	BitSet selected = new BitSet(_msbqtm.getRealColumnCount());
-	System.out.println("Number of components: "+columnPanel.getComponentCount());
 	for (int i=0; i<columnPanel.getComponentCount(); i++) {
 	    if (columnPanel.getComponent(i) instanceof JCheckBox) {
 		JCheckBox cb = (JCheckBox)columnPanel.getComponent(i);
