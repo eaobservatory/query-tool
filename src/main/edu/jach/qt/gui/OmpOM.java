@@ -51,6 +51,7 @@ public class OmpOM extends JPanel{
   private File		      file;
   private SpItem	      spItem;
   private Hashtable	      ptreeHashtable;
+  private DeferredProgramList deferredList;
 
   /**
    * Creates a new <code>OmpOM</code> instance.
@@ -313,7 +314,7 @@ public class OmpOM extends JPanel{
      */
   public JSplitPane getTreePanel() {
       
-      DeferredProgramList deferredList = new DeferredProgramList();
+      deferredList = new DeferredProgramList();
       NotePanel notes = new NotePanel();
       notes.setNote(spItem);
       JSplitPane dsp = new JSplitPane(JSplitPane.VERTICAL_SPLIT, deferredList, notes);
@@ -380,6 +381,10 @@ public class OmpOM extends JPanel{
       getItems(childNode,temp);
     }
   }
+
+    public void updateDeferredList() {
+	deferredList.reload();
+    }
 
 
   public static void main(String[] args) {
