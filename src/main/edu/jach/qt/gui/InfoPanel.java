@@ -110,7 +110,7 @@ public class InfoPanel extends JPanel implements ActionListener {
     timePanel		= new TimePanel();
     utPanel		= new UTPanel();
     satPanel		= new SatPanel();
-    telescopeInfoPanel	= new TelescopeDataPanel();
+    telescopeInfoPanel	= new TelescopeDataPanel(this);
 
     /*Setup the SEARCH button*/
     InfoPanel.searchButton.setText("Search");
@@ -202,6 +202,10 @@ public class InfoPanel extends JPanel implements ActionListener {
     gbc.insets.right = 0;
     add(utPanel, gbc, 0, 60, 1, 1);
   }
+
+    public QtFrame getFrame() {
+	return qtf;
+    }
 
   private void add(Component c, GridBagConstraints gbc, 
 		  int x, int y, int w, int h) {
