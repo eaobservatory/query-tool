@@ -19,25 +19,21 @@ package edu.jach.qt.gui;
  * @author Philip Milne
  */
 
-import java.util.*;
-
-import javax.swing.table.TableModel;
-import javax.swing.event.TableModelEvent;
-
 // Imports for picking up mouse events from the JTable. 
-
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.InputEvent;
+import java.awt.event.*;
+import java.util.*;
 import javax.swing.JTable;
-import javax.swing.table.JTableHeader;
-import javax.swing.table.TableColumnModel;
+import javax.swing.event.TableModelEvent;
+import javax.swing.table.*;
+
+import org.apache.log4j.Logger;
 
 public class TableSorter extends TableMap {
    int             indexes[];
    Vector          sortingColumns = new Vector();
    boolean         ascending = true;
    int compares;
+  static Logger logger = Logger.getLogger(WidgetPanel.class);
 
    public TableSorter() {
       indexes = new int[0]; // for consistency
@@ -173,7 +169,7 @@ public class TableSorter extends TableMap {
    }
 
    public void tableChanged(TableModelEvent e) {
-      //System.out.println("Sorter: tableChanged"); 
+      logger.debug("Sorter: tableChanged"); 
       reallocateIndexes();
 
       super.tableChanged(e);
@@ -181,7 +177,7 @@ public class TableSorter extends TableMap {
 
    public void checkModel() {
       if (indexes.length != model.getRowCount()) {
-	 System.err.println("Sorter not informed of a change in model.");
+	 logger.error("Sorter not informed of a change in model.");
       }
    }
 
@@ -192,7 +188,7 @@ public class TableSorter extends TableMap {
       n2sort();
       // qsort(0, indexes.length-1);
       //shuttlesort((int[])indexes.clone(), indexes, 0, indexes.length);
-      //System.out.println("Compares: "+compares);
+      logger.debug("Compares: "+compares);
    }
 
    public void n2sort() {
@@ -301,7 +297,7 @@ public class TableSorter extends TableMap {
 	       int viewColumn = columnModel.getColumnIndexAtX(e.getX()); 
 	       int column = tableView.convertColumnIndexToModel(viewColumn); 
 	       if (e.getClickCount() == 1 && column != -1) {
-		  //System.out.println("Sorting ..."); 
+		  logger.debug("Sorting table..."); 
 		  int shiftPressed = e.getModifiers()&InputEvent.SHIFT_MASK; 
 		  boolean ascending = (shiftPressed == 0); 
 		  sorter.sortByColumn(column, ascending); 
