@@ -32,15 +32,20 @@ public class QtFrame extends JFrame implements MenuListener, ListSelectionListen
    private final static String
       DUMMY_TABLE_DATA = System.getProperty("dummyTable");;
 
-   private MSBQueryTableModel msbQTM;
-   private JTable table;
-   private int selRow;
-   private JMenuItem saveItem;
-   private JMenuItem saveAsItem;
-   private JCheckBoxMenuItem readonlyItem;
+   private MSBQueryTableModel	   msbQTM;
+   private JTable		   table;
+   private int			   selRow;
+   private JMenuItem		   saveItem;
+   private JMenuItem		   saveAsItem;
+   private JCheckBoxMenuItem	   readonlyItem;
+   private JSplitPane		   splitPane;
+   private GridBagConstraints	   gbc;
+   private JTabbedPane		   tabbedPane;
+   private OmpOM		   om;			
 
-   private WidgetDataBag widgetBag;
-   private Querytool localQuerytool;
+   private WidgetDataBag	   widgetBag;
+   private Querytool		   localQuerytool;
+
 
    /**
     * Creates a new <code>QtFrame</code> instance.
@@ -67,7 +72,7 @@ public class QtFrame extends JFrame implements MenuListener, ListSelectionListen
 
    /**Component initialization*/
    private void compInit() throws Exception  {
-      GridBagConstraints gbc = new GridBagConstraints();
+      gbc = new GridBagConstraints();
 
       //Build Menu
       buildMenu();
@@ -79,13 +84,12 @@ public class QtFrame extends JFrame implements MenuListener, ListSelectionListen
 
       //Input Panel Setup
       WidgetPanel inputPanel = new WidgetPanel(new Hashtable(), widgetBag);
-      InfoPanel infoPanel = new InfoPanel(msbQTM, localQuerytool);
+      InfoPanel infoPanel = new InfoPanel(msbQTM, localQuerytool, this);
 
       // Build split-pane view
-      JSplitPane splitPane = 
-	 new JSplitPane( JSplitPane.VERTICAL_SPLIT,
-			 inputPanel,
-			 resultsPanel);
+      splitPane =  new JSplitPane( JSplitPane.VERTICAL_SPLIT,
+				   inputPanel,
+				   resultsPanel);
 
       gbc.fill = GridBagConstraints.BOTH;
       //gbc.anchor = GridBagConstraints.CENTER;
@@ -125,7 +129,8 @@ public class QtFrame extends JFrame implements MenuListener, ListSelectionListen
 		  if (selRow != -1) {
 		     System.out.println("ID is "+msbQTM.getSpSummaryId(selRow));
 		     localQuerytool.fetchMSB(msbQTM.getSpSummaryId(selRow));
-		     OmpOM om = new OmpOM();
+		     buildStagingPanel();
+			
 		  }
 		  else
 		     JOptionPane.showMessageDialog(null, "Must select a project summary first!");
@@ -137,6 +142,26 @@ public class QtFrame extends JFrame implements MenuListener, ListSelectionListen
 	 } );
    }
    
+
+   public void buildStagingPanel() {
+      if (om == null) {
+	 om = new OmpOM();
+	 tabbedPane = new JTabbedPane(SwingConstants.TOP);
+	 remove(splitPane);
+	 tabbedPane.addTab("Query", splitPane);
+	 tabbedPane.addTab("MSB Queue", om.getTreePanel());
+      }
+      
+      else {
+	 om.resetTree();
+	 tabbedPane.setComponentAt(1, om.getTreePanel());
+      }
+      tabbedPane.setSelectedIndex(1);
+      add(tabbedPane, gbc, 1, 0, 1, 2);
+      tabbedPane.show();
+      validate();
+   }
+
    /**
     * The <code>valueChanged</code> method is mandated by the 
     * ListSelectionListener. Called whenever the value of 
