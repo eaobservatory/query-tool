@@ -13,14 +13,18 @@ import javax.swing.*;
 
 /**
  * WidgetPanel.java
- *
+ * 
+ * This is the primary input panel for the QtFrame. It is responsible
+ * for configuring the widgets determined in config/qtWidget.conf at
+ * run-time.  There also exists two Hashtables.  One is responsible
+ * for assigning abbreviations for widget names, the other is known to
+ * the class as the WidgetDataBag.
  *
  * Created: Tue Mar 20 16:41:13 2001
  *
- * @author <a href="mailto: "Mathew Rippa</a>
- * @version
+ * @author <a href="mailto:mrippa@jach.hawaii.edu">Mathew Rippa</a>
+ * $Id$
  */
-
 public class WidgetPanel extends JPanel 
    implements ActionListener {
 
@@ -32,11 +36,17 @@ public class WidgetPanel extends JPanel
    private Hashtable abbrevTable;
    private WidgetDataBag widgetBag;
 
+   /**
+    * Describe variable <code>instrumentPanel</code> here.
+    *
+    */
    public ButtonPanel instrumentPanel;
 
    /**
     * Creates a new <code>WidgetPanel</code> instance.
     *
+    * @param ht a <code>Hashtable</code> value
+    * @param wdb a <code>WidgetDataBag</code> value
     */
    public WidgetPanel(Hashtable ht, WidgetDataBag wdb) {
       abbrevTable = ht;
@@ -44,7 +54,10 @@ public class WidgetPanel extends JPanel
    }
 
    /**
-    * Describe <code>parseConfig</code> method here.
+    * The <code>parseConfig</code> method is the single method
+    * responsible for configuring Widgets at runtime.  It parses the
+    * config/qtWidgets.conf file and sets up the determined widgets as 
+    * described by the current layout manager.
     *
     * @param file a <code>String</code> value
     * @exception IOException if an error occurs
@@ -86,7 +99,8 @@ public class WidgetPanel extends JPanel
 	       tmp = abbreviate(next);
 	       //System.out.println("[next]:"+ next +"[tmp]: "+tmp);
 	       abbrevTable.put(next, tmp);
-       	       add(new LabeledTextField(abbrevTable, widgetBag, next), gbc, 0, numComponents, 1, 1);
+       	       add(new LabeledTextField(abbrevTable, widgetBag, next),
+		   gbc, 0, numComponents, 1, 1);
 	       //widgetBag.put(tmp, "");
 	    }while (true);
 	 }
@@ -154,8 +168,7 @@ public class WidgetPanel extends JPanel
       }//end while
    }//parseConfig
 
-
-   public String makeList (LinkedList list) {
+   private String makeList (LinkedList list) {
       String next, title = "";
       next = tr.readLine();
       do{
@@ -175,6 +188,13 @@ public class WidgetPanel extends JPanel
       return title;
    }
 
+   /**
+    * The <code>addTableEntry</code> method is used to keep track of
+    * key:value relationships between the JLabel of a widget(Key) and its
+    * abbreviation (value).
+    *
+    * @param entry a <code>String</code> value
+    */
    public void addTableEntry(String entry) {
       String tmp = "";
       tmp = abbreviate(entry);
@@ -182,7 +202,8 @@ public class WidgetPanel extends JPanel
    }
 
    /**
-    * Describe <code>abbreviate</code> method here.
+    * The <code>abbreviate</code> method is used to convert the text
+    * in a widget JLabel to an abbreviation used in the xml description.
     *
     * @param next a <code>String</code> value
     * @return a <code>String</code> value
@@ -199,12 +220,19 @@ public class WidgetPanel extends JPanel
       return result;
    }
 
+   /**
+    * The code>printTable</code> method here gives subJPanels the
+    * ability to print the current abbreviation table.
+    *
+    */
    protected void printTable() {
       System.out.println(abbrevTable.toString());
    }
    
    /**
-    * Describe <code>add</code> method here.
+    * The <code>add</code> method here is a utility for adding widgets
+    * or subJPanels to the WdgetPanel.  The layout manager is a
+    * GridBag and the current contraints (gbc) are passed to this method.
     *
     * @param c a <code>Component</code> value
     * @param gbc a <code>GridBagConstraints</code> value
@@ -224,7 +252,12 @@ public class WidgetPanel extends JPanel
    }
 
    /**
-    * Describe <code>actionPerformed</code> method here.
+    * This <code>actionPerformed</code> method is mandated by
+    * ActionListener and is need particularly for the 2 checkbox
+    * widgets "Any Instrument" and "Photometric Whether Conditions".
+    * All other objects in this JPanel are themselves sub-JPanels and
+    * the actionPerformed methods are implemented in their respective
+    * classes.  All subJPanels extend WidgetPanel.
     *
     * @param evt an <code>ActionEvent</code> value
     */
@@ -249,7 +282,11 @@ public class WidgetPanel extends JPanel
    }
 
    /**
-    * Describe <code>setAttribute</code> method here.
+    * Provided for convienince, <code>setAttribute</code> method with
+    * this signature is supported but not encouraged.  All classes
+    * using this methods should move towards the (String, LinkedList)
+    * signature as meand of updateing widget state to the
+    * WidgetDataBag object.
     *
     * @param key a <code>String</code> value
     * @param value a <code>String</code> value
@@ -258,6 +295,17 @@ public class WidgetPanel extends JPanel
       widgetBag.put(abbrevTable.get(key), value);
    }
 
+   /**
+    * The primary means of notifying observers of widget state
+    * changes. The <code>setAttribute</code> method triggers all
+    * observers' update method.  The update method of respective
+    * observers can be implemented in different ways, however the only
+    * known observer to date is app/Querytool which rewrites the XML
+    * description of this panels state.
+    *
+    * @param title a <code>String</code> value
+    * @param list a <code>LinkedList</code> value
+    */
    public void setAttribute(String title, LinkedList list) {
       widgetBag.put(abbrevTable.get(title), list);
    }
