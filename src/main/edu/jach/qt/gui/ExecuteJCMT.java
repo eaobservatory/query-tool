@@ -87,9 +87,12 @@ public class ExecuteJCMT extends Execute implements Runnable {
 	    estream.read(errorMessage);
 	    int rtn = p.waitFor();
 	    System.out.println("Translator returned with exit status "+rtn);
-	    System.out.println("Output from translator: "+new String(odfFile));
-	    System.out.println("Error from translator: "+new String(errorMessage));
-	    if (rtn != 0) return;
+	    System.out.println("Output from translator: "+new String(odfFile).trim());
+	    System.out.println("Error from translator: "+new String(errorMessage).trim());
+	    if (rtn != 0) {
+		success.delete();
+		return;
+	    }
 	}
 	catch (InterruptedException ie) {
 	    logger.error ("Translation exited prematurely...", ie);
@@ -114,17 +117,23 @@ public class ExecuteJCMT extends Execute implements Runnable {
 		InputStream estream = p.getErrorStream();
 		istream.read(odfFile);
 		estream.read(errorMessage);
+		p.waitFor();
 		int rtn = p.exitValue();
 		System.out.println("LoadSCUQUEUE returned with exit status "+rtn);
 		System.out.println("Output from LoadSCUQUEUE: "+new String(odfFile));
 		System.out.println("Error from LoadSCUQUEUE: "+new String(errorMessage));
 		if (rtn != 0) {
-		    logger.error("Non-zero exit condition returned from LOADQ - "+rtn);
 		    success.delete();
+		    return;
 		}
 	    }
 	    catch (IOException ioe) {
 		logger.error("Error executing LOADQ...", ioe);
+		success.delete();
+		return;
+	    }
+	    catch (InterruptedException ie) {
+		logger.error ("LOADQ exited prematurely...", ie);
 		success.delete();
 		return;
 	    }
