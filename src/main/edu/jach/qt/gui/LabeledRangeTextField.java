@@ -5,6 +5,7 @@ import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.text.*;
 import javax.swing.event.*;
+import javax.swing.Timer;
 
 import java.util.*;
 import java.lang.*;
@@ -22,7 +23,7 @@ import edu.jach.qt.utils.*;
  */
 
 public class LabeledRangeTextField extends WidgetPanel 
-  implements DocumentListener {
+  implements DocumentListener,ActionListener, KeyListener {
 
   private JTextField upperBound;
   private JTextField lowerBound;
@@ -30,6 +31,8 @@ public class LabeledRangeTextField extends WidgetPanel
   private JLabel     widgetLabel;
   private JLabel     upperLabel;
   private JLabel     lowerLabel;
+
+    private Timer      timer;
 
   private String name;
     private final String obsFieldName = "Observation Date";
@@ -52,8 +55,14 @@ public class LabeledRangeTextField extends WidgetPanel
     lowerBound = new JTextField();
     if ( text.equalsIgnoreCase(obsFieldName)) {
 	TimeUtils time = new TimeUtils();
-	setLowerText ("current");
-	setUpperText ("current");
+	setLowerText (time.getLocalDate());
+	setUpperText (time.getLocalTime());
+	upperBound.addActionListener(this);
+	lowerBound.addActionListener(this);
+	upperBound.addKeyListener(this);
+	lowerBound.addKeyListener(this);
+	timer = new Timer(1000, this);
+	startTimer();
     }
     setup();
   }
@@ -162,6 +171,30 @@ public class LabeledRangeTextField extends WidgetPanel
   public void changedUpdate(DocumentEvent e) {
       
   }
+
+    public void actionPerformed( ActionEvent e) {
+	TimeUtils tu = new TimeUtils();
+	setUpperText(tu.getLocalTime());
+	setLowerText(tu.getLocalDate());
+    }
+
+    public void keyPressed(KeyEvent evt) {
+    }
+
+    public void keyReleased( KeyEvent evt) {
+    }
+
+    public void keyTyped( KeyEvent evt) {
+	stopTimer();
+    }
+
+    public void startTimer() {
+	timer.start();
+    }
+
+    public void stopTimer() {
+	timer.stop();
+    }
 
   
 }
