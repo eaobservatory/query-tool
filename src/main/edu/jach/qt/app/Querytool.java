@@ -487,9 +487,9 @@ public class Querytool implements Runnable, Observer {
 
 	tmpStr = lrtf.getLowerText()+"T"+lrtf.getUpperText();
 	if (! lrtf.timerRunning() ) {
+	    TimeUtils tu = new TimeUtils();
 	    if (tu.isValidDate(tmpStr) ) {
 		item = doc.createElement("date");
-		TimeUtils tu = new TimeUtils();
 		tmpStr = tu.convertLocalISODatetoUTC(tmpStr);
 		item.appendChild (doc.createTextNode(tmpStr.trim()));
 		root.appendChild (item); 
