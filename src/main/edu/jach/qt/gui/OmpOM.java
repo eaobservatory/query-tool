@@ -61,7 +61,7 @@ public class OmpOM extends JPanel{
 
     //Load OM specific configs
     OtFileIO.setXML(System.getProperty("OMP") != null);
-    QtTools.loadConfig(new String(System.getProperty("omCfg")));
+    //QtTools.loadConfig(new String(System.getProperty("omCfg")));
 
     /* Need to construct UKIRT-specific items so that their SpTypes are
      * statically initialised.  Otherwise the sp classes won't know about 
@@ -123,7 +123,7 @@ public class OmpOM extends JPanel{
     //spItem = new orac.jcmt.obsComp.SpSiteQualityObsComp();
 
     logger.info("SpItems initialized");
-
+    
     ptree = new ProgramTree();
   }
 
