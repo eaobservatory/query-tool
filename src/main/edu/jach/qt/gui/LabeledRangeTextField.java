@@ -3,9 +3,12 @@ package edu.jach.qt.gui;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import javax.swing.text.*;
 import javax.swing.event.*;
 
 import java.util.*;
+import java.lang.*;
+import java.text.*;
 
 /**
  * LabeldRangeTextField.java
@@ -70,6 +73,18 @@ public class LabeledRangeTextField extends WidgetPanel
 
   public String getLowerText() {
     return lowerBound.getText();
+  }
+
+  public void setUpperText(Double val) {
+      DecimalFormat df = new DecimalFormat("0.00");
+      String value = df.format(val.doubleValue());
+      upperBound.setText(value);
+  }
+
+  public void setLowerText(Double val) {
+      DecimalFormat df = new DecimalFormat("0.00");
+      String value = df.format(val.doubleValue());
+      lowerBound.setText(value);
   }
 
   public Vector getUpperList() {
