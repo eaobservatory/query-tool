@@ -42,6 +42,7 @@ public class QtFrame extends JFrame implements PopupMenuListener, ActionListener
   private int			selRow;
   private JMenuItem		saveItem;
   private JMenuItem		saveAsItem;
+  private JMenuItem		exitItem;
   private JCheckBoxMenuItem	observability;
   private JCheckBoxMenuItem	remaining;
   private JCheckBoxMenuItem	allocation;
@@ -350,12 +351,13 @@ public class QtFrame extends JFrame implements PopupMenuListener, ActionListener
       
 
     JMenuItem openItem = new JMenuItem("Open");
-    saveItem = new JMenuItem("Save");
+    saveItem   = new JMenuItem("Save");
     saveAsItem = new JMenuItem("Save As");
+    exitItem   = new JMenuItem("Exit");
       
     mbar.add(makeMenu (fileMenu, new Object[] {
       "New", openItem, null, saveItem, saveAsItem,
-      null, "Exit" }, this)
+      null, exitItem }, this)
 	     );
       
     observability = new JCheckBoxMenuItem("Observability",true);
@@ -431,8 +433,16 @@ public class QtFrame extends JFrame implements PopupMenuListener, ActionListener
     } 
     
     else if ( source instanceof JMenuItem) {
-      logger.debug("Popup send MSB");
-      msbWorker.start();
+	JMenuItem thisItem = (JMenuItem)source;
+	if (thisItem.getText().equals("Exit"))
+	    {
+		exitQT();
+	    }
+	else
+	    {
+		logger.debug("Popup send MSB");
+		msbWorker.start();
+	    }
 
     }
     
