@@ -351,7 +351,14 @@ final public class ProgramTree extends JPanel implements
 
 	Thread t = null;
 
-	if (selectedItem == null) {
+	if ( selectedItem == null && DeferredProgramList.currentItem == null ) {
+	    JOptionPane.showMessageDialog(null,
+		    "You have not selected an observation!",
+		    "Please select an observation.",
+		    JOptionPane.ERROR_MESSAGE);
+	    return;
+	}
+	else if (selectedItem == null) {
 	    isDeferred =  true;
 	    item = DeferredProgramList.currentItem;
 	}

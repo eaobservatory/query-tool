@@ -40,7 +40,7 @@ import calpa.html.CalHTMLPane;
 public class ExecuteJCMT extends Execute {
 
     static Logger logger = Logger.getLogger(ExecuteJCMT.class);
-    private SpItem _itemToExecute;
+    private static SpItem _itemToExecute;
     private static String jcmtDir = File.separator +
 	"jcmtdata" + File.separator + "orac_data";
     static boolean isRunning = false;
@@ -51,10 +51,6 @@ public class ExecuteJCMT extends Execute {
      * @param  item      The item to send to SCUQUEUE
      * @throws Exception From the base class.
      */
-    private ExecuteJCMT(SpItem item) throws Exception {
-	_itemToExecute = item;
-    };
-
     private ExecuteJCMT() throws Exception {
     }
 
@@ -65,11 +61,12 @@ public class ExecuteJCMT extends Execute {
 	    return null;
 	}
 	try {
-	    _instance = new ExecuteJCMT (item);
+	    _instance = new ExecuteJCMT ();
+	    _itemToExecute = item;
 	}
 	catch (Exception e) {
 	    logger.error("Unable to construct");
-	    _instance = null;
+	    return null;
 	}
 	return _instance;
     }
