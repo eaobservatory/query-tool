@@ -490,5 +490,9 @@ public class WidgetPanel extends JPanel
     widgetBag.put(abbrevTable.get(title), list);
   }
 
+    public WidgetDataBag getBag() {
+	return widgetBag;
+    }
+
 
 }// WidgetPanel
