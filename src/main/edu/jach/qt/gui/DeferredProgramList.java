@@ -33,7 +33,7 @@ import orac.util.*;
 import edu.jach.qt.utils.*;
 
 /* Miscellaneous imports */
-import ocs.utils.*;
+// import ocs.utils.*;
 
 /**
  * Implements the Deferred List functionality.
@@ -312,7 +312,97 @@ final public class DeferredProgramList extends JPanel implements
 
 
 
+    /*
+     * This more or less mimics the doExecute() method the ProgramTree.java.
+     * Its real purpose is to let users do calibrations even if the "Send for Execution"
+     * button is disabled.
+     */
     private void execute() {
+	Thread t = null;
+
+	// If we have nothing selected. don't bother doing anything
+	if (currentItem == null)
+	    return;
+
+	// If we have items selected on both the ProgramList and Deferred List
+	// the let the execute method handle the problem.
+
+	// Call the appropriate Execute method
+	if (System.getProperty("telescope").equalsIgnoreCase("ukirt")) {
+	    try {
+		logger.info("Sending observation "+currentItem.getTitle()+" for execution.");
+		ExecuteUKIRT execute = new ExecuteUKIRT();
+		t = new Thread (execute, "UKIRT Execution Thread");
+
+		// Start the process and wait for it to complete
+// 		logger.info("Thread "+t.getName()+" started.");
+		t.start();
+		t.join();
+// 		logger.info("Thread "+t.getName()+" stopped.");
+
+		// Now check the result
+		File failFile = new File ("/ukirtdata/orac_data/deferred/.failure");
+		File successFile = new File ("/ukirtdata/orac_data/deferred/.success");
+		if (failFile.exists()) {
+		    new ErrorBox(this, "Failed to Execute. Check messages.");
+		    logger.warn ("Failed to execute observation");
+		}
+		else if (successFile.exists()) {
+		    // Mark this observation as having been done
+		    markThisObservationAsDone(currentItem);
+		    logger.info("Observation executed successfully");
+		}
+		else {
+		    // Neither file exists - report an error to the user
+		    new ErrorBox("Unable to determine success status - assuming failed.");
+		    logger.error ("Unable to determine success status for observation.");
+		}
+	    }
+	    catch (Exception e) {
+		logger.error("Failed to execute thread.",e);
+		if (t!= null && t.isAlive()) {
+		    logger.error("Last observation still seems to be running");
+		}
+	    }
+	    return;
+	}
+	else if (System.getProperty("telescope").equalsIgnoreCase("jcmt")) {
+	    try {
+		logger.info("Sending observation "+currentItem.getTitle()+" for execution.");
+
+		ExecuteJCMT execute = new ExecuteJCMT(currentItem);
+		
+		// Set up the thread execution
+		t = new Thread(execute, "JCMT Execution Thread");
+// 		logger.info("Thread "+t.getName()+" started.");
+		t.start();
+		t.join();
+// 		logger.info("Thread "+t.getName()+" stopped.");
+		File failFile = new File ("/jcmtdata/orac_data/deferred/.failure");
+		File successFile = new File ("/jcmtdata/orac_data/deferred/.success");
+		if (failFile.exists()) {
+		    new ErrorBox(this, "Failed to Execute. Check messages.");
+		    logger.warn ("Failed to execute observation");
+		}
+		else if (successFile.exists()) {
+		    // Mark this observation as having been done
+		    markThisObservationAsDone(currentItem);
+		    logger.info("Observation executed successfully");
+		}
+		else {
+		    // Neither file exists - report an error to the user
+		    new ErrorBox("Unable to determine success status - assuming failed.");
+		    logger.error ("Unable to determine success status for observation.");
+		}
+	    }
+	    catch (Exception e) {
+		logger.error("Failed to execute thread.",e);
+		if (t!= null && t.isAlive()) {
+		    logger.error("Last observation still seems to be running");
+		}
+	    }
+	    return;
+	}
     }
 
 
