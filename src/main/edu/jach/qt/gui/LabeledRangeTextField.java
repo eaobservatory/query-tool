@@ -16,28 +16,115 @@ import java.util.*;
  * @author <a href="mailto: mrippa@jach.hawaii.edu"Mathew Rippa</a>
  */
 
-public class LabeledRangeTextField extends LabeledTextField {
+public class LabeledRangeTextField extends WidgetPanel 
+  implements DocumentListener {
 
-   protected JTextField upperBound;
+  private JTextField upperBound;
+  private JTextField lowerBound;
 
-   public LabeledRangeTextField(Hashtable ht, WidgetDataBag wdb, String text) {
-      super(ht, wdb, text);
+  private JLabel     widgetLabel;
+  private JLabel     upperLabel;
+  private JLabel     lowerLabel;
 
-      upperBound = new JTextField();
+  private String name;
 
-      setup();
-   }
+  public LabeledRangeTextField(Hashtable ht, WidgetDataBag wdb, String text) {
+    super(ht, wdb);
 
-   private void setup() {
-      //setBackground(java.awt.Color.gray);
-      setForeground(Color.white);
-      this.setLayout(new GridLayout (1,5));
-      add(label);
-      add(new JLabel("Min: ",JLabel.TRAILING));
-      add(textField);
-      textField.getDocument().addDocumentListener(this);
-      add(new JLabel("Max: ",JLabel.TRAILING));
-      add(upperBound);
-      upperBound.getDocument().addDocumentListener(this);
-   }
+    widgetLabel = new JLabel(text + ": ", JLabel.LEADING);
+    lowerLabel = new JLabel("Min: ",JLabel.TRAILING);
+    upperLabel = new JLabel("Max: ",JLabel.TRAILING);
+
+
+    upperBound = new JTextField();
+    lowerBound = new JTextField();
+    setup();
+  }
+
+  private void setup() {
+    name = widgetLabel.getText().trim();
+    GridLayout gl = new GridLayout(0,5);
+    gl.setHgap(0);
+    setForeground(Color.white);
+    widgetLabel.setForeground(Color.black);
+
+    setLayout(gl);
+    add(widgetLabel);
+
+    add(lowerLabel);
+    add(lowerBound);
+    lowerBound.getDocument().addDocumentListener(this);
+    
+    add(upperLabel);
+    add(upperBound);
+    upperBound.getDocument().addDocumentListener(this);
+  }
+
+  public String getName() {
+    return abbreviate(name);
+  }
+
+  public String getUpperText() {
+    return upperBound.getText();
+  }
+
+  public String getLowerText() {
+    return lowerBound.getText();
+  }
+
+  public Vector getUpperList() {
+    String tmpStr = getUpperText();
+    Vector result = new Vector();
+    StringTokenizer st = new StringTokenizer(tmpStr, ",");
+
+    while (st.hasMoreTokens()) {
+      String temp1 = st.nextToken();
+      result.add(temp1);
+    }
+    return result;
+  }
+ 
+  public Vector getLowerList() {
+    String tmpStr = getLowerText();
+    Vector result = new Vector();
+    StringTokenizer st = new StringTokenizer(tmpStr, ",");
+
+    while (st.hasMoreTokens()) {
+      String temp1 = st.nextToken();
+      result.add(temp1);
+    }
+    return result;
+  }
+ 
+  /**
+   * The <code>insertUpdate</code> adds the current text to the
+   * WidgetDataBag.  All observers are notified.
+   *
+   * @param e a <code>DocumentEvent</code> value
+   */
+  public void insertUpdate(DocumentEvent e) {
+
+    setAttribute(name.substring(0,name.length()-1), this);
+  }
+
+  /**
+   * The <code>removeUpdate</code> adds the current text to the
+   * WidgetDataBag.  All observers are notified.
+   *
+   * @param e a <code>DocumentEvent</code> value
+   */
+  public void removeUpdate(DocumentEvent e) {
+    setAttribute(name.substring(0,name.length()-1), this);
+  }
+
+  /**
+   * The <code>changedUpdate</code> method is not implemented.
+   *
+   * @param e a <code>DocumentEvent</code> value
+   */
+  public void changedUpdate(DocumentEvent e) {
+      
+  }
+
+  
 }
