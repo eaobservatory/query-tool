@@ -22,7 +22,8 @@ SOURCES = \
 	../gui/MsbNode.java \
 	DragTreeCellRenderer.java \
 	LockFile.java \
-	CalibrationList.java
+	CalibrationList.java \
+	SimpleMoon.java
 
 
 include $(BUILD)/make.tail
