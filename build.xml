@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE project PUBLIC "-//ANT//DTD project//EN" "project.dtd" >
+
+<project name="Omp" default="main" basedir=".">
+  
+  <!-- ==================================================== -->
+  <!--             OMP -QT BUILD TOOL-                      -->
+  <!-- ==================================================== -->
+  <taskdef name="modificationset" classname="net.sourceforge.cruisecontrol.ModificationSet"/>
+  <taskdef name="junit" classname="org.apache.tools.ant.taskdefs.optional.junit.JUnitTask" />
+
+  <!-- ================================================ -->
+  <!--   Set the properties related to the source tree  -->
+  <!-- ================================================ -->
+  <property name="build.compiler" value="jikes"/>
+  <property name="build.compiler.emacs" value="true"/>    
+  <property name="masterbuild.logdir" value="/home/mrippa/tmp/logs"/>
+  <property name="junit.results" value="test-results" />
+
+  <property name="cvs.repository" value="/home/mrippa/cvsroot"/>
+  <property name="cvs.package" value="QT"/>
+  <property name="cvs.workingcopy" value="" />
+
+  <property name="Name" value="QT"/>
+  <property name="name" value="qt"/>
+  <property name="src.dir" value="src"/>
+  <property name="java.dir" value="${src.dir}/main"/>
+  <property name="tests.dir" value="src/testcases"/>
+  <property name="manifest" value="src/etc/manifest"/>
+  
+  <!--    ==================================================== -->
+  <!--       Set the properties for the build area             -->
+  <!--    ==================================================== -->
+  <property name="build.dir" value="/home/mrippa/root/install/javaClasses/${name}"/>
+  <property name="build.classes" value="${build.dir}/classes"/>
+  <property name="build.lib" value="${build.dir}/lib"/>
+  <property name="build.javadocs" value="${build.dir}/javadocs"/>
+  <property name="build.tests" value="${build.dir}/testcases"/>
+
+  <path id="classpath">
+    <fileset dir="/home/mrippa/local/cruisecontrol/lib">
+      <include name="**/*.jar"/>
+    </fileset>
+  </path>
+  
+  <path id="runpath">
+    <pathelement location="${build.classes}" />
+    <pathelement location="${build.tests}" />
+    <path refid="classpath"/>
+  </path>
+
+  <path id="tests-classpath">
+    <pathelement location="${build.classes}" />
+    <pathelement location="${build.tests}" />
+    <path refid="classpath"/>
+  </path>
+  
+  <!--    ==================================================== -->
+  <!--                  Prepare the Build                      -->
+  <!--    ==================================================== -->
+  <target name="init">
+    <tstamp />
+    <mkdir dir="${build.dir}"/>
+    <mkdir dir="${build.classes}"/>
+    <mkdir dir="${build.lib}"/>
+    <mkdir dir="${masterbuild.logdir}"/>
+  </target>
+
+  <!--    ==================================================== -->
+  <!--                  Check Dependencies                     -->
+  <!--    ==================================================== -->
+  <target name="mkdeps" depends="init">
+    <depend srcdir="${java.dir}/"
+      destdir="${build.classes}"
+      cache="depcache"
+      closure="yes"/>
+  </target>
+
+  <!--    ================================================ -->
+  <!--                   Compile testcases                 -->
+  <!--    ================================================ -->
+  <target name="compile-tests" depends="compile">
+    <mkdir dir="${build.tests}"/>
+
+    <javac srcdir="${tests.dir}"
+           destdir="${build.tests}"
+           debug="${debug}"
+           deprecation="${deprecation}" >
+      <classpath refid="tests-classpath" />
+    </javac>
+  </target>
+
+  <!--    ==================================================== -->
+  <!--                   Run testcases                         -->
+  <!--    ==================================================== -->
+  <target name="run-tests" depends="init, compile-tests" description="Run unit tests">
+    <delete dir="${junit.results}"/>
+    <mkdir dir="${junit.results}"/>
+    <echo message="Running unit tests..."/>
+    <junit printsummary="no" haltonerror="yes">
+      <classpath refid="tests-classpath" />
+      
+      <sysproperty key="build.tests" value="${build.tests}"/>
+      
+      <formatter type="plain" usefile="false" />
+      <formatter type="xml" />
+      
+      <batchtest todir="${junit.results}" >
+	<fileset dir="${tests.dir}">
+	  <include name="**/*Test*" />
+	</fileset>
+      </batchtest>
+    </junit>
+  </target>
+
+
+  <!--    ==================================================== -->
+  <!--               Get the source from CVS                   -->
+  <!--    ==================================================== -->
+  <target name="checkout" description="Update package from CVS">
+    <cvs cvsroot="${cvs.repository}" package="${cvs.package}" dest=".." />
+  </target>
+
+  <!--    ====================================================
+  *                             Modset                          
+  *       ==================================================== -->
+  <target name="modificationset" 
+    depends="init" 
+    description="Check modifications since last build">
+    <echo message="Checking for modifications..."/>
+    <modificationset lastbuild="${lastGoodBuildTime}" quietperiod="30" 
+      dateformat="yyyy-MMM-dd HH:mm:ss">
+      <cvselement cvsroot="${cvs.repository}"
+	localworkingcopy="."/>
+    </modificationset>
+  </target>
+
+  <!--    ====================================================
+  *                             MasterBuild                          
+  *       ==================================================== -->
+  <target name="masterbuild" 
+    depends="modificationset,checkout,compile,run-tests,jar" 
+    description="Cruise control master build">
+  </target>
+
+  <!--    ==================================================== -->
+  <!--                      Build It!                          -->
+  <!--    ==================================================== -->
+  <target name="compile" depends="mkdeps">
+    <javac srcdir="${java.dir}/" 
+      destdir="${build.classes}" 
+      debug="on">
+      <classpath refid="classpath"/>
+      <exclude name="qt/gui/JCheckBoxWidget.java"/>
+    </javac>
+  </target>
+  
+  <!--    ==================================================== -->
+  <!--                     Run It!                             -->
+  <!--    ==================================================== -->
+  <target name="run" depends="compile">
+    <echo message="${build.classes}"/>
+    <java classname="edu.jach.qt.app.Main" fork="yes">
+      <classpath refid="runpath" />
+    </java>
+  </target>
+
+  <!--    ==================================================== -->
+  <!--                 Create the qt.jar                       -->
+  <!--    ==================================================== -->
+  <target name="jar" depends="compile">
+    <jar jarfile="${build.lib}/qt.jar"
+      basedir="${build.classes}"
+      manifest="${manifest}">
+    </jar>
+  </target>
+
+  <!--  ====================================================== -->
+  <!--             Create the API documentation               -->               
+  <!--  ====================================================== -->
+  <target name="javadoc_check">
+    <uptodate property="javadoc.notrequired" targetfile="${build.javadocs}/packages.html" >
+        <srcfiles dir= "${java.dir}" includes="**/*.java"/>
+    </uptodate>
+  </target>
+
+  <target name="javadocs" depends="init, javadoc_check" 
+          unless="javadoc.notrequired"
+          description="Creates the API documentation">
+    <mkdir dir="${build.javadocs}"/>
+    <javadoc packagenames="edu.jach.qt.*"
+             sourcepath="${java.dir}"
+             destdir="${build.javadocs}"
+             author="true"
+             version="true"
+             windowtitle="${Name} API"
+             doctitle="${Name}"
+             bottom="Copyright &#169; 2001 Joint Astronomy Centre. All Rights Reserved.">
+      <group title="QT Core" packages="edu.jach.qt*" />
+    </javadoc>
+  </target>
+
+  <!--    ==================================================== -->
+  <!--                     Clean It!                           -->
+  <!--    ==================================================== -->
+  <target name="clean">
+    <delete dir="${build.dir}" />
+  </target>
+
+  <!--    ==================================================== -->
+  <!--                     Clean Build!                        -->
+  <!--    ==================================================== -->
+  <target name="cleanbuild" 
+    depends="clean,masterbuild" 
+    description="Cruise control clean build">
+  </target>
+
+  <!--    ==================================================== -->
+  <!--                       MAIN                              -->
+  <!--    ==================================================== -->
+  <target name="main" depends="compile">
+    <!--      <antstructure output="project.dtd"/> -->
+  </target>
+  
+</project>
