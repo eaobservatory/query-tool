@@ -42,7 +42,7 @@ public class OmpOM extends JPanel{
 
   private ProgramTree	      ptree;
   private File		      file;
-  private SpRootItem	      spRootItem;
+  private SpItem	      spItem;
   private Hashtable	      ptreeHashtable;
 
   /**
@@ -122,6 +122,12 @@ public class OmpOM extends JPanel{
     ptree.setChecksum(checksum);
   }
 
+  public void setSpItem(SpItem item) {
+
+    spItem = item;
+  }
+  
+
   /**
    * Describe <code>addNewTree</code> method here. This adds a
    * <code>ProgramTree</code>, referrenced by the msbID, to the list
@@ -131,12 +137,8 @@ public class OmpOM extends JPanel{
    */
   public void addNewTree(Integer msbID) {
 
-    file = new File(System.getProperty("msbFile"));
-    spRootItem = OtFileIO.fetchSp(file.getParent(), file.getName());
-     
-    ptree.addList(spRootItem);
+    ptree.addList(spItem);
     ptree.setMinimumSize(new Dimension(400,550) );
-
     ptreeHashtable.put(msbID, ptree);
   }
 
@@ -149,18 +151,18 @@ public class OmpOM extends JPanel{
     file = 
       new File(System.getProperty("arrayTests", 
 				  "/home/mrippa/install/omp/QT/config/array_tests.xml"));
-    spRootItem = OtFileIO.fetchSp(file.getParent(), file.getName());
-     
-    //ptree.addTree(spRootItem);
-    ptree.addList(spRootItem);
+    spItem = OtFileIO.fetchSp(file.getParent(), file.getName());
+ 
+    //ptree.addTree(spItem);
+    ptree.addList(spItem);
     ptree.setMinimumSize(new Dimension(400,550) );
 
     ptreeHashtable.put(new Integer(41), ptree);
   }
 
   public void resetTree() {
-    spRootItem = OtFileIO.fetchSp(file.getParent(), file.getName());
-    ptree.addList(spRootItem);
+    spItem = OtFileIO.fetchSp(file.getParent(), file.getName());
+    ptree.addList(spItem);
   }
 
   public JSplitPane getTreePanel(Integer msbID) {
@@ -173,9 +175,9 @@ public class OmpOM extends JPanel{
 
   public JSplitPane getDragTreePanel() {
       
-    DragDropObject ddo = new DragDropObject(spRootItem);
+    DragDropObject ddo = new DragDropObject(spItem);
     MsbNode root = new MsbNode(ddo);
-    getItems(spRootItem, root);
+    getItems(spItem, root);
 
     DnDJTree ddt = new DnDJTree(root);
     ddt.setCellRenderer(new DragTreeCellRenderer());
@@ -190,9 +192,9 @@ public class OmpOM extends JPanel{
       
     JFrame f = new JFrame();
     f.setSize(400,300);
-    DragDropObject ddo = new DragDropObject(spRootItem);
+    DragDropObject ddo = new DragDropObject(spItem);
     MsbNode root = new MsbNode(ddo);
-    getItems(spRootItem, root);
+    getItems(spItem, root);
     DnDJTree ddt = new DnDJTree(root);
     ddt.setCellRenderer(new MyTreeCellRenderer());
     f.getContentPane().add(ddt);

@@ -1,8 +1,15 @@
 package edu.jach.qt.utils;
 
+
 import java.io.*;
-import java.lang.reflect.*;
 import java.net.*;
+import gemini.sp.SpItem;
+import gemini.sp.SpProg;
+import orac.util.SpItemDOM;
+import orac.util.SpItemUtilities;
+
+import java.lang.reflect.*;
+import orac.util.*;
 
 /**
  * MsbClient.java
@@ -47,7 +54,9 @@ public class MsbClient extends SoapClient {
 
    }
 
-   public static boolean fetchMSB(Integer msbid) {
+   public static SpItem fetchMSB(Integer msbid) {
+
+     SpItem spItem = null;
       try {
 	System.out.println(""+msbid);
 	
@@ -56,24 +65,29 @@ public class MsbClient extends SoapClient {
 	 //System.out.println(doCall(url, "urn:OMP::MSBServer", "fetchMSB"));
 
 	 FileWriter fw = new FileWriter(System.getProperty("msbFile"));
-	 Object tmp = doCall(url, "urn:OMP::MSBServer", "fetchMSB");
+	 String spXML = (String) doCall(url, "urn:OMP::MSBServer", "fetchMSB");
 
-	 if (tmp != null ) {
+	 if (spXML != null ) {
 	   
-	   System.out.println("The msb says:\n "+ tmp);
+	   //System.out.println("The msb says:\n "+ spXML);
 	   
-	   fw.write( (String)tmp );
+	   StringReader r = new StringReader(spXML);
+	   SpItemDOM dom = new SpItemDOM (r);
+	   spItem = dom.getSpItem();
+
+	   fw.write( (String)spXML );
 	   fw.close();
 	 } // end of if ()
 
 	 else 
-	   return false;
+	   return spItem;
 	 
       } catch (Exception e) {
 	e.printStackTrace();
-	return false;
+	return spItem;
       }
-      return true;
+
+      return spItem;
    }
 
   public static void doneMSB(String projID, String checksum) {

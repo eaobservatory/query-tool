@@ -1,8 +1,9 @@
 package edu.jach.qt.gui;
 
+
+import edu.jach.qt.utils.*;
 import gemini.sp.*;
 import gemini.sp.obsComp.*;
-
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
@@ -13,19 +14,16 @@ import javax.swing.border.*;
 import javax.swing.event.*;
 import javax.swing.plaf.*;
 import javax.swing.tree.*;
-
+import jsky.app.ot.*;
+import ocs.utils.*;
 import om.console.*;
 import om.util.*;
-
 import orac.jcmt.inst.*;
 import orac.jcmt.iter.*;
 import orac.jcmt.obsComp.*;
 import orac.ukirt.inst.*;
 import orac.ukirt.iter.*;
-
-import edu.jach.qt.utils.*;
-import jsky.app.ot.*;
-import ocs.utils.*;
+import orac.util.*;
 
 
 /**
@@ -190,6 +188,7 @@ final public class ProgramTree extends JPanel
 	// *TODO* Replace this crap!
 	Translating tFlush = new Translating();
 	tFlush.start();
+
 	String tname = QtTools.translate(observation, inst.type().getReadable());
 	tFlush.getFrame().dispose();
 	tFlush.stop();

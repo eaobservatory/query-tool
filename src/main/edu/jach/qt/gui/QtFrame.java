@@ -1,9 +1,9 @@
 package edu.jach.qt.gui;
 
-import ocs.utils.ObeyNotRegisteredException;
 import edu.jach.qt.app.*;
 import edu.jach.qt.gui.*;
 import edu.jach.qt.utils.*;
+import gemini.sp.SpItem;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
@@ -11,6 +11,7 @@ import java.util.*;
 import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.table.*;
+import ocs.utils.*;
 
 /**
  * The <code>QtFrame</code> is responsible for how the main JFrame
@@ -154,7 +155,11 @@ public class QtFrame extends JFrame implements MenuListener, ListSelectionListen
 		     * needs a file.  I have not found a constructor that loads
 		     * a ProgramTree with just an XML string; only a File! 
 		     */
-		    isStatusOK = new Boolean(localQuerytool.fetchMSB(msbID));
+		    //isStatusOK = new Boolean(localQuerytool.fetchMSB(msbID));
+		    
+		    om.setSpItem( localQuerytool.fetchMSB(msbID));
+
+		    isStatusOK = new Boolean(true);
 		    return isStatusOK;  //not used yet
 		  }
 
@@ -162,6 +167,7 @@ public class QtFrame extends JFrame implements MenuListener, ListSelectionListen
 		  public void finished() { 
 		    blinker.blinkLed(false);
 		    if ( isStatusOK.booleanValue()) {
+
 		      
 		      om.addNewTree(msbID);
 		      //om.addNewTree();
