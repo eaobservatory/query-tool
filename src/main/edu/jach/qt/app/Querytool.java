@@ -486,27 +486,28 @@ public class Querytool implements Runnable, Observer {
 	String tmpStr;
 
 	tmpStr = lrtf.getLowerText()+"T"+lrtf.getUpperText();
-	TimeUtils tu = new TimeUtils();
-	if (tu.isValidDate(tmpStr) ) {
-	    item = doc.createElement("date");
-	    tmpStr = tu.convertLocalISODatetoUTC(tmpStr);
-	    item.appendChild (doc.createTextNode(tmpStr.trim()));
-	    root.appendChild (item); 
-	    areResultsExecutable = false;
+	if (! lrtf.timerRunning() ) {
+	    if (tu.isValidDate(tmpStr) ) {
+		item = doc.createElement("date");
+		TimeUtils tu = new TimeUtils();
+		tmpStr = tu.convertLocalISODatetoUTC(tmpStr);
+		item.appendChild (doc.createTextNode(tmpStr.trim()));
+		root.appendChild (item); 
+		areResultsExecutable = false;
+		// Dont use the moon info
+		NodeList list = root.getElementsByTagName("moon");
+		if (list.getLength() != 0) {
+		    root.removeChild(list.item(0));
+		}
+	    }
+	    else {
+		// We will use the current date, so set execution to true
+		areResultsExecutable = true;
+	    }
 	}
 	else {
-	    // We will use the current date, so set execution to true
 	    areResultsExecutable = true;
 	}
-	try {
-	    NodeList list = root.getElementsByTagName("moon");
-	    if (list.getLength() != 0) {
-		root.removeChild(list.item(0));
-	    }
-
-	}
-	catch ( DOMException dme ) {System.out.println("Can not remove node moon");}
-
 	return root;
     }
 
