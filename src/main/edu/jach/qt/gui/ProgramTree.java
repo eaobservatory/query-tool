@@ -464,6 +464,10 @@ final public class ProgramTree extends JPanel implements
 			      }
 		      }
 		  }
+
+		  public void mousePressed(MouseEvent e) {
+		      DeferredProgramList.clearSelection();
+		  }
 	      };
 	  obsList.addMouseListener(ml);
 	  MouseListener popupListener = new PopupListener();
@@ -960,6 +964,7 @@ final public class ProgramTree extends JPanel implements
 	}
 	Object selected = obsList.getSelectedValue();
 	obsList.setEnabled(false);
+	DeferredProgramList.clearSelection();
 	selectedItem = (SpItem)selected;
 	if ( selected != null ){
 	    SpItem tmp = _spItem.deepCopy();
