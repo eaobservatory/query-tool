@@ -159,9 +159,15 @@ public class QtFrame extends JFrame implements ActionListener, MenuListener, Lis
 		     */
 		    //isStatusOK = new Boolean(localQuerytool.fetchMSB(msbID));
 		    
-		    om.setSpItem( localQuerytool.fetchMSB(msbID));
+		    try {
+		      om.setSpItem( localQuerytool.fetchMSB(msbID));
+		      isStatusOK = new Boolean(true);
 
-		    isStatusOK = new Boolean(true);
+		    } catch (NullPointerException e) {
+		      isStatusOK = new Boolean(false);
+
+		    } // end of try-catch
+
 		    return isStatusOK;  //not used yet
 		  }
 
