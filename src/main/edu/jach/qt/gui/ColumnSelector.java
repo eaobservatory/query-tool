@@ -16,10 +16,22 @@ public class ColumnSelector
     implements ActionListener {
 
     private JPanel columnPanel;
+    private QtFrame parent;
     private MSBQueryTableModel _msbqtm;
 
     public ColumnSelector() {
     }
+
+    public ColumnSelector (QtFrame frame) {
+	parent = frame;
+	_msbqtm = parent.getModel();
+	this.setSize(150,300);
+	this.getContentPane().setLayout(new BorderLayout());
+	this.addCheckBoxes();
+	this.addCloseButton();
+	this.setVisible(true);
+    }
+    
 
     public ColumnSelector (MSBQueryTableModel model) {
 	// Disable the parent
@@ -68,6 +80,9 @@ public class ColumnSelector
 	}
 
 	_msbqtm.updateColumns(selected);
+	if (parent != null) {
+	    parent.setTableToDefault();
+	}
 	this.dispose();
     }
 }
