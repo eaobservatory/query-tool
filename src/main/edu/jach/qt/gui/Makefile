@@ -39,7 +39,8 @@ SOURCES = \
 	TimerEvent.java \
 	TimerListener.java \
 	XmlUtils.java \
-	TrashCan.java
+	TrashCan.java \
+	DeferredProgramList.java
 
 include $(BUILD)/make.tail
 
