@@ -476,6 +476,14 @@ final public class DeferredProgramList extends JPanel implements
     {
 	// Add a dat-time stamp to the title
 	String currentTitle = thisObservation.getTitle();
+	StringTokenizer st = new StringTokenizer(currentTitle, "_");
+	String baseName = "";
+	while (st.hasMoreTokens()) {
+	    String subStr = st.nextToken();
+	    if (subStr.equals("done")) break;
+	    baseName = baseName + subStr;
+	}
+	currentTitle = baseName;
 	SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd'T'HHmmss");	
 	Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
 	String observationTime = df.format(cal.getTime());
