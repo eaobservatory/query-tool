@@ -612,7 +612,7 @@ public class QtFrame
     mbar.add(viewMenu);
     JMenuItem columnItem = new JMenuItem("Columns...");
     columnItem.addActionListener(this);
-    JMenu satMenu = new JMenu("Satallite Image");
+    JMenu satMenu = new JMenu("Satellite Image");
     JMenuItem irItem = new JMenuItem("Infra Red");
     irItem.addActionListener(this);
     JMenuItem wvItem = new JMenuItem("Water Vapour");
