@@ -75,6 +75,14 @@ public class ExecuteUKIRT extends Execute implements Runnable {
 	    logger.debug("Translated file is "+tname);
 	}
 
+	BufferedWriter errorWriter = null;
+	try {
+	    errorWriter = new BufferedWriter( new FileWriter(failure) );
+	}
+	catch (IOException ioe) {
+	    logger.warn ("Unable to create error writer; messages will be logged but not displayed in warning");
+	}
+
 	// Having successfully run through translation, now try
 	// to submit the file to the ukirt instrument task
 	if (TelescopeDataPanel.DRAMA_ENABLED) {
@@ -96,9 +104,11 @@ public class ExecuteUKIRT extends Execute implements Runnable {
 		if (rtn != 0) {
 		    logger.error("Error loading UKIRT task");
 		    logger.error(new String(stderr).trim());
-// 		    new PopUp ("Load Error",
-// 			       new String (stderr).trim(),
-// 			       JOptionPane.ERROR_MESSAGE).start();
+		    if ( errorWriter != null) {
+			errorWriter.write( new String(stderr).trim() );
+			errorWriter.newLine();
+			errorWriter.close();
+		    }
 		    success.delete();
 		    return;
 		}	 
@@ -106,19 +116,36 @@ public class ExecuteUKIRT extends Execute implements Runnable {
 	    catch (IOException ioe) {
 		logger.error("Error executing loadUKIRT...", ioe);
 		logger.error(new String(stderr).trim());
-// 		new PopUp ("Error loading UKIRT task",
-// 			   new String(stderr).trim(),
-// 			   JOptionPane.ERROR_MESSAGE).start();
 		success.delete();
 		return;
 	    }
 	    catch (InterruptedException ie) {
 		logger.error ("loadUKIRT exited prematurely...", ie);
+		if ( errorWriter != null) {
+		    try {
+			errorWriter.write( new String(stderr).trim() );
+			errorWriter.newLine();
+			errorWriter.close();
+		    }
+		    catch (IOException ioe) {
+			// Do nothing since the message should be in th elog anyway
+		    }
+		}
 		success.delete();
 		return;
 	    }
 	    catch (Exception ex) {
 		logger.error("Got an unknown exception when running loadUKIRT...",ex);
+		if ( errorWriter != null) {
+		    try {
+			errorWriter.write( new String(stderr).trim() );
+			errorWriter.newLine();
+			errorWriter.close();
+		    }
+		    catch (IOException ioe) {
+			// Do nothing since the message should be in the log anyway
+		    }
+		}
 		success.delete();
 	    }
 	}

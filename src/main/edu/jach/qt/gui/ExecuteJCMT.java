@@ -133,6 +133,15 @@ public class ExecuteJCMT extends Execute {
 	byte [] odfFile = new byte [1024];
 	byte [] errorMessage = new byte [1024];
 	Runtime rt;
+
+	// Writer to add errors to log file before exiting
+	BufferedWriter errorWriter = null;
+	try {
+	    errorWriter = new BufferedWriter ( new FileWriter (failure) );
+	}
+	catch (IOException ioe) {
+	    logger.warn ("Unable to create error writer; messages will be logged but not displayed in warning");
+	}
 	// Do the translation
 	try {
 	    rt = Runtime.getRuntime();
@@ -149,9 +158,11 @@ public class ExecuteJCMT extends Execute {
 	    logger.debug("Error from translator: "+new String(errorMessage).trim());
 	    if (rtn != 0) {
 		logger.error("Returning with non-zero error status following translation");
-// 		new PopUp("Translation Error",
-// 			  new String(errorMessage).trim(),
-// 			  JOptionPane.ERROR_MESSAGE).start();
+		if ( errorWriter != null) {
+		    errorWriter.write( new String(errorMessage).trim() );
+		    errorWriter.newLine();
+		    errorWriter.close();
+		}
 		success.delete();
 		isRunning = false;
 		return true;
@@ -160,6 +171,17 @@ public class ExecuteJCMT extends Execute {
 	catch (InterruptedException ie) {
 	    logger.error ("Translation exited prematurely...", ie);
 	    success.delete();
+	    if ( errorWriter != null) {
+		try {
+		    errorWriter.write( new String(errorMessage).trim() );
+		    errorWriter.newLine();
+		    errorWriter.close();
+		}
+		catch ( IOException ioe ) {
+		    // If we can't write to the file, this doesn't matter since
+		    // it should go to the log anyway
+		}
+	    }
 	    isRunning = false;
 	    return true;
 	}
@@ -201,9 +223,11 @@ public class ExecuteJCMT extends Execute {
 		    logger.debug("Error from LoadSCUQUEUE: "+new String(errorMessage).trim());
 		    if (rtn != 0) {
 			logger.error("Error loading queue");
-// 			new PopUp ("Load Error",
-// 				   new String(errorMessage).trim(),
-// 				   JOptionPane.ERROR_MESSAGE).start();
+			if ( errorWriter != null) {
+			    errorWriter.write( new String(errorMessage).trim() );
+			    errorWriter.newLine();
+			    errorWriter.close();
+			}
 			success.delete();
 			isRunning = false;
 			return true;
@@ -212,15 +236,22 @@ public class ExecuteJCMT extends Execute {
 	    }
 	    catch (IOException ioe) {
 		logger.error("Error executing LOADQ...", ioe);
-// 		new PopUp ("Error Loading Queue",
-// 			   new String(errorMessage),
-// 			   JOptionPane.ERROR_MESSAGE).start();
 		success.delete();
 		isRunning = false;
 		return true;
 	    }
 	    catch (InterruptedException ie) {
 		logger.error ("LOADQ exited prematurely...", ie);
+		if ( errorWriter != null) {
+		    try {
+			errorWriter.write( new String(errorMessage).trim() );
+			errorWriter.newLine();
+			errorWriter.close();
+		    }
+		    catch (IOException ioe) {
+			// Do nothing; the message should be written to the log file anyway
+		    }
+		}
 		success.delete();
 		isRunning = false;
 		return true;

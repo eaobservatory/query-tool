@@ -366,7 +366,26 @@ final public class ProgramTree extends JPanel implements
 		File failFile = new File ("/ukirtdata/orac_data/deferred/.failure");
 		if (failFile.exists()) {
 		    failed = true;
-		    new ErrorBox(this, "Failed to Execute. Check messages.");
+		    if ( failFile.length() > 0 ) {
+			StringBuffer error = new StringBuffer();
+			try {
+			    // Read the information from the filure file
+			    BufferedReader rdr = new BufferedReader( new FileReader(failFile) );
+			    String line;
+			    while ( ( line = rdr.readLine() ) != null ) {
+				error.append(line);
+				error.append('\n');
+			    }
+			    new ErrorBox( this, "Failed to Execute. Error was \n" + error.toString() );
+			}
+			catch ( IOException ioe ) {
+			    // If we failed, output a default error message and reset the error buffer
+			    new ErrorBox(this, "Failed to Execute. Check log using View>Log menu button.");
+			}		    
+		    }
+		    else {
+			new ErrorBox(this, "Failed to Execute. Check log using View>Log menu button.");
+		    }
 		}
 		if (!isDeferred && !failed) {
 		    msbPendingFile = new File (msbPendingDir+projectID+"_"+checkSum+".pending");
@@ -1319,10 +1338,33 @@ final public class ProgramTree extends JPanel implements
 	    }
 
 	    if (failFile.exists()) {
-		logger.info("Execution failed, Check log messages");
-		new PopUp ("JCMT Execution Gailed",
-			   "Failed to send project for execution; check log entries",
-			   JOptionPane.ERROR_MESSAGE).start();
+		logger.info("Execution failed - Check log messages");
+		if ( failFile.length() > 0 ) {
+		    StringBuffer error = new StringBuffer();
+		    try {
+			// Read the information from the filure file
+			BufferedReader rdr = new BufferedReader( new FileReader(failFile) );
+			String line;
+			while ( ( line = rdr.readLine() ) != null ) {
+			    error.append(line);
+			    error.append('\n');
+			}		    
+			new PopUp ("JCMT Execution Failed",
+				   "Failed to send project for execution; Error was \n" + error.toString(),
+				   JOptionPane.ERROR_MESSAGE).start();
+		    }
+		    catch ( IOException ioe ) {
+			// If we failed, output a default error message and reset the error buffer
+			new PopUp ("JCMT Execution Failed",
+				   "Failed to send project for execution; check log entries using the View>Log button",
+				   JOptionPane.ERROR_MESSAGE).start();
+		    }
+		}
+		else {
+		    new PopUp ("JCMT Execution Failed",
+			       "Failed to send project for execution; check log entries using the View>Log button",
+			       JOptionPane.ERROR_MESSAGE).start();
+		}
 		failed = true;
 	    }
 	    if (!_isDeferred && !failed) {
