@@ -5,7 +5,6 @@
 # And the format of this script is not really meant to support manual editing.          # 
 ######################################################################################### 
  
-#set JAVA = /usr/java1.1/bin/java
 set JAVA = /local/java/jdk/bin/java
 
 if (! ${?IMP_SCRATCH} && (${HOST} == "lokahi")) then
@@ -13,14 +12,36 @@ if (! ${?IMP_SCRATCH} && (${HOST} == "lokahi")) then
     echo "IMP_SCRATCH set to /tmp/${USER}"
 endif
  
-#  set PRG       = `which $0` 
-#  set PRG_HOME  = `dirname $PRG` 
-#  cd $PRG_HOME
-
 set CFG_DIRS     = /jac_sw//omp/QT/config/ot/cfg
+set conf        = /home/mrippa/netroot/install/omp/QT/config/qt.conf
+set widgetFile   = /home/mrippa/netroot/install/omp/QT/config/qtUkirtWidget.conf
+ 
+while ($#argv != 0)
+   switch ($argv[1])
+      case -jac:
+        set conf = /home/mrippa/netroot/install/omp/QT/configs/qtSystem.conf
+        echo Global configs to be used
+        shift
+        breaksw
+      case -ukirt:
+       set widgetFile   = /home/mrippa/netroot/install/omp/QT/config/qtUkirtWidget.conf
+        echo Telescope set to use ukirt widget set
+        shift
+        breaksw
+      case -jcmt:
+       set widgetFile   = /home/mrippa/netroot/install/omp/QT/config/qtJcmtWidget.conf
+        echo Telescope set to use jcmt widget set
+        shift
+        breaksw
+      default:
+        echo "No such option"
+        exit 1
+        breaksw
+   endsw
+end
 
 set CLASSPATH = /jac_sw/omp/QT/lib/qt.jar:/home/mrippa/local/cc/lib/xerces.jar:/jac_sw/omp/QT/lib/mail.jar:/jac_sw/omp/QT/lib/activation.jar:/jac_sw/omp/QT/lib/soap.jar:/home/mrippa/netroot/src/orac3/OT/install/classes:/home/mrippa/netroot/src/orac3/GEMINI/install/classes:/home/mrippa/netroot/src/orac3/OM/install/classes:/home/mrippa/netroot/src/orac3/ORAC/install/classes:/home/mrippa/netroot/src/orac3/ODB/install/classes:/jac_sw/omp/QT/lib/jsky.jar:/jac_sw/omp/QT/lib/diva.jar:/jac_sw/omp/QT/lib/junit.jar
 
 set CFG_TELESCOPE_DIR = ${CFG_DIRS}/ukirt
 
-${JAVA} -DqtConfig=/jac_sw/omp/config/qtSystem.conf -DOMP -DSERVER=ATC -Dot.cfgdir=${CFG_TELESCOPE_DIR}/ -Dot.resource.cfgdir=./ -cp ${CLASSPATH}:${CFG_TELESCOPE_DIR} edu.jach.qt.app.Main &
+${JAVA} -DqtConfig=${conf} -DwidgetFile=${widgetFile} -DOMP -DSERVER=ATC -Dot.cfgdir=${CFG_TELESCOPE_DIR}/ -Dot.resource.cfgdir=./ -cp ${CLASSPATH}:${CFG_TELESCOPE_DIR} edu.jach.qt.app.Main &
