@@ -69,6 +69,7 @@ public class ExecuteJCMT extends Execute {
 	}
 	catch (Exception e) {
 	    logger.error("Unable to construct");
+	    _instance = null;
 	}
 	return _instance;
     }

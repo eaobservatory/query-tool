@@ -1337,6 +1337,7 @@ final public class ProgramTree extends JPanel implements
 
 	    File failFile = new File ("/jcmtdata/orac_data/deferred/.failure");
 	    execute = ExecuteJCMT.getInstance(_item);
+	    if ( execute == null ) return;
 	    try {
 		failed = execute.run();
 	    }

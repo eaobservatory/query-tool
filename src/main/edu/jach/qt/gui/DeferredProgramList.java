@@ -771,6 +771,7 @@ final public class DeferredProgramList extends JPanel implements
 	    boolean failed = false;
 
 	    execute = ExecuteJCMT.getInstance(_item);
+	    if ( execute == null ) return;
 	    failed = execute.run();
 
 	    File failFile = new File ("/jcmtdata/orac_data/deferred/.failure");
