@@ -122,6 +122,7 @@ public class InfoPanel extends JPanel implements ActionListener {
 	InfoPanel.searchButton.setName("Search");
 	InfoPanel.searchButton.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
+		    qtf.getWidgets().setButtons();
 		    qtf.updateColumnSizes();
 		    qtf.getModel().clear();
 		    qtf.getProjectModel().clear();

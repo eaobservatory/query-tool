@@ -46,6 +46,7 @@ public class WidgetPanel extends JPanel
 
   private  static JTextFieldPanel atmospherePanel;
   private  static RadioPanel      moonPanel;
+  private boolean ignoreMoonUpdates = false;
   /**
    * Describe variable <code>instrumentPanel</code> here.
    *
@@ -250,7 +251,11 @@ public class WidgetPanel extends JPanel
      * Assumes that dark occurs when the moon is set, grey when the moon
      * is up but less than 25% illuminated and bright otherwise.
      */
-    private void setButtons() {
+    public void setButtons() {
+	if ( ignoreMoonUpdates ) {
+	    return;
+	}
+
 	// Currently sets the moon based on whether it is up and the illuminated fraction
 	SimpleMoon moon = new SimpleMoon();
 	Hashtable ht = widgetBag.getHash();
@@ -278,23 +283,40 @@ public class WidgetPanel extends JPanel
 		    Object o = iter.next();
 		    if (o  instanceof JRadioButton) {
 			JToggleButton abstractButton = (JRadioButton) o;
+			abstractButton.addMouseListener ( new MouseAdapter() {
+				public void mouseClicked (MouseEvent e) {
+				    ignoreMoonUpdates = true;
+				    ToolTipManager.sharedInstance().registerComponent(moonPanel);
+				    moonPanel.setToolTipText ( "Auto update disabled by user; use \"Set Default\" to enable");
+				    moonPanel.setBackground(Color.darkGray);
+				}
+			    });			
 			String buttonName = abstractButton.getText();
 			if (buttonName.equalsIgnoreCase("Dark") && dark == true) {
 			    abstractButton.setSelected(true);
-			    abstractButton.doClick();
 			}
 			else if (buttonName.equalsIgnoreCase("Grey") && grey == true) {
 			    abstractButton.setSelected(true);
-			    abstractButton.doClick();
 			}
 			else if (buttonName.equalsIgnoreCase("Bright") && bright == true) {
 			    abstractButton.setSelected(true);
-			    abstractButton.doClick();
 			}
 		    }
 		}
 	    }
 	    break;
+	}
+    }
+
+    /**
+     * Set whether ot not updates should be made for each query.  This is turned off by the mouse listener
+     * associated with each button on the moon panel
+     */
+    public void setMoonUpdatable (boolean flag) {
+	ignoreMoonUpdates = !flag;
+	if ( flag == true ) {
+	    moonPanel.setToolTipText (null);
+	    moonPanel.setBackground ( instrumentPanel.getBackground() );
 	}
     }
 

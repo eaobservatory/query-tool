@@ -294,6 +294,7 @@ public class TelescopeDataPanel extends JPanel implements ActionListener {
 	else {
 	    bright = true;
 	}
+	infoPanel.getFrame().getWidgets().setMoonUpdatable (true);
 	RadioPanel moonPanel = WidgetPanel.getMoonPanel();
 	if (moonPanel != null) {
 	    ListIterator iter = moonPanel.radioElems.listIterator(0);
@@ -301,15 +302,12 @@ public class TelescopeDataPanel extends JPanel implements ActionListener {
 		JToggleButton abstractButton = (JRadioButton)iter.next();
 		if (abstractButton.getText().equalsIgnoreCase("dark") && dark == true) {
 		    abstractButton.setSelected(true);
-		    abstractButton.doClick();
 		}
 		else if (abstractButton.getText().equalsIgnoreCase("Grey") && grey == true) {
 		    abstractButton.setSelected(true);
-		    abstractButton.doClick();
 		}
 		else if (abstractButton.getText().equalsIgnoreCase("Bright") && bright == true) {
 		    abstractButton.setSelected(true);
-		    abstractButton.doClick();
 		}
 	    }
 	}

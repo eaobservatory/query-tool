@@ -234,8 +234,11 @@ final public class ProgramTree extends JPanel implements
      */
     public static void setExecutable (boolean flag) {
 	if (TelescopeDataPanel.DRAMA_ENABLED) {
+	    logger.debug ( "In ProgramTree.setExecutable(); setting run.enabled to "+flag);
 	    run.setEnabled(flag);
 	    if ( flag == false ) {
+		Exception e = new Exception ();
+		logger.debug ( "Flag set to false by ",e );
 		run.setToolTipText ( "Disabled due to edited time constraint" );
 		ToolTipManager.sharedInstance().setInitialDelay(250);
 	    }
@@ -393,6 +396,7 @@ final public class ProgramTree extends JPanel implements
 	else if (System.getProperty("telescope").equalsIgnoreCase("jcmt")) {
 	    if ( ExecuteJCMT.isRunning() ) {
 		setExecutable (false);
+		logger.debug ( "Disabling run button since ExecuteJCMT is still running" );
 		return;
 	    }
 	    else {
@@ -1363,6 +1367,7 @@ final public class ProgramTree extends JPanel implements
 		DeferredProgramList.markThisObservationAsDone(_item);
 	    }
 	    setExecutable (true);
+	    logger.debug ( "Enabling run button since the ExecuteJCMT task has completed" );
 	}
     }
 }
