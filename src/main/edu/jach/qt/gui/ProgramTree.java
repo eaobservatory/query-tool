@@ -91,7 +91,7 @@ final public class ProgramTree extends JPanel
   }
 
   public void setChecksum(String checksum) {
-    this.checkSum = checkSum;
+    this.checkSum = checksum;
   }
 
   public void setImage(JLabel label) throws Exception {
@@ -203,14 +203,16 @@ final public class ProgramTree extends JPanel
 	}else{
 	  System.out.println ("Trans OK");
 
-	  if ( obsList.getSelectedIndex() ==  obsList.getLastVisibleIndex()) {
-
-	    MsbClient.doneMSB(projectID, checkSum);
-	    JOptionPane.showMessageDialog(null, "MSB DONE!");
-	  } // end of if ()
-	  
 	  model.remove(obsList.getSelectedIndex());
 
+	  if ( model.isEmpty()) {
+	    MsbClient.doneMSB(projectID, checkSum);
+	    JOptionPane.showMessageDialog(null, "The MSB with \n"+
+					  "Project ID: "+projectID+"\n"+
+					  "CheckSum: "+checkSum+"\n"+
+					  "has been marked as done!");
+	  } // end of if ()
+	  
 	}
       
 
