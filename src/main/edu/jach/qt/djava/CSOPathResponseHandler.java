@@ -54,7 +54,22 @@ public class CSOPathResponseHandler extends DramaPath.ResponseHandler {
 
 /*
  * $Log$
+ * Revision 1.6  2002/04/20 02:52:17  mrippa
+ * Updated Log
+ *
  * Revision 1.5  2002/04/20 02:41:24  mrippa
  * Added log4j functionality.
+ *
+ * Revision 1.4  2002/04/01 21:55:37  mrippa
+ * Modified the setTaskLock() name to setPathLock()
+ *
+ * Revision 1.3  2002/03/07 20:27:43  mrippa
+ * Unlock the CommandReceiver on error.!
+ *
+ * Revision 1.2  2002/03/05 22:12:10  mrippa
+ * Provides CommanderReceiver to callback to.
+ *
+ * Revision 1.1  2002/02/24 06:55:06  mrippa
+ * Added Drama support for monitoring tau values.
  *
  */
