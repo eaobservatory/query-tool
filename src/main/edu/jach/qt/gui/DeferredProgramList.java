@@ -357,12 +357,12 @@ final public class DeferredProgramList extends JPanel implements
     {
 	String fName = new String();
 	Date now = new Date();
-	String title = item.getTitle();
-	StringTokenizer st = new StringTokenizer(title);
-	while (st.hasMoreTokens()) {
-	    fName = fName+st.nextToken();
-	}
-	fName = fName + now.getTime() + ".xml";
+// 	String title = item.getTitle();
+// 	StringTokenizer st = new StringTokenizer(title, " /\());
+// 	while (st.hasMoreTokens()) {
+// 	    fName = fName+st.nextToken();
+// 	}
+	fName = now.getTime() + ".xml";
 	return fName;
     }
 
@@ -543,7 +543,7 @@ final public class DeferredProgramList extends JPanel implements
 	if (this.dropTarget.isActive()) {
 	    Transferable t = evt.getTransferable();
 	    evt.acceptDrop(DnDConstants.ACTION_MOVE);
-	    SpItem thisObs = ProgramTree.selectedItem;
+	    SpItem thisObs = ProgramTree.obsToDefer;
 	    if (((SpObs)thisObs).isOptional()) {
 		appendItem(thisObs);
 		evt.getDropTargetContext().dropComplete(true);
