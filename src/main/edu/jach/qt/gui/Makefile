@@ -52,7 +52,8 @@ SOURCES = \
 	Execute.java \
 	ExecuteUKIRT.java \
 	ExecuteJCMT.java \
-	ColumnSelector.java
+	ColumnSelector.java \
+	TreeViewer.java
 
 include $(BUILD)/make.tail
 
