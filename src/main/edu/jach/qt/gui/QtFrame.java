@@ -74,7 +74,9 @@ public class QtFrame extends JFrame implements ActionListener, MenuListener, Lis
   }
 
   public void exitQT() {
+    setVisible(false);
     dispose();
+    System.exit(0);
   }
 
   /**Component initialization*/
@@ -135,74 +137,66 @@ public class QtFrame extends JFrame implements ActionListener, MenuListener, Lis
     table.addMouseListener(new MouseAdapter() {
 	public void mouseClicked(MouseEvent e) {
 	       
-	  if (e.getClickCount() == 2){
-	    if (selRow != -1) {
+	  if (e.getClickCount() == 2) {
+	    if (TelescopeDataPanel.DRAMA_ENABLED) {
 
-	      if (om == null) {
-		om = new OmpOM();
-	      }
+	      if (selRow != -1) {
 
-	      final Led blinker = infoPanel.getBlinker();
+		if (om == null)
+		  om = new OmpOM();
 
-	      final SwingWorker worker = new SwingWorker() {
-		  Boolean isStatusOK;
-		  Integer msbID = (Integer)sorter.getValueAt(selRow, MSBQueryTableModel.MSBID);
- 		  //Integer msbID = new Integer(tempMsbID);
+		final Led blinker = infoPanel.getBlinker();
+		final SwingWorker worker = new SwingWorker() {
+		    Boolean isStatusOK;
+		    Integer msbID = (Integer)sorter.getValueAt(selRow, MSBQueryTableModel.MSBID);
 
-		  public Object construct() {
-
-		    /* This writes the XML to a file since the SpObs stuff
-		     * needs a file.  I have not found a constructor that loads
-		     * a ProgramTree with just an XML string; only a File! 
-		     */
-		    //isStatusOK = new Boolean(localQuerytool.fetchMSB(msbID));
+		    public Object construct() {
 		    
-		    try {
-		      om.setSpItem( localQuerytool.fetchMSB(msbID));
-		      isStatusOK = new Boolean(true);
+		      try {
+			om.setSpItem( localQuerytool.fetchMSB(msbID));
+			isStatusOK = new Boolean(true);
+		      } catch (NullPointerException e) {
+			isStatusOK = new Boolean(false);
+		      }
 
-		    } catch (NullPointerException e) {
-		      isStatusOK = new Boolean(false);
-
-		    } // end of try-catch
-
-		    return isStatusOK;  //not used yet
-		  }
-
-		  //Runs on the event-dispatching thread.
-		  public void finished() { 
-		    blinker.blinkLed(false);
-		    if ( isStatusOK.booleanValue()) {
-
-		      om.addNewTree(msbID);
-		      System.out.println("ID is "+msbID);
-		      buildStagingPanel();
-
+		      return isStatusOK;  //not used yet
 		    }
 
-		    else {
-		      System.out.println("No msb ID retrieved!");
-		      
-		    } // end of else
-		    
-		  }
-		};
+		    //Runs on the event-dispatching thread.
+		    public void finished() { 
+		      blinker.blinkLed(false);
 
-	      String projectid = (String) sorter.getValueAt(selRow, MSBQueryTableModel.PROJECTID);
-	      String checksum = (String) sorter.getValueAt(selRow, MSBQueryTableModel.CHECKSUM);
+		      if ( isStatusOK.booleanValue()) {
+			om.addNewTree(msbID);
+			System.out.println("ID is "+msbID);
+			buildStagingPanel();
+		      }
 
-	      System.out.println(">>>>>>MSB INFO is: "+projectid+", "+checksum);
-	      om.setProjectID(projectid);
-	      om.setChecksum(checksum);
+		      else {
+			System.out.println("No msb ID retrieved!");
+		      }
+		    }
+		  }; //End inner class
 
-	      blinker.blinkLed(true);
-	      //blinkThread.start();
-	      worker.start();  //required for SwingWorker 3
+		String projectid = (String) sorter.getValueAt(selRow, MSBQueryTableModel.PROJECTID);
+		String checksum = (String) sorter.getValueAt(selRow, MSBQueryTableModel.CHECKSUM);
 
+		System.out.println(">>>>>>MSB INFO is: "+projectid+", "+checksum);
+		om.setProjectID(projectid);
+		om.setChecksum(checksum);
+
+		blinker.blinkLed(true);
+		//blinkThread.start();
+		worker.start();  //required for SwingWorker 3
+
+	      }
+	      else
+		JOptionPane.showMessageDialog(null, "Must select a project summary first!");
 	    }
-	    else
-	      JOptionPane.showMessageDialog(null, "Must select a project summary first!");
+	    else 
+	      JOptionPane.showMessageDialog(null, "NOT A DRAMA SYSTEM. MSB EXECUTION DISABLED.");
 	  }
+
 	  if (SwingUtilities.isRightMouseButton(e)) {
 
 	  }
@@ -438,13 +432,6 @@ public class QtFrame extends JFrame implements ActionListener, MenuListener, Lis
   protected void processWindowEvent(WindowEvent e) {
     super.processWindowEvent(e);
     if (e.getID() == WindowEvent.WINDOW_CLOSING) {
-
-      //        try {
-      //  	infoPanel.getCSODcHub().closeDcHub();
-      //        } catch (ObeyNotRegisteredException onre) {
-	
-      //        } // end of try-catch
-      
       System.exit(0);
     }
   }
