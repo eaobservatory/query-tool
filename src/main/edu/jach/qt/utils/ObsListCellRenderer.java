@@ -70,12 +70,28 @@ public class ObsListCellRenderer extends DefaultListCellRenderer {
 	setForeground(list.getForeground());
     }
     else {
-	setForeground(Color.blue);
+	setForeground(Color.green);
+    }
+
+    if ( ((SpObs)value).isMSB() && ((SpObs)value).isSuspended() ) {
+	setForeground(Color.red);
+    }
+    else if ( !((SpObs)value).isMSB() ) {
+	// Find the parent MSB and see if it is suspended
+	SpItem parent = ((SpObs)value).parent();
+	while ( parent != null && !(parent instanceof SpMSB) ) {
+	    parent = parent.parent();
+	}
+	if (parent != null) {
+	    if ( ((SpMSB)parent).isSuspended() ) {
+		setForeground(Color.red);
+	    }
+	}
     }
 
     // Override the defaults
     if (isDone) {
-	setForeground(Color.red);   // Done calibrations appear red
+	setForeground(Color.blue);   // Done calibrations appear red
     }
     if (hasBeenObserved) {
 	setForeground(Color.gray);  // Done Observations appear gray
@@ -100,4 +116,5 @@ public class ObsListCellRenderer extends DefaultListCellRenderer {
     setFont(list.getFont());
     return this;
   }
+
 }// ObsListCellRenderer
