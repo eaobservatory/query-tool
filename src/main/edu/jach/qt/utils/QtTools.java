@@ -117,11 +117,15 @@ public class QtTools {
       
     Properties temp = System.getProperties();
     String tname = null;
+    String fileProperty = new String(inst+"ExecFilename");
     try {
       tname=translation.translate();
-      System.out.println("exec: "+System.getProperty("EXEC_PATH")+"/"+tname);
+      System.out.println("Translated file set to: "+System.getProperty("EXEC_PATH")+"/"+tname);
+
+      temp.put(fileProperty,tname);
+      System.out.println("System property "+fileProperty+" now set to "+
+			 System.getProperty("EXEC_PATH")+"/"+tname);
       
-      temp.put(new String(inst+"ExecFilename"),tname);
     }catch (NullPointerException e) {
       System.out.println ("Translation failed!, exception was "+e);
       e.printStackTrace();
