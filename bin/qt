@@ -179,9 +179,13 @@ endif
 #setenv LOGPATH "/ukirtdata/epics_data/qtLogs/"
 # if the user has specified a logdir, write the file into that
 # location.  Otherwise set up a default LOGPATH
+
+set utdate = `date -u +%Y%m%d`
+set hstdate = `date +%Y%m%d-%H%M%S`
+
 if ( ${LOGPATH} == "" ) then
   if ( ${domain} ==  "JAC.ukirt" || ${domain} == "JAC.jmct" ) then
-    set LOGPATH = "/jac_logs"
+    set LOGPATH = "/jac_logs/${utdate}/OCSqt_${hstdate}"
   else
     set LOGPATH = "/home/${user}/qtLogs"
     if (! -e ${LOGPATH} ) then
@@ -190,12 +194,11 @@ if ( ${LOGPATH} == "" ) then
   endif
 endif
 
-set utdate = `date -u +%Y%m%d`
-set hstdate = `date +%Y%m%d-%H%M%S`
+mkdir -p ${LOGPATH}
 
 #Make the log directory
 if (-dwx ${LOGPATH} ) then
-   setenv QT_LOG_DIR "${LOGPATH}/${utdate}/OCSqt_${hstdate}"
+   setenv QT_LOG_DIR "${LOGPATH}"
    mkdir -p ${QT_LOG_DIR}
    echo "This QT and (S)equence (M)anager session will be logged in ${QT_LOG_DIR}."
 else
