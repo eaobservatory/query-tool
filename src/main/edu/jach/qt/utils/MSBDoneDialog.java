@@ -8,6 +8,7 @@ import javax.swing.JLabel;
 import javax.swing.Timer;
 import java.io.File;
 import java.io.IOException;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Frame;
@@ -130,8 +131,7 @@ public class MSBDoneDialog extends JDialog {
 				     JOptionPane.QUESTION_MESSAGE,
 				     JOptionPane.DEFAULT_OPTION,
 				     null,
-				     options,
-				     options[0]);
+				     options);
 	setContentPane(optionPane);
 // 	setSize(330,370);
 	validateTree();
@@ -175,13 +175,17 @@ public class MSBDoneDialog extends JDialog {
 			    File rejectFile = new File ("/tmp/reject");
 			    File noDataFile = new File ("/tmp/noData");
 			    if (value.equals(acceptString)) {
+				setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
  				MsbClient.doneMSB(projId, chkSum, userId, comment);
+				setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 				cancelFile.delete();
 				rejectFile.delete();
 				noDataFile.delete();
 			    }
 			    else if (value.equals(rejectString)) {
+				setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
  				MsbClient.rejectMSB(projId, chkSum, userId, comment);
+				setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 				cancelFile.delete();
 				acceptFile.delete();
 				noDataFile.delete();
@@ -209,6 +213,7 @@ public class MSBDoneDialog extends JDialog {
 			    x.printStackTrace();
 			}
 			setVisible (false);
+			dispose();
 		    }
 		}
 	    });
