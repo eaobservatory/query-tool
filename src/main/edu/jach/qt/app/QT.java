@@ -15,6 +15,7 @@ import edu.jach.qt.utils.BasicWindowMonitor;
 import edu.jach.qt.utils.QtTools;
 
 /* Standard imports */
+import java.io.File;
 import java.awt.*;
 import javax.swing.UIManager;
 
@@ -106,6 +107,21 @@ final public class QT {
       qtf.setLocation(x,y);
       qtf.validate();
       qtf.setVisible(true);
+
+      Runtime rt = Runtime.getRuntime();
+      rt.addShutdownHook(new Thread () {
+	      public void run () {
+		  // Check if we are running the active QT on UKIRT
+		  if (System.getProperty("telescope").equalsIgnoreCase("ukirt") && 
+		      System.getProperty("DRAMA_ENABLED").equalsIgnoreCase("true") ) {
+		      File lockFile = new File ("/ukirtdata/orac_data/deferred/.lock");
+		      if (lockFile.exists()) {
+			  lockFile.delete();
+		      }
+		  }
+	      }
+	  });
+
    }
    
    /**
@@ -121,6 +137,9 @@ final public class QT {
 
 /*
  * $Log$
+ * Revision 1.18  2002/10/22 00:47:03  dewitt
+ * Added a shutdown hook so that the QT lock file is cleaned up even if the system exits.  May still not work in the event of a kernel panic, but we will wait and see.
+ *
  * Revision 1.17  2002/07/31 23:52:32  dewitt
  * Changed the starting of the PreTranslators to use OtCgf.init().  This is more generic (and lets us read JCMT project files!).
  *
