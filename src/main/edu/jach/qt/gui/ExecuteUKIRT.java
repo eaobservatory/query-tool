@@ -104,7 +104,7 @@ public class ExecuteUKIRT extends Execute implements Runnable {
 	    byte [] stderr = new byte [1024];
 	    try {
 		Runtime rt = Runtime.getRuntime();
-		String command = "/home/dewitt/omp/QT/bin/loadUKIRT.ksh "+tname;
+		String command = "/jac_sw/omp/QT/bin/loadUKIRT.ksh "+tname;
 		logger.debug ("Running command "+command);
 		Process p = rt.exec(command);
 		InputStream istream = p.getInputStream();
