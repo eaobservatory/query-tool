@@ -90,6 +90,18 @@ public class JTextFieldPanel extends WidgetPanel
       }
   }
 
+    public String getText(String field) {
+      String rtn = null;
+      ListIterator iterator = fieldElems.listIterator(0);
+      while (iterator.hasNext()) {
+	  LabeledTextField thisTextField = (LabeledTextField) iterator.next();
+	  if ( thisTextField.getName().equals(field) ) {
+	      rtn = thisTextField.getText();
+	  }
+      }
+      return rtn;
+    }
+
     /**
      * Set the Tau in the specific text field dealing with it..
      * @param value     The value to set in the <code>JTextField</code>.
