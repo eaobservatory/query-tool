@@ -53,7 +53,8 @@ public class ButtonPanel extends WidgetPanel  {
 	    //cb.setBackground(java.awt.Color.gray);
 
 	    add(cb);
-	    if (!cb.getText().equals("Any Instrument"))
+	    if (!cb.getText().equals("Any Instrument") &&
+		!cb.getText().equals("Any Heterodyne"))
 	      buttonList.add(cb);
       }
    }
@@ -68,7 +69,8 @@ public class ButtonPanel extends WidgetPanel  {
       JCheckBox next;      
       for (ListIterator iter = buttonList.listIterator(); iter.hasNext(); iter.nextIndex()) {
 	 next = (JCheckBox)iter.next();
-	 if (!next.getText().equals("Any Instrument") ) {
+	 if (!next.getText().equals("Any Instrument") &&
+	     !next.getText().equals("Any Heterodyne")) {
 	   next.setEnabled(booleanFlag);
 	   
 	 }
@@ -86,7 +88,8 @@ public class ButtonPanel extends WidgetPanel  {
       JCheckBox next;      
       for (ListIterator iter = buttonList.listIterator(); iter.hasNext(); iter.nextIndex()) {
 	 next = (JCheckBox)iter.next();
-	 if (!next.getText().equals("Any Instrument") ) {
+	 if (!next.getText().equals("Any Instrument") &&
+	     !next.getText().equals("Any Heterodyne")) {
 	   next.setSelected(flag);
 	   setAttribute(myTitle, buttonList);
 	 }
@@ -104,7 +107,8 @@ public class ButtonPanel extends WidgetPanel  {
      Object source = evt.getSource();
      JCheckBox temp = (JCheckBox)source;
       
-     if (temp.getText().equals("Any Instrument")) {
+     if (temp.getText().equals("Any Instrument") ||
+	 temp.getText().equals("Any Heterodyne")) {
        if (temp.isSelected()) {
 	 setSelected(false);
 	 setEnabled(false);
