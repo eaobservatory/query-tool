@@ -1,0 +1,6 @@
+#make files vars for the QT
+
+VERSION	    = _1p0
+INSTALL     = /home/mrippa/root/install/javaClasses/QT$(VERSION)
+
+QT_PACKAGE  = edu/jach/qt
