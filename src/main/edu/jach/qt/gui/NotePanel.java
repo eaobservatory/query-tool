@@ -13,7 +13,7 @@ import gemini.sp.*;
 final public class NotePanel extends JPanel {
 
     private GridBagConstraints		gbc;
-    private JTextPane textPanel;
+    private JTextArea textPanel;
 
     public NotePanel() {
 	Border border=BorderFactory.createMatteBorder(2, 2, 2, 2, Color.white);
@@ -25,8 +25,12 @@ final public class NotePanel extends JPanel {
 	setLayout(gbl);
 	gbc = new GridBagConstraints();
 	
-	textPanel = new JTextPane();
+	textPanel = new JTextArea();
 	textPanel.setEditable(false);
+	textPanel.setLineWrap(true);
+
+	JScrollPane scrollPane = new JScrollPane(textPanel);
+	scrollPane.setVerticalScrollBarPolicy (JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 	
 	gbc.fill = GridBagConstraints.BOTH;
 	//gbc.anchor = GridBagConstraints.EAST;
@@ -35,7 +39,7 @@ final public class NotePanel extends JPanel {
 	gbc.insets.right = 5;
 	gbc.weightx = 100;
 	gbc.weighty = 100;
-	add(textPanel, gbc, 0, 0, 2, 1);
+	add(scrollPane, gbc, 0, 0, 2, 1);
     }
     
     public void add(Component c, GridBagConstraints gbc, 
