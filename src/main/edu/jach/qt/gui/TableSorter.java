@@ -110,9 +110,17 @@ public class TableSorter extends TableMap {
       if (type.getSuperclass() == java.lang.Number.class ||
 	  type == java.lang.Number.class) {
 	 Number n1 = new Double (data.getValueAt(row1, column).toString());
-	 int d1 = n1.intValue();
 	 Number n2 = new Double (data.getValueAt(row2, column).toString());
-	 int d2 = n2.intValue();
+	 double d1;
+	 double d2;
+	 if ( type == java.lang.Integer.class ) {
+	     d1 = n1.intValue();
+	     d2 = n2.intValue();
+	 }
+	 else {
+	     d1 = n1.doubleValue();
+	     d2 = n2.doubleValue();
+	 }
 	   
 	 if (d1 < d2) {
 	    return -1;
@@ -261,7 +269,7 @@ public class TableSorter extends TableMap {
    public void n2sort() {
       for (int i = 0; i < getRowCount(); i++) {
 	 for (int j = i+1; j < getRowCount(); j++) {
-	    if (compare(indexes[i], indexes[j]) != -1) {
+	    if (compare(indexes[i], indexes[j]) == 1) {
 	       swap(i, j);
 	    }
 	 }
