@@ -215,18 +215,22 @@ public class Querytool implements Runnable, Observer {
 	       iter.nextIndex()) {
 	    abstractButton = (JRadioButton) (iter.next());
 	    if (abstractButton.isSelected()) {
-	      String tmpMoon = abstractButton.getText().trim();
+	      String tmpCloud = abstractButton.getText().trim();
 	      String cloud = "";
-	      if ( tmpMoon.equals("Photometric")) {
+	      if ( tmpCloud.equals("Clear")) {
 		cloud = "0";
 	      }
-	      else if (tmpMoon.equals("Thin")) {
+	      else if (tmpCloud.equals("Thin")) {
 		cloud = "1";
 	      }
-	      else {
+	      else if (tmpCloud.equals("Thick")) {
 		cloud = "2";
-	      } // end of else
-		  
+	      }
+
+	      else {
+		throw (new NoSuchParameterException ("Clouds does not contain element "+tmpCloud));
+	      } 
+	      		  
 	      item.appendChild(doc.createTextNode(cloud));
 	    }
 	  }
@@ -437,9 +441,12 @@ public class Querytool implements Runnable, Observer {
       serial.serialize( doc.getDocumentElement() );
 	 
       _xmlString = stringOut.toString();
-    } catch ( Exception ex ) {
-      ex.printStackTrace();
+    } 
+    
+    catch ( Exception ex ) {
+      logger.error(ex.getMessage(), ex);
     }
+    
   }
 
   /**
