@@ -107,8 +107,6 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
        Constructor - create a DOM
     */
 
-      System.out.println("In MSBQueryTableModel.run()");
-
     try {
       DocumentBuilderFactory factory =
 	DocumentBuilderFactory.newInstance();
@@ -137,9 +135,6 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
       logger.error("IO Error generated attempting to build Document", ioe);
       //ioe.printStackTrace();
     }
-      
-      System.out.println("Firing event from MSBQueryTableModel.run()");
-
       fireTableChanged(null);
   }
 
