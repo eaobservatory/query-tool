@@ -116,6 +116,7 @@ final public class NotePanel extends JPanel {
 	catch (Exception ex) {
 	    System.out.println("Could not insert observer notes");
 	}
+	textPanel.setCaretPosition(0);
 	
     }
 
