@@ -69,7 +69,7 @@ public class TelescopeDataPanel extends JPanel implements ActionListener {
     if (TelescopeDataPanel.DRAMA_ENABLED) {
       hub = DcHub.getHandle();
       hub.register("CSOMON");
-      hub.register("TELMON");
+      //hub.register("TELMON");
     }
 
     else if (!locked) {
