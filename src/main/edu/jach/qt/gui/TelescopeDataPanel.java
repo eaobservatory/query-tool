@@ -53,10 +53,8 @@ public class TelescopeDataPanel extends JPanel implements ActionListener {
      */
     if (DRAMA_ENABLED) {
 	if (LockFile.exists()) {
-	    System.out.println("Lock File detected");
-	    if (LockFile.owner() != System.getProperty("user.name")) {
+	    if (! (LockFile.owner().equals(System.getProperty("user.name")))) {
 		// The current lock belongs to someone else
-		System.out.println("Lock file owned by user "+LockFile.owner());
 		String message = "QT locked by user "+LockFile.owner();
 		JOptionPane.showMessageDialog(null, "Starting is scenario mode", message, JOptionPane.WARNING_MESSAGE);
 		TelescopeDataPanel.DRAMA_ENABLED = false;
