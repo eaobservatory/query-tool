@@ -13,6 +13,7 @@
   <!--   Set the properties related to the source tree  -->
   <!-- ================================================ -->
   <property name="build.compiler" value="jikes"/>
+
   <property name="build.compiler.emacs" value="true"/>    
   <property name="masterbuild.logdir" value="/home/mrippa/tmp/logs"/>
   <property name="junit.results" value="test-results" />
@@ -24,6 +25,10 @@
   <property name="Name" value="QT"/>
   <property name="name" value="qt"/>
   <property name="src.dir" value="src"/>
+  <property name="lib.dir" value="lib"/>
+  <property name="config.dir" value="config"/>
+  <property name="icons.dir" value="icons"/>
+  <property name="bin.dir" value="bin"/>
   <property name="java.dir" value="${src.dir}/main"/>
   <property name="tests.dir" value="src/testcases"/>
   <property name="manifest" value="src/etc/manifest"/>
@@ -31,14 +36,29 @@
   <!--    ==================================================== -->
   <!--       Set the properties for the build area             -->
   <!--    ==================================================== -->
-  <property name="build.dir" value="/home/mrippa/root/install/javaClasses/${name}"/>
+  <property name="build.dir" value="/home/mrippa/root/install/omp/${Name}"/>
   <property name="build.classes" value="${build.dir}/classes"/>
+  <property name="build.config" value="${build.dir}/config"/>
+  <property name="build.icons" value="${build.dir}/icons"/>
+  <property name="build.bin" value="${build.dir}/bin"/>
   <property name="build.lib" value="${build.dir}/lib"/>
   <property name="build.javadocs" value="${build.dir}/javadocs"/>
   <property name="build.tests" value="${build.dir}/testcases"/>
 
   <path id="classpath">
     <fileset dir="/home/mrippa/local/cruisecontrol/lib">
+      <include name="**/*.jar"/>
+    </fileset>
+    <fileset dir="/home/mrippa/root/src/java/soap/lib">
+      <include name="**/*.jar"/>
+    </fileset>
+    <fileset dir="/jac_sw/orac3/ORAC/install/classes">
+      <include name="**/*.jar"/>
+    </fileset>
+    <fileset dir="/jac_sw/orac3/OT/install/classes">
+      <include name="**/*.jar"/>
+    </fileset>
+    <fileset dir="/jac_sw/orac3/GEMINI/install/classes">
       <include name="**/*.jar"/>
     </fileset>
   </path>
@@ -63,6 +83,9 @@
     <mkdir dir="${build.dir}"/>
     <mkdir dir="${build.classes}"/>
     <mkdir dir="${build.lib}"/>
+    <mkdir dir="${build.icons}"/>
+    <mkdir dir="${build.bin}"/>
+    <mkdir dir="${build.config}"/>
     <mkdir dir="${masterbuild.logdir}"/>
   </target>
 
@@ -83,9 +106,9 @@
     <mkdir dir="${build.tests}"/>
 
     <javac srcdir="${tests.dir}"
-           destdir="${build.tests}"
-           debug="${debug}"
-           deprecation="${deprecation}" >
+      destdir="${build.tests}"
+      debug="${debug}"
+      deprecation="${deprecation}" >
       <classpath refid="tests-classpath" />
     </javac>
   </target>
@@ -153,6 +176,31 @@
       <classpath refid="classpath"/>
       <exclude name="qt/gui/JCheckBoxWidget.java"/>
     </javac>
+
+    <copy todir="${build.lib}">
+      <fileset dir="${lib.dir}">
+        <include name="*.jar" />
+      </fileset>
+    </copy>
+
+    <copy todir="${build.config}">
+      <fileset dir="${config.dir}">
+        <include name="**/*" />
+      </fileset>
+    </copy>
+
+    <copy todir="${build.icons}">
+      <fileset dir="${icons.dir}">
+        <include name="*" />
+      </fileset>
+    </copy>
+
+    <copy todir="${build.bin}">
+      <fileset dir="${bin.dir}">
+        <include name="*" />
+      </fileset>
+    </copy>
+
   </target>
   
   <!--    ==================================================== -->
@@ -180,22 +228,22 @@
   <!--  ====================================================== -->
   <target name="javadoc_check">
     <uptodate property="javadoc.notrequired" targetfile="${build.javadocs}/packages.html" >
-        <srcfiles dir= "${java.dir}" includes="**/*.java"/>
+      <srcfiles dir= "${java.dir}" includes="**/*.java"/>
     </uptodate>
   </target>
 
   <target name="javadocs" depends="init, javadoc_check" 
-          unless="javadoc.notrequired"
-          description="Creates the API documentation">
+    unless="javadoc.notrequired"
+    description="Creates the API documentation">
     <mkdir dir="${build.javadocs}"/>
     <javadoc packagenames="edu.jach.qt.*"
-             sourcepath="${java.dir}"
-             destdir="${build.javadocs}"
-             author="true"
-             version="true"
-             windowtitle="${Name} API"
-             doctitle="${Name}"
-             bottom="Copyright &#169; 2001 Joint Astronomy Centre. All Rights Reserved.">
+      sourcepath="${java.dir}"
+      destdir="${build.javadocs}"
+      author="true"
+      version="true"
+      windowtitle="${Name} API"
+      doctitle="${Name}"
+      bottom="Copyright &#169; 2001 Joint Astronomy Centre. All Rights Reserved.">
       <group title="QT Core" packages="edu.jach.qt*" />
     </javadoc>
   </target>
@@ -205,6 +253,7 @@
   <!--    ==================================================== -->
   <target name="clean">
     <delete dir="${build.dir}" />
+    <delete dir="${build.lib}" />
   </target>
 
   <!--    ==================================================== -->

@@ -24,13 +24,15 @@ import java.io.File;
 public class InfoPanel extends JPanel
    implements ActionListener {
 
+   //reconsider icons dir 'An absolute path!'
    private static final String LOGO_IMAGE
-      = "/home/mrippa/netroot/src/QT/icons/omp_logo1.gif";
+      = "/home/mrippa/netroot/src/omp/omp/QT/icons/omp_logo1.gif";
 
    private MyQueryTableModel local_mqtm;
+   private MSBQueryTableModel msb_qtm;
    private MsbFrame calibrateDialog = null;
    private TimePanel timePanel ;
-   private JFrame myParent;
+   private Querytool localQuerytool;
 
    JLabel hstLabel = new JLabel("HST");
    JButton searchButton = new JButton();
@@ -45,9 +47,9 @@ public class InfoPanel extends JPanel
     * @param parent a <code>JFrame</code> value
     * @param mqtm a <code>MyQueryTableModel</code> value
     */
-   public InfoPanel (JFrame parent, MyQueryTableModel mqtm){
-      myParent = parent;
-      local_mqtm = mqtm;
+   public InfoPanel (MSBQueryTableModel msbQTM, Querytool qt){
+      msb_qtm = msbQTM;
+      localQuerytool = qt;
       //setSize(new Dimension(300, 550));
       setBackground(Color.gray);
       MatteBorder matte = new MatteBorder(2,2,2,2,Color.black);
@@ -86,7 +88,8 @@ public class InfoPanel extends JPanel
       searchButton.setName("Search");
       searchButton.addActionListener(new ActionListener() {
 	    public void actionPerformed(ActionEvent e) {
-	       local_mqtm.setQuery();
+	       localQuerytool.queryMSB();
+	       msb_qtm.setQuery();
 	    }
 	 } );
       xmlPrintButton.setText("Execute");
@@ -166,6 +169,10 @@ public class InfoPanel extends JPanel
       add(c, gbc);      
    }
 
+   public String getXMLquery() {
+      return localQuerytool.getXML();
+   }
+
    public String getImageFile() {
       return LOGO_IMAGE;
    }
@@ -185,7 +192,7 @@ public class InfoPanel extends JPanel
          System.exit(0);
       }
       else if (source == xmlPrintButton) {
-	 Querytool.printXML();
+	 localQuerytool.printXML();
       }
       //      else if (source == calibrateButton) {
       // if (calibrateDialog == null)

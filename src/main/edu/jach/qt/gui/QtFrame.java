@@ -1,5 +1,9 @@
 package edu.jach.qt.gui;
 
+//ORAC depends
+//import gemini.sp.SpInputSGML;
+//import gemini.sp.SpItem;
+//import gemini.sp.SpPhase1;
 import edu.jach.qt.app.Querytool;
 import edu.jach.qt.gui.WidgetDataBag;
 import edu.jach.qt.utils.TextReader;
@@ -8,10 +12,10 @@ import java.awt.event.*;
 import java.io.IOException;
 import java.util.Hashtable;
 import javax.swing.*;
-import javax.swing.JEditorPane;
-import javax.swing.JSplitPane;
 import javax.swing.event.*;
-
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.*;
 
 /**
  * Title:        QT
@@ -22,32 +26,35 @@ import javax.swing.event.*;
  * @version 1.0
  */
 
-public class QtFrame extends JFrame implements MenuListener {
+public class QtFrame extends JFrame implements MenuListener, ListSelectionListener{
 
    private static final String 
-      WIDGET_CONFIG_FILE = "/home/mrippa/netroot/src/QT/config/qt.conf";
+      WIDGET_CONFIG_FILE = "/home/mrippa/root/install/omp/QT/config/qt.conf";
    private final static String
-      DUMMY_TABLE_DATA = "/home/mrippa/netroot/src/QT/config/querySet.txt";
+      DUMMY_TABLE_DATA = "/home/mrippa/root/install/omp/QT/config/querySet.txt";
    
-   /**
-    * Describe variable <code>medu.jach.qt.</code> here.
-    *
-    */
-   public MyQueryTableModel mqtm;
+   public MSBQueryTableModel msbQTM;
+   public JTable table;
 
+   private int selRow;
    private WidgetPanel inputPanel;
    private WidgetDataBag widgetBag;
    public  InfoPanel infoPanel;
    private JMenuItem saveItem;
    private JMenuItem saveAsItem;
    private JCheckBoxMenuItem readonlyItem;
+   private Querytool localQuerytool;
 
+   public JFrame frame;
    /**
     * Creates a new <code>QtFrame</code> instance.
     *
     */
-   public QtFrame(WidgetDataBag wdb) {
+   public QtFrame(WidgetDataBag wdb, Querytool qt) {
       widgetBag = wdb;
+      localQuerytool = qt;
+
+      frame = this;
       enableEvents(AWTEvent.WINDOW_EVENT_MASK);
       GridBagLayout layout = new GridBagLayout();
       getContentPane().setLayout(layout);
@@ -71,19 +78,20 @@ public class QtFrame extends JFrame implements MenuListener {
    /**Component initialization*/
    private void compInit() throws Exception  {
       GridBagConstraints gbc = new GridBagConstraints();
-
-      buildMenu();
-
       setSize(new Dimension(950, 550));
       setTitle("QT QUERY-TOOL");
 
-      mqtm = new MyQueryTableModel(DUMMY_TABLE_DATA);
-      JTable table = new JTable(mqtm);
-      table.sizeColumnsToFit(JTable.AUTO_RESIZE_ALL_COLUMNS);
+      //Build Menu
+      buildMenu();
+
+      //Table setup
+      msbQTM = new MSBQueryTableModel();
+      tableSetup();
       JScrollPane resultsPanel = new JScrollPane(table);
 
+      //Input Panel Setup
       inputPanel = new WidgetPanel(new Hashtable(), widgetBag);
-      infoPanel = new InfoPanel(this, mqtm);
+      infoPanel = new InfoPanel(msbQTM, localQuerytool);
 
       // Build split-pane view
       JSplitPane splitPane = 
@@ -101,7 +109,57 @@ public class QtFrame extends JFrame implements MenuListener {
       gbc.weightx = 100;
       gbc.weighty = 100;
       add(splitPane, gbc, 1, 0, 1, 2);
+   }
 
+   private void tableSetup() {
+      TableSorter sorter = new TableSorter(msbQTM);
+      table = new JTable(sorter);
+      sorter.addMouseListenerToHeaderInTable(table);
+      table.sizeColumnsToFit(JTable.AUTO_RESIZE_ALL_COLUMNS);
+
+      ListSelectionModel listMod =  table.getSelectionModel();
+      listMod.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+      listMod.addListSelectionListener(this);
+
+      table.addMouseListener(new MouseAdapter() {
+	    public void mouseClicked(MouseEvent e) {
+	       
+	       if (e.getClickCount() == 2){
+		  if (selRow != -1) {
+		     System.out.println("ID is "+msbQTM.getSpSummaryId(selRow));
+		     localQuerytool.fetchMSB(msbQTM.getSpSummaryId(selRow));
+		     OmpOM om = new OmpOM();
+		  }
+		  else
+		     JOptionPane.showMessageDialog(frame, "Must select a project summary first!");
+	       }
+	       if (SwingUtilities.isRightMouseButton(e)) {
+	  
+	       }
+	    }
+	 } );
+   }
+   
+   public void valueChanged(ListSelectionEvent e) {
+      if (!e.getValueIsAdjusting()) {        
+	 selRow = table.getSelectedRow();
+      }
+   }
+   
+   private void printDebugData(JTable table) {
+      int numRows = table.getRowCount();
+      int numCols = table.getColumnCount();
+      javax.swing.table.TableModel model = table.getModel();
+ 
+      System.out.println("Value of data: ");
+      for (int i=0; i < numRows; i++) {
+	 System.out.print("    row " + i + ":");
+	 for (int j=0; j < numCols; j++) {
+	    System.out.print("  " + model.getValueAt(i, j));
+	 }
+	 System.out.println();
+      }
+      System.out.println("--------------------------");
    }
 
    /**
@@ -123,7 +181,6 @@ public class QtFrame extends JFrame implements MenuListener {
       getContentPane().add(c, gbc);      
    }
    
-
    /**
     * Describe <code>buildMenu</code> method here.
     *
@@ -131,10 +188,10 @@ public class QtFrame extends JFrame implements MenuListener {
    public void buildMenu() {
       JMenuBar mbar = new JMenuBar();
       setJMenuBar(mbar);
-
+      
       JMenu fileMenu = new JMenu("File");
       fileMenu.addMenuListener(this);
-
+      
       JMenuItem openItem = new JMenuItem("Open");
       saveItem = new JMenuItem("Save");
       saveAsItem = new JMenuItem("Save As");
@@ -238,7 +295,6 @@ public class QtFrame extends JFrame implements MenuListener {
       return r;
    }
 
-
    /**
     * Overridden so we can exit when window is closed
     * @param e a <code>WindowEvent</code> value
@@ -249,9 +305,4 @@ public class QtFrame extends JFrame implements MenuListener {
 	 System.exit(0);
       }
    }
-   
-   public static void main (String[] args) {
-      QtFrame qtf = new QtFrame(new WidgetDataBag());
-   }
-   
-}
+}//QtFrame

@@ -48,8 +48,8 @@ public class GuiTest extends JFCTestCase{
 	 assertNotNull("Main window NULL!", mainWindow);
 
 	 InfoPanel infoPanel = (InfoPanel)JFCTestHelper.findComponent(InfoPanel.class, mainWindow, 0);
-	 assertNotNull("Must not find 'does-not-exist'", infoPanel);
-	 assertEquals("/home/mrippa/netroot/src/QT/icons/omp_logo1.gif", infoPanel.getImageFile() );
+	 //assertNotNull("Must not find 'does-not-exist'", infoPanel);
+	 //assertEquals("/home/mrippa/netroot/src/QT/icons/omp_logo1.gif", infoPanel.getImageFile() );
 
 	 //String search = "-Search".substring(1); //String with same text, different object.
 	 //assertTrue("Must have different ref to string containing 'Search'", !(search == "Search"));
@@ -60,7 +60,7 @@ public class GuiTest extends JFCTestCase{
 	 button = helper.findNamedComponent("Execute", infoPanel, 0);
 	 assertNotNull("Must find 'Execute' Button", button);
 	 helper.enterClickAndLeave(this, button);
-	 assertTrue("Must not find null XML string.", !(Querytool.getXML() == null));
+	 assertTrue("Must not find null XML string.", !(infoPanel.getXMLquery() == null));
 
 	 button = helper.findNamedComponent("Exit", infoPanel, 0);
 	 assertNotNull("Must find 'Exit' Button", button);

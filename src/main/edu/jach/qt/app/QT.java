@@ -22,7 +22,7 @@ public class QT {
     */
    public QT () {
       Querytool qt = new Querytool(wdb);
-      QtFrame qtf = new QtFrame(wdb);
+      QtFrame qtf = new QtFrame(wdb, qt);
       
       Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
       Dimension frameSize = qtf.getSize();
@@ -65,8 +65,14 @@ public class QT {
 } // Omp
 
 //$Log$
-//Revision 1.1  2001/08/28 02:53:45  mrippa
-//Initial revision
+//Revision 1.2  2001/09/07 01:18:10  mrippa
+//The QT now supports a query of the MSB server retrieving a MSB summaries.
+//The summaries are displayed in a JTable which listens for double clicks
+//on the rows, corresponding to the MSB ID for that summary.  The MSB is
+//then translated and given to the OM for lower level processing.
+//
+//Revision 1.1.1.1  2001/08/28 02:53:45  mrippa
+//Import of QT
 //
 //Revision 1.3  2001/07/27 19:49:05  mrippa
 //More comments

@@ -13,6 +13,7 @@ import  java.io.*;
 import edu.jach.qt.gui.WidgetDataBag;
 import java.util.*;
 import javax.swing.*;
+
 /**
  * Querytool.java
  *
@@ -22,10 +23,9 @@ import javax.swing.*;
  * @author <a href="mailto: "Mathew Rippa</a>
  * @version
  */
-
 public class Querytool implements Observer {
 
-   private static String xmlString;
+   private String xmlString;
    private WidgetDataBag bag;
 
    /**
@@ -131,15 +131,27 @@ public class Querytool implements Observer {
       }
    }
 
-   public static String getXML() {
+   public String getXML() {
       return xmlString;
    }
 
-   public static void printXML() {
+   public void printXML() {
       System.out.println( xmlString ); //Spit out DOM as a String
+   }
+
+   public void queryMSB() {
+      QuerytoolClient qtc = new QuerytoolClient();
+      qtc.queryMSB(xmlString);
+   }
+
+   public void fetchMSB(Integer i) {
+      QuerytoolClient qtc = new QuerytoolClient();
+      qtc.fetchMSB(i);
    }
 
    public boolean XMLisNull() {
       return (xmlString == null);
    }
+
+
 }// Querytool

@@ -1,0 +1,72 @@
+<QueryResult>
+<SpMSBSummary id="96">
+<projectid>M01BU53</projectid>
+<checksum>de252f2aeb3f8eeed59f0a2f717d39f9</checksum>
+<remaining>4</remaining>
+<filename>/jac_sw/omp/dbxml/M01BU53.sp</filename>
+</SpMSBSummary>
+
+<SpMSBSummary id="130">
+<projectid>M02ATEST2</projectid>
+<checksum>5f8e0a5d1a6ed0b78297e4c6acd84199</checksum>
+<remaining>5</remaining>
+<filename>/jac_sw/omp/dbxml/M02ATEST2.sp</filename>
+</SpMSBSummary>
+
+<SpMSBSummary id="131">
+<projectid>M02ATEST2</projectid>
+<checksum>beb3af7e12e8980c14e682b12c151fce</checksum>
+<remaining>1</remaining>
+<filename>/jac_sw/omp/dbxml/M02ATEST2.sp</filename>
+</SpMSBSummary>
+
+<SpMSBSummary id="144">
+<projectid>M01BU54</projectid>
+<checksum>de252f2aeb3f8eeed59f0a2f717d39f9</checksum>
+<remaining>19</remaining>
+<filename>/jac_sw/omp/dbxml/M01BU54.sp</filename>
+</SpMSBSummary>
+
+<SpMSBSummary id="174">
+<projectid>M01TEST</projectid>
+<checksum>78ee474bb07341d083a710ca79237556</checksum>
+<remaining>1</remaining>
+<filename>/jac_sw/omp/dbxml/M01TEST.sp</filename>
+</SpMSBSummary>
+
+<SpMSBSummary id="175">
+<projectid>M01TEST</projectid>
+<checksum>ac2faca9582f5f4e7f46417d18143b23OA</checksum>
+<remaining>1</remaining>
+<filename>/jac_sw/omp/dbxml/M01TEST.sp</filename>
+</SpMSBSummary>
+
+<SpMSBSummary id="176">
+<projectid>M01TEST</projectid>
+<checksum>2a6473b7627523a3e1b640b96e00736c</checksum>
+<remaining>1</remaining>
+<filename>/jac_sw/omp/dbxml/M01TEST.sp</filename>
+</SpMSBSummary>
+
+<SpMSBSummary id="177">
+<projectid>M01TEST</projectid>
+<checksum>03810cdbaf6255ba1e2120257ed28c8dO</checksum>
+<remaining>1</remaining>
+<filename>/jac_sw/omp/dbxml/M01TEST.sp</filename>
+</SpMSBSummary>
+
+<SpMSBSummary id="192">
+<projectid>M02ATEST</projectid>
+<checksum>4ddbf1b6c5332488b4d0f6abca60c715</checksum>
+<remaining>5</remaining>
+<filename>/jac_sw/omp/dbxml/M02ATEST.sp</filename>
+</SpMSBSummary>
+
+<SpMSBSummary id="193">
+<projectid>42</projectid>
+<checksum>9b085a96ad5a84abdf1badb65c5fc52c</checksum>
+<remaining>1</remaining>
+<filename>/jac_sw/omp/dbxml/42.sp</filename>
+</SpMSBSummary>
+
+</QueryResult>
