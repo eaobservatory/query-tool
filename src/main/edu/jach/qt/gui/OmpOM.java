@@ -23,8 +23,8 @@ import jsky.app.ot.OtCfg;
 import jsky.app.ot.OtFileIO;
 import jsky.app.ot.OtTreeWidget;
 import jsky.app.ot.OtWindow;
-import orac.jcmt.inst.*;
-import orac.jcmt.iter.*;
+//import orac.jcmt.inst.*;
+//import orac.jcmt.iter.*;
 import orac.ukirt.inst.*;
 import orac.ukirt.iter.*;
 import orac.util.*;
@@ -98,15 +98,15 @@ public class OmpOM extends JPanel{
     //spItem = new SpInstHeterodyne();
 
     /* Init JCMT SpTypes */
-    spItem = new SpIterFocusObs();
-    spItem = new SpIterFrequency();
-    spItem = new SpIterJiggleObs();
-    spItem = new SpIterRasterObs();
-    spItem = new SpIterSkydipObs();
-    spItem = new SpIterStareObs();
-    spItem = new SpIterScanObs();
-    spItem = new SpIterPointingObs();
-    spItem = new SpIterPhotomObs();
+    //spItem = new SpIterFocusObs();
+    //spItem = new SpIterFrequency();
+    //spItem = new SpIterJiggleObs();
+    //spItem = new SpIterRasterObs();
+    //spItem = new SpIterSkydipObs();
+    //spItem = new SpIterStareObs();
+    //spItem = new SpIterScanObs();
+    //spItem = new SpIterPointingObs();
+    //spItem = new SpIterPhotomObs();
 
     /* Init JCMT Miscellaneous */
     //spItem = new orac.jcmt.obsComp.SpSiteQualityObsComp();
