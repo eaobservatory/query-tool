@@ -30,6 +30,10 @@ public class SoapClient {
     params.add(new Parameter(name, type, val, null));
   }
     
+  protected static void flushParameter() {
+    params.clear();
+  }
+    
   protected static Object doCall(URL url, String soapAction, String methodName)  {
     //String result = "";
     Object obj = new Object();
