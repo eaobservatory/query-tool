@@ -517,7 +517,18 @@ public class Querytool implements Runnable, Observer {
 	Element item, sub;
 	String tmpStr;
 
-	tmpStr = lrtf.getLowerText()+"T"+lrtf.getUpperText();
+	// Make sure the specified time is in a valid format and 
+	// if not, "make it so number 1"
+	String time = lrtf.getUpperText();
+	StringTokenizer st = new StringTokenizer(time, ":");
+	if (st.countTokens() == 1) {
+	    time = time + ":00:00";
+	}
+	else if (st.countTokens() == 2) {
+	    time = time + ":00";
+	}
+	
+	tmpStr = lrtf.getLowerText()+"T"+time;
 	if (! lrtf.timerRunning() ) {
 	    TimeUtils tu = new TimeUtils();
 	    if (tu.isValidDate(tmpStr) ) {
