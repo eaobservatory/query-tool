@@ -12,6 +12,7 @@ import edu.jach.qt.utils.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
+import java.io.File;
 import java.util.*;
 import javax.swing.*;
 import javax.swing.event.*;
@@ -125,9 +126,18 @@ public class QtFrame
 	      DeferredProgramList.deleteAllFiles();
 	  }
       }
-    setVisible(false);
-    dispose();
-    System.exit(0);
+      File cacheDir = new File ("/tmp/last_user");
+      if (cacheDir.exists() && cacheDir.isDirectory() ) {
+	  File [] files = cacheDir.listFiles();
+	  for (int i=0; i<files.length; i++) {
+	      if (files[i].isFile()) {
+		  files[i].delete();
+	      }
+	  }
+      }
+      setVisible(false);
+      dispose();
+      System.exit(0);
   }
 
   /**
@@ -824,7 +834,17 @@ public class QtFrame
   protected void processWindowEvent(WindowEvent e) {
     super.processWindowEvent(e);
     if (e.getID() == WindowEvent.WINDOW_CLOSING) {
-      System.exit(0);
+	// Delete the user cache file
+	File cacheDir = new File ("/tmp/last_user");
+	if (cacheDir.exists() && cacheDir.isDirectory() ) {
+	    File [] files = cacheDir.listFiles();
+	    for (int i=0; i<files.length; i++) {
+		if (files[i].isFile()) {
+		    files[i].delete();
+		}
+	    }
+	}
+	System.exit(0);
     }
   }
 
