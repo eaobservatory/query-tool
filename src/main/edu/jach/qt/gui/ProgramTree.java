@@ -1,9 +1,29 @@
 package edu.jach.qt.gui;
 
 
-import edu.jach.qt.utils.*;
+/* Gemini imports */
 import gemini.sp.*;
 import gemini.sp.obsComp.*;
+
+/* JSKY imports */
+import jsky.app.ot.*;
+
+/* ORAC imports */
+import orac.jcmt.inst.*;
+import orac.jcmt.iter.*;
+import orac.jcmt.obsComp.*;
+import orac.ukirt.inst.*;
+import orac.ukirt.iter.*;
+import orac.util.*;
+
+/* ORAC-OM imports */
+import om.console.*;
+import om.util.*;
+
+/* QT imports */
+import edu.jach.qt.utils.*;
+
+/* Standard imports */
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
@@ -14,16 +34,10 @@ import javax.swing.border.*;
 import javax.swing.event.*;
 import javax.swing.plaf.*;
 import javax.swing.tree.*;
-import jsky.app.ot.*;
+
+/* Miscellaneous imports */
 import ocs.utils.*;
-import om.console.*;
-import om.util.*;
-import orac.jcmt.inst.*;
-import orac.jcmt.iter.*;
-import orac.jcmt.obsComp.*;
-import orac.ukirt.inst.*;
-import orac.ukirt.iter.*;
-import orac.util.*;
+import org.apache.log4j.Logger;
 
 
 /**
@@ -33,8 +47,26 @@ import orac.util.*;
    @version 1.0 1st June 1999
    @author M.Tan@roe.ac.uk, modified by Mathew Rippa
 */
-final public class ProgramTree extends JPanel 
-  implements TreeSelectionListener,ActionListener,KeyListener {
+final public class ProgramTree extends JPanel implements TreeSelectionListener, 
+							 ActionListener,KeyListener {
+
+  static Logger logger = Logger.getLogger(ProgramTree.class);
+
+  public static final String BIN_IMAGE = System.getProperty("binImage");
+  public static final String BIN_SEL_IMAGE = System.getProperty("binImage");
+
+  private GridBagConstraints		gbc;
+  private JButton			run;
+  private JTree				tree;
+  private JList				obsList;
+  private DefaultListModel		model;
+  private JScrollPane			scrollPane = new JScrollPane();;
+  private SpItem			_spItem;
+  private DefaultMutableTreeNode	root;
+  private DefaultTreeModel		treeModel;
+  private TreePath			path;
+  private String			projectID, checkSum;
+  private SequenceManager		scm;
 
   /** public programTree(menuSele m) is the constructor. The class
       has only one constructor so far.  a few thing are done during
@@ -162,7 +194,7 @@ final public class ProgramTree extends JPanel
     if (item == null) {
       new ErrorBox("You have not selected an observation!"+
 		   "\nPlease select an observation.");
-      System.err.print("You have not selected an MSB!");
+      logger.error("You have not selected an MSB!");
       return;
     }
 
@@ -170,12 +202,10 @@ final public class ProgramTree extends JPanel
     // type "ob" observations since an MSB can have multiple instruments and we 
     // execute them individually.
     if(!item.typeStr().equals("ob")) {
-      new ErrorBox("Your selection: "+item.getTitle()+
-		   " is not an observation"+
+      new ErrorBox("Your selection: "+item.getTitle()+ " is not an observation"+
 		   "\nPlease select an observation.");
-      System.err.print("Your selection: "+item.getTitle()+ 
-		       " is not an MSB."+ 
-		       "\nPlease select an MSB.");
+      logger.error("Your selection: "+item.getTitle()+ " is not an MSB."+ 
+		   "\nPlease select an MSB.");
       return;
     } else {
       run.setEnabled(false);
@@ -197,11 +227,11 @@ final public class ProgramTree extends JPanel
 	// failed:
 	if (tname == null) {
 	  //new ErrorBox ("Translation failed. Please report this!");
-	  System.err.println("Translation failed. Please report this!");
+	  logger.error("Translation failed. Please report this!");
 	  run.setEnabled(true);
 	  return;
 	}else{
-	  System.out.println ("Trans OK");
+	  logger.info("Trans OK");
 
 	  model.remove(obsList.getSelectedIndex());
 
@@ -247,10 +277,9 @@ final public class ProgramTree extends JPanel
 	  }
 	}
 
-	//System.out.println("System is "+System.getProperty("os.name"));
 	if ( System.getProperty("os.name").equals("SunOS")) {
 	  QtTools.loadDramaTasks(inst.type().getReadable());
-	} // end of if ()
+	}
 	
 	DcHub.getHandle().register("OOS_LIST");
 	
@@ -484,23 +513,5 @@ final public class ProgramTree extends JPanel
   }
   
   public JButton getRunButton () {return run;}
-   
-  private GridBagConstraints gbc;
-  private JButton run;
-  private JTree tree;
-  private JList obsList;
-  private DefaultListModel model;
 
-  private JScrollPane scrollPane= new JScrollPane();;
-  private SpItem _spItem;
-
-  private DefaultMutableTreeNode root;
-  private DefaultTreeModel treeModel;
-  private TreePath path;
-
-  private String projectID, checkSum;
-
-  private SequenceManager scm;
-  public static final String BIN_IMAGE = System.getProperty("binImage");
-  public static final String BIN_SEL_IMAGE = System.getProperty("binImage");
 }

@@ -3,11 +3,25 @@ package edu.jach.qt.gui;
 
 //import orac.jcmt.inst.*;
 //import orac.jcmt.iter.*;
-import edu.jach.qt.gui.*;
-import edu.jach.qt.utils.*;
+
+/* Gemini imports */
 import gemini.sp.*;
 import gemini.sp.iter.*;
 import gemini.sp.obsComp.*;
+
+/* JSKY imports */
+import jsky.app.ot.*;
+
+/* ORAC imports */
+import orac.ukirt.inst.*;
+import orac.ukirt.iter.*;
+import orac.util.*;
+
+/* QT imports */
+import edu.jach.qt.gui.*;
+import edu.jach.qt.utils.*;
+
+/* Standard imports */
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
@@ -16,10 +30,9 @@ import javax.swing.*;
 import javax.swing.border.*;
 import javax.swing.event.*;
 import javax.swing.tree.*;
-import jsky.app.ot.*;
-import orac.ukirt.inst.*;
-import orac.ukirt.iter.*;
-import orac.util.*;
+
+/* Miscellaneous imports */
+import org.apache.log4j.Logger;
 
 /**
  * This is the top most class of the OMP-OM.  This 
@@ -30,6 +43,7 @@ import orac.util.*;
  */
 public class OmpOM extends JPanel{
 
+  static Logger logger = Logger.getLogger(OmpOM.class);
 
   private ProgramTree	      ptree;
   private File		      file;
@@ -105,6 +119,8 @@ public class OmpOM extends JPanel{
     /* Init JCMT Miscellaneous */
     //spItem = new orac.jcmt.obsComp.SpSiteQualityObsComp();
 
+    logger.info("SpItems initialized");
+
     ptree = new ProgramTree();
   }
 
@@ -125,7 +141,7 @@ public class OmpOM extends JPanel{
     
     Vector progVector = SpTreeMan.findAllItems(spItem, "gemini.sp.SpMSB");
 
-    System.out.println("progVector "+progVector);
+    logger.debug("progVector "+progVector);
 
     try {
        
@@ -139,17 +155,17 @@ public class OmpOM extends JPanel{
 	else {
 	  return "Title Not Found";
 	}
-      
       }
+
       else {
 	return (String) ((SpMSB) (progVector.firstElement())).getTitle();
-      } // end of else
+      }
       
     } catch (NoSuchElementException nse) {
-      System.out.println();
+      logger.warn("Title Not Found");
       nse.printStackTrace();
       return "Title Not Found";
-    } // end of try-catch
+    }
 
   }
 

@@ -1,20 +1,15 @@
 package edu.jach.qt.gui;
 
-import javax.xml.parsers.DocumentBuilder; 
-import javax.xml.parsers.DocumentBuilderFactory;  
-import javax.xml.parsers.FactoryConfigurationError;  
-import javax.xml.parsers.ParserConfigurationException;
-import org.xml.sax.SAXException;  
-import org.xml.sax.SAXParseException;  
-import java.io.File;
-import java.io.IOException;
-import org.w3c.dom.*;
 import java.awt.*;
+import java.io.*;
+import java.util.*;
 import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.table.*;
-import java.util.*;
-import java.io.*;
+import javax.xml.parsers.*;
+import org.apache.log4j.Logger;
+import org.w3c.dom.*;
+import org.xml.sax.SAXException;  
 
 /**
  * MSBQueryTableModel.java
@@ -26,6 +21,7 @@ import java.io.*;
 
 public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
 
+  static Logger logger = Logger.getLogger(MSBQueryTableModel.class);
   public static final String ROOT_ELEMENT_TAG = "SpMSBSummary";
 
   public static final String MSB_SUMMARY = System.getProperty("msbSummary");
@@ -125,18 +121,19 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
 
 
     } catch (SAXException sxe) {
-      // Error generated during parsing)
       Exception  x = sxe;
       if (sxe.getException() != null)
 	x = sxe.getException();
-      x.printStackTrace();
+      //x.printStackTrace();
+      logger.error("SAX Error generated during parsing", x);
 
     } catch(ParserConfigurationException pce) {
-      pce.printStackTrace();
-
+      logger.error("ParseConfiguration Error generated during parsing", pce);
+      //pce.printStackTrace();
     } catch (IOException ioe) {
       // I/O error
-      ioe.printStackTrace();
+      logger.error("IO Error generated attempting to build Document", ioe);
+      //ioe.printStackTrace();
     }
       
     fireTableChanged(null);
