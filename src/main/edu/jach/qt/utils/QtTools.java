@@ -192,4 +192,41 @@ public class QtTools {
     return status;
   }
 
+
+  public static int oosTest(String[] cmd) {
+      
+    String argList = "";
+    for (int  i = 0; i<cmd.length; i++) {
+      argList += (" " +cmd[i]);
+    }
+    logger.debug("oosTest argList is: "+argList);
+	    
+    int status = -1;
+    try {
+      Process p = Runtime.getRuntime().exec(cmd);
+      BufferedReader stdOut = 
+	new BufferedReader(new InputStreamReader(p.getInputStream()));
+
+      String s = null;
+      while ((s = stdOut.readLine()) != null) {
+	System.err.println(s);
+	logger.debug("oosTest output: >>>"+s+"<<<");
+	if ( s.endsWith("NOT RUNNING")) {
+	  status = 0;
+	}
+	else if ( s.endsWith("IS RUNNING")) {
+	  status = 1;
+	}
+	else if ( s.endsWith("Running ")) {
+	  status = 1;
+	}
+	
+      }
+    } catch (IOException e) {
+      logger.error("StdOut got IO exception:"+e.getMessage());
+    }
+
+    return status;
+  }
+
 }
