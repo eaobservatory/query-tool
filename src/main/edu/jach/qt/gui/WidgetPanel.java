@@ -433,6 +433,7 @@ public class WidgetPanel extends JPanel
      */
   public void setAtmospherePanel(WidgetPanel panel) {
     atmospherePanel = (JTextFieldPanel)panel;
+    atmospherePanel.setTextField("tau:", TelescopeDataPanel.getCSO());
   }
 
     /**
