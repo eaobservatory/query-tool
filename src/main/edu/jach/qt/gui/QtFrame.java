@@ -40,6 +40,7 @@ public class QtFrame extends JFrame implements PopupMenuListener, ActionListener
   static Logger logger = Logger.getLogger(QtFrame.class);
 
   private MSBQueryTableModel	msbQTM;
+  private JTable                projectTable;
   private JTable		table;
   private int			selRow;
   private JMenuItem		saveItem;
@@ -157,16 +158,27 @@ public class QtFrame extends JFrame implements PopupMenuListener, ActionListener
 	logger.error("Unable to create table model", e);
 	exitQT();
     }
+
+    ProjectTableModel ptm = new ProjectTableModel();
+    projectTableSetup(ptm);
     tableSetup();
     JScrollPane resultsPanel = new JScrollPane(table);
     resultsPanel.getViewport().setScrollMode(JViewport.BLIT_SCROLL_MODE); 
+    JScrollPane projectPane = new JScrollPane(projectTable);
+    projectPane.getViewport().setScrollMode(JViewport.BLIT_SCROLL_MODE);
+
+    JSplitPane tablePanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
+					   projectPane,
+					   resultsPanel);
+    tablePanel.setDividerSize(0);
+
     infoPanel = new InfoPanel(msbQTM, localQuerytool, this);
 
     // Build split-pane view
     //inputPanel.setMinimumSize(new Dimension(770,275) );
     splitPane =  new JSplitPane( JSplitPane.VERTICAL_SPLIT,
 				 inputPanel,
-				 resultsPanel);
+				 tablePanel);
 
     //Build Menu
     buildMenu();
@@ -192,6 +204,21 @@ public class QtFrame extends JFrame implements PopupMenuListener, ActionListener
     }
 
   }
+
+    private void projectTableSetup(ProjectTableModel ptm) {
+	Vector columnNames = new Vector();
+	columnNames.add("projectid");
+	columnNames.add("priority");
+	projectTable = new JTable (ptm);
+	projectTable.setPreferredScrollableViewportSize( new Dimension (150, -1));
+	ToolTipManager.sharedInstance().unregisterComponent(projectTable);
+	ToolTipManager.sharedInstance().unregisterComponent(projectTable.getTableHeader());
+	projectTable.setAutoResizeMode(JTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
+	
+	projectTable.setSelectionModel(new ProjectTableSelectionModel(this));
+
+	projectTable.setVisible(true);
+    }
 
 
   private void tableSetup() {
@@ -300,6 +327,10 @@ public class QtFrame extends JFrame implements PopupMenuListener, ActionListener
     table.setVisible(true);
   }
 
+    public void initProjectTable() {
+	projectTable.getSelectionModel().setSelectionInterval(0,0);
+    }
+
     /**
      * Method used to set the current column sizes.  This should be called
      * before each query.
@@ -341,6 +372,10 @@ public class QtFrame extends JFrame implements PopupMenuListener, ActionListener
      */
     public MSBQueryTableModel getModel() {
 	return msbQTM;
+    }
+
+    public ProjectTableModel getProjectModel() {
+	return (ProjectTableModel)projectTable.getModel();
     }
 
 
