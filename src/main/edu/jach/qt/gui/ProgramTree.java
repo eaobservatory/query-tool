@@ -593,6 +593,8 @@ final public class ProgramTree extends JPanel implements
     obsList.addMouseListener(ml);
     MouseListener popupListener = new PopupListener();
     obsList.addMouseListener(popupListener);
+    obsList.setSelectedIndex(0);
+    selectedItem = (SpItem) obsList.getSelectedValue();
 
     dragSource.createDefaultDragGestureRecognizer(obsList,
 						  DnDConstants.ACTION_MOVE,
