@@ -1,4 +1,5 @@
-include	    ../../../../../../makeInclude
+BUILD     = ../../../../../../..
+include	    $(BUILD)/makeInclude
 
 PACKAGE	    = $(QT_PACKAGE)/djava
 
@@ -9,13 +10,7 @@ SOURCES = \
 	CSOPathResponseHandler.java \
 	MonitorResponse.java
 
-ifeq ($(INSTALL),true)
-include $(BUILD)/makeinstall.tail
-else
-include $(BUILD)/makelocal.tail
-endif
-
-circular:
+include $(BUILD)/make.tail
 
 
 # Phony Targets

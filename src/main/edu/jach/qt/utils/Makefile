@@ -1,4 +1,5 @@
-include	    ../../../../../../makeInclude
+BUILD     = ../../../../../../..
+include	    $(BUILD)/makeInclude
 
 PACKAGE	    = $(QT_PACKAGE)/utils
 
@@ -21,14 +22,8 @@ SOURCES = \
 	DragTreeCellRenderer.java \
 
 
+include $(BUILD)/make.tail
 
-ifeq ($(INSTALL),true)
-include $(BUILD)/makeinstall.tail
-else
-include $(BUILD)/makelocal.tail
-endif
-
-circular:
 
 
 # Phony Targets

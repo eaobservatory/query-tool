@@ -1,4 +1,5 @@
-include	    ../../../../../../makeInclude
+BUILD     = ../../../../../../..
+include	    $(BUILD)/makeInclude
 
 PACKAGE	    = $(QT_PACKAGE)/app
 
@@ -10,11 +11,7 @@ SOURCES = \
 	Querytool.java \
 	QT.java
 
-ifeq ($(INSTALL),true)
-include $(BUILD)/makeinstall.tail
-else
-include $(BUILD)/makelocal.tail
-endif
+include $(BUILD)/make.tail
 
 circular:
 
