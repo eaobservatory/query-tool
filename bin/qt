@@ -18,4 +18,4 @@ set CLASSPATH = /home/mrippa/netroot/install/omp/QT/lib/qt.jar:/home/mrippa/loca
 
 set CFG_TELESCOPE_DIR = ${CFG_DIRS}/ukirt
 
-${JAVA} -DOMP -DSERVER=ATC -Dot.cfgdir=${CFG_TELESCOPE_DIR}/ -Dot.resource.cfgdir=./ -cp ${CLASSPATH}:${CFG_TELESCOPE_DIR} edu.jach.qt.app.Main &
+${JAVA} -DqtConfig=/jac_sw/omp/config/qtSystem.conf -DOMP -DSERVER=ATC -Dot.cfgdir=${CFG_TELESCOPE_DIR}/ -Dot.resource.cfgdir=./ -cp ${CLASSPATH}:${CFG_TELESCOPE_DIR} edu.jach.qt.app.Main &
