@@ -59,139 +59,157 @@ final public class ProgramTree extends JPanel implements
     DragGestureListener, 
     DropTargetListener {
 
-  static Logger logger = Logger.getLogger(ProgramTree.class);
+    static Logger logger = Logger.getLogger(ProgramTree.class);
 
-  public static final String BIN_IMAGE = System.getProperty("binImage");
-  public static final String BIN_SEL_IMAGE = System.getProperty("binImage");
+    public static final String BIN_IMAGE = System.getProperty("binImage");
+    public static final String BIN_SEL_IMAGE = System.getProperty("binImage");
 
-  private GridBagConstraints		gbc;
-  private JButton			run;
-  private JButton                       xpand;
-  private JTree				tree;
-  private static JList			        obsList;
-  private DefaultListModel		model;
-  private JScrollPane			scrollPane = new JScrollPane();;
-  private SpItem			_spItem;
-  private DefaultMutableTreeNode	root;
-  private DefaultTreeModel		treeModel;
-  private TreeViewer                    tv=null;
-  private TreePath			path;
-  private String			projectID, checkSum;
-//   private SequenceManager		scm;
-    private DropTarget                  dropTarget=null;
-    private DragSource                  dragSource=null;
-    private TrashCan                    trash=null;
-    public static  SpItem          selectedItem=null;
-    public static  SpItem          obsToDefer;
-    private SpItem                 instrumentContext;
-    private Vector                 targetContext;
-    private final String           editText = "Edit Attribute...";
-    private final String           scaleText = "Scale Exposure Times...";
-    private String                 rescaleText = "Re-do Scale Exposure Times";
+    private GridBagConstraints		gbc;
+    private JButton			run;
+    private JButton                     xpand;
+    private JTree			tree;
+    private static JList		obsList;
+    private DefaultListModel		model;
+    private JScrollPane			scrollPane = new JScrollPane();;
+    private SpItem			_spItem;
+    private DefaultMutableTreeNode	root;
+    private DefaultTreeModel		treeModel;
+    private TreeViewer                  tv = null;
+    private TreePath			path;
+    private String			projectID    = null;
+    private String                      checkSum     = null;
+    private DropTarget                  dropTarget   = null;
+    private DragSource                  dragSource   = null;
+    private TrashCan                    trash        = null;
+    public static  SpItem               selectedItem = null;
+    public static  SpItem               obsToDefer;
+    private SpItem                      instrumentContext;
+    private Vector                      targetContext;
+    private final String                editText = "Edit Attribute...";
+    private final String                scaleText = "Scale Exposure Times...";
+    private String                      rescaleText = "Re-do Scale Exposure Times";
+    private Vector                      haveScaled   = new Vector(); 
+    private Vector                      scaleFactors = new Vector(); 
+    private JMenuItem                   edit;
+    private JMenuItem                   scale;
+    private JMenuItem                   scaleAgain;
+    private JPopupMenu                  scalePopup;
 
-  /** public programTree() is the constructor. The class
-      has only one constructor so far.  a few thing are done during
-      the construction. They are mainly about adding a run button and
-      setting up listeners.
+    private JPopupMenu                  msbDonePopup;
+    private JMenuItem                   msbDoneMenuItem;
+    private final String                msbDoneText = "Accept/Reject this MSB";
+
+    private boolean                     anObservationHasBeenDone = false;
+    private boolean                     msbDone = false;  // The MSB has been either accepted or rejected
+
+    /** public programTree() is the constructor. The class
+	has only one constructor so far.  a few thing are done during
+	the construction. They are mainly about adding a run button and
+	setting up listeners.
       
-      @param  none
-      @return none
-      @throws none 
-  */
-  public ProgramTree()  {
+	@param  none
+	@return none
+	@throws none 
+    */
+    public ProgramTree()  {
 
-//     scm = SequenceManager.getHandle();
+	//     scm = SequenceManager.getHandle();
 
-    // Ensure nothing is selected 
-    selectedItem = null;
+	// Ensure nothing is selected 
+	selectedItem = null;
 
-    Border border=BorderFactory.createMatteBorder(2, 2, 2, 2, Color.white);
-    setBorder(new TitledBorder(border, "Fetched Science Program (SP)", 
-			       0, 0, new Font("Roman",Font.BOLD,12),Color.black));
-    setLayout(new BorderLayout() );
+	Border border=BorderFactory.createMatteBorder(2, 2, 2, 2, Color.white);
+	setBorder(new TitledBorder(border, "Fetched Science Program (SP)", 
+				   0, 0, new Font("Roman",Font.BOLD,12),Color.black));
+	setLayout(new BorderLayout() );
 
-    GridBagLayout gbl = new GridBagLayout();
-    setLayout(gbl);
-    gbc = new GridBagConstraints();
+	GridBagLayout gbl = new GridBagLayout();
+	setLayout(gbl);
+	gbc = new GridBagConstraints();
 
-    run=new JButton("Send for Execution");
-    run.setMargin(new Insets(5,10,5,10));
-    if (TelescopeDataPanel.DRAMA_ENABLED) {
-	run.setEnabled(true);
+	run=new JButton("Send for Execution");
+	run.setMargin(new Insets(5,10,5,10));
+	if (TelescopeDataPanel.DRAMA_ENABLED) {
+	    run.setEnabled(true);
+	}
+	else {
+	    run.setEnabled(false);
+	}
+	run.addActionListener(this);
+
+	xpand = new JButton("Expand Observation");
+	xpand.setMargin(new Insets(5,10,5,10));
+	xpand.addActionListener(this);
+
+	dropTarget=new DropTarget();
+	try{
+	    dropTarget.addDropTargetListener(this);
+	}catch(TooManyListenersException tmle){
+	    logger.error("Too many drop target listeners", tmle);
+	}
+
+	trash = new TrashCan();
+	trash.setDropTarget(dropTarget);
+
+	dragSource = new DragSource();
+
+	// Create a popup menu 
+	scalePopup = new JPopupMenu();
+	edit = new JMenuItem (editText);
+	edit.addActionListener(this);
+	scalePopup.add (edit);
+	scale = new JMenuItem (scaleText);
+	scale.addActionListener(this);
+	scalePopup.add (scale);
+	scaleAgain = new JMenuItem (rescaleText);
+	scaleAgain.addActionListener(this);
+	scaleAgain.setEnabled(false);
+	scalePopup.add (scaleAgain);
+
+	msbDonePopup = new JPopupMenu();
+	msbDoneMenuItem = new JMenuItem(msbDoneText);
+	msbDoneMenuItem.addActionListener(this);
+	msbDonePopup.add(msbDoneMenuItem);
+
+	gbc.fill = GridBagConstraints.NONE;
+	gbc.anchor = GridBagConstraints.CENTER;
+	gbc.weightx = 100;
+	gbc.weighty = 100;
+	gbc.insets.left = 10;
+	gbc.insets.right = 0;
+	add(trash, gbc, 1, 1, 1, 1);
+
+	gbc.fill = GridBagConstraints.HORIZONTAL;
+	gbc.weightx = 100;
+	gbc.weighty = 0;
+	gbc.insets.left = 0;
+	gbc.insets.right = 0;
+	add(run, gbc, 0, 1, 1, 1);
+
+	gbc.fill = GridBagConstraints.HORIZONTAL;
+	gbc.weightx = 100;
+	gbc.weighty = 0;
+	gbc.insets.left = 0;
+	gbc.insets.right = 0;
+	gbc.insets.bottom = 50;
+	add(xpand, gbc, 0, 2, 1, 1);
     }
-    else {
-	run.setEnabled(false);
-    }
-    run.addActionListener(this);
-
-    xpand = new JButton("Expand Observation");
-    xpand.setMargin(new Insets(5,10,5,10));
-    xpand.addActionListener(this);
-
-    dropTarget=new DropTarget();
-    try{
-	dropTarget.addDropTargetListener(this);
-    }catch(TooManyListenersException tmle){
-	logger.error("Too many drop target listeners", tmle);
-    }
-
-    trash = new TrashCan();
-    trash.setDropTarget(dropTarget);
-
-    dragSource = new DragSource();
-
-    // Create a popup menu 
-    popup = new JPopupMenu();
-    edit = new JMenuItem (editText);
-    edit.addActionListener(this);
-    popup.add (edit);
-    scale = new JMenuItem (scaleText);
-    scale.addActionListener(this);
-    popup.add (scale);
-    scaleAgain = new JMenuItem (rescaleText);
-    scaleAgain.addActionListener(this);
-    scaleAgain.setEnabled(false);
-    popup.add (scaleAgain);
-
-    gbc.fill = GridBagConstraints.NONE;
-    gbc.anchor = GridBagConstraints.CENTER;
-    gbc.weightx = 100;
-    gbc.weighty = 100;
-    gbc.insets.left = 10;
-    gbc.insets.right = 0;
-    add(trash, gbc, 1, 1, 1, 1);
-
-    gbc.fill = GridBagConstraints.HORIZONTAL;
-    gbc.weightx = 100;
-    gbc.weighty = 0;
-    gbc.insets.left = 0;
-    gbc.insets.right = 0;
-    add(run, gbc, 0, 1, 1, 1);
-
-    gbc.fill = GridBagConstraints.HORIZONTAL;
-    gbc.weightx = 100;
-    gbc.weighty = 0;
-    gbc.insets.left = 0;
-    gbc.insets.right = 0;
-    gbc.insets.bottom = 50;
-    add(xpand, gbc, 0, 2, 1, 1);
-  }
 
     /**
      * Set the <code>projectID</code> to a specified value.
      * @param projectID  The value to set.
      */
-  public void setProjectID(String projectID) {
-    this.projectID = projectID;
-  }
+    public void setProjectID(String projectID) {
+	this.projectID = projectID;
+    }
 
     /**
      * Set the <code>checkSum</code> to a specified value.
      * @param checksum  The value to set.
      */
-  public void setChecksum(String checksum) {
-    this.checkSum = checksum;
-  }
+    public void setChecksum(String checksum) {
+	this.checkSum = checksum;
+    }
 
     /**
      * Set the "Send for Execution" to (dis)abled.
@@ -206,83 +224,107 @@ final public class ProgramTree extends JPanel implements
      * @param label  The <code>JLabel</code> with which to associate the image.
      * @exception Exception is unabe to set the image.
      */
-  public void setImage(JLabel label) throws Exception {
-    URL url = new URL("file://"+BIN_IMAGE);
-    if(url != null) {
-      label.setIcon(new ImageIcon(url));
+    public void setImage(JLabel label) throws Exception {
+	URL url = new URL("file://"+BIN_IMAGE);
+	if(url != null) {
+	    label.setIcon(new ImageIcon(url));
+	}
+	else {
+	    label.setIcon(new ImageIcon(ProgramTree.class.getResource("file://"+BIN_IMAGE)));
+	}
     }
-    else {
-      label.setIcon(new ImageIcon(ProgramTree.class.getResource("file://"+BIN_IMAGE)));
-    }
-  }
 
-  /**
-   * Add a compnent to the <code>GridBagConstraints</code>
-   *
-   * @param c a <code>Component</code> value
-   * @param gbc a <code>GridBagConstraints</code> value
-   * @param x an <code>int</code> value
-   * @param y an <code>int</code> value
-   * @param w an <code>int</code> value
-   * @param h an <code>int</code> value
-   */
-  public void add(Component c, GridBagConstraints gbc, 
-		  int x, int y, int w, int h) {
-    gbc.gridx = x;
-    gbc.gridy = y;
-    gbc.gridwidth = w;
-    gbc.gridheight = h;
-    add(c, gbc);      
-  }
+    /**
+     * Add a compnent to the <code>GridBagConstraints</code>
+     *
+     * @param c a <code>Component</code> value
+     * @param gbc a <code>GridBagConstraints</code> value
+     * @param x an <code>int</code> value
+     * @param y an <code>int</code> value
+     * @param w an <code>int</code> value
+     * @param h an <code>int</code> value
+     */
+    public void add(Component c, GridBagConstraints gbc, 
+		    int x, int y, int w, int h) {
+	gbc.gridx = x;
+	gbc.gridy = y;
+	gbc.gridwidth = w;
+	gbc.gridheight = h;
+	add(c, gbc);      
+    }
 
   
-  /** public void actionPerformed(ActionEvent evt) is a public method
-      to react button actions. The reaction is mainly about to start a
-      SGML translation, then a "remote" frame to form a sequence console.
+    /** public void actionPerformed(ActionEvent evt) is a public method
+	to react button actions. The reaction is mainly about to start a
+	SGML translation, then a "remote" frame to form a sequence console.
       
-      @param ActionEvent
-      @return  none
-      @throws none
+	@param ActionEvent
+	@return  none
+	@throws none
       
-  */
-  public void actionPerformed (ActionEvent evt) {
-    Object source = evt.getSource();
-    if (source == run) {
-	doExecute();
-    }
-    else if (source == xpand) {
-	SpItem itemToXpand;
-	if (selectedItem == null && DeferredProgramList.currentItem == null) {
-	    return;
+    */
+    public void actionPerformed (ActionEvent evt) {
+	Object source = evt.getSource();
+	if (source == run) {
+	    doExecute();
 	}
-	else if (selectedItem == null) {
-	    itemToXpand = DeferredProgramList.currentItem;
-	}
-	else {
-	    itemToXpand = selectedItem;
+	else if (source == xpand) {
+	    SpItem itemToXpand;
+	    if (selectedItem == null && DeferredProgramList.currentItem == null) {
+		return;
+	    }
+	    else if (selectedItem == null) {
+		itemToXpand = DeferredProgramList.currentItem;
+	    }
+	    else {
+		itemToXpand = selectedItem;
+	    }
+
+	    if (tv == null) {
+		tv = new TreeViewer(itemToXpand);
+	    }
+	    else {
+		tv.update(itemToXpand);
+	    }
 	}
 
-	if (tv == null) {
-	    tv = new TreeViewer(itemToXpand);
-	}
-	else {
-	    tv.update(itemToXpand);
+	if (source instanceof JMenuItem) {
+	    JMenuItem thisItem = (JMenuItem) source;
+	    if ( thisItem.getText().equals(editText) ) {
+		editAttributes();
+	    } 
+	    else if ( thisItem.getText().equals(scaleText) ) {
+		scaleAttributes();
+	    } 
+	    else if ( thisItem.getText().equals(rescaleText) ) {
+		rescaleAttributes();   
+	    }
+	    else if (thisItem.getText().equals(msbDoneText)) {
+		if (projectID != null && 
+		    projectID != ""   &&
+		    checkSum  != null && 
+		    checkSum  != ""   &&
+		    System.getProperty("telescope").equalsIgnoreCase("ukirt")  && 
+		    anObservationHasBeenDone == true &&
+		    msbDone == false &&
+		    TelescopeDataPanel.DRAMA_ENABLED) { 
+		    int mark = showMSBDoneDialog();
+		    if (mark == JOptionPane.YES_OPTION) {
+			MsbClient.doneMSB(projectID, checkSum);
+			msbDone = true;
+			InfoPanel.searchButton.doClick();
+		    }
+		    else if (mark == JOptionPane.NO_OPTION) {
+			// Reserved for marking and MSB as rejected
+			msbDone = true;
+		    }
+		    else {
+			// user cancelled operation
+		    }
+		}
+	    }
 	}
     }
-
-    if (source instanceof JMenuItem) {
-	JMenuItem thisItem = (JMenuItem) source;
-	if ( thisItem.getText().equals(editText) ) {
-	    editAttributes();
-	} 
-	else if ( thisItem.getText().equals(scaleText) ) {
-	    scaleAttributes();
-	} 
-	else if ( thisItem.getText().equals(rescaleText) ) {
-	    rescaleAttributes();   
-	}
-    }
-  }
 
     public void doExecute() {
 	SpItem item = null;
@@ -308,23 +350,31 @@ final public class ProgramTree extends JPanel implements
 		    new ErrorBox(this, "Failed to Execute. Check messages.");
 		}
 		if (!isDeferred && !failed) {
-		    model.remove(obsList.getSelectedIndex());
+		    System.out.println("Marking this observation as done");
+		    anObservationHasBeenDone = true;
+		    markAsDone(obsList.getSelectedIndex());
+		    // 		    model.remove(obsList.getSelectedIndex());
 		}
 		else if (!failed) {
 		    DeferredProgramList.markThisObservationAsDone(item);
 		}
 	
-		if ( !isDeferred && model.isEmpty() && TelescopeDataPanel.DRAMA_ENABLED) {
-		    int mark = JOptionPane.showConfirmDialog(this, "Mark the MSB with \n"+
-							     "Project ID: "+projectID+"\n"+
-							     "CheckSum: "+checkSum+"\n"+
-							     "as done?",
-							     "MSB complete",
-							     JOptionPane.YES_NO_OPTION);
+		if ( !isDeferred && 
+		     IsModelEmpty() && 
+		     TelescopeDataPanel.DRAMA_ENABLED) {
+		    int mark = showMSBDoneDialog();
 		    if (mark == JOptionPane.YES_OPTION) {
 			MsbClient.doneMSB(projectID, checkSum);
 			// Since the MSBID has changed, redo the search...
 			InfoPanel.searchButton.doClick();
+			msbDone = true;
+		    }
+		    if (mark ==  JOptionPane.CANCEL_OPTION) {
+			// Carry on with what we were doing
+		    }
+		    if (mark == JOptionPane.NO_OPTION) {
+			// This is where we reject the MSB
+			msbDone=true;
 		    }
 		} // end of if ()
 
@@ -376,147 +426,224 @@ final public class ProgramTree extends JPanel implements
 	    }
 	}
     }
+
+    private void markAsDone(int index) {
+	SpObs obs = (SpObs)model.getElementAt(index);
+	String title = obs.getTitle();
+	// Search through and see if we have a remaining of the form "(nX)"
+	if (title.endsWith("X)")) {
+	    // Find the index of the last space character
+	    int lastSpace = title.lastIndexOf(" ");
+	    title = title.substring(0, lastSpace);
+	}
+
+	if (! (title.endsWith("*")) ) {
+	    title = title+"*";
+	    obs.setTitleAttr(title);
+	    model.setElementAt(obs, index);
+	}
+    }
+
+    private boolean IsModelEmpty() {
+	for (int i=0; i<model.getSize(); i++) {
+	    SpObs obs = (SpObs)model.getElementAt(i);
+	    String obsName = obs.getTitle();
+	    if (obsName.endsWith("X)")) {
+		// Find the index of the last space character
+		int lastSpace = obsName.lastIndexOf(" ");
+		obsName = obsName.substring(0, lastSpace);
+	    }
+	    
+	    if (!(obsName.endsWith("*"))) {
+		return false;
+	    }
+	}
+	return true;
+    }
+
+    private int getRemainingObservations() {
+	int nRemaining=0;
+	for (int i=0; i<model.getSize(); i++) {
+	    SpObs obs = (SpObs)model.getElementAt(i);
+	    String obsName = obs.getTitle();
+	    if (obsName.endsWith("X)")) {
+		// Find the index of the last space character
+		int lastSpace = obsName.lastIndexOf(" ");
+		obsName = obsName.substring(0, lastSpace);
+	    }
+	    System.out.println("Name: "+obsName);
+	    if (!(obsName.endsWith("*"))) {
+		nRemaining++;
+	    }
+	}
+	return nRemaining;
+    }
   
 
-  /**
-     public void addTree(String title,SpItem sp) is a public method
-     to set up a JTree GUI bit for a science program object in the panel
-     and to set up a listener too
+    /**
+       public void addTree(String title,SpItem sp) is a public method
+       to set up a JTree GUI bit for a science program object in the panel
+       and to set up a listener too
      
-     @param String title and SpItem sp
-     @return  none
-     @throws none
-     @deprecated  Replaced by {@link #addList(SpItem)}
+       @param String title and SpItem sp
+       @return  none
+       @throws none
+       @deprecated  Replaced by {@link #addList(SpItem)}
      
-  */
-  public void addTree(SpItem sp)
-  {
-    _spItem=sp;
+    */
+    public void addTree(SpItem sp)
+    {
+	_spItem=sp;
 
-    // Create data for the tree
-    // root= new DefaultMutableTreeNode(sp);
+	// Create data for the tree
+	// root= new DefaultMutableTreeNode(sp);
 
-    getItems(sp, root);
+	getItems(sp, root);
             
-    // Create a new tree control
-    treeModel = new DefaultTreeModel(root);
-    tree = new JTree(treeModel);
+	// Create a new tree control
+	treeModel = new DefaultTreeModel(root);
+	tree = new JTree(treeModel);
       
 
-    MyTreeCellRenderer tcr = new MyTreeCellRenderer();
-    // Tell the tree it is being rendered by our application
-    tree.setCellRenderer(tcr);
-    tree.addTreeSelectionListener(this);
-    tree.addKeyListener(this);
+	MyTreeCellRenderer tcr = new MyTreeCellRenderer();
+	// Tell the tree it is being rendered by our application
+	tree.setCellRenderer(tcr);
+	tree.addTreeSelectionListener(this);
+	tree.addKeyListener(this);
 
-    // Add the listbox to a scrolling pane
-    scrollPane.getViewport().removeAll();
-    scrollPane.getViewport().add(tree);
-    scrollPane.getViewport().setOpaque(false);
+	// Add the listbox to a scrolling pane
+	scrollPane.getViewport().removeAll();
+	scrollPane.getViewport().add(tree);
+	scrollPane.getViewport().setOpaque(false);
 
-    gbc.fill = GridBagConstraints.BOTH;
-    //gbc.anchor = GridBagConstraints.EAST;
-    gbc.insets.bottom = 5;
-    gbc.insets.left = 10;
-    gbc.insets.right = 5;
-    gbc.weightx = 100;
-    gbc.weighty = 100;
-    add(scrollPane, gbc, 0, 0, 2, 1);
+	gbc.fill = GridBagConstraints.BOTH;
+	//gbc.anchor = GridBagConstraints.EAST;
+	gbc.insets.bottom = 5;
+	gbc.insets.left = 10;
+	gbc.insets.right = 5;
+	gbc.weightx = 100;
+	gbc.weighty = 100;
+	add(scrollPane, gbc, 0, 0, 2, 1);
       
-    this.repaint();
-    this.validate();
-  }
+	this.repaint();
+	this.validate();
+    }
 
     /**
      * Set up the List GUI and populate it with the results of a query.
      * @param sp  The list of obervations in the MSB.
      */
-  public void addList(SpItem sp) {
+    public void addList(SpItem sp) {
 
-      if (sp == null) {
-	  obsList = new JList();
-      }
-      else {
-	  _spItem = sp;
+	if (sp == null) {
+	    obsList = new JList();
+	}
+	else {
+	    // Check if there is already an existing model and whether it still has
+	    // observations to perform
+	    if ( model != null   && 
+		 msbDone == false &&
+		 anObservationHasBeenDone == true &&
+		 TelescopeDataPanel.DRAMA_ENABLED ) {
+		int mark = showMSBDoneDialog();
+		if (mark == JOptionPane.YES_OPTION) {
+		    MsbClient.doneMSB(projectID, checkSum);
+		    InfoPanel.searchButton.doClick();
+		    msbDone = true;
+		}
+		if (mark == JOptionPane.CANCEL_OPTION) {
+		    // Keep the old observation
+		    return;
+		}
+		if (mark == JOptionPane.NO_OPTION) {
+		    // Do nothing - just carry on.
+		    // Assumes the entire MSB has not been done.
+		    // Later we may well mark this observation as rejected.
+		    msbDone = true;
+		}
+	    }
+	    anObservationHasBeenDone = false;
+	    msbDone = false;
+	    _spItem = sp;
 
-	  getContext(sp);
-	  model = new DefaultListModel();
+	    getContext(sp);
+	    model = new DefaultListModel();
 
-	  Vector obsVector =  SpTreeMan.findAllItems(sp, "gemini.sp.SpObs");
+	    Vector obsVector =  SpTreeMan.findAllItems(sp, "gemini.sp.SpObs");
 	  
-	  Enumeration e = obsVector.elements();
-	  while (e.hasMoreElements() ) {
-	      model.addElement(e.nextElement());
-	  } // end of while ()
+	    Enumeration e = obsVector.elements();
+	    while (e.hasMoreElements() ) {
+		model.addElement(e.nextElement());
+	    } // end of while ()
 
-	  obsList = new JList(model);
-	  obsList.setCellRenderer(new ObsListCellRenderer());
-	  MouseListener ml = new MouseAdapter()
-	      {
-		  public void mouseClicked(MouseEvent e)
-		  {
-		      if (e.getClickCount() == 2) {
-			  doExecute();
-		      }
-		      else if (e.getClickCount() == 1 && 
-			       (e.getModifiers() & InputEvent.BUTTON1_MASK) == InputEvent.BUTTON1_MASK ) {
-			  if (selectedItem != obsList.getSelectedValue() ) {
-			      // Select the new item
-			      selectedItem = (SpItem) obsList.getSelectedValue();
-			      DeferredProgramList.clearSelection();
-			  }
-			  else if (e.getClickCount() == 1)
-			      {
-				  if (selectedItem != obsList.getSelectedValue() ) {
-				      // Select the new item
-				      selectedItem = (SpItem) obsList.getSelectedValue();
-				      DeferredProgramList.clearSelection();
-				  }
-				  else {
-				      obsList.clearSelection();
-				      selectedItem = null;
-				  }
-			      }
-		      }
-		  }
+	    obsList = new JList(model);
+	    obsList.setCellRenderer(new ObsListCellRenderer());
+	    MouseListener ml = new MouseAdapter()
+		{
+		    public void mouseClicked(MouseEvent e)
+		    {
+			if (e.getClickCount() == 2) {
+			    doExecute();
+			}
+			else if (e.getClickCount() == 1 && 
+				 (e.getModifiers() & InputEvent.BUTTON1_MASK) == InputEvent.BUTTON1_MASK ) {
+			    if (selectedItem != obsList.getSelectedValue() ) {
+				// Select the new item
+				selectedItem = (SpItem) obsList.getSelectedValue();
+				DeferredProgramList.clearSelection();
+			    }
+			    else if (e.getClickCount() == 1)
+				{
+				    if (selectedItem != obsList.getSelectedValue() ) {
+					// Select the new item
+					selectedItem = (SpItem) obsList.getSelectedValue();
+					DeferredProgramList.clearSelection();
+				    }
+				    else {
+					obsList.clearSelection();
+					selectedItem = null;
+				    }
+				}
+			}
+		    }
 
-		  public void mousePressed(MouseEvent e) {
-		      DeferredProgramList.clearSelection();
-		      obsList.setEnabled(false);
-		  }
-		  public void mouseReleased(MouseEvent e) {
-		      obsList.setEnabled(true);
-		  }
-	      };
-	  obsList.addMouseListener(ml);
-	  MouseListener popupListener = new PopupListener();
-	  obsList.addMouseListener(popupListener);
-	  obsList.setSelectedIndex(0);
-	  selectedItem = (SpItem) obsList.getSelectedValue();
+		    public void mousePressed(MouseEvent e) {
+			DeferredProgramList.clearSelection();
+			obsList.setEnabled(false);
+		    }
+		    public void mouseReleased(MouseEvent e) {
+			obsList.setEnabled(true);
+		    }
+		};
+	    obsList.addMouseListener(ml);
+	    MouseListener popupListener = new PopupListener();
+	    obsList.addMouseListener(popupListener);
+	    obsList.setSelectedIndex(0);
+	    selectedItem = (SpItem) obsList.getSelectedValue();
 
-	  dragSource.createDefaultDragGestureRecognizer(obsList,
-							DnDConstants.ACTION_MOVE,
-							this);
-      }
-      // Add the listbox to a scrolling pane
-      scrollPane.getViewport().removeAll();
-      scrollPane.getViewport().add(obsList);
-      scrollPane.getViewport().setOpaque(false);
+	    dragSource.createDefaultDragGestureRecognizer(obsList,
+							  DnDConstants.ACTION_MOVE,
+							  this);
+	}
+	// Add the listbox to a scrolling pane
+	scrollPane.getViewport().removeAll();
+	scrollPane.getViewport().add(obsList);
+	scrollPane.getViewport().setOpaque(false);
 
-      gbc.fill = GridBagConstraints.BOTH;
-      //gbc.anchor = GridBagConstraints.EAST;
-      gbc.insets.bottom = 5;
-      gbc.insets.left = 10;
-      gbc.insets.right = 5;
-      gbc.weightx = 100;
-      gbc.weighty = 100;
-      add(scrollPane, gbc, 0, 0, 2, 1);
+	gbc.fill = GridBagConstraints.BOTH;
+	//gbc.anchor = GridBagConstraints.EAST;
+	gbc.insets.bottom = 5;
+	gbc.insets.left = 10;
+	gbc.insets.right = 5;
+	gbc.weightx = 100;
+	gbc.weighty = 100;
+	add(scrollPane, gbc, 0, 0, 2, 1);
     
-  }
+    }
 
-  //public MsbNode getMsbNode() {
-  //   return myObs;
-  // }
+    //public MsbNode getMsbNode() {
+    //   return myObs;
+    // }
 
     /**
      * Clear the selection from the Prgram Tree List.
@@ -530,11 +657,11 @@ final public class ProgramTree extends JPanel implements
      * Get the current <code>JTree</code>.
      * @return The current tree structure.
      * @deprecated - this class now implements a list, not a tree. Not Replaced
-  public JTree getTree() {
-    return tree;
-  }
+     public JTree getTree() {
+     return tree;
+     }
   
-  /**
+     /**
      public void removeTree( ) is a public method
      to remove a JTree GUI bit for a science program object in the panel
      and to set up a listener too
@@ -544,64 +671,64 @@ final public class ProgramTree extends JPanel implements
      @throws none
      @deprecated Not replaced.
       
-  */
-  public void removeTree()
-  {
-    this.remove(scrollPane);
-  }
+    */
+    public void removeTree()
+    {
+	this.remove(scrollPane);
+    }
   
 
-  /**
-     public void valueChanged( TreeSelectionEvent event) is a public method
-     to handle tree item selections
+    /**
+       public void valueChanged( TreeSelectionEvent event) is a public method
+       to handle tree item selections
      
-     @param TreeSelectionEvent event
-     @return  none
-     @throws none
-     @deprecated Not replaced.
+       @param TreeSelectionEvent event
+       @return  none
+       @throws none
+       @deprecated Not replaced.
      
-  */
-  public void valueChanged(TreeSelectionEvent event)
-  {
-    if( event.getSource() == tree )
-      {
-	// Display the full selection path
-	path = tree.getSelectionPath();
+    */
+    public void valueChanged(TreeSelectionEvent event)
+    {
+	if( event.getSource() == tree )
+	    {
+		// Display the full selection path
+		path = tree.getSelectionPath();
 
-	// The next section is with a view to possible
-	// exposure time changes. Don't use until we know want we want
-	// for sure.
-	// 	  if(path.getLastPathComponent().toString().length()>14) {
-	// 	    if(path.getLastPathComponent().toString().substring(0,14).equals("ot_ukirt.inst.")) {
-	// 	      new newExposureTime(_spItem);
-	// 	    }
-	// 	  }
-      }
-  }
+		// The next section is with a view to possible
+		// exposure time changes. Don't use until we know want we want
+		// for sure.
+		// 	  if(path.getLastPathComponent().toString().length()>14) {
+		// 	    if(path.getLastPathComponent().toString().substring(0,14).equals("ot_ukirt.inst.")) {
+		// 	      new newExposureTime(_spItem);
+		// 	    }
+		// 	  }
+	    }
+    }
 
     /**
      * Implementation opf <code>KeyListener</code> interface.
      * If the delete key is pressed, removes the currently selected item.
      */
-  public void keyPressed(KeyEvent e) {
-    if( (e.getKeyCode() == KeyEvent.VK_DELETE))
-      removeCurrentNode();
+    public void keyPressed(KeyEvent e) {
+	if( (e.getKeyCode() == KeyEvent.VK_DELETE))
+	    removeCurrentNode();
       
-  }
+    }
 
     /**
      * Implementation of <code>KeyListener</code> interface.
      */
-  public void keyReleased(KeyEvent e) { }
+    public void keyReleased(KeyEvent e) { }
 
     /**
      * Implementation of <code>KeyListener</code> interface.
      */
-  public void keyTyped(KeyEvent e) { }
+    public void keyTyped(KeyEvent e) { }
 
-  /**
-   * Remove the currently selected node. 
-   */
+    /**
+     * Remove the currently selected node. 
+     */
     public void removeCurrentNode() {
 
 	SpObs item = (SpObs)obsList.getSelectedValue();
@@ -631,55 +758,55 @@ final public class ProgramTree extends JPanel implements
 	}
     }
    
-  /**
-   * public void getItems (SpItem spItem,DefaultMutableTreeNode node)
-   * is a public method to add ALL the items of a sp object into the
-   * JTree *recursively*.
-   *   
-   *   @param SpItem spItem,DefaultMutableTreeNode node
-   *   @return  none
-   *   @throws none
+    /**
+     * public void getItems (SpItem spItem,DefaultMutableTreeNode node)
+     * is a public method to add ALL the items of a sp object into the
+     * JTree *recursively*.
+     *   
+     *   @param SpItem spItem,DefaultMutableTreeNode node
+     *   @return  none
+     *   @throws none
       
-  */
-  private void getItems (SpItem spItem,DefaultMutableTreeNode node)
-  {
-    Enumeration children = spItem.children();
-    while (children.hasMoreElements())
-      {
-	SpItem  child = (SpItem) children.nextElement();
+    */
+    private void getItems (SpItem spItem,DefaultMutableTreeNode node)
+    {
+	Enumeration children = spItem.children();
+	while (children.hasMoreElements())
+	    {
+		SpItem  child = (SpItem) children.nextElement();
 	  
-	DefaultMutableTreeNode temp
-	  = new DefaultMutableTreeNode(child);
+		DefaultMutableTreeNode temp
+		    = new DefaultMutableTreeNode(child);
 	  
-	node.add(temp);
-	getItems(child,temp);
-      }
-  }
-  
-  
-  /** 
-      public void findItems (SpItem spItem,DefaultMutableTreeNode node)
-      is a public method to find a named item in the SpItem list.
-      
-      @param SpItem spItem, String name
-      @return  SpItem
-      @throws none
-      
-  */
-  private SpItem findItem (SpItem spItem, String name) {
-    int index = 0;
-    Enumeration children = spItem.children();
-    SpItem tmpItem = null;
-    while (children.hasMoreElements()) {
-      SpItem  child = (SpItem) children.nextElement();
-      if(child.toString().equals(name))
-	return child;
-      tmpItem = findItem(child,name);
-      if(tmpItem != null)
-	return tmpItem;
+		node.add(temp);
+		getItems(child,temp);
+	    }
     }
-    return null;
-  }
+  
+  
+    /** 
+	public void findItems (SpItem spItem,DefaultMutableTreeNode node)
+	is a public method to find a named item in the SpItem list.
+      
+	@param SpItem spItem, String name
+	@return  SpItem
+	@throws none
+      
+    */
+    private SpItem findItem (SpItem spItem, String name) {
+	int index = 0;
+	Enumeration children = spItem.children();
+	SpItem tmpItem = null;
+	while (children.hasMoreElements()) {
+	    SpItem  child = (SpItem) children.nextElement();
+	    if(child.toString().equals(name))
+		return child;
+	    tmpItem = findItem(child,name);
+	    if(tmpItem != null)
+		return tmpItem;
+	}
+	return null;
+    }
 
     /**
      * private void disableRun()
@@ -826,7 +953,7 @@ final public class ProgramTree extends JPanel implements
 	Vector obs  = SpTreeMan.findAllItems(item, "gemini.sp.SpObs");
 	instrumentContext = SpTreeMan.findInstrument((SpObs)obs.firstElement());
 	targetContext     = SpTreeMan.findAllItems(item, "gemini.sp.obsComp.SpTelescopeObsComp");
-   }
+    }
 
     /**
      * Convert eacg observation in an SpMSB to a standalone thing.
@@ -842,7 +969,7 @@ final public class ProgramTree extends JPanel implements
 	Vector obs  = SpTreeMan.findAllItems(_item, "gemini.sp.SpObs");
 	Vector targ = SpTreeMan.findAllItems(_item, "gemini.sp.obsComp.SpTelescopeObsComp");
 	Vector iter = SpTreeMan.findAllItems(msb, "gemini.sp.iter.SpIterFolder");
-// 	SpObsContextItem msb  = (SpObsContextItem)((SpItem)obs.firstElement()).parent();
+	// 	SpObsContextItem msb  = (SpObsContextItem)((SpItem)obs.firstElement()).parent();
 	if (msb == null) {
 	    logger.warn("Current Tree does not seem to contain an observation context!");
 	    return item;
@@ -850,7 +977,7 @@ final public class ProgramTree extends JPanel implements
 	SpItem inst = SpTreeMan.findInstrument((SpObs)obs.firstElement());
 	if (inst == null) {
 	    logger.warn("Current Tree does not seem to contain an instrument!");
-	   return item;
+	    return item;
 	}
 	
 	SpItem localInst;
@@ -906,13 +1033,16 @@ final public class ProgramTree extends JPanel implements
 	public void mousePressed (MouseEvent e) {
 
 	    // If this was not the right button just return immediately.
-	    if (! e.isPopupTrigger() || selectedItem == null) {
+	    if (! e.isPopupTrigger() ) {
 		return;
 	    }
-	    
+
+	    if (selectedItem == null) {
+		msbDonePopup.show(e.getComponent(), e.getX(), e.getY());
+	    }
 	    // If this is an observation then show the popup
-	    if (selectedItem.type()==SpType.OBSERVATION) {
-		popup.show (e.getComponent(), e.getX(), e.getY());
+	    else if (selectedItem.type()==SpType.OBSERVATION) {
+		scalePopup.show (e.getComponent(), e.getX(), e.getY());
 	    }   
 	}	
     }    
@@ -1060,27 +1190,41 @@ final public class ProgramTree extends JPanel implements
 	    }
 	}
 	obsList.setEnabled(true);
-	if (model.isEmpty() && TelescopeDataPanel.DRAMA_ENABLED) {
-	    int mark = JOptionPane.showConfirmDialog(this, "Mark the MSB with \n"+
-						     "Project ID: "+projectID+"\n"+
-						     "CheckSum: "+checkSum+"\n"+
-						     "as done?",
-						     "MSB complete",
-						     JOptionPane.YES_NO_OPTION);
-	    if (mark == JOptionPane.YES_OPTION) {
-		MsbClient.doneMSB(projectID, checkSum);
-		// Since the MSBID has changed, redo the search...
-		InfoPanel.searchButton.doClick();
-	    }
-	} // end of if ()
+// 	if (IsModelEmpty() && 
+// 	    TelescopeDataPanel.DRAMA_ENABLED && 
+// 	    anObservationHasBeenDone) {
+// 	    int mark = showMSBDoneDialog();
+// 	    if (mark == JOptionPane.YES_OPTION) {
+// 		MsbClient.doneMSB(projectID, checkSum);
+// 		// Since the MSBID has changed, redo the search...
+// 		InfoPanel.searchButton.doClick();
+// 		msbDone = true;
+// 	    }
+// 	    else if (mark == JOptionPane.NO_OPTION) {
+// 		// Reserved for marking MSB as rejected
+// 		msbDone = true;
+// 	    }
+// 	    else {
+// 		// Do nothing - user will need to send an observation to retrigger
+// 	    }
+// 	} // end of if ()
     }
 
-  public JButton getRunButton () {return run;}
-  private Vector haveScaled   = new Vector(); 
-  private Vector scaleFactors = new Vector(); 
-  private JMenuItem edit;
-  private JMenuItem scale;
-  private JMenuItem scaleAgain;
-  private JPopupMenu popup;
+    private int showMSBDoneDialog() {
+	String [] options = {"Accept", "Reject", "Cancel"};
+	int mark = JOptionPane.showOptionDialog(this, "Mark the MSB with \n"+
+						"Project ID: "+projectID+"\n"+
+						"CheckSum: "+checkSum+"\n"+
+						"Remaining Observations: "+getRemainingObservations()+"\n"+
+						"as done?",
+						"MSB complete",
+						JOptionPane.YES_NO_CANCEL_OPTION,
+						JOptionPane.QUESTION_MESSAGE,
+						null,
+						options,
+						options[0]);
+	return mark;
+    }
 
+    public JButton getRunButton () {return run;}
 }
