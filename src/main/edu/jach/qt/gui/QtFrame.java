@@ -133,20 +133,13 @@ public class QtFrame extends JFrame implements ActionListener, MenuListener, Lis
 	       
 	  if (e.getClickCount() == 2){
 	    if (selRow != -1) {
+
 	      if (om == null) {
-
-		String projectid = (String) sorter.getValueAt(selRow, MSBQueryTableModel.PROJECTID);
-		String checksum = (String) sorter.getValueAt(selRow, MSBQueryTableModel.CHECKSUM);
-
-		System.out.println("Vals are: "+projectid+", "+checksum);
-		
 		om = new OmpOM();
-
-		om.setProjectID(projectid);
-		om.setChecksum(checksum);
 	      }
+
 	      final Led blinker = infoPanel.getBlinker();
-	      
+
 	      final SwingWorker worker = new SwingWorker() {
 		  Boolean isStatusOK;
 		  Integer msbID = (Integer)sorter.getValueAt(selRow, MSBQueryTableModel.MSBID);
@@ -190,6 +183,13 @@ public class QtFrame extends JFrame implements ActionListener, MenuListener, Lis
 		    
 		  }
 		};
+
+	      String projectid = (String) sorter.getValueAt(selRow, MSBQueryTableModel.PROJECTID);
+	      String checksum = (String) sorter.getValueAt(selRow, MSBQueryTableModel.CHECKSUM);
+
+	      System.out.println(">>>>>>MSB INFO is: "+projectid+", "+checksum);
+	      om.setProjectID(projectid);
+	      om.setChecksum(checksum);
 
 	      blinker.blinkLed(true);
 	      //blinkThread.start();
