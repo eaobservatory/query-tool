@@ -6,8 +6,9 @@ PACKAGE	    = $(QT_PACKAGE)/djava
 #### Targets settings
 
 SOURCES = \
-	CSO_MonResponse.java \
+	QT_MonResponse.java \
 	CSOPathResponseHandler.java \
+	TELPathResponseHandler.java \
 	MonitorResponse.java
 
 include $(BUILD)/make.tail
