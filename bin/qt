@@ -125,7 +125,6 @@ end
 
 if (`domainname` == "JAC.ukirt") then
    set solHost = "kiki"
-   echo HEY!
 else if (`domainname` == "JAC.Hilo") then
    set solHost = ${solHost}
 
@@ -147,7 +146,7 @@ setenv LOGPATH "/ukirtdata/epics_data/qtLogs/"
 if (-dwx ${LOGPATH} ) then
    setenv QT_LOG_DIR ${LOGPATH}`date +%Y%m%d-%H%M%S`
    mkdir ${QT_LOG_DIR}
-   echo "\n\n\n***This QT and (S)equence (M)anager session will be logged in ${QT_LOG_DIR}.***\n\n\n"
+   echo "This QT and (S)equence (M)anager session will be logged in ${QT_LOG_DIR}."
 else
    echo ${LOGPATH} does not exist - no log files will be written for this session. 
    setenv QT_LOG_DIR
