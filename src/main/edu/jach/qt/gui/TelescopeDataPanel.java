@@ -40,8 +40,10 @@ public class TelescopeDataPanel extends JPanel implements ActionListener {
   private JLabel seeingValue;
   private JLabel airmass;
   private JButton updateButton;
-    private InfoPanel infoPanel;
+  private InfoPanel infoPanel;
   private DcHub hub;
+  private static String lastCSOValue = "";
+  private static boolean acceptUpdates = true;
 
     /**
      * Constructor.
@@ -134,6 +136,25 @@ public class TelescopeDataPanel extends JPanel implements ActionListener {
     DecimalFormat myFormatter = new DecimalFormat("0.000");
     String output = myFormatter.format(val);
 
+    if (acceptUpdates) {
+	if (lastCSOValue.equals("")) {
+	    lastCSOValue = output;
+	    if (WidgetPanel.getAtmospherePanel() != null) {
+		WidgetPanel.getAtmospherePanel().setTextField("tau:",
+							      output);
+		
+	    }
+	}
+	else if (WidgetPanel.getAtmospherePanel() != null &&
+		 lastCSOValue.equals(WidgetPanel.getAtmospherePanel().getText("tau:"))) {
+	    lastCSOValue = output;
+	    WidgetPanel.getAtmospherePanel().setTextField("tau:",
+							  output);
+	}
+	else if (!(lastCSOValue.equals(WidgetPanel.getAtmospherePanel().getText("tau:")))) {
+	acceptUpdates = false;
+	}
+    }
     TelescopeDataPanel.csoTauValue.setText(""+output);
   }
 
@@ -201,6 +222,10 @@ public class TelescopeDataPanel extends JPanel implements ActionListener {
   public DcHub getHub() {
     return hub;
   }
+    
+    public static String getCSO() {
+	return TelescopeDataPanel.csoTauValue.getText();
+    }
    
   /**
    * Describe <code>add</code> method here.
@@ -240,6 +265,8 @@ public class TelescopeDataPanel extends JPanel implements ActionListener {
 	// Ignore case where the tau value is set to the default
 	if (!TelescopeDataPanel.csoTauValue.getText().equals(tauString))
 	    {
+		acceptUpdates = true;
+		lastCSOValue = "";
 		WidgetPanel.getAtmospherePanel().setTextField("tau:",
 							      TelescopeDataPanel.csoTauValue.getText());
 		//WidgetPanel.getAtmospherePanel().setTau(TelescopeDataPanel.csoTauValue.getText());
