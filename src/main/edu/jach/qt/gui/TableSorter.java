@@ -106,7 +106,8 @@ public class TableSorter extends TableMap {
        * unnecessary heap allocation.
        */
 
-      if (type.getSuperclass() == java.lang.Number.class) {
+      if (type.getSuperclass() == java.lang.Number.class ||
+	  type == java.lang.Number.class) {
 	 Number n1 = new Double (data.getValueAt(row1, column).toString());
 	 int d1 = n1.intValue();
 	 Number n2 = new Double (data.getValueAt(row2, column).toString());
