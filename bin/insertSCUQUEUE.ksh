@@ -1,4 +1,4 @@
-#!/bin/ksh
+#!/bin/sh
 
 ditscmd SCUQUEUE INSERTQ $1
 

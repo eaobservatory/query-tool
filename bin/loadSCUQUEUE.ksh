@@ -1,4 +1,4 @@
-#!/bin/ksh
+#!/bin/sh
 
 #ditsgetinfo -running SCUQUEUE
 #if [[ $? != 0 ]]; then
