@@ -9,6 +9,8 @@ import javax.swing.ImageIcon;
 import java.net.URL;
 import java.awt.Toolkit;
 import edu.jach.qt.app.Querytool;
+import edu.jach.qt.utils.*;
+
 import java.io.FileNotFoundException;
 import java.io.File;
 /**
@@ -37,6 +39,9 @@ public class InfoPanel extends JPanel
    JButton searchButton = new JButton();
    JButton xmlPrintButton = new JButton();
    JButton exitButton = new JButton();
+   JButton fetchMSB   = new JButton();
+   TestBlink blinker;
+   QtFrame qtf;
    //ImagePanel imagePanel;
    JLabel logoImage;
 
@@ -46,9 +51,10 @@ public class InfoPanel extends JPanel
     * @param parent a <code>JFrame</code> value
     * @param mqtm a <code>MSBQueryTableModel</code> value
     */
-   public InfoPanel (MSBQueryTableModel msbQTM, Querytool qt){
+   public InfoPanel (MSBQueryTableModel msbQTM, Querytool qt, QtFrame qtf){
       msb_qtm = msbQTM;
       localQuerytool = qt;
+      this.qtf=qtf;
       //setSize(new Dimension(300, 550));
       setMinimumSize(new Dimension(175, 550));
       setPreferredSize(new Dimension(288, 550));
@@ -100,16 +106,49 @@ public class InfoPanel extends JPanel
 
       TelescopeDataPanel telescopeInfoPanel = new TelescopeDataPanel();
       telescopeInfoPanel.config();
-      
+
+      blinker = new TestBlink();
+
+      final Blocker blocker = Blocker.Instance();
+
       searchButton.setText("Search");
       searchButton.setName("Search");
       searchButton.setBackground(java.awt.Color.gray);
+      blocker.setRestrictedComponents( new Component[] {
+	 searchButton, timePanel } );
+
       searchButton.addActionListener(new ActionListener() {
 	    public void actionPerformed(ActionEvent e) {
-	       localQuerytool.queryMSB();
-	       msb_qtm.setQuery();
+	       /*localQuerytool.queryMSB();*/
+	       Thread t = new Thread(localQuerytool);
+	       t.setName("qtMain");
+
+	       Thread blinkThread = new Thread(blinker);
+	       blinkThread.setName("blinker");
+
+	       try {
+		  blinkThread.start();
+		  t.start();
+		  blocker.setBlockingEnabled(true);
+		  t.join();
+		  blinker.setDone();
+	       }catch (InterruptedException ie) {ie.printStackTrace();}
+	       Thread tableFill = new Thread(msb_qtm);
+	       tableFill.start();
+	       //blocker.setBlockingEnabled(false);
 	    }
 	 } );
+				
+
+      fetchMSB.setText("Just get MSB 1");
+      searchButton.setBackground(java.awt.Color.gray);
+      fetchMSB.addActionListener(new ActionListener() {
+	    public void actionPerformed(ActionEvent e) {
+	       localQuerytool.fetchMSB(new Integer(1));
+	       qtf.buildStagingPanel();
+	    }
+	 } );
+
       xmlPrintButton.setText("Execute");
       xmlPrintButton.setName("Execute");
       xmlPrintButton.setBackground(java.awt.Color.gray);
@@ -137,25 +176,34 @@ public class InfoPanel extends JPanel
       gbc.insets.right = 5;
       gbc.weightx = 100;
       gbc.weighty = 100;
-      add(searchButton, gbc, 0, 1, 1, 1);
+      add(blinker, gbc, 0, 1, 1, 1);
+
+      gbc.fill = GridBagConstraints.NONE;
+      gbc.anchor = GridBagConstraints.CENTER;
+      gbc.insets.bottom = 5;
+      gbc.insets.left = 5;
+      gbc.insets.right = 5;
+      gbc.weightx = 100;
+      gbc.weighty = 100;
+      add(searchButton, gbc, 0, 2, 1, 1);
     
       gbc.fill = GridBagConstraints.NONE;
       gbc.anchor = GridBagConstraints.CENTER;
       gbc.weightx = 100;
       gbc.weighty = 100;
-      add(xmlPrintButton, gbc, 0, 2, 1, 1);
+      add(xmlPrintButton, gbc, 0, 3, 1, 1);
 
       gbc.fill = GridBagConstraints.NONE;
       gbc.anchor = GridBagConstraints.CENTER;
       gbc.weightx = 100;
       gbc.weighty = 100;
-      add(exitButton, gbc, 0, 3, 1, 1);
+      add(exitButton, gbc, 0, 4, 1, 1);
 
       gbc.fill = GridBagConstraints.BOTH;
       gbc.anchor = GridBagConstraints.CENTER;
       gbc.weightx = 100;
       gbc.weighty = 100;
-      add(telescopeInfoPanel, gbc, 0, 4, 1, 1);
+      add(telescopeInfoPanel, gbc, 0, 5, 1, 1);
 
       gbc.fill = GridBagConstraints.BOTH;
       gbc.weightx = 100;
@@ -164,16 +212,21 @@ public class InfoPanel extends JPanel
       hstLabel.setHorizontalAlignment(SwingConstants.CENTER);
       gbc.insets.bottom = 0;
       gbc.insets.top = 0;
-      add(hstLabel, gbc, 0, 5, 1, 1);
+      add(hstLabel, gbc, 0, 6, 1, 1);
 
       gbc.fill = GridBagConstraints.BOTH;
       gbc.weightx = 100;
       gbc.weighty = 0;
       gbc.insets.left = 0;
       gbc.insets.right = 0;
-      add(timePanel, gbc, 0, 6, 1, 1);
+      add(timePanel, gbc, 0, 7, 1, 1);
 
-
+      gbc.fill = GridBagConstraints.BOTH;
+      gbc.weightx = 100;
+      gbc.weighty = 0;
+      gbc.insets.left = 0;
+      gbc.insets.right = 0;
+      add(fetchMSB, gbc, 0, 8, 1, 1);
    }
 
    /**
