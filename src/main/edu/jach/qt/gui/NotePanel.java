@@ -76,6 +76,9 @@ final public class NotePanel extends JPanel {
      * @param sp  the SpItem tree which may contain an Observer Note.
      */
     public void setNote(SpItem sp) {
+	if (sp == null) {
+	    return;
+	}
 	Vector noteVector = SpTreeMan.findAllItems(sp, "gemini.sp.SpNote");
 	Enumeration e = noteVector.elements();
 	while (e.hasMoreElements()) {

@@ -547,72 +547,77 @@ final public class ProgramTree extends JPanel implements
      * @param sp  The list of obervations in the MSB.
      */
   public void addList(SpItem sp) {
-      _spItem = sp;
 
-    getContext(sp);
-    model = new DefaultListModel();
+      if (sp == null) {
+	  obsList = new JList();
+      }
+      else {
+	  _spItem = sp;
 
-    Vector obsVector =  SpTreeMan.findAllItems(sp, "gemini.sp.SpObs");
-    
-    Enumeration e = obsVector.elements();
-    while (e.hasMoreElements() ) {
-      model.addElement(e.nextElement());
-    } // end of while ()
+	  getContext(sp);
+	  model = new DefaultListModel();
 
-    obsList = new JList(model);
-    obsList.setCellRenderer(new ObsListCellRenderer());
-    MouseListener ml = new MouseAdapter()
-	{
-	    public void mouseClicked(MouseEvent e)
-	    {
-		if (e.getClickCount() == 2) {
-		    doExecute();
-		}
-		else if (e.getClickCount() == 1 && 
-			 (e.getModifiers() & InputEvent.BUTTON1_MASK) == InputEvent.BUTTON1_MASK ) {
-		    if (selectedItem != obsList.getSelectedValue() ) {
-			// Select the new item
-			selectedItem = (SpItem) obsList.getSelectedValue();
-			DeferredProgramList.clearSelection();
-		    }
-		else if (e.getClickCount() == 1)
-		    {
-			if (selectedItem != obsList.getSelectedValue() ) {
-			    // Select the new item
-			    selectedItem = (SpItem) obsList.getSelectedValue();
-			    DeferredProgramList.clearSelection();
-			}
-			else {
-			    obsList.clearSelection();
-			    selectedItem = null;
-			}
-		    }
-		}
-	    }
-	};
-    obsList.addMouseListener(ml);
-    MouseListener popupListener = new PopupListener();
-    obsList.addMouseListener(popupListener);
-    obsList.setSelectedIndex(0);
-    selectedItem = (SpItem) obsList.getSelectedValue();
+	  Vector obsVector =  SpTreeMan.findAllItems(sp, "gemini.sp.SpObs");
+	  
+	  Enumeration e = obsVector.elements();
+	  while (e.hasMoreElements() ) {
+	      model.addElement(e.nextElement());
+	  } // end of while ()
 
-    dragSource.createDefaultDragGestureRecognizer(obsList,
-						  DnDConstants.ACTION_MOVE,
-						  this);
-    
-    // Add the listbox to a scrolling pane
-    scrollPane.getViewport().removeAll();
-    scrollPane.getViewport().add(obsList);
-    scrollPane.getViewport().setOpaque(false);
+	  obsList = new JList(model);
+	  obsList.setCellRenderer(new ObsListCellRenderer());
+	  MouseListener ml = new MouseAdapter()
+	      {
+		  public void mouseClicked(MouseEvent e)
+		  {
+		      if (e.getClickCount() == 2) {
+			  doExecute();
+		      }
+		      else if (e.getClickCount() == 1 && 
+			       (e.getModifiers() & InputEvent.BUTTON1_MASK) == InputEvent.BUTTON1_MASK ) {
+			  if (selectedItem != obsList.getSelectedValue() ) {
+			      // Select the new item
+			      selectedItem = (SpItem) obsList.getSelectedValue();
+			      DeferredProgramList.clearSelection();
+			  }
+			  else if (e.getClickCount() == 1)
+			      {
+				  if (selectedItem != obsList.getSelectedValue() ) {
+				      // Select the new item
+				      selectedItem = (SpItem) obsList.getSelectedValue();
+				      DeferredProgramList.clearSelection();
+				  }
+				  else {
+				      obsList.clearSelection();
+				      selectedItem = null;
+				  }
+			      }
+		      }
+		  }
+	      };
+	  obsList.addMouseListener(ml);
+	  MouseListener popupListener = new PopupListener();
+	  obsList.addMouseListener(popupListener);
+	  obsList.setSelectedIndex(0);
+	  selectedItem = (SpItem) obsList.getSelectedValue();
 
-    gbc.fill = GridBagConstraints.BOTH;
-    //gbc.anchor = GridBagConstraints.EAST;
-    gbc.insets.bottom = 5;
-    gbc.insets.left = 10;
-    gbc.insets.right = 5;
-    gbc.weightx = 100;
-    gbc.weighty = 100;
-    add(scrollPane, gbc, 0, 0, 2, 1);
+	  dragSource.createDefaultDragGestureRecognizer(obsList,
+							DnDConstants.ACTION_MOVE,
+							this);
+      }
+      // Add the listbox to a scrolling pane
+      scrollPane.getViewport().removeAll();
+      scrollPane.getViewport().add(obsList);
+      scrollPane.getViewport().setOpaque(false);
+
+      gbc.fill = GridBagConstraints.BOTH;
+      //gbc.anchor = GridBagConstraints.EAST;
+      gbc.insets.bottom = 5;
+      gbc.insets.left = 10;
+      gbc.insets.right = 5;
+      gbc.weightx = 100;
+      gbc.weighty = 100;
+      add(scrollPane, gbc, 0, 0, 2, 1);
     
   }
 
