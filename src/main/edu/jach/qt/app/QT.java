@@ -1,55 +1,64 @@
 package edu.jach.qt.app;
 
 import edu.jach.qt.gui.QtFrame;
+import edu.jach.qt.gui.WidgetDataBag;
 import java.awt.*;
 import javax.swing.UIManager;
-import edu.jach.qt.gui.WidgetDataBag;
 
 /**
- * Describe class <code>QT</code> here.
+ * This is the top most OMP-QT class.  Upon init it instantiates 
+ * the Querytool and QtFrame classes, in that order.  These two classes
+ * define the structure of the OMP-QT design.  There has been defined
+ * a partition between the Graphical User Interface (GUI) and the logic
+ * behind the application.  Hence, the directory structure shows a 'qt/gui'
+ * and a 'qt/app'.  There also is an 'qt/utils' directory which is a 
+ * repository of utility classes needed for both 'app' and 'gui' specific 
+ * classes.
  *
  * @author <a href="mailto:mrippa@jach.hawaii.edu">Mathew Rippa</a>
- * @version $Version$
+ *
+ * $Id$
  */
-public class QT {
-
-   boolean packFrame = false;
-   WidgetDataBag wdb = new WidgetDataBag ();
+final public class QT {
 
    /**
-    * Creates a new <code>QT</code> instance.
-    *
+    * Creates a new <code>QT</code> instance which starts a 
+    * Querytool, the app itself, and a QtFrame, the user interface.  The
+    * frame is also set be centered on the screen.
     */
    public QT () {
+      WidgetDataBag wdb = new WidgetDataBag ();
       Querytool qt = new Querytool(wdb);
       QtFrame qtf = new QtFrame(wdb, qt);
       
+      qtf.setSize(new Dimension(950, 550));
+      qtf.setTitle("OMP Query Tool Observation Manager");
+
       Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
       Dimension frameSize = qtf.getSize();
 
       // Validate frames that have preset sizes
-      // Pack frames that have useful preferred size info, e.g. from their layout
-      if (packFrame) {
-	 qtf.pack();
-      }
-      else {
-	 qtf.validate();
-      }
+      qtf.validate();
 
-      //Center the window
+      //Fill screen if the screen is smaller that qtfSize.
       if (frameSize.height > screenSize.height) {
 	 frameSize.height = screenSize.height;
       }
       if (frameSize.width > screenSize.width) {
 	 frameSize.width = screenSize.width;
       }
-      qtf.setLocation(22,20);
+
+      //Center the screen
+      int x = screenSize.width/2 - frameSize.width/2;
+      int y = screenSize.height/2 - frameSize.height/2;
+      qtf.setLocation(x,y);
       qtf.setVisible(true);
 
    }
    
    /**
-    * Describe <code>main</code> method here.
+    * Currently we take no args at startup.  Just get the 
+    * LookAndFeel from the UIManager and start the Main QT class.
     *
     * @param args a <code>String[]</code> value
     */
@@ -65,6 +74,9 @@ public class QT {
 } // Omp
 
 //$Log$
+//Revision 1.3  2001/09/18 21:53:39  mrippa
+//All classes and methods documented.
+//
 //Revision 1.2  2001/09/07 01:18:10  mrippa
 //The QT now supports a query of the MSB server retrieving a MSB summaries.
 //The summaries are displayed in a JTable which listens for double clicks
