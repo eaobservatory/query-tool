@@ -39,6 +39,9 @@ public class CSOPathResponseHandler extends DramaPath.ResponseHandler {
     DramaStatus status = task.GetEntStatus();
     DramaErs.Report("Failed to get path to task \"" + path + "\"");
     DramaErs.Report("Failed with status - " + status);
+
+    cr.setTaskLock(false);
+
     return false;
   }
 
