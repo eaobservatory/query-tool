@@ -231,8 +231,12 @@ public class Querytool implements Runnable, Observer {
 		 iter.nextIndex()) {
 		abstractButton = (JRadioButton) (iter.next());
 		if (abstractButton.isSelected()) {
-		    item.appendChild( doc.createTextNode( abstractButton.getText() ));
-		    root.appendChild(item);
+		    if (abstractButton.getText().equalsIgnoreCase("any")) {
+		    }
+		    else {
+			item.appendChild( doc.createTextNode( abstractButton.getText() ));
+			root.appendChild(item);
+		    }
 		}
 	    }
 	}
