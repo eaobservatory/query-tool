@@ -177,14 +177,22 @@ public class WidgetPanel extends JPanel
 	  gbc.weightx = 100;
 	  gbc.weighty = 0;
 	  if ( info.getView() == BoxLayout.Y_AXIS) {
-	    if (info.getTitle().equals("Tau") ) {
-	      add(panel, gbc, numRadPanels-1, 30, 1, info.getSize()+1);
-	    }
+	    
+
 	    if (info.getTitle().equalsIgnoreCase("Clouds") ) {
-	      add(panel, gbc, 2, 2, 2, info.getSize()+1);
+	      add(panel, gbc, 1, 0, 2, info.getSize()+1);
 	    }
+	    else if (info.getTitle().equalsIgnoreCase("Atmosphere") ) {
+	      add(panel, gbc, 1, 3, 2, info.getSize()+1);
+	    }
+	    else if (info.getTitle().equalsIgnoreCase("Moon") ) {
+	      add(panel, gbc, 1, 20, 2, info.getSize()+1);
+	    }
+
 	    else {
-	      add(panel, gbc, numRadPanels, 20, 1, info.getSize()+1);
+	      //add(panel, gbc, numRadPanels, 20, 1, info.getSize()+1);
+	      System.out.println("title: "+info.getTitle());
+	      
 	    }
 	    totalNumRadRows += info.getSize()+2;
 	  }
@@ -211,7 +219,7 @@ public class WidgetPanel extends JPanel
 	gbc.weightx = 100;
 	gbc.weighty = 100;
 	gbc.insets.left = 10;
-	add(instrumentPanel, gbc, 0, 30, 2, 1);
+	add(instrumentPanel, gbc, 0, 20, 2, 1);
       }
 
       else if(!widget.equals("[Section]"))
