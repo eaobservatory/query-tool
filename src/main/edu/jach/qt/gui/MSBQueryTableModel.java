@@ -123,7 +123,6 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
     colClasses = new Class [ colNames.length ];
     Vector vectorOfNames = new Vector();
     for (int i=0; i< colNames.length; i++) {
-// 	colClasses[i] = String.class;
 	if (colClassNames[i].equalsIgnoreCase("Integer")) {
 	    colClasses[i] = Integer.class;
 	}
