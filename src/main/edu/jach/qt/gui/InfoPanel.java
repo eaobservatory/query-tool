@@ -1,22 +1,16 @@
 package edu.jach.qt.gui;
 
+import edu.jach.qt.app.Querytool;
+import edu.jach.qt.utils.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import java.lang.Boolean;
-import java.net.URL;
-import java.util.Vector;
-import java.util.StringTokenizer;
-
 import javax.swing.*;
-import javax.swing.ImageIcon;
 import javax.swing.border.*;
 import javax.swing.event.*;
-
-import edu.jach.qt.app.Querytool;
-import edu.jach.qt.utils.*;
-import ocs.utils.ObeyNotRegisteredException;
 import ocs.utils.DcHub;
+import ocs.utils.ObeyNotRegisteredException;
 /**
  * InfoPanel.java
  *
@@ -24,73 +18,92 @@ import ocs.utils.DcHub;
  * Created: Tue Apr 24 16:28:12 2001
  *
  * @author <a href="mailto: "Mathew Rippa</a>
- * @version
+ * @author <a href="mailto:mrippa@jach.hawaii.edu">Mathew Rippa</a>
+ * $Id$
  */
+public class InfoPanel extends JPanel implements ActionListener {
 
-public class InfoPanel extends JPanel
-  implements ActionListener {
-
+  /**
+   * The constant <code>LOGO_IMAGE</code> specifies the String
+   * location for the QT logo image.
+   * 
+   */
   public static final String LOGO_IMAGE = System.getProperty("qtLogo");
+
+  /**
+   * The constant <code>SAT_WEBPAGE</code> specifies the webpage
+   * containing the String of the latest image to show.
+   * 
+   */
   public static final String SAT_WEBPAGE = System.getProperty("satellitePage");
+
+  /**
+   * The constant <code>IMG_PREFIX</code> is the static portion of the
+   * image source URL.
+   * 
+   */
   public static final String IMG_PREFIX = System.getProperty("imagePrefix");
 
+  /**
+   * The variable <code>searchButton</code> is the button clicked to
+   * start a query.
+   * 
+   */
   public static JButton searchButton   = new JButton();
+
+  /**
+   * The variable <code>logoPanel</code> is a reference to the easily get the LogoPanel.
+   *
+   */
   public static LogoPanel logoPanel    = new LogoPanel();
 
+  private TelescopeDataPanel telescopeInfoPanel;
   private MSBQueryTableModel msb_qtm;
   private TimePanel timePanel;
   private SatPanel satPanel;
   private Querytool localQuerytool;
-  private Led blinker;
-  private TelescopeDataPanel telescopeInfoPanel;
-
-  JLabel hstLabel		= new JLabel("HST");
-
-  JButton xmlPrintButton	= new JButton();
-  JButton exitButton		= new JButton();
-  JButton fetchMSB		= new JButton();
-  QtFrame qtf;
+  private QtFrame qtf;
+  private JButton xmlPrintButton;
+  private JButton exitButton;
+  private JButton fetchMSB;
 
   /**
    * Creates a new <code>InfoPanel</code> instance.
    *
-   * @param parent a <code>JFrame</code> value
-   * @param mqtm a <code>MSBQueryTableModel</code> value
+   * @param msbQTM a <code>MSBQueryTableModel</code> value
+   * @param qt a <code>Querytool</code> value
+   * @param qtFrame a <code>QtFrame</code> value
    */
-  public InfoPanel (MSBQueryTableModel msbQTM, Querytool qt, QtFrame qtf) {
-    msb_qtm = msbQTM;
+  public InfoPanel (MSBQueryTableModel msbQTM, Querytool qt, QtFrame qtFrame) {
     localQuerytool = qt;
-    this.qtf=qtf;
-    setMinimumSize(new Dimension(174, 550));
-    setPreferredSize(new Dimension(288, 550));
+    msb_qtm = msbQTM;
+    qtf = qtFrame;
+
+    MatteBorder matte = new MatteBorder(3,3,3,3, Color.green);
+    GridBagLayout gbl = new GridBagLayout();
 
     setBackground(Color.black);
-    MatteBorder matte = new MatteBorder(3,3,3,3,Color.green);
     setBorder(matte);
-    GridBagLayout gbl = new GridBagLayout();
     setLayout(gbl);
+    setMinimumSize(new Dimension(174, 550));
+    setPreferredSize(new Dimension(288, 550));
 
     compInit();
 
   }
 
-  /**
-   * Describe <code>compInit</code> method here.
-   *
-   */
-  public void compInit() {
+  private void compInit() {
     GridBagConstraints gbc = new GridBagConstraints();
-    timePanel = new TimePanel();
-    satPanel = new SatPanel();
 
-    telescopeInfoPanel = new TelescopeDataPanel();
-    telescopeInfoPanel.config();
-
-    //blinker = new Led();
+    xmlPrintButton	= new JButton();
+    exitButton		= new JButton();
+    fetchMSB		= new JButton();
+    timePanel		= new TimePanel();
+    satPanel		= new SatPanel();
+    telescopeInfoPanel	= new TelescopeDataPanel();
 
     InfoPanel.searchButton.setText("Search");
     InfoPanel.searchButton.setName("Search");
-    InfoPanel.searchButton.setBackground(java.awt.Color.gray);
     InfoPanel.searchButton.addActionListener(new ActionListener() {
 	public void actionPerformed(ActionEvent e) {
 	  final SwingWorker worker = new SwingWorker() {
@@ -104,22 +117,19 @@ public class InfoPanel extends JPanel
 	      //Runs on the event-dispatching thread.
 	      public void finished() { 
 		logoPanel.stop();
-		//blinker.blinkLed(false);
 		if ( isStatusOK.booleanValue()) {
 		  Thread tableFill = new Thread(msb_qtm);
 		  tableFill.start();
 		  
-		} // end of if ()
+		}
 	      }
 	    };
 
-	  //blinker.blinkLed(true);
-	  //blinkThread.start();
 	  logoPanel.start();
 	  worker.start();  //required for SwingWorker 3
 	}
       } );
-      
+
     InfoPanel.searchButton.setBackground(java.awt.Color.gray);
 
     xmlPrintButton.setText("Execute");
@@ -133,6 +143,7 @@ public class InfoPanel extends JPanel
     exitButton.addActionListener(this);
 
     gbc.fill = GridBagConstraints.BOTH;
+    gbc.anchor = GridBagConstraints.CENTER;
     //gbc.insets = new Insets(5,5,5,5);
     //gbc.anchor = GridBagConstraints.CENTER;
     //gbc.insets.bottom = 0;
@@ -142,26 +153,9 @@ public class InfoPanel extends JPanel
     gbc.weighty = 0.2;
     add(logoPanel, gbc, 0, 0, 1, 1);
 
-    //      gbc.fill = GridBagConstraints.NONE;
-    //      gbc.anchor = GridBagConstraints.CENTER;
-    //      gbc.insets.bottom = 0;
-    //      gbc.insets.left = 5;
-    //      gbc.insets.right = 5;
-    //      gbc.weightx = 100;
-    //      gbc.weighty = 100;
-    //      add(blinker, gbc, 0, 1, 1, 1);
-
     gbc.fill = GridBagConstraints.BOTH;
     gbc.anchor = GridBagConstraints.CENTER;
-    //gbc.weighty = 1.0;
-
-    //gbc.fill = GridBagConstraints.BOTH;
-    //gbc.anchor = GridBagConstraints.CENTER;
-    //      gbc.insets.bottom = 0;
-    //      gbc.insets.left = 5;
-    //      gbc.insets.right = 5;
-    //gbc.weightx = 0.0;
-    gbc.insets = new Insets(5,15,15,5);
+    gbc.insets = new Insets(5,15,5,15);
     gbc.weighty = 0.0;
     add(InfoPanel.searchButton, gbc, 0, 5, 1, 1);
     
@@ -180,21 +174,12 @@ public class InfoPanel extends JPanel
     gbc.fill = GridBagConstraints.BOTH;
     gbc.anchor = GridBagConstraints.CENTER;
     gbc.weightx = 100;
-    //gbc.ipady = 30; 
-    gbc.insets = new Insets(0,0,0,0);
+    gbc.insets = new Insets(0,2,0,2);
     gbc.weighty = 0.6;
     add(telescopeInfoPanel, gbc, 0, 20, 1, 1);
 
     add(satPanel, gbc, 0, 30, 1, 1);
 
-    //      gbc.fill = GridBagConstraints.BOTH;
-    //      gbc.weightx = 100;
-    //      gbc.weighty = 0;
-    //      hstLabel.setForeground(Color.blue);
-    //      hstLabel.setHorizontalAlignment(SwingConstants.CENTER);
-    //      gbc.insets.bottom = 0;
-    //      gbc.insets.top = 0;
-    //      add(hstLabel, gbc, 0, 6, 1, 1);
 
     gbc.fill = GridBagConstraints.BOTH;
     gbc.weightx = 100;
@@ -205,17 +190,7 @@ public class InfoPanel extends JPanel
 
   }
 
-  /**
-   * Describe <code>add</code> method here.
-   *
-   * @param c a <code>Component</code> value
-   * @param gbc a <code>GridBagConstraints</code> value
-   * @param x an <code>int</code> value
-   * @param y an <code>int</code> value
-   * @param w an <code>int</code> value
-   * @param h an <code>int</code> value
-   */
-  public void add(Component c, GridBagConstraints gbc, 
+  private void add(Component c, GridBagConstraints gbc, 
 		  int x, int y, int w, int h) {
     gbc.gridx = x;
     gbc.gridy = y;
@@ -224,26 +199,39 @@ public class InfoPanel extends JPanel
     add(c, gbc);      
   }
 
+  /**
+   * <code>getXMLquery</code> will get the String that contains the
+   * current XML defining the query.
+   *
+   * @return a <code>String</code> representing the query. 
+   */
   public String getXMLquery() {
     return localQuerytool.getXML();
   }
 
-  public String getImageFile() {
+  /* -- No longer use-- now a static const
+    public String getImageFile() {
     return LOGO_IMAGE;
-  }
+    }
+  */
 
-  public Led getBlinker() {
-    return blinker;
-  }
-
-  public DcHub getCSODcHub() {
-    return telescopeInfoPanel.getHub();
-  }
+  /*
+   * <code>getCSODcHub</code> method here.
+   *
+   * @return a <code>DcHub</code> value
+   
+   public DcHub getCSODcHub() {
+   return telescopeInfoPanel.getHub();
+   }
+  */
 
   /**
-   * Describe <code>actionPerformed</code> method here.
+   * <code>actionPerformed</code> satisfies the ActionListener
+   * interface.  This is called when any ActionEvents are triggered by
+   * registered ActionListeners. In this case it's either the exit
+   * button or the xmlPrintButton.
    *
-   * @param e an <code>ActionEvent</code> value
+   * @param e an <code>ActionEvent</code> value 
    */
   public void actionPerformed(ActionEvent e) {
     Object source = e.getSource();
