@@ -1,7 +1,9 @@
 package edu.jach.qt.utils;
 //import edu.jach.qt.utils.*;
 
-import java.util.*;
+// import java.util.*;
+import java.util.Calendar;
+import java.util.TimeZone;
 
 /**
  * <code>SimpleMoon</code> is used to derive location and illumination
@@ -638,7 +640,6 @@ public class SimpleMoon {
 	}
     } // End of Inner Class Sun
 
-    /*
     public static void main (String [] args) {
 
 	System.setProperty("telescope", "ukirt");
@@ -650,6 +651,5 @@ public class SimpleMoon {
 	System.out.println("Up: "+moon.isUp());
 	System.out.println("Illum: "+moon.getIllumination());
     }
-    */
 
 }
