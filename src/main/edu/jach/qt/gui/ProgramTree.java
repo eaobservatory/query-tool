@@ -315,7 +315,7 @@ final public class ProgramTree extends JPanel implements
 		    projectID != ""   &&
 		    checkSum  != null && 
 		    checkSum  != ""   &&
-		    System.getProperty("telescope").equalsIgnoreCase("ukirt")  && 
+		    ( System.getProperty("telescope").equalsIgnoreCase("ukirt") || instrumentContext instanceof SpInstHeterodyne )  && 
 		    anObservationHasBeenDone == true &&
 		    msbDone == false &&
 		    TelescopeDataPanel.DRAMA_ENABLED) { 
@@ -391,9 +391,21 @@ final public class ProgramTree extends JPanel implements
 		    failed = true;
 		}
 		if (!isDeferred && !failed) {
-		    model.clear();
-		    _spItem = null;
-		    selectedItem = null;
+		    if (instrumentContext instanceof SpInstSCUBA) {
+			model.clear();
+			_spItem = null;
+			selectedItem = null;
+		    }
+		    else {
+			// For heterodyne, mark all the observation as done and bring up the popup
+			for (int i=0; i<obsList.getModel().getSize(); i++) {
+			    markAsDone(i);
+			    if (TelescopeDataPanel.DRAMA_ENABLED) {
+				anObservationHasBeenDone = true;
+				msbDone = showMSBDoneDialog();
+			    }
+			}
+		    }
 		}
 		else if (!failed) {
 		    DeferredProgramList.markThisObservationAsDone(item);
@@ -527,7 +539,7 @@ final public class ProgramTree extends JPanel implements
 	    // observations to perform
 	    if ( model != null   && 
 		 msbDone == false &&
-		 System.getProperty("telescope").equalsIgnoreCase("ukirt")  && 
+		 ( System.getProperty("telescope").equalsIgnoreCase("ukirt") || instrumentContext instanceof SpInstHeterodyne) && 
 		 anObservationHasBeenDone == true &&
 		 TelescopeDataPanel.DRAMA_ENABLED ) {
 		msbDone = showMSBDoneDialog();
@@ -1013,7 +1025,7 @@ final public class ProgramTree extends JPanel implements
 	    }
 
 	    if (selectedItem == null && 
-		System.getProperty("telescope").equalsIgnoreCase("ukirt") &&
+		( System.getProperty("telescope").equalsIgnoreCase("ukirt") || instrumentContext instanceof SpInstHeterodyne) &&
 		TelescopeDataPanel.DRAMA_ENABLED) {
 		msbDone = showMSBDoneDialog();
 	    }
