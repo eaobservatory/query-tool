@@ -54,13 +54,15 @@ public class CalibrationList {
      * Get the list of calibration observations for a specified telescope.
      *
      * @param telescope     The name os the telescope.
-     * @return              A <code>Hashtable</code> of observations.  If no
+     * @return              A <code>TreeMap</code> of observations.  If no
      *                      observations are found then there will be
      *                      zero entries in the table.
      */
-    public static Hashtable getCalibrations(String telescope) {
+    public static TreeMap getCalibrations(String telescope) {
 	SpItem sp;
-	Hashtable myCalibrations = new Hashtable();
+	Hashtable rawTable = new Hashtable();
+	Hashtable sortedTable = new Hashtable();
+	TreeMap   tree = new TreeMap();
 	Document doc = new DocumentImpl();
 	Element root = doc.createElement("MSBQuery");
 	Element item;
@@ -129,7 +131,7 @@ public class CalibrationList {
 		 */
 		for (int node=0; node < XmlUtils.getSize( doc , ROOT_ELEMENT_TAG ); node++) {
 		    item = XmlUtils.getElement( doc , ROOT_ELEMENT_TAG , node );
-		    myCalibrations.put((String) XmlUtils.getValue(item, "title"),
+		    tree.put((String) XmlUtils.getValue(item, "title"),
 				       new Integer (item.getAttribute("id")));
 		}
 	    }
@@ -149,10 +151,17 @@ public class CalibrationList {
 	} catch (IOException ioe) {
 	    logger.error("IO Error generated attempting to build Document", ioe);
 	}
+// 	// Sort the table....
+// 	Iterator iter = tree.iterator();
+// 	while (iter.hasNext() ) {
+// 	    Object o = iter.next();
+// 	    System.out.println((String)o);
+// 	    sortedTable.put((String)o ,(Integer)rawTable.get(o) );
+// 	}
 	    
 	// return the hopefully populated hashtable.  If no entries, we retirn
 	// the hashtable anyway and rely on the caller to realise that it is of zero size
-	return myCalibrations;
+	return tree;
     }
 
 
