@@ -5,7 +5,6 @@ import gemini.sp.*;
 import java.awt.*;
 import javax.swing.*;
 
-import edu.jach.qt.gui.DnDList;
 
 
 /**
