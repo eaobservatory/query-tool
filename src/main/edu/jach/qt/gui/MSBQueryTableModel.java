@@ -24,7 +24,7 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
   static Logger logger = Logger.getLogger(MSBQueryTableModel.class);
   public static final String ROOT_ELEMENT_TAG = "SpMSBSummary";
 
-  public static final String MSB_SUMMARY = System.getProperty("msbSummary");
+  public static final String MSB_SUMMARY = System.getProperty("msbSummary")+"."+System.getProperty("user.name");
   public static final String MSB_SUMMARY_TEST = System.getProperty("msbSummaryTest");
 
   /*public static final String[] colNames ={
@@ -107,6 +107,8 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
        Constructor - create a DOM
     */
 
+      System.out.println("In MSBQueryTableModel.run()");
+
     try {
       DocumentBuilderFactory factory =
 	DocumentBuilderFactory.newInstance();
@@ -136,7 +138,9 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
       //ioe.printStackTrace();
     }
       
-    fireTableChanged(null);
+      System.out.println("Firing event from MSBQueryTableModel.run()");
+
+      fireTableChanged(null);
   }
 
   public Document getDoc() {
