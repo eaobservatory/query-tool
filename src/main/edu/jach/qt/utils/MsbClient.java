@@ -47,6 +47,7 @@ public class MsbClient extends SoapClient {
 	
 	logger.debug("Sending queryMSB: "+xmlQueryString);
 	URL url = new URL(System.getProperty("msbServer"));
+	logger.info("Connecting to: "+url.toString());
 	flushParameter();
 	addParameter("xmlquery", String.class, xmlQueryString);
 
