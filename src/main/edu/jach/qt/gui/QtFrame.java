@@ -206,6 +206,7 @@ public class QtFrame extends JFrame implements PopupMenuListener, ActionListener
 
 		try {
 		  om.setSpItem( localQuerytool.fetchMSB(msbID));
+		  om.setExecutable( localQuerytool.canExecute());
 		  isStatusOK = new Boolean(true);
 		} catch (NullPointerException e) {
 		  isStatusOK = new Boolean(false);
