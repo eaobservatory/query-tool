@@ -18,7 +18,7 @@ import gemini.sp.*;
 final public class NotePanel extends JPanel {
 
     private GridBagConstraints		gbc;
-    private JTextArea textPanel;
+    private static JTextArea textPanel;
 
     /**
      * Constructs a scrollable non-editable text panel.
@@ -76,7 +76,7 @@ final public class NotePanel extends JPanel {
      * Uses <code>SpNote.isObserveInstruction() </code> to locate Observer Note.
      * @param sp  the SpItem tree which may contain an Observer Note.
      */
-    public void setNote(SpItem sp) {
+    public static void setNote(SpItem sp) {
 	if (sp == null) {
 	    return;
 	}
