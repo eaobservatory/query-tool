@@ -1,6 +1,7 @@
 package edu.jach.qt.djava;
 
 import au.gov.aao.drama.*;
+import ocs.utils.CommandReceiver;
 
 /**
  * <code>CSOPathResponseHandler</code> This class is used to
@@ -10,8 +11,10 @@ import au.gov.aao.drama.*;
  * $Id$ */
 public class CSOPathResponseHandler extends DramaPath.ResponseHandler {
 
-  public CSOPathResponseHandler(DramaPath p) {
+  private CommandReceiver cr;
+  public CSOPathResponseHandler(DramaPath p, CommandReceiver cr) {
     super(p);
+    this.cr = cr;
   }
 
   /** 
@@ -23,7 +26,7 @@ public class CSOPathResponseHandler extends DramaPath.ResponseHandler {
     task.MsgOut("Got path to task "+path.TaskName() +".");
     
     // Start the monitor operation.
-    DramaMonitor Monitor = new DramaMonitor(path, new CSO_MonResponse(), true, "CSOTAU");
+    DramaMonitor Monitor = new DramaMonitor(path, new CSO_MonResponse(cr), true, "CSOTAU");
 
     // We have sent a new message, so return true.
     return true;

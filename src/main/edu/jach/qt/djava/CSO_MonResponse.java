@@ -2,6 +2,7 @@ package edu.jach.qt.djava;
 
 import au.gov.aao.drama.*;
 import edu.jach.qt.gui.TelescopeDataPanel;
+import ocs.utils.CommandReceiver;
 
 /**
  * <code>CSO_MonResponse</code> This class is used to handle
@@ -12,8 +13,9 @@ import edu.jach.qt.gui.TelescopeDataPanel;
  * $Id$ */
 public class CSO_MonResponse extends MonitorResponse {
 
-  public CSO_MonResponse() {
-    super();
+  
+  public CSO_MonResponse(CommandReceiver cr) {
+    super(cr);
   }
 
   // This function is invoked when a monitored parameter changes.

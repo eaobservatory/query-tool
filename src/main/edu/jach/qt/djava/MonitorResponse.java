@@ -1,6 +1,7 @@
 package edu.jach.qt.djava;
 
 import au.gov.aao.drama.*;
+import ocs.utils.CommandReceiver;
 
 /**
  * <code>MonitorResponse</code> is used to handle reponses to the
@@ -10,10 +11,12 @@ import au.gov.aao.drama.*;
  * $Id$ */
 public abstract class MonitorResponse extends DramaMonitor.MonResponse {
 
+  protected CommandReceiver cr;
   public final boolean DEBUG = "true".equals(System.getProperty("debug", "false"));
 
-  public MonitorResponse() {
+  public MonitorResponse(CommandReceiver cr) {
     super();
+    this.cr = cr;
   }
 
   /**Handles a sucessfull completion of the monitoring operation.
@@ -46,7 +49,7 @@ public abstract class MonitorResponse extends DramaMonitor.MonResponse {
   public void Started(DramaMonitor monitor, DramaTask task ) throws DramaException {
     task.MsgOut("Parameter monitoring started");
 
-    ocs.utils.CommandReceiver.getHandle().setTaskLock(false);
+    cr.setTaskLock(false);
   }
                                              
   /** This function is invoked when a monitored parameter changes.
