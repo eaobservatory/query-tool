@@ -172,6 +172,30 @@ public class Querytool implements Runnable, Observer {
 	    }
 	  }
 	}
+	else if(next.equalsIgnoreCase("Clouds")) {
+
+	  item = doc.createElement("cloud");
+	  for (ListIterator iter = ((LinkedList)(ht.get(next))).listIterator(0); 
+	       iter.hasNext(); 
+	       iter.nextIndex()) {
+	    abstractButton = (JRadioButton) (iter.next());
+	    if (abstractButton.isSelected()) {
+	      String tmpMoon = abstractButton.getText().trim();
+	      String cloud = "";
+	      if ( tmpMoon.equals("Photometric")) {
+		cloud = "0";
+	      }
+	      else if (tmpMoon.equals("Thin")) {
+		cloud = "1";
+	      }
+	      else {
+		cloud = "2";
+	      } // end of else
+		  
+	      item.appendChild(doc.createTextNode(cloud));
+	    }
+	  }
+	}
 	else if(next.equalsIgnoreCase("Atmospheric Conditions")) {
 	  item = doc.createElement(next);
 	  for (ListIterator iter = ((LinkedList)(ht.get(next))).listIterator(0); 
@@ -262,16 +286,16 @@ public class Querytool implements Runnable, Observer {
 	  root.appendChild( item );
 	}
 	
-	else if (next.equalsIgnoreCase("photometric")) {
-	  item = doc.createElement("cloud");
-	  String tmp = (String)ht.get(next);
+	//  	else if (next.equalsIgnoreCase("photometric")) {
+	//  	  item = doc.createElement("cloud");
+	//  	  String tmp = (String)ht.get(next);
 
-	  if (tmp.equals("true") ) {
-	    item.appendChild( doc.createTextNode("0"));
-	  }else {
-	    item.appendChild( doc.createTextNode("1"));
-	  }
-	}
+	//  	  if (tmp.equals("true") ) {
+	//  	    item.appendChild( doc.createTextNode("0"));
+	//  	  }else {
+	//  	    item.appendChild( doc.createTextNode("1"));
+	//  	  }
+	//  	}
 	
 	
 	else {
