@@ -99,6 +99,9 @@ public class CalibrationList {
 
 	/* Send the query to the database */
 	String result = MsbClient.queryCalibration(writer.toString());
+	if (result == null || result.equals("") {
+	    return null;
+	}
 
 	/*
 	 * To allow us to parser the returned XML, create a temporary file
