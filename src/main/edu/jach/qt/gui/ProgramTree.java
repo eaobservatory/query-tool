@@ -25,6 +25,10 @@ import edu.jach.qt.utils.*;
 
 /* Standard imports */
 import java.awt.*;
+import java.awt.dnd.*;
+import java.awt.datatransfer.*;
+import java.awt.datatransfer.StringSelection;
+import java.awt.dnd.DragSourceContext;
 import java.awt.event.*;
 import java.io.*;
 import java.net.*;
@@ -47,8 +51,13 @@ import org.apache.log4j.Logger;
    @version 1.0 1st June 1999
    @author M.Tan@roe.ac.uk, modified by Mathew Rippa
 */
-final public class ProgramTree extends JPanel implements TreeSelectionListener, 
-							 ActionListener,KeyListener {
+final public class ProgramTree extends JPanel implements 
+    TreeSelectionListener, 
+    ActionListener,
+    KeyListener,
+    DragSourceListener,
+    DragGestureListener, 
+    DropTargetListener {
 
   static Logger logger = Logger.getLogger(ProgramTree.class);
 
@@ -58,7 +67,7 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener,
   private GridBagConstraints		gbc;
   private JButton			run;
   private JTree				tree;
-  private JList				obsList;
+  private JList			        obsList;
   private DefaultListModel		model;
   private JScrollPane			scrollPane = new JScrollPane();;
   private SpItem			_spItem;
@@ -67,6 +76,9 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener,
   private TreePath			path;
   private String			projectID, checkSum;
   private SequenceManager		scm;
+    private DropTarget                  dropTarget=null;
+    private DragSource                  dragSource=null;
+    private TrashCan                    trash=null;
 
   /** public programTree(menuSele m) is the constructor. The class
       has only one constructor so far.  a few thing are done during
@@ -94,12 +106,22 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener,
     run.setEnabled(true);
     run.addActionListener(this);
 
-    JLabel trash = new JLabel();
-    try {
-      setImage(trash);
-    } catch(Exception e) {
-      e.printStackTrace();
-    }
+    dropTarget=new DropTarget();
+    try{
+	dropTarget.addDropTargetListener(this);
+    }catch(TooManyListenersException tmle){System.out.println("Too many listeners");}
+//     JLabel trash = new JLabel();
+//     try {
+//       setImage(trash);
+//       trash.setDropTarget(dropTarget);
+//     } catch(Exception e) {
+//       e.printStackTrace();
+//     }
+
+    trash = new TrashCan();
+    trash.setDropTarget(dropTarget);
+
+    dragSource = new DragSource();
 
     gbc.fill = GridBagConstraints.NONE;
     gbc.anchor = GridBagConstraints.CENTER;
@@ -305,16 +327,13 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener,
     _spItem=sp;
 
     // Create data for the tree
-    root= new DefaultMutableTreeNode(sp);
+    // root= new DefaultMutableTreeNode(sp);
 
-    //DragDropObject ddo = new DragDropObject(sp);
-    //myObs = new MsbNode(ddo);
-      
     getItems(sp, root);
             
     // Create a new tree control
     treeModel = new DefaultTreeModel(root);
-    tree = new JTree( treeModel);
+    tree = new JTree(treeModel);
       
 
     MyTreeCellRenderer tcr = new MyTreeCellRenderer();
@@ -354,6 +373,10 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener,
 
     obsList = new JList(model);
     obsList.setCellRenderer(new ObsListCellRenderer());
+
+    dragSource.createDefaultDragGestureRecognizer(obsList,
+						  DnDConstants.ACTION_MOVE,
+						  this);
     
     // Add the listbox to a scrolling pane
     scrollPane.getViewport().removeAll();
@@ -433,35 +456,20 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener,
   public void keyTyped(KeyEvent e) { }
 
   /** Remove the currently selected node. */
-  public void removeCurrentNode() {
+    public void removeCurrentNode() {
 
-    SpItem item = findItem(_spItem, path.getLastPathComponent().toString());
+	Object item = obsList.getSelectedValue();
 
-    if( (item != null) && (item.getTitle().equals("array_tests")) ) {
-
-      //TreePath currentSelection = tree.getSelectionPath();
-	 
-      if (path != null) { 
-	DefaultMutableTreeNode currentNode = 
-	  (DefaultMutableTreeNode)(path.getLastPathComponent());
-	MutableTreeNode parent = (MutableTreeNode)(currentNode.getParent());
-	if (parent != null) {
-	  int n = JOptionPane.showConfirmDialog(null, 
-						"Are you shure you want to delete "+item.getTitle()+" ?", 
-						"Deletion Requested", 
-						JOptionPane.YES_NO_OPTION);
-	  if(n == JOptionPane.YES_OPTION)
-	    treeModel.removeNodeFromParent(currentNode);
-	  return;
+	if (item == null)  {
+	    JOptionPane.showMessageDialog(null,
+					  "No Observation to remove",
+					  "Message", JOptionPane.INFORMATION_MESSAGE);
+	    return;
 	}
-      }
-      // Either there was no selection, or the root was selected.
-      //toolkit.beep();
+
+	((DefaultListModel)obsList.getModel()).removeElementAt(obsList.getSelectedIndex());
+	
     }
-    JOptionPane.showMessageDialog(null, 
-				  "You can only delete 'array_tests' at this time", 
-				  "Message", JOptionPane.ERROR_MESSAGE);
-  }
    
   /** public void getItems (SpItem spItem,DefaultMutableTreeNode node)
       is a public method to add ALL the items of a sp object into the
@@ -511,7 +519,82 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener,
     }
     return null;
   }
+
+    /* Drop Target Interface */
+    public void dragEnter(DropTargetDragEvent evt){
+    }
   
+    /* Drop Target Interface */
+    public void dragExit(DropTargetEvent evt){
+    }
+
+    /* Drop Target Interface */
+    public void dragOver(DropTargetDragEvent evt){
+    }
+
+    /* Drop Target Interface */
+    public void drop(DropTargetDropEvent evt){
+	/* Make sure we are not trying to get rid of a mandatory obs */
+	SpObs obs = (SpObs) obsList.getSelectedValue();
+	if (obs.isOptional() == false)
+	    {
+		JOptionPane.showMessageDialog(null,
+					      "Can not remove mandatory observations!"
+					      );
+		return;
+	    }
+
+
+	try{
+	    Transferable t = evt.getTransferable();
+	    evt.acceptDrop(DnDConstants.ACTION_MOVE);
+	    String s = (String)t.getTransferData(DataFlavor.stringFlavor);
+	    removeCurrentNode();
+	    evt.getDropTargetContext().dropComplete(true);
+	}
+	catch (IOException ioe) {System.out.println("Caught IO Excption");}
+	catch (UnsupportedFlavorException ufe) {System.out.println("Caught Flavor Excption");}
+    }
+
+    /* Drop Target Interface */
+    public void dropActionChanged(DropTargetDragEvent evt){
+    }
+
+    /**
+     * a drag gesture has been initiated
+     * 
+     */
+  
+    public void dragGestureRecognized( DragGestureEvent event) {
+	Object selected = obsList.getSelectedValue();
+	if ( selected != null ){
+	    StringSelection text = new StringSelection( selected.toString());
+        
+	    // as the name suggests, starts the dragging
+	    dragSource.startDrag (event, DragSource.DefaultMoveNoDrop, text, this);
+	} else {
+	    System.out.println( "nothing was selected");   
+	}
+    }
+
+    public void dragEnter (DragSourceDragEvent event) {
+    }
+
+    public void dragOver(DragSourceDragEvent evt){
+	/* Chnage the cursor to indicate drop allowed */
+	evt.getDragSourceContext().setCursor(DragSource.DefaultMoveDrop);
+    }
+
+    public void dragExit(DragSourceEvent evt){
+	evt.getDragSourceContext().setCursor(DragSource.DefaultMoveNoDrop);
+    }
+
+    public void dropActionChanged(DragSourceDragEvent evt){
+    }
+
+    public void dragDropEnd(DragSourceDropEvent evt){
+    }
+
   public JButton getRunButton () {return run;}
 
 }
