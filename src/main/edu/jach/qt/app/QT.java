@@ -87,6 +87,7 @@ final public class QT {
       WidgetDataBag wdb = new WidgetDataBag ();
       Querytool qt = new Querytool(wdb);
       QtFrame qtf = new QtFrame(wdb, qt);
+
       
       qtf.addWindowListener(new BasicWindowMonitor());
       qtf.setSize(1150,550);
@@ -126,12 +127,12 @@ final public class QT {
 		      System.getProperty("DRAMA_ENABLED").equalsIgnoreCase("true") ) {
 		      File lockFile = new File ("/ukirtdata/orac_data/deferred/.lock");
 		      if (lockFile.exists()) {
+			  logger.info("Shutting down and deleting lock file");
 			  lockFile.delete();
 		      }
 		  }
 	      }
 	  });
-
    }
    
    /**
@@ -141,12 +142,23 @@ final public class QT {
     * @param args a <code>String[]</code> value
     */
    public static void main(String[] args) {
-      new QT();
+       try {
+	   new QT();
+       }
+       catch (RuntimeException rte) {
+	   logger.fatal("Caught a run-time exception from main", rte);
+       }
+       catch (Exception e) {
+	   logger.fatal("Caught an unexpected exception in main", e);
+       }
    }
 } // Omp
 
 /*
  * $Log$
+ * Revision 1.20  2002/12/02 20:50:33  dewitt
+ * Added extra error handling within the main to try to trap most exceptions and dump the info to the log file.  Any uncaught error should propogate up to here and will be caught and handled.
+ *
  * Revision 1.19  2002/11/04 20:06:32  mrippa
  * Catches ClassCircularityError
  *
