@@ -1,7 +1,13 @@
 package edu.jach.qt.gui;
 
+import java.io.*;
+import java.util.*;
+import javax.swing.*;
+import javax.xml.parsers.*;
+
 import org.apache.log4j.Logger;
 import org.w3c.dom.*;
+import org.xml.sax.SAXException;  
 
 /**
  * <B>XmlUtils</B> is a utility method to get information about a 
@@ -78,20 +84,20 @@ public class XmlUtils {
 	       continue;
             }
 	    else {
-	       if(tagName.equals("remaining"))
-		  return (new Integer(s));
+// 	       if(tagName.equals("remaining"))
+// 		  return (new Integer(s));
 
-	       else if(tagName.equals("obscount"))
-		  return (new Integer(s));
+// 	       else if(tagName.equals("obscount"))
+// 		  return (new Integer(s));
 
-	       else if(tagName.equals("priority"))
-		  return (new Float(s));
+// 	       else if(tagName.equals("priority"))
+// 		  return (new Float(s));
 
-	       else if(tagName.equals("tagpriority"))
-		  return (new Integer(s));
+// 	       else if(tagName.equals("tagpriority"))
+// 		  return (new Integer(s));
 
-	       else if(tagName.equals("msbid"))
-		  return (new Integer(s));
+// 	       else if(tagName.equals("msbid"))
+// 		  return (new Integer(s));
 
 	       return s;
 	    }
@@ -105,6 +111,68 @@ public class XmlUtils {
       return null;
 
    }
+
+    public static String [] getColumnNames(String summaryFile) {
+	Document doc;
+	try {
+	    DocumentBuilderFactory factory =
+		DocumentBuilderFactory.newInstance();
+	    //factory.setValidating(true);   
+	    //factory.setNamespaceAware(true);
+	 
+	    DocumentBuilder builder = factory.newDocumentBuilder();
+	    doc = builder.parse( new File(summaryFile));
+	}
+	catch (SAXException sxe) {
+	    Exception  x = sxe;
+	    if (sxe.getException() != null)
+		x = sxe.getException();
+	    //x.printStackTrace();
+	    logger.error("SAX Error generated during parsing", x);
+	    return null;
+	} 
+	catch(ParserConfigurationException pce) {
+	    logger.error("ParseConfiguration Error generated during parsing", pce);
+	    //pce.printStackTrace();
+	    return null;
+	} 
+	catch (IOException ioe) {
+	    // I/O error
+	    logger.error("IO Error generated attempting to build Document", ioe);
+	    //ioe.printStackTrace();
+	    return null;
+	}
+
+	if (doc == null) {
+	    JOptionPane.showMessageDialog(null, 
+					  "No observations found - unable to start",
+					  "No Obs",
+					  JOptionPane.ERROR_MESSAGE);
+	    logger.error("No observation found - unable to build results table");
+	}
+
+	Vector names = new Vector();
+	Node element = doc.getElementsByTagName("SpMSBSummary").item(0);
+	if (element != null) {
+	    NodeList summary = element.getChildNodes();
+	    for (int i=0; i< summary.getLength(); i++) {
+		String name = summary.item(i).getNodeName().trim();
+		if (name.startsWith("#")) {
+		    continue;
+		}
+		names.add((Object)name);
+	    }
+	}
+	Object msbid    = names.remove(names.indexOf("msbid"));
+	Object checksum = names.remove(names.indexOf("checksum"));
+	names.add(msbid);
+	names.add(checksum);
+	String [] columns = new String [names.size()]; 
+	for (int i=0; i<names.size(); i++) {
+	    columns[i] = (String)names.get(i);
+	}
+	return columns;
+    }
 
    /**
       For testing purpose, it print out Node list
