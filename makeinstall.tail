@@ -1,0 +1,15 @@
+SRCDIR = .
+PACKAGE_DIR  = $(SYSTEM_CLASSDIR)/$(PACKAGE)
+JAVA_FILES   = $(filter %.java, $(SOURCES))
+NOJAVA_FILES = $(patsubst %.java,,$(SOURCES))
+CLASS_FILES  = $(JAVA_FILES:%.java=$(PACKAGE_DIR)/%.class)
+JAVAC_FLAGS  = -classpath $(SYSTEM_CLASSPATH) -g -d $(SYSTEM_CLASSDIR)
+MY_CLASSPATH = $(SYSTEM_CLASSPATH)
+MY_CLASSDIR  = $(SYSTEM_CLASSDIR)
+
+
+all: circular $(FRC)
+	$(JAVAC) -classpath  $(SYSTEM_CLASSPATH) -g -deprecation -d $(SYSTEM_CLASSDIR) $(SOURCES)
+
+
+force_rebuild:
