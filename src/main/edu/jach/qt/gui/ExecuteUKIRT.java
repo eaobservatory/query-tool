@@ -23,9 +23,12 @@ public class ExecuteUKIRT extends Execute implements Runnable {
     static Logger logger = Logger.getLogger(ExecuteUKIRT.class);
 
     private String myInst;
+    private boolean _useQueue;
 
     
-    public ExecuteUKIRT() throws Exception {
+    public ExecuteUKIRT(boolean useQueue) throws Exception {
+	super();
+	_useQueue = useQueue;
     };
 
     public void run () {
@@ -40,12 +43,17 @@ public class ExecuteUKIRT extends Execute implements Runnable {
 	}
 	catch (IOException ioe) {
 	    logger.error("Unable to create success/fail file", ioe);
-	    return;
+	    //return;
 	}
 
 	SpItem itemToExecute;
 	if (!isDeferred) {
-	    itemToExecute = ProgramTree.selectedItem;
+	    if ( ! _useQueue ) {
+	        itemToExecute = ProgramTree.selectedItem;
+	    }
+            else {
+		itemToExecute = ProgramTree.getCurrentItem();
+	    }
 	    logger.info("Executing observation from Program List");
 	}
 	else {
@@ -53,14 +61,20 @@ public class ExecuteUKIRT extends Execute implements Runnable {
 	    logger.info("Executing observation from deferred list");
 	}
 	
-	SpItem inst = (SpItem) SpTreeMan.findInstrument(itemToExecute);
-	if (inst == null) {
-	    logger.error("No instrument found");
-	    success.delete();
-	    return;
-	}    
+	String tname;
+	if ( ! _useQueue ) {
+	    SpItem inst = (SpItem) SpTreeMan.findInstrument(itemToExecute);
+	    if (inst == null) {
+	        logger.error("No instrument found");
+	        success.delete();
+	        return;
+	    }    
 	
-	String tname = QtTools.translate(itemToExecute, inst.type().getReadable());
+	    tname = QtTools.translate(itemToExecute, inst.type().getReadable());
+	}
+	else {
+	    tname = QtTools.createQueueXML (itemToExecute);
+	}
 	
 	// Catch null sequence names - probably means translation
 	// failed:
@@ -90,7 +104,7 @@ public class ExecuteUKIRT extends Execute implements Runnable {
 	    byte [] stderr = new byte [1024];
 	    try {
 		Runtime rt = Runtime.getRuntime();
-		String command = "/jac_sw/omp/QT/bin/loadUKIRT.ksh "+tname;
+		String command = "/home/dewitt/omp/QT/bin/loadUKIRT.ksh "+tname;
 		logger.debug ("Running command "+command);
 		Process p = rt.exec(command);
 		InputStream istream = p.getInputStream();

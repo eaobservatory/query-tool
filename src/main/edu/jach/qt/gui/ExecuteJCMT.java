@@ -113,7 +113,7 @@ public class ExecuteJCMT extends Execute {
 	}
 	catch (IOException ioe) {
 	    logger.error("Error writing translation file");
-	    file.delete();
+	    //file.delete();
 	    success.delete();
 	    isRunning = false;
 	    return true;
@@ -123,7 +123,7 @@ public class ExecuteJCMT extends Execute {
 	String translator = System.getProperty("jcmtTranslator");
 	if (translator == null) {
 	    logger.error("No translation process defined");
-	    file.delete();
+	    //file.delete();
 	    success.delete();
 	    isRunning = false;
 	    return true;
@@ -189,7 +189,7 @@ public class ExecuteJCMT extends Execute {
 	    isRunning = false;
 	    return true;
 	}
-	file.delete();
+	//file.delete();
 
 	if (TelescopeDataPanel.DRAMA_ENABLED) {
 	    try {

@@ -8,7 +8,9 @@ import jsky.app.ot.*;
 
 import java.io.*;
 import java.util.Properties;
-//import om.util.ExecDtask;
+import java.util.*;
+import java.text.*;
+
 import orac.ukirt.util.SpTranslator;
 import org.apache.log4j.Logger;
 
@@ -122,6 +124,61 @@ public class QtTools {
  
 
   /**
+    Wrapper around the translator method which generates XML for the
+    new queue processing.  The file will be stored in the same location
+    as the execs for now.
+
+    @param SpItem  and MSB
+    @return String a filename
+    */
+  public static String createQueueXML( SpItem item ) {
+      // We are going to take some shortcuts, like assuming
+      // the telescope is UKIRT
+
+      // File will go into exec path and be called
+      // ukirt_yyyymmddThhmmss.xml
+      String opDir = System.getProperty("EXEC_PATH");
+      Calendar cal = new GregorianCalendar(TimeZone.getTimeZone("UTC"));
+      SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd'T'HHmmss");
+      StringBuffer fileName = new StringBuffer (sdf.format(cal.getTime()));
+      fileName.append(".xml");
+      fileName.insert(0,"/" );
+      fileName.insert(0, opDir);
+      System.out.println("QUEUE filename is " + fileName.toString());
+
+      try {
+          FileWriter fw = new FileWriter (fileName.toString());
+	  fw.write ("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n");
+          fw.write ("<QueueEntries  telescope=\"UKIRT\">\n");
+
+          // Now we need to get (a) the sequence for each obs in the MSB and
+          // (b) the estimated duration of the obs and (c) the instrument name
+          // for the obs.
+          Vector obs = SpTreeMan.findAllItems(item, "gemini.sp.SpObs");
+          Enumeration e = obs.elements();
+          while ( e.hasMoreElements() ) {
+	     SpObs currentObs = (SpObs) e.nextElement();
+	     String inst = SpTreeMan.findInstrument(currentObs).type().getReadable();
+	     double time = currentObs.getElapsedTime();
+	     fw.write("  <Entry totalDuration=\"" + time + "\"  instrument=\"" + inst +"\">\n");
+	     fw.write("    " + System.getProperty("EXEC_PATH") + "/" + translate((SpItem)currentObs, inst) + "\n");
+	     fw.write("  </Entry>\n");
+          }
+          // Close off the entry
+          fw.write("</QueueEntries>\n");
+          fw.close();
+      }
+      catch (IOException ioe) {
+	  String message = "Unable to write queue file " + fileName.toString();
+	  logger.error(message, ioe);
+	  fileName = new StringBuffer();
+      }
+
+      return fileName.toString();
+  }
+
+
+  /**
      String trans (SpItem observation) is a private method
      to translate an observation java object into an exec string
      and write it into a ascii file where is located in "EXEC_PATH"
@@ -148,7 +205,8 @@ public class QtTools {
 	tel = "/jcmtdata";
       } 
       
-      FileWriter fw = new FileWriter(tel+"/epics_data/smLogs/transFile");
+      //FileWriter fw = new FileWriter(tel+"/epics_data/smLogs/transFile");
+      FileWriter fw = new FileWriter("/home/dewitt/sequences/transFile");
 
       tname=spt.translate();
       logger.debug("Translated file set to: "+System.getProperty("EXEC_PATH")+"/"+tname);

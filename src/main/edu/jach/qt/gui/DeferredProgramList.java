@@ -342,7 +342,7 @@ final public class DeferredProgramList extends JPanel implements
 	if (System.getProperty("telescope").equalsIgnoreCase("ukirt")) {
 	    try {
 		logger.info("Sending observation "+currentItem.getTitle()+" for execution.");
-		ExecuteUKIRT execute = new ExecuteUKIRT();
+		ExecuteUKIRT execute = new ExecuteUKIRT(true);
 		t = new Thread (execute, "UKIRT Execution Thread");
 
 		// Start the process and wait for it to complete

@@ -67,12 +67,13 @@ final public class ProgramTree extends JPanel implements
 
     private GridBagConstraints		gbc;
     private static JButton		run;
+    private static JButton		engButton;
     private JButton                     xpand;
     private JTree			tree;
     private static JList		obsList;
     private DefaultListModel		model;
     private JScrollPane			scrollPane = new JScrollPane();;
-    private SpItem			_spItem;
+    private static SpItem		_spItem;
     private DefaultMutableTreeNode	root;
     private DefaultTreeModel		treeModel;
     private TreeViewer                  tv = null;
@@ -102,6 +103,7 @@ final public class ProgramTree extends JPanel implements
 
     private boolean                     anObservationHasBeenDone = false;
     private boolean                     msbDone = false;  // The MSB has been either accepted or rejected
+    private boolean                     _useQueue = true;
     private File                        msbPendingFile;
     private String                      msbPendingDir = File.separator +
 	                                                System.getProperty("telescope").trim().toLowerCase() +
@@ -135,7 +137,7 @@ final public class ProgramTree extends JPanel implements
 	setLayout(gbl);
 	gbc = new GridBagConstraints();
 
-	run=new JButton("Send for Execution");
+	run=new JButton("Send for Engineering");
 	run.setMargin(new Insets(5,10,5,10));
 	run.setEnabled(TelescopeDataPanel.DRAMA_ENABLED);
 	if ( !run.isEnabled() ) {
@@ -143,6 +145,11 @@ final public class ProgramTree extends JPanel implements
 	    ToolTipManager.sharedInstance().setInitialDelay(250);
 	}
 	run.addActionListener(this);
+
+	engButton = new JButton("Send to Queue");
+	engButton.setMargin(new Insets(5,10,5,10));
+	engButton.setEnabled(TelescopeDataPanel.DRAMA_ENABLED);
+	engButton.addActionListener(this);
 
 	xpand = new JButton("Expand Observation");
 	xpand.setMargin(new Insets(5,10,5,10));
@@ -182,7 +189,7 @@ final public class ProgramTree extends JPanel implements
 	gbc.fill = GridBagConstraints.NONE;
 	gbc.anchor = GridBagConstraints.CENTER;
 	gbc.weightx = 100;
-	gbc.weighty = 100;
+	gbc.weighty = 0;
 	gbc.insets.left = 10;
 	gbc.insets.right = 0;
 	add(trash, gbc, 1, 1, 1, 1);
@@ -192,15 +199,24 @@ final public class ProgramTree extends JPanel implements
 	gbc.weighty = 0;
 	gbc.insets.left = 0;
 	gbc.insets.right = 0;
-	add(run, gbc, 0, 1, 1, 1);
+	gbc.insets.bottom = 20;
+	add(engButton, gbc, 0, 1, 1, 1);
 
 	gbc.fill = GridBagConstraints.HORIZONTAL;
 	gbc.weightx = 100;
 	gbc.weighty = 0;
 	gbc.insets.left = 0;
 	gbc.insets.right = 0;
-	gbc.insets.bottom = 50;
-	add(xpand, gbc, 0, 2, 1, 1);
+	gbc.insets.bottom = 20;
+	add(run, gbc, 0, 2, 1, 1);
+
+	gbc.fill = GridBagConstraints.HORIZONTAL;
+	gbc.weightx = 100;
+	gbc.weighty = 0;
+	gbc.insets.left = 0;
+	gbc.insets.right = 0;
+	gbc.insets.bottom = 20;
+	add(xpand, gbc, 0, 3, 1, 1);
     }
 
     /**
@@ -214,7 +230,7 @@ final public class ProgramTree extends JPanel implements
 	    this.projectID = projectID;
     }
 
-    public SpItem getCurrentItem() {
+    public static SpItem getCurrentItem() {
 	return _spItem;
     }
 
@@ -296,6 +312,7 @@ final public class ProgramTree extends JPanel implements
     public void actionPerformed (ActionEvent evt) {
 	Object source = evt.getSource();
 	if (source == run) {
+            _useQueue = false;
 	    doExecute();
 	}
 	else if (source == xpand) {
@@ -316,6 +333,10 @@ final public class ProgramTree extends JPanel implements
 	    else {
 		tv.update(itemToXpand);
 	    }
+	}
+	else if ( source == engButton ) {
+	    _useQueue = true;
+	    doExecute();
 	}
 
 	if (source instanceof JMenuItem) {
@@ -366,7 +387,7 @@ final public class ProgramTree extends JPanel implements
 	run.setToolTipText("Run button disabled during execution");
 	if (System.getProperty("telescope").equalsIgnoreCase("ukirt")) {
 	    try {
-		ExecuteUKIRT execute = new ExecuteUKIRT();
+		ExecuteUKIRT execute = new ExecuteUKIRT(_useQueue);
 		t = new Thread(execute);
 		t.start();
 		t.join();

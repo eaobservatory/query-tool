@@ -234,7 +234,7 @@ public class OmpOM extends JPanel{
     
       SpItem currentItem;
       if (ptree != null) {
-	  currentItem = ptree.getCurrentItem();
+	  currentItem = ProgramTree.getCurrentItem();
 	  if (currentItem == null) {
 	      return "No Observations";
 	  }
