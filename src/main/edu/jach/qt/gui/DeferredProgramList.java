@@ -177,11 +177,13 @@ final public class DeferredProgramList extends JPanel implements
     public static void addCalibration (SpItem cal) {
 	cal.getTable().set("project", "CAL");
 	cal.getTable().set("msbid", "CAL");
+	cal.getTable().set(":msb", "true");
 	// A calibration observation is an SpProg - need to convert to an SpObs
 	Vector theseObs = SpTreeMan.findAllItems(cal, "gemini.sp.SpObs");
 	SpItem thisObs = (SpItem)theseObs.firstElement();
 	thisObs.getTable().set("project", "CAL");
 	thisObs.getTable().set("msbid", "CAL");
+	thisObs.getTable().set(":msb", "true");
 	((SpObs)thisObs).setOptional(true);
 	if (!isDuplicate(thisObs)) {
 	    makePersistent(thisObs);
@@ -274,6 +276,7 @@ final public class DeferredProgramList extends JPanel implements
     {
 	obs.getTable().set("project", "CAL");
 	obs.getTable().set("msbid", "CAL");
+	obs.getTable().set(":msb", "true");
 	obs = makeNewObs(obs);
 	if (isDuplicate(obs) == false) {
 	    makePersistent(obs);
