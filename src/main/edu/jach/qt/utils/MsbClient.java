@@ -118,12 +118,11 @@ public class MsbClient extends SoapClient {
       String spXML = (String) doCall(url, "urn:OMP::MSBServer", "fetchMSB");
 	
       if (spXML != null ) {
-	StringReader r = new StringReader(spXML);
-	spItem = (SpItem)(new SpInputXML()).xmlToSpItem(r);
-	  
 	fw.write( (String)spXML );
 	fw.close();
-      }
+ 	StringReader r = new StringReader(spXML);
+	spItem = (SpItem)(new SpInputXML()).xmlToSpItem(r);
+     }
 	
       else 
 	return spItem;
