@@ -45,7 +45,7 @@ public class ButtonPanel extends WidgetPanel  {
 		 TitledBorder.CENTER, TitledBorder.DEFAULT_POSITION));
       buttonList = new LinkedList();
       
-      setLayout(new GridLayout(2, info.getSize()/2));
+      setLayout(new GridLayout(3, info.getSize()/2));
       for (iterator.nextIndex(); iterator.hasNext(); iterator.nextIndex()) {
 	    next = (String)iterator.next();
 	    JCheckBox cb = new JCheckBox(next);

@@ -511,9 +511,9 @@ public class Querytool implements Runnable, Observer {
     return (_xmlString == null);
   }
 
-    private Element processDate( LabeledRangeTextField lrtf,
-			      Document doc,
-			      Element root) {
+    private Element processDate (LabeledRangeTextField lrtf,
+				 Document doc,
+				 Element root) {
 	Element item, sub;
 	String tmpStr;
 

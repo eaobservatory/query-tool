@@ -368,28 +368,6 @@ public class XmlUtils {
 
 	return getProjectData(System.getProperty("msbSummary")+"."+System.getProperty("user.name"));
 
-// 	SAXHandler saxHandler = new SAXHandler();
-
-// 	SAXParserFactory factory = SAXParserFactory.newInstance();
-// 	try {
-// 	    SAXParser parser = factory.newSAXParser();
-// 	    parser.parse( new File(System.getProperty("msbSummary")+"."+System.getProperty("user.name")), saxHandler);
-// 	}
-// 	catch (Exception t) {
-// 	    t.printStackTrace();
-// 	}
-
-// 	Vector projectIds = saxHandler.getProjectIds();
-// 	Vector priorities = saxHandler.getPriorities();
-
-// 	// Add a special project "All" to be used for displaying
-// 	// all of the returned MSBs
-// 	projectIds.add(0, "All");
-// 	priorities.add(0, new Integer(0));
-
-// 	Vector [] data = {projectIds, priorities};
-
-// 	return data;
     }
 
     public static Vector [] getProjectData(String xmlFileName) {
@@ -424,13 +402,14 @@ public class XmlUtils {
 		    priorities.add(iPriority);
 		}
 	    }
+
 	}
+
 	projectIds.add(0, "All");
 	priorities.add(0, new Integer(0));
 	Vector [] data = {projectIds, priorities};
 	return data;
     }
-
 
     public static int getProjectCount() {
 	return getProjectData()[0].size();
@@ -518,6 +497,12 @@ public class XmlUtils {
 	    _columnData = new Vector [nColumns];
 	    for (int i=0; i< nColumns; i++) {
 		_columnData[i] = new Vector();
+	    }
+	}
+
+	public void clear() {
+	    for (int i=0; i<_columnData.length; i++) {
+		_columnData[i].clear();
 	    }
 	}
 

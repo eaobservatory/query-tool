@@ -79,4 +79,11 @@ public class ProjectTableModel
 	projectIds = data[0];
 	priorities = data[1];
     }
+
+    public void clear() {
+	projectIds.clear();
+	priorities.clear();
+// 	XmlUtils.clearProjectData();
+	fireTableChanged(null);
+    }
 }
