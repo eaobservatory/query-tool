@@ -36,6 +36,14 @@ public class SimpleMoon {
 	getCurrentPosition();
     }
 
+    // Constructor - sets up information based on a specified time
+    public SimpleMoon (String isoDateTime) {
+	ti = new TelescopeInformation(System.getProperty("telescope"));
+	latitude = ((Double)(ti.getValue("latitude"))).doubleValue();
+	longitude = ((Double)(ti.getValue("longitude"))).doubleValue();
+	getCurrentPosition(isoDateTime);
+    }
+
     public double getIllumination() {
 	// Get the current position of the Sun
 	Sun sun = new Sun();
@@ -143,6 +151,68 @@ public class SimpleMoon {
 	currentDec = declination * DINR;
 
     }
+
+    private void getCurrentPosition(String isoDateTime) {
+	//
+	// Calculate the JD corresponding to the current UT
+	//
+	TimeUtils tu = new TimeUtils();
+	Calendar cal = tu.toCalendar(isoDateTime);
+
+	double jDate = toJulianDate(cal);
+
+	// Get the local siderial time
+	double gst = getST(jDate);
+	double lst = gst + longitude/15.;
+
+	double jCent = (jDate-JD2000)/36525;
+
+	/* 
+	 * Use formula in Ast. Alm. to compute ecliptic longitude (lamda),
+	 * ecliptic latitude (beta) and horizontal paralax (pi)
+	 */
+	double lambda = 218.32 + 481267.883 * jCent
+	    + 6.29 * Math.sin((134.9 + 477198.85 * jCent) / DINR)
+	    - 1.27 * Math.sin((259.2 - 413335.38 * jCent) / DINR)
+	    + 0.66 * Math.sin((235.7 + 890534.23 * jCent) / DINR)
+	    + 0.21 * Math.sin((269.9 + 954397.70 * jCent) / DINR)
+	    - 0.19 * Math.sin((357.5 +  35999.05 * jCent) / DINR)
+	    - 0.11 * Math.sin((186.6 + 966404.05 * jCent) / DINR);
+
+	double beta = 
+	      5.13 * Math.sin((93.3 + 483202.03 * jCent) / DINR)
+	    + 0.28 * Math.sin((228.2 + 960400.87 * jCent) / DINR)
+	    - 0.28 * Math.sin((318.3 +   6003.18 * jCent) / DINR)
+	    - 0.17 * Math.sin((217.6 - 407332.20 * jCent) / DINR);
+
+	double pi = 0.9508
+	    + 0.0518 * Math.cos((134.9 + 477198.85 * jCent) / DINR)
+	    + 0.0095 * Math.cos((259.2 - 413335.38 * jCent) / DINR)
+	    + 0.0078 * Math.cos((235.7 + 890534.23 * jCent) / DINR)
+	    + 0.0028 * Math.cos((269.9 + 954397.70 * jCent) / DINR);
+
+	// Convert these to geocentric coordinates
+	gc = new GeocentricCoords(lambda, beta, pi);
+	geoCentricDistance = gc.getd();
+
+	// Form the topocentric coordinate
+	double lstInDeg = lst*15.;
+	tc = new TopocentricCoords ( gc.getx(),
+				     gc.gety(),
+				     gc.getz(),
+				     latitude,
+				     lstInDeg);
+	
+	// Now we can calculate the current RA and Dec
+	double ra = Math.atan2(tc.gety(), tc.getx());
+	if (ra < 0.0) ra = ra + 2.*Math.PI;
+	currentRA = ra * HINR;
+
+	double declination = Math.asin(tc.getz()/tc.getd());
+	currentDec = declination * DINR;
+
+    }
+
 
     private double toJulianDate(Calendar c) {
 	//
