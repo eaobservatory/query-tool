@@ -555,6 +555,10 @@ final public class ProgramTree extends JPanel implements
 
 	// Check if there is already an existing model and whether it still has
 	// observations to perform
+	 if ( instrumentContext instanceof SpInstHeterodyne && HTMLViewer.visible() ) {
+	     return;
+	 }
+
 	if ( model != null   && 
 	     msbDone == false &&
 	     ( System.getProperty("telescope").equalsIgnoreCase("ukirt") || instrumentContext instanceof SpInstHeterodyne) && 
@@ -1301,6 +1305,7 @@ final public class ProgramTree extends JPanel implements
 	public void run () {
 	    ExecuteJCMT execute;
 	    boolean failed = false;
+	    msbDone = false;
 
 	    execute = ExecuteJCMT.getInstance(_item);
 	    failed = execute.run();
