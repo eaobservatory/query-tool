@@ -242,8 +242,6 @@ final public class ProgramTree extends JPanel implements
 	    logger.debug ( "In ProgramTree.setExecutable(); setting run.enabled to "+flag);
 	    engButton.setEnabled(flag);
 	    if ( flag == false ) {
-		Exception e = new Exception ();
-		logger.debug ( "Flag set to false by ",e );
 		engButton.setToolTipText ( "Disabled due to edited time constraint" );
 		ToolTipManager.sharedInstance().setInitialDelay(250);
 	    }
