@@ -40,7 +40,7 @@ class HelpPage {
      */
     public HelpPage() {
 	File tmp  = new File (System.getProperty("qtConfig"));
-	String dir = tmp.getParent();
+	String dir = tmp.getAbsoluteFile().getParent();
 	helpFile = dir + File.separator + "Documents/AboutTheQT.html";
 	String browser = System.getProperty("Browser");
 	String command = browser + " file://" + helpFile;
