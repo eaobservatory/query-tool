@@ -215,14 +215,22 @@ final public class ProgramTree extends JPanel implements
       SpItem item;
       boolean isDeferredObs = false;
       if (selectedItem != null && DeferredProgramList.currentItem != null) {
-	  new ErrorBox("You may only select one observation!"+
-		       "\nPlease deselect an observation.");
-	  logger.error("Multiple observations selected!");
+// 	  new ErrorBox("You may only select one observation!"+
+// 		       "\nPlease deselect an observation.");
+	  JOptionPane.showMessageDialog(null,
+					"You may only select one observation!",
+					"Please deselect an observation.",
+					JOptionPane.ERROR_MESSAGE);
+	  // logger.error("Multiple observations selected!");
 	  return;
       }
       else if (selectedItem == null && DeferredProgramList.currentItem == null){
-	  new ErrorBox("You have not selected an observation!"+
-		       "\nPlease select an observation.");
+// 	  new ErrorBox("You have not selected an observation!"+
+// 		       "\nPlease select an observation.");
+	  JOptionPane.showMessageDialog(null,
+					"You have not selected an observation!",
+					"Please select an observation.",
+					JOptionPane.ERROR_MESSAGE);
 	  logger.error("You have not selected an MSB!");
 	  return;
       }
@@ -240,8 +248,12 @@ final public class ProgramTree extends JPanel implements
     // type "ob" observations since an MSB can have multiple instruments and we 
     // execute them individually.
     if(!item.typeStr().equals("ob")) {
-      new ErrorBox("Your selection: "+item.getTitle()+ " is not an observation"+
-		   "\nPlease select an observation.");
+//       new ErrorBox("Your selection: "+item.getTitle()+ " is not an observation"+
+// 		   "\nPlease select an observation.");
+	  JOptionPane.showMessageDialog(null,
+					"Your selection: "+item.getTitle()+ " is not an observation",
+					"Please select an observation.",
+					JOptionPane.ERROR_MESSAGE);
       logger.error("Your selection: "+item.getTitle()+ " is not an MSB."+ 
 		   "\nPlease select an MSB.");
       return;
