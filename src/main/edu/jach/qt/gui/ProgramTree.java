@@ -1204,11 +1204,13 @@ final public class ProgramTree extends JPanel implements
 	File cancelFile = new File ("/tmp/cancel");
 	File acceptFile = new File ("/tmp/accept");
 	File rejectFile = new File ("/tmp/reject");
+	File noDataFile = new File ("/tmp/noData");
 	String title = ((SpProg)_spItem).getTitle();
 	try {
 	    cancelFile.createNewFile();
 	    acceptFile.createNewFile();
 	    rejectFile.createNewFile();
+	    noDataFile.createNewFile();
 	}
 	catch (IOException ioe) {
 	    logger.warn ("Unable to create one of the MSBDoneDialog com files");
@@ -1220,6 +1222,12 @@ final public class ProgramTree extends JPanel implements
 	// See which comms file exist after accept/reject
 	if (cancelFile.exists()) {
 	    cancelFile.delete();
+	}
+	else if (noDataFile.exists()) {
+	    noDataFile.delete();
+	    done=true;
+	    anObservationHasBeenDone = true;
+	    ((DefaultListModel)obsList.getModel()).clear();
 	}
 	else if (acceptFile.exists()) {
 	    acceptFile.delete();
