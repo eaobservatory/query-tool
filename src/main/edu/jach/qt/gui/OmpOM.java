@@ -4,7 +4,8 @@ package edu.jach.qt.gui;
 import edu.jach.qt.gui.DragDropObject;
 import edu.jach.qt.utils.*;
 import gemini.sp.SpItem;
-import gemini.sp.SpRootItem;
+import gemini.sp.SpMSB;
+import gemini.sp.SpTreeMan;
 import gemini.sp.iter.*;
 import gemini.sp.obsComp.*;
 import java.awt.*;
@@ -29,6 +30,7 @@ import orac.ukirt.inst.*;
 import orac.ukirt.iter.*;
 import orac.util.*;
 import java.util.Hashtable;
+import java.util.Vector;
 
 /**
  * This is the top most class of the OMP-OM.  This 
@@ -128,7 +130,9 @@ public class OmpOM extends JPanel{
   }
   
   public String getProgramName() {
-    return spItem.getTitle();
+    Vector progVector = SpTreeMan.findAllItems(spItem, "gemini.sp.SpMSB");
+    
+    return (String) ((SpMSB) (progVector.elementAt(0))).getTitle();
   }
 
 
