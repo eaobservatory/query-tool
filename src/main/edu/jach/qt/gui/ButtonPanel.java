@@ -53,7 +53,8 @@ public class ButtonPanel extends WidgetPanel  {
 	    //cb.setBackground(java.awt.Color.gray);
 
 	    add(cb);
-	    buttonList.add(cb);
+	    if (!cb.getText().equals("Any Instrument"))
+	      buttonList.add(cb);
       }
    }
    
@@ -67,7 +68,11 @@ public class ButtonPanel extends WidgetPanel  {
       JCheckBox next;      
       for (ListIterator iter = buttonList.listIterator(); iter.hasNext(); iter.nextIndex()) {
 	 next = (JCheckBox)iter.next();
-	 next.setEnabled(booleanFlag);
+	 if (!next.getText().equals("Any Instrument") ) {
+	   next.setEnabled(booleanFlag);
+	   
+	 }
+	 
       }
    }
 
@@ -81,8 +86,10 @@ public class ButtonPanel extends WidgetPanel  {
       JCheckBox next;      
       for (ListIterator iter = buttonList.listIterator(); iter.hasNext(); iter.nextIndex()) {
 	 next = (JCheckBox)iter.next();
-	 next.setSelected(flag);
-	 setAttribute(myTitle, buttonList);
+	 if (!next.getText().equals("Any Instrument") ) {
+	   next.setSelected(flag);
+	   setAttribute(myTitle, buttonList);
+	 }
       }
    }
 
@@ -93,6 +100,23 @@ public class ButtonPanel extends WidgetPanel  {
     * @param evt an <code>ActionEvent</code> value
     */
    public void actionPerformed (ActionEvent evt) {
-      setAttribute(myTitle, buttonList);
+
+     Object source = evt.getSource();
+     JCheckBox temp = (JCheckBox)source;
+      
+     if (temp.getText().equals("Any Instrument")) {
+       if (temp.isSelected()) {
+	 setSelected(false);
+	 setEnabled(false);
+       }
+       else {
+	 setEnabled(true);
+	 setSelected(false);
+       }
+     }
+
+     else {
+       setAttribute(myTitle, buttonList);
+     }
    }
 }// ButtonPanel
