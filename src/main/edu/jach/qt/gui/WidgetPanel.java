@@ -192,16 +192,18 @@ public class WidgetPanel extends JPanel
 	      add(panel, gbc, 1, 0, 2, info.getSize()+1);
 	    }
 	    else if (info.getTitle().equalsIgnoreCase("Atmosphere") ) {
-	      add(panel, gbc, 1, 3, 2, info.getSize()+1);
+	      add(panel, gbc, 1, 4, 2, info.getSize()+1);
 	      setAtmospherePanel(panel);
 	    }
 	    else if (info.getTitle().equalsIgnoreCase("Moon") ) {
 	      add(panel, gbc, 1, 20, 2, info.getSize()+1);
 	      setMoonPanel(panel);
 	    }
-
+	    else if (info.getTitle().equalsIgnoreCase("Country") ) {
+	      add(panel, gbc, 1, 0, 2, info.getSize()+1);
+	    }
 	    else {
-	      //add(panel, gbc, numRadPanels, 20, 1, info.getSize()+1);
+	      add(panel, gbc, numRadPanels, 20, 1, info.getSize()+1);
 	    }
 	    totalNumRadRows += info.getSize()+2;
 	  }
