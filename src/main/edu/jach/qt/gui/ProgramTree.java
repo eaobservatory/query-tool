@@ -1211,9 +1211,11 @@ final public class ProgramTree extends JPanel implements
 	String title = "<unknown>";
 	if ( SpTreeMan.findAllItems(_spItem, "gemini.sp.SpMSB").size() > 0) {
 	    title = ((SpMSB) SpTreeMan.findAllItems(_spItem, "gemini.sp.SpMSB").firstElement()).getTitle();
+	    checkSum = ((SpMSB) SpTreeMan.findAllItems(_spItem, "gemini.sp.SpMSB").firstElement()).getChecksum();
 	}
 	else if ( SpTreeMan.findAllItems(_spItem, "gemini.sp.SpObs").size() > 0) {
 	    title = ((SpObs) SpTreeMan.findAllItems(_spItem, "gemini.sp.SpObs").firstElement()).getTitle();
+	    checkSum = ((SpObs) SpTreeMan.findAllItems(_spItem, "gemini.sp.SpObs").firstElement()).getChecksum();
 	}
 	try {
 	    cancelFile.delete();
@@ -1228,7 +1230,7 @@ final public class ProgramTree extends JPanel implements
 	catch (IOException ioe) {
 	    logger.warn ("Unable to create one of the MSBDoneDialog com files");
 	}
-	String msg = "Creating MSB Done popup for Project "+projectID+", MSB "+title;
+	String msg = "Creating MSB Done popup for Project "+projectID+", MSB "+title+", chksum = "+checkSum;
 	logger.info (msg);
 	MSBDoneDialog mdd = new MSBDoneDialog ((Frame)parent, 
 					       projectID, 
