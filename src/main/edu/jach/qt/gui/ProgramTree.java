@@ -246,7 +246,11 @@ final public class ProgramTree extends JPanel
 	  }
 	}
 
-	QtTools.loadDramaTasks(inst.type().getReadable());
+	//System.out.println("System is "+System.getProperty("os.name"));
+	if ( System.getProperty("os.name").equals("SunOS")) {
+	  QtTools.loadDramaTasks(inst.type().getReadable());
+	} // end of if ()
+	
 	DcHub.getHandle().register("OOS_LIST");
 	
 	scm.showSequenceFrame();
