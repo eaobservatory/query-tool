@@ -393,8 +393,7 @@
   <!--    ==================================================== -->
   <!--                       DIST                              -->
   <!--    ==================================================== -->
-  <target name="dist" depends="jar-dist, javadocs">
-    <!--      <antstructure output="project.dtd"/> -->
+  <target name="dist" depends="jar-dist">
     <echo message="EVERYTHING LOOKS GOOD!"/>
     <echo message="Run ${dist.dir}/bin/qt"/>
   </target>
