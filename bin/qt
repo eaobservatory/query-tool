@@ -1,4 +1,4 @@
-#!/bin/csh -f 
+#!//usr/local/bin/tcsh
 
 onintr tidy
 
