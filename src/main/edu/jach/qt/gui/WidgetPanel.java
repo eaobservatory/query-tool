@@ -314,7 +314,7 @@ public class WidgetPanel extends JPanel
      */
     public void setMoonUpdatable (boolean flag) {
 	ignoreMoonUpdates = !flag;
-	if ( flag == true ) {
+	if ( flag == true && moonPanel != null ) {
 	    moonPanel.setToolTipText (null);
 	    moonPanel.setBackground ( instrumentPanel.getBackground() );
 	}
