@@ -340,9 +340,10 @@
   <!--                 Create the qt.jar                       -->
   <!--    ==================================================== -->
   <target name="jar" depends="compile">
-    <jar jarfile="${build.lib}/qt.jar"
-	 basedir="${build.classes}"
-	 manifest="${manifest}">
+    <jar jarfile="${build.lib}/qt.jar">
+      <fileset dir="${build.classes}"/>
+      <fileset dir="${icons.dir}"/>
+      <!--  manifest="${manifest}"> -->
     </jar>
   </target>
 
