@@ -11,6 +11,8 @@ import org.apache.log4j.Logger;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;  
 
+import edu.jach.qt.utils.MsbClient;
+
 /**
  * MSBQueryTableModel.java
  *
@@ -110,16 +112,27 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
      * Constructs a tabe model with 200 possible entries.
      */
   public MSBQueryTableModel() throws Exception{
-    colNames = XmlUtils.getColumnNames(MSB_SUMMARY);
+      //    colNames = XmlUtils.getColumnNames(MSB_SUMMARY);
+    colNames = MsbClient.getColumnNames();
     if (colNames == null) {
 	throw new Exception("No results returned");
     }
     currentBitSet = new BitSet(colNames.length);
     colCount = colNames.length - 2;
+    String [] colClassNames = MsbClient.getColumnClasses();
     colClasses = new Class [ colNames.length ];
     Vector vectorOfNames = new Vector();
     for (int i=0; i< colNames.length; i++) {
-	colClasses[i] = String.class;
+// 	colClasses[i] = String.class;
+	if (colClassNames[i].equalsIgnoreCase("Integer")) {
+	    colClasses[i] = Integer.class;
+	}
+	else if (colClassNames[i].equalsIgnoreCase("Float")) {
+	    colClasses[i] = Number.class;
+	}
+	else {
+	    colClasses[i] = String.class;
+	}
 	vectorOfNames.add((Object)colNames[i]);
 	if (i<colCount) {
 	    currentBitSet.set(i);
@@ -285,7 +298,8 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
 	currentBitSet = colSet;
 	Vector colVector = new Vector();
 	// Initialsise the vector
-	colNames = XmlUtils.getColumnNames(MSB_SUMMARY);
+// 	colNames = XmlUtils.getColumnNames(MSB_SUMMARY);
+	colNames = MsbClient.getColumnNames();
 	for (int i=0; i< colNames.length; i++) {
 	    colVector.add((Object)colNames[i]);
 	}
