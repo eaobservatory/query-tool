@@ -49,6 +49,7 @@ public class QtFrame
   private JMenuItem		saveItem;
   private JMenuItem		saveAsItem;
   private JMenuItem		exitItem;
+  private JCheckBoxMenuItem     disableAll;
   private JCheckBoxMenuItem	observability;
   private JCheckBoxMenuItem	remaining;
   private JCheckBoxMenuItem	allocation;
@@ -513,6 +514,9 @@ public class QtFrame
      *  Method to set the observational parameter to default.
      */
     public void setMenuDefault() {
+	if ( disableAll.isSelected() ) {
+	    disableAll.doClick();
+	}
 	if ( !(observability.isSelected()) ) {
 	    observability.doClick();
 	}
@@ -627,6 +631,7 @@ public class QtFrame
     observability = new JCheckBoxMenuItem("Observability",true);
     remaining     = new JCheckBoxMenuItem("Remaining",true);
     allocation    = new JCheckBoxMenuItem("Allocation",true);
+    disableAll    = new JCheckBoxMenuItem("Disable All", false);
     JMenuItem cutItem = new JMenuItem("Cut", new ImageIcon("icons/cut.gif"));
     cutItem.setEnabled(false);
     JMenuItem copyItem = new JMenuItem("Copy", new ImageIcon("icons/copy.gif"));
@@ -640,7 +645,8 @@ public class QtFrame
 		observability,
 		    remaining,
 		    allocation,
-		    null 
+		    null,
+		    disableAll
 		    }, this) 
 	    }, this));
     
@@ -728,6 +734,21 @@ public class QtFrame
     Object source = evt.getSource();
 
     if ( source instanceof JCheckBoxMenuItem) {
+	if ((JCheckBoxMenuItem)source == disableAll) {
+	    if (disableAll.isSelected()) {
+		allocation.setSelected(false);
+		remaining.setSelected(false);
+		observability.setSelected(false);
+	    }
+	    else {
+		allocation.setSelected(true);
+		remaining.setSelected(true);
+		observability.setSelected(true);
+	    }
+	}
+	else {
+	    disableAll.setSelected(false);
+	}
       localQuerytool.setAllocationConstraint(!allocation.isSelected());
       localQuerytool.setRemainingConstraint(!remaining.isSelected());
       localQuerytool.setObservabilityConstraint(!observability.isSelected());
