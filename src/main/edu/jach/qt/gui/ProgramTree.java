@@ -1231,7 +1231,13 @@ final public class ProgramTree extends JPanel implements
 	File rejectFile = new File ("/tmp/reject");
 	File noDataFile = new File ("/tmp/noData");
 // 	String title = ((SpProg)_spItem).getTitle();
-	String title = ((SpMSB) SpTreeMan.findAllItems(_spItem, "gemini.sp.SpMSB").firstElement()).getTitle();
+	String title = "<unknown>";
+	if ( SpTreeMan.findAllItems(_spItem, "gemini.sp.SpMSB").size() > 0) {
+	    title = ((SpMSB) SpTreeMan.findAllItems(_spItem, "gemini.sp.SpMSB").firstElement()).getTitle();
+	}
+	else if ( SpTreeMan.findAllItems(_spItem, "gemini.sp.SpObs").size() > 0) {
+	    title = ((SpObs) SpTreeMan.findAllItems(_spItem, "gemini.sp.SpObs").firstElement()).getTitle();
+	}
 	try {
 	    cancelFile.delete();
 	    cancelFile.createNewFile();
