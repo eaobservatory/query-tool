@@ -59,20 +59,8 @@ public class ExecuteUKIRT extends Execute implements Runnable {
 	    success.delete();
 	    return;
 	}    
-
-	// *TODO* Replace this crap!
-	Translating tFlush = new Translating();
-	tFlush.start();
 	
 	String tname = QtTools.translate(itemToExecute, inst.type().getReadable());
-	JFrame frame =  tFlush.getFrame();
-	if (frame == null) {
-	    logger.error("Failed to get frame...");
-	    success.delete();
-	    return;
-	}
-	frame.hide();
-	tFlush.stop();
 	
 	// Catch null sequence names - probably means translation
 	// failed:
