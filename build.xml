@@ -61,22 +61,12 @@
   <property name="dist.tests" value="${dist.dir}/testcases"/>
 
   <path id="classpath">
-    <!--      <pathelement location="${java.class.path}"/> -->
   </path>
   
   <path id="runpath">
-    <!--      <pathelement location="${build.classes}" /> -->
-    <!--      <pathelement location="${build.tests}" /> -->
-    <!--      <path refid="classpath"/> -->
-    <!--      <fileset dir="/home/mrippa/local/cc/lib"/> -->
-    <!--        <include name="*.jar"/> -->
-    <!--      </filesset> -->
   </path>
   
   <path id="tests-classpath">
-    <!--      <pathelement location="${build.classes}" /> -->
-    <!--      <pathelement location="${build.tests}" /> -->
-    <!--      <path refid="classpath"/> -->
   </path>
   
   <!--    ==================================================== -->
@@ -190,15 +180,6 @@
       <exclude name="edu/jach/qt/gui/DragDropObject.java"/>
       <exclude name="edu/jach/qt/gui/PersonalInfo.java"/>
       <exclude name="edu/jach/qt/gui/DnDJTree.java"/>
-      <classpath>
-	<pathelement location="/home/mrippa/netroot/src/orac3/OT/install/classes" />
-	<pathelement location="/home/mrippa/netroot/src/orac3/GEMINI/install/classes" />
-	<pathelement location="/home/mrippa/netroot/src/ompSM/install/classes" />
-	<pathelement location="/home/mrippa/netroot/src/orac3/ORAC/install/classes" />
-	<fileset dir="${lib.dir}">
-	  <include name="*.jar"/>
-	</fileset>
-      </classpath>
     </javac>
 
     <copy todir="${build.lib}">
@@ -246,15 +227,6 @@
       <exclude name="edu/jach/qt/gui/DragDropObject.java"/>
       <exclude name="edu/jach/qt/gui/PersonalInfo.java"/>
       <exclude name="edu/jach/qt/gui/DnDJTree.java"/>
-      <classpath>
-	<pathelement location="/home/mrippa/netroot/src/orac3/OT/install/classes" />
-	<pathelement location="/home/mrippa/netroot/src/orac3/GEMINI/install/classes" />
-	<pathelement location="/home/mrippa/netroot/src/orac3/OM/install/classes" />
-	<pathelement location="/home/mrippa/netroot/src/orac3/ORAC/install/classes" />
-	<fileset dir="${lib.dir}">
-	  <include name="*.jar"/>
-	</fileset>
-      </classpath>
     </javac>
 
     <copy todir="${dist.lib}">
@@ -299,7 +271,6 @@
   <!--    ==================================================== -->
   <target name="run" depends="compile">
     <java classname="edu.jach.qt.app.Main" fork="yes">
-      <!--        <classpath path="${build.classes}"/> -->
       <classpath>
 	<pathelement location="${build.classes}" />
 	<fileset dir="${build.lib}">
