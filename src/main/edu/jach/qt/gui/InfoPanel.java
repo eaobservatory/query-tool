@@ -251,6 +251,10 @@ public class InfoPanel extends JPanel implements ActionListener {
 	return telescopeInfoPanel;
     }
 
+    public SatPanel getSatPanel() {
+	return satPanel;
+    }
+
   /* -- No longer use-- now a static const
     public String getImageFile() {
     return LOGO_IMAGE;
