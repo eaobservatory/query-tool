@@ -27,7 +27,7 @@ public class RadioPanel extends WidgetPanel
   private String next, myTitle;
   private LinkedList myElems;
   private ListIterator iterator;
-  private int viewPosition = BoxLayout.Y_AXIS;
+    //  private int viewPosition = BoxLayout.Y_AXIS;
 
   /**
    * The variable <code>group</code> is the list of JRadioButtons.
@@ -52,7 +52,7 @@ public class RadioPanel extends WidgetPanel
   public RadioPanel (Hashtable ht, WidgetDataBag wdb, CompInfo info){
     super(ht, wdb);
     myTitle = info.getTitle();
-    viewPosition = info.getView();
+    //    viewPosition = info.getView();
     myElems = info.getList();
     config();
   }
@@ -63,7 +63,13 @@ public class RadioPanel extends WidgetPanel
     setBorder(BorderFactory.createTitledBorder
 	      (BorderFactory.createEtchedBorder(), myTitle,
 	       TitledBorder.CENTER, TitledBorder.DEFAULT_POSITION));
-    setLayout(new BoxLayout(this, viewPosition));
+//     setLayout(new BoxLayout(this, viewPosition));
+    if (myElems.size() > 3) {
+	setLayout(new GridLayout(0,2));
+    }
+    else {
+	setLayout(new GridLayout(3,0));
+    }
     for (iterator.nextIndex(); iterator.hasNext(); iterator.nextIndex()) {
       next = (String)iterator.next();
       rb = new JRadioButton(next);
@@ -72,7 +78,7 @@ public class RadioPanel extends WidgetPanel
       //rb.setForeground(java.awt.Color.green);
 	 
       add(rb);
-      rb.setAlignmentX(rb.CENTER_ALIGNMENT);
+      rb.setAlignmentX(rb.LEFT_ALIGNMENT);
       group.add(rb);
       radioElems.add(rb);
       if ((iterator.nextIndex() - 1) == 0)
