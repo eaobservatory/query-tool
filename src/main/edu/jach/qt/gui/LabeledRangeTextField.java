@@ -10,6 +10,8 @@ import java.util.*;
 import java.lang.*;
 import java.text.*;
 
+import edu.jach.qt.utils.*;
+
 /**
  * LabeldRangeTextField.java
  *
@@ -30,17 +32,29 @@ public class LabeledRangeTextField extends WidgetPanel
   private JLabel     lowerLabel;
 
   private String name;
+    private final String obsFieldName = "Observation Date";
 
   public LabeledRangeTextField(Hashtable ht, WidgetDataBag wdb, String text) {
     super(ht, wdb);
 
     widgetLabel = new JLabel(text + ": ", JLabel.LEADING);
-    lowerLabel = new JLabel("Min: ",JLabel.TRAILING);
-    upperLabel = new JLabel("Max: ",JLabel.TRAILING);
+    if (text.equalsIgnoreCase(obsFieldName)) {
+	lowerLabel = new JLabel("Date: ",JLabel.TRAILING);
+	upperLabel = new JLabel("Time: ",JLabel.TRAILING);
+    }
+    else {
+	lowerLabel = new JLabel("Min: ",JLabel.TRAILING);
+	upperLabel = new JLabel("Max: ",JLabel.TRAILING);
+    }
 
 
     upperBound = new JTextField();
     lowerBound = new JTextField();
+    if ( text.equalsIgnoreCase(obsFieldName)) {
+	TimeUtils time = new TimeUtils();
+	setLowerText (time.getLocalDate());
+	setUpperText (time.getLocalTime());
+    }
     setup();
   }
 
@@ -85,6 +99,14 @@ public class LabeledRangeTextField extends WidgetPanel
       DecimalFormat df = new DecimalFormat("0.00");
       String value = df.format(val.doubleValue());
       lowerBound.setText(value);
+  }
+
+  public void setUpperText(String val) {
+      upperBound.setText(val);
+  }
+
+  public void setLowerText(String val) {
+      lowerBound.setText(val);
   }
 
   public Vector getUpperList() {
