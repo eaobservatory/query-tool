@@ -98,12 +98,12 @@ public class Querytool implements Runnable, Observer {
 	       iter.nextIndex()) {
 	    abstractButton = (JRadioButton) (iter.next());
 	    if (abstractButton.isSelected()) {
-	      String tmpMoon = abstractButton.getText();
+	      String tmpMoon = abstractButton.getText().trim();
 	      String moon = "";
 	      if ( tmpMoon.equals("Dark")) {
 		moon = "0";
 	      }
-	      else if (tmpMoon.equals("Bright")) {
+	      else if (tmpMoon.equals("Grey")) {
 		moon = "1";
 	      }
 	      else {
@@ -153,11 +153,15 @@ public class Querytool implements Runnable, Observer {
 	  item = doc.createElement(next);
 
 	  while (n.hasMoreElements()) {
-	    if ( !next.equalsIgnoreCase("PICI"))
+	    if ( !next.equalsIgnoreCase("pi"))
 	      item = doc.createElement(next);
 	    else
 	      item = doc.createElement("name");
 
+	    if ( next.equalsIgnoreCase("project") ) {
+	      item = doc.createElement("projectid");
+	    }
+	    
 	    tmpStr = (String)n.nextElement();
 	    item.appendChild(doc.createTextNode(tmpStr.trim()));
 	    root.appendChild( item );
@@ -169,12 +173,17 @@ public class Querytool implements Runnable, Observer {
 	  LabeledRangeTextField lrtf = (LabeledRangeTextField) (ht.get(next));
 	  String tmpStr;
 
-	  if ( next.equalsIgnoreCase("DUR")) {
+	  if ( next.equalsIgnoreCase("duration")) {
 	    item = doc.createElement("timeest");
 	    item.setAttribute("units","minutes");
 	  } else {
 	    item = doc.createElement(next);
 	  }
+	  
+	  if ( next.equals("hour")) {
+	    item = doc.createElement("ha");
+	  } // end of if ()
+	  
 	  
 	  tmpStr = lrtf.getLowerText();
 	  sub = doc.createElement("min") ;
@@ -190,9 +199,15 @@ public class Querytool implements Runnable, Observer {
 	  root.appendChild( item );
 	}
 	
-	else if (next.equalsIgnoreCase("pc" )) {
-	  item = doc.createElement("photometric");
-	  item.appendChild( doc.createTextNode((String)ht.get(next)));
+	else if (next.equalsIgnoreCase("photometric")) {
+	  item = doc.createElement("cloud");
+	  String tmp = (String)ht.get(next);
+
+	  if (tmp.equals("true") ) {
+	    item.appendChild( doc.createTextNode("0"));
+	  }else {
+	    item.appendChild( doc.createTextNode("1"));
+	  }
 	}
 	
 	
