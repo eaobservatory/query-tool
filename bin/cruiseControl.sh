@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/local/bin/tcsh
 
 # /********************************************************************************
 #  * CruiseControl, a Continuous Integration Toolkit                              *
@@ -21,10 +21,18 @@
 #  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.  *
 #  ********************************************************************************/
 
-CCDIR=/home/mrippa/local/cc
-LIBDIR=$CCDIR/lib
-CRUISE_PATH=$JAVA_HOME/lib/tools.jar:$CCDIR/dist/cruisecontrol.jar:$LIBDIR/ant.jar:$LIBDIR/xerces.jar:$LIBDIR/mail.jar:$LIBDIR/optional.jar:$LIBDIR/junit.jar:$LIBDIR/activation.jar:.
+set ccdir=/home/mrippa/local/cc
+set libdir=$ccdir/lib
+set qtdir=$ccdir/QT
 
-EXEC="java -cp $CRUISE_PATH net.sourceforge.cruisecontrol.MasterBuild $@"
-echo $EXEC
-$EXEC >> /home/mrippa/tmp/logs/cc
+#set cruise_path=${JAVA_HOME}/lib/tools.jar:$ccdir/dist/cruisecontrol.jar:$libdir/ant.jar:$libdir/xerces.jar:$libdir/mail.jar:$libdir/optional.jar:$libdir/junit.jar:$libdir/activation.jar:$qtdir:.
+
+set cruise_path=${CLASSPATH}
+
+echo ${JAVA_HOME}
+
+set xcruise="java -cp $cruise_path net.sourceforge.cruisecontrol.MasterBuild $*"
+echo $xcruise
+
+$xcruise >>&! /home/mrippa/tmp/logs/cc &
+
