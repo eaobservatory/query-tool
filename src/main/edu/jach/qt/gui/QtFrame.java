@@ -1,17 +1,20 @@
 package edu.jach.qt.gui;
 
+/* QT imports */
+
+
+/* Miscellaneous imports */
+/* Standard imports */
 import edu.jach.qt.app.*;
 import edu.jach.qt.gui.*;
-import edu.jach.qt.utils.*;
-import gemini.sp.SpItem;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.util.Hashtable;
 import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.table.*;
-import ocs.utils.*;
+import org.apache.log4j.Logger;
 
 /**
  * The <code>QtFrame</code> is responsible for how the main JFrame
@@ -25,12 +28,14 @@ import ocs.utils.*;
  * @author <a href="mailto:mrippa@jach.hawaii.edu">Mathew Rippa</a>
  * $Id$
  */
-public class QtFrame extends JFrame implements ActionListener, MenuListener, ListSelectionListener{
+public class QtFrame extends JFrame implements PopupMenuListener, ActionListener, MenuListener, ListSelectionListener{
 
   private static final String 
     WIDGET_CONFIG_FILE = System.getProperty("widgetFile");
   private final static String
     DUMMY_TABLE_DATA = System.getProperty("dummyTable");;
+
+  static Logger logger = Logger.getLogger(QtFrame.class);
 
   private MSBQueryTableModel	msbQTM;
   private JTable		table;
@@ -47,8 +52,12 @@ public class QtFrame extends JFrame implements ActionListener, MenuListener, Lis
   private WidgetDataBag		widgetBag;
   private Querytool		localQuerytool;
   private InfoPanel		infoPanel;
+  private JPopupMenu		popup;
+  
 
- /**
+  SwingWorker msbWorker;
+
+  /**
    * Creates a new <code>QtFrame</code> instance.
    *
    * @param wdb a <code>WidgetDataBag</code> value
@@ -59,6 +68,7 @@ public class QtFrame extends JFrame implements ActionListener, MenuListener, Lis
     localQuerytool = qt;
 
     enableEvents(AWTEvent.WINDOW_EVENT_MASK);
+    //enableEvents(AWTEvent.MOUSE_EVENT_MASK);
     GridBagLayout layout = new GridBagLayout();
     getContentPane().setLayout(layout);
 
@@ -73,6 +83,10 @@ public class QtFrame extends JFrame implements ActionListener, MenuListener, Lis
 
   }
 
+  /**
+   * Describe <code>exitQT</code> method here.
+   *
+   */
   public void exitQT() {
     setVisible(false);
     dispose();
@@ -117,8 +131,7 @@ public class QtFrame extends JFrame implements ActionListener, MenuListener, Lis
       inputPanel.parseConfig(WIDGET_CONFIG_FILE);
     }
     catch(IOException e){ 
-      System.out.println(">>>>>Widget Panel Parse Failed");
-      e.printStackTrace();
+      logger.fatal("Widget Panel Parse Failed", e);
     }
 
   }
@@ -134,74 +147,87 @@ public class QtFrame extends JFrame implements ActionListener, MenuListener, Lis
     listMod.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     listMod.addListSelectionListener(this);
 
+    popup = new JPopupMenu("MSB");
+    JMenuItem menuSendMSB = new JMenuItem("Send MSB to Staging Area" );
+    popup.add( menuSendMSB );
+    table.add(popup);
+    menuSendMSB.addActionListener( this );
+
     table.addMouseListener(new MouseAdapter() {
 	public void mouseClicked(MouseEvent e) {
-	       
-	  if (e.getClickCount() == 2) {
-	    if (TelescopeDataPanel.DRAMA_ENABLED) {
+	  
+	  msbWorker = new SwingWorker() {
+	      Boolean isStatusOK;
+	      Integer msbID = (Integer)sorter.getValueAt(selRow, MSBQueryTableModel.MSBID);
 
-	      if (selRow != -1) {
+	      public Object construct() {
+		    
+		InfoPanel.logoPanel.start();
+		logger.info("Setting up staging panel for the first time.");
 
 		if (om == null)
 		  om = new OmpOM();
 
-		//final Led blinker = infoPanel.getBlinker();
+		try {
+		  om.setSpItem( localQuerytool.fetchMSB(msbID));
+		  isStatusOK = new Boolean(true);
+		} catch (NullPointerException e) {
+		  isStatusOK = new Boolean(false);
+		}
+
+		return isStatusOK;  //not used yet
+	      }
+
+	      //Runs on the event-dispatching thread.
+	      public void finished() { 
+		InfoPanel.logoPanel.stop();
+
+		if ( isStatusOK.booleanValue()) {
+		  om.addNewTree(msbID);
+		  buildStagingPanel();
+
+		  String projectid = (String) sorter.getValueAt(selRow, MSBQueryTableModel.PROJECTID);
+		  String checksum = (String) sorter.getValueAt(selRow, MSBQueryTableModel.CHECKSUM);
+
+		  logger.info("MSB "+msbID+" INFO is: "+projectid+", "+checksum);
+		  om.setProjectID(projectid);
+		  om.setChecksum(checksum);
+		}
 		
-		final SwingWorker worker = new SwingWorker() {
-		    Boolean isStatusOK;
-		    Integer msbID = (Integer)sorter.getValueAt(selRow, MSBQueryTableModel.MSBID);
+		else {
+		  logger.error("No msb ID retrieved!");
+		}
+	      }
+	    }; //End inner class
 
-		    public Object construct() {
-		    
-		      try {
-			om.setSpItem( localQuerytool.fetchMSB(msbID));
-			isStatusOK = new Boolean(true);
-		      } catch (NullPointerException e) {
-			isStatusOK = new Boolean(false);
-		      }
+	  if (SwingUtilities.isLeftMouseButton(e) && e.getClickCount() == 2) {
+	    if (TelescopeDataPanel.DRAMA_ENABLED) {
 
-		      return isStatusOK;  //not used yet
-		    }
+	      if (selRow != -1) {
 
-		    //Runs on the event-dispatching thread.
-		    public void finished() { 
-		      //blinker.blinkLed(false);
-		      InfoPanel.logoPanel.stop();
+		msbWorker.start();
+	      }
 
-		      if ( isStatusOK.booleanValue()) {
-			om.addNewTree(msbID);
-			//System.out.println("ID is "+msbID);
-			buildStagingPanel();
-		      }
-
-		      else {
-			System.out.println("No msb ID retrieved!");
-		      }
-		    }
-		  }; //End inner class
-
-		String projectid = (String) sorter.getValueAt(selRow, MSBQueryTableModel.PROJECTID);
-		String checksum = (String) sorter.getValueAt(selRow, MSBQueryTableModel.CHECKSUM);
-
-		//System.out.println(">>>>>>MSB INFO is: "+projectid+", "+checksum);
-		om.setProjectID(projectid);
-		om.setChecksum(checksum);
-
-		//blinker.blinkLed(true);
-		//blinkThread.start();
-		InfoPanel.logoPanel.start();
-		worker.start();  //required for SwingWorker 3
+	      else {
+		JOptionPane.showMessageDialog(null, "Must select a project summary first!");
 
 	      }
-	      else
-		JOptionPane.showMessageDialog(null, "Must select a project summary first!");
 	    }
-	    else 
+
+	    else {
 	      JOptionPane.showMessageDialog(null, "NOT A DRAMA SYSTEM. MSB EXECUTION DISABLED.");
+	      logger.warn("NOT A DRAMA SYSTEM. MSB EXECUTION DISABLED.");
+	    }
 	  }
 
-	  if (SwingUtilities.isRightMouseButton(e)) {
-
+	  else if (SwingUtilities.isRightMouseButton(e) && e.getClickCount() == 1) {
+	    
+	    logger.debug("Right Mouse Hit");
+	      if ( selRow != -1) {
+		popup.show((Component)e.getSource(), e.getX(), e.getY());
+	    
+	      }
+	    
 	  }
 	}
 
@@ -219,6 +245,24 @@ public class QtFrame extends JFrame implements ActionListener, MenuListener, Lis
 
       } );
     table.setVisible(true);
+  }
+
+  /**
+   * Describe <code>sendToStagingArea</code> method here.
+   *
+   */
+  public void sendToStagingArea () {
+
+    if (table.getSelectedRow() != -1) {
+
+      msbWorker.start();
+    }
+
+    else {
+      JOptionPane.showMessageDialog(null, "Must select a project summary first!");
+
+    }
+    
   }
    
 
@@ -305,7 +349,7 @@ public class QtFrame extends JFrame implements ActionListener, MenuListener, Lis
     //JMenu constraints = 
       
 
-   JMenuItem openItem = new JMenuItem("Open");
+    JMenuItem openItem = new JMenuItem("Open");
     saveItem = new JMenuItem("Save");
     saveAsItem = new JMenuItem("Save As");
       
@@ -371,11 +415,26 @@ public class QtFrame extends JFrame implements ActionListener, MenuListener, Lis
 
   }
 
+  /**
+   * Describe <code>actionPerformed</code> method here.
+   *
+   * @param evt an <code>ActionEvent</code> value
+   */
   public void actionPerformed(ActionEvent evt) {
 
-    localQuerytool.setAllocationConstraint(!allocation.isSelected());
-    localQuerytool.setRemainingConstraint(!remaining.isSelected());
-    localQuerytool.setObservabilityConstraint(!observability.isSelected());
+    Object source = evt.getSource();
+
+    if ( source instanceof JCheckBoxMenuItem) {
+      localQuerytool.setAllocationConstraint(!allocation.isSelected());
+      localQuerytool.setRemainingConstraint(!remaining.isSelected());
+      localQuerytool.setObservabilityConstraint(!observability.isSelected());
+    } 
+    
+    else if ( source instanceof JMenuItem) {
+      logger.debug("Popup send MSB");
+      msbWorker.start();
+
+    }
     
   }
 
@@ -437,6 +496,35 @@ public class QtFrame extends JFrame implements ActionListener, MenuListener, Lis
     if (e.getID() == WindowEvent.WINDOW_CLOSING) {
       System.exit(0);
     }
+  }
+
+  // implementation of javax.swing.event.PopupMenuListener interface
+
+  /**
+   * Describe <code>popupMenuWillBecomeVisible</code> method here.
+   *
+   * @param param1 <description>
+   */
+  public void popupMenuWillBecomeVisible(PopupMenuEvent param1) {
+    // TODO: implement this javax.swing.event.PopupMenuListener method
+  }
+
+  /**
+   * Describe <code>popupMenuWillBecomeInvisible</code> method here.
+   *
+   * @param param1 <description>
+   */
+  public void popupMenuWillBecomeInvisible(PopupMenuEvent param1) {
+    // TODO: implement this javax.swing.event.PopupMenuListener method
+  }
+
+  /**
+   * Describe <code>popupMenuCanceled</code> method here.
+   *
+   * @param param1 <description>
+   */
+  public void popupMenuCanceled(PopupMenuEvent param1) {
+    // TODO: implement this javax.swing.event.PopupMenuListener method
   }
 
 }//QtFrame
