@@ -19,18 +19,24 @@ import org.w3c.dom.*;
  * WidgetDataBag class, simply a Hashtable tracking the state of all 
  * Widgets contained in the bag.
 
- * This Observer Subject relationship allows instantaneous updates of the 
- * state of the GUI.  The state data is represented in XML and a new  
- * _xmlString is written upon a gui state change.  As this seems inefficient,
- * I see it as the only way to get instantaneous results.
+ * This Observer Subject relationship allows instantaneous updates of
+ * the state of the GUI.  The state data is represented in XML and a
+ * new _xmlString is written upon a gui state change.  As this seems
+ * somewhat inefficient, I see it as the only way to get instantaneous
+ * results.
  *
  * @author <a href="mailto:mrippa@jach.hawaii.edu">Mathew Rippa</a>
- * @version 1.0
- */
+ * @version 1.0 */
 public class Querytool implements Runnable, Observer {
 
   private String _xmlString;
   private WidgetDataBag bag;
+
+  private final String OBSERVABILITY_DISABLED = "observability";
+  private final String REMAINING_DISABLED     = "remaining";
+  private final String ALLOCATION_DISABLED    = "allocation";
+
+  private boolean remaining, observability, allocation;
 
   /**
    * Creates a new <code>Querytool</code> instance.
@@ -40,6 +46,39 @@ public class Querytool implements Runnable, Observer {
   public Querytool (WidgetDataBag bag) {
     this.bag = bag;
     bag.addObserver(this);
+  }
+
+  /**
+   * Describe <code>setObservabilityConstraint</code> method here.
+   *
+   * @param flag a <code>boolean</code> value that sets the state of
+   * the observability constraint.
+   */
+  public void setObservabilityConstraint(boolean flag) {
+    observability = flag;
+    buildXML(bag.getHash());
+  }
+
+  /**
+   * Describe <code>setRemainingConstraint</code> method here.
+   *
+   * @param flag a <code>boolean</code> value that sets the state of
+   * the remaining constraint.
+   */
+  public void setRemainingConstraint(boolean flag) {
+    remaining = flag;
+    buildXML(bag.getHash());
+  }
+
+  /**
+   * Describe <code>setAllocationConstraint</code> method here.
+   *
+   * @param flag a <code>boolean</code> value that sets the state of
+   * the allocation constraint.
+   */
+  public void setAllocationConstraint(boolean flag) {
+    allocation = flag;
+    buildXML(bag.getHash());
   }
 
   /**
@@ -75,6 +114,25 @@ public class Querytool implements Runnable, Observer {
       item = doc.createElement("telescope");
       item.appendChild( doc.createTextNode(System.getProperty("telescope")) );
       root.appendChild(item);
+
+      if (observability) {
+	item = doc.createElement("disableconstraint");
+	item.appendChild( doc.createTextNode(OBSERVABILITY_DISABLED) );
+	root.appendChild(item);
+      }
+
+      if (allocation) {
+	item = doc.createElement("disableconstraint");
+	item.appendChild( doc.createTextNode(REMAINING_DISABLED) );
+	root.appendChild(item);
+      }
+      
+      if (remaining) {
+	item = doc.createElement("disableconstraint");
+	item.appendChild( doc.createTextNode(ALLOCATION_DISABLED) );
+	root.appendChild(item);
+      }
+      
 	 
       for(Enumeration e = ht.keys(); e.hasMoreElements() ; ) {
 	next = ((String)e.nextElement());
