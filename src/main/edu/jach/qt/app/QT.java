@@ -1,10 +1,11 @@
 package edu.jach.qt.app;
 
 /* JSKY imports */
-import jsky.app.ot.OtFileIO;
+import jsky.app.ot.*;
 
 /* ORAC imports */
 import orac.ukirt.util.UkirtPreTranslator;
+import orac.jcmt.util.JcmtPreTranslator;
 import orac.util.SpItemDOM;
 
 /* QT imports */
@@ -57,10 +58,16 @@ final public class QT {
      OtFileIO.setXML(System.getProperty("OMP") != null);
 
      try {
-       SpItemDOM.setPreTranslator(new UkirtPreTranslator("Base", "GUIDE"));
-        
+// 	 if (System.getProperty("telescope").equalsIgnoreCase("ukirt")) {
+// 	     SpItemDOM.setPreTranslator(new UkirtPreTranslator("Base", "GUIDE"));
+// 	 }
+// 	 else if (System.getProperty("telescope").equalsIgnoreCase("jcmt")) {
+// 	     SpItemDOM.setPreTranslator(new JcmtPreTranslator("SCIENCE", "REFERENCE"));
+// 	 }
+	 OtCfg.init();
      } catch ( Exception e) {
        logger.fatal("PreTranslator error starting the QT");
+       e.printStackTrace();
        System.exit(1);
      }
 
@@ -114,6 +121,9 @@ final public class QT {
 
 /*
  * $Log$
+ * Revision 1.17  2002/07/31 23:52:32  dewitt
+ * Changed the starting of the PreTranslators to use OtCgf.init().  This is more generic (and lets us read JCMT project files!).
+ *
  * Revision 1.16  2002/07/26 01:08:36  dewitt
  * Added some additional error handling
  *
