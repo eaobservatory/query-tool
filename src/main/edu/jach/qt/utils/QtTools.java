@@ -19,7 +19,7 @@ import orac.ukirt.iter.*;
 import orac.util.*;
 
 
-/**
+/***
  * QtTools.java
  * A set  of static tools for the QT-OM
  *
@@ -84,13 +84,15 @@ public class QtTools {
    *
    * @param someExec a <code>String[]</code> value
    */
-  public static int execute(String[] someExec) {
-    ExecDtask task = new ExecDtask(someExec);
-    task.setWaitFor(false);
+  public static int execute(String[] cmd, boolean wait, boolean output) {
+
+ 
+    ExecDtask task = new ExecDtask(cmd);
+    task.setWaitFor(wait);
 
     // Set the output depending on whether it is requested in the cfg file.
     //boolean debug = System.getProperty("SCR_MESS","OFF").equalsIgnoreCase("ON");
-    task.setOutput(true);
+    task.setOutput(output);
     task.run();
 
     // Check for errors from the script
@@ -175,17 +177,17 @@ public class QtTools {
     script[3] = "-"+System.getProperty("SIMULATE","simTel");
     script[4] = "-"+System.getProperty("ENGINEERING","eng");
     script[5] = "-omp";
-
-    logger.info("About to start script "+
-		 script[0]
-		 +			" "+script[1] 
-		 +			" "+script[2] 
-		 +			" "+script[3] 
-		 +                   " "+script[4]
-		 +                   " "+script[5]
-		 );
     
-    int status = QtTools.execute(script);
+    logger.info("About to start script "
+		+script[0]
+		+			" "+script[1] 
+		+			" "+script[2] 
+		+			" "+script[3] 
+		+                   " "+script[4]
+		+                   " "+script[5]
+		);
+
+    int status = QtTools.execute(script, false, true);
   }
 
 }
