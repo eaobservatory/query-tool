@@ -366,6 +366,19 @@ public class QtFrame extends JFrame implements PopupMenuListener, ActionListener
   }
 
 
+    public void setMenuDefault() {
+	if ( !(observability.isSelected()) ) {
+	    observability.doClick();
+	}
+	if ( !(remaining.isSelected()) ) {
+	    remaining.doClick();
+	}
+	if ( !(allocation.isSelected()) ) {
+	    allocation.doClick();
+	}
+    }
+
+
   /**
    * The <code>valueChanged</code> method is mandated by the 
    * ListSelectionListener. Called whenever the value of 
