@@ -1217,6 +1217,7 @@ final public class ProgramTree extends JPanel implements
 	    title = ((SpObs) SpTreeMan.findAllItems(_spItem, "gemini.sp.SpObs").firstElement()).getTitle();
 	    checkSum = ((SpObs) SpTreeMan.findAllItems(_spItem, "gemini.sp.SpObs").firstElement()).getChecksum();
 	}
+	projectID = ((SpProg)_spItem).getProjectID();
 	try {
 	    cancelFile.delete();
 	    cancelFile.createNewFile();
