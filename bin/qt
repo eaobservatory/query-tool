@@ -4,8 +4,8 @@ onintr tidy
 
 set JAVA		= /local/java/jdk/bin/java
 set baseOTConfigDir	= /jac_sw/orac3/OT/install/cfg
-#set qtConfig	        = /jac_sw/omp/QT/config/qtSystem.conf
-set qtConfig	        = /home/dewitt/omp/QT/config/qtSystem.conf
+set qtConfig	        = /jac_sw/omp/QT/config/qtSystem.conf
+#set qtConfig	        = /home/dewitt/omp/QT/config/qtSystem.conf
 
 set usage		= "Usage: $0 <telescope> [-h] [-options] \n\nwhere telescope is:\n\tukirt\t\tspecifies the UKIRT widget set\n\tjcmt\t\tspecifies the jcmt widget set\n\nand options include:\n\t-hilo <solaris_host>\t\tspecifies we are running in hilo and sets the solaris host\n\t-config <file>\tspecies the absolute path to the \042file\042 used for this session\n\t-scenario\tspecifies scenario mode (does not depend on drama)\n\n"
 
