@@ -6,6 +6,12 @@ import edu.jach.qt.utils.QtTools;
 import java.awt.*;
 import javax.swing.UIManager;
 import edu.jach.qt.utils.BasicWindowMonitor;
+import jsky.app.ot.OtFileIO;
+
+
+import orac.ukirt.util.UkirtPreTranslator;
+import orac.util.SpItemDOM;
+
 
 /**
  * This is the top most OMP-QT class.  Upon init it instantiates 
@@ -29,6 +35,18 @@ final public class QT {
     * frame is also set be centered on the screen.
     */
    public QT () {
+     OtFileIO.setXML(System.getProperty("OMP") != null);
+
+     try {
+       SpItemDOM.setPreTranslator(new UkirtPreTranslator("Base", "GUIDE"));
+        
+     } catch ( Exception e) {
+       System.out.println("THIS WONT WORK. ");
+       
+       System.exit(1);
+     } // end of try-catch
+     
+
       QtTools.loadConfig(System.getProperty("qtConfig"));
 
       WidgetDataBag wdb = new WidgetDataBag ();
@@ -82,6 +100,10 @@ final public class QT {
 } // Omp
 
 //$Log$
+//Revision 1.10  2002/03/08 10:08:14  mrippa
+//The PRE-translator thingy was added here. Everything was completely
+//broken without it!
+//
 //Revision 1.9  2002/02/24 06:50:56  mrippa
 //Reset Window size of the QtFrame.
 //
