@@ -36,14 +36,14 @@ final public class QT {
       QtFrame qtf = new QtFrame(wdb, qt);
       
       qtf.addWindowListener(new BasicWindowMonitor());
-      qtf.setSize(new Dimension(950, 550));
+      qtf.setSize(1150,550);
+      //qtf.setSize(new Dimension(1150, 600));
       qtf.setTitle("OMP Query Tool Observation Manager");
 
       Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
       Dimension frameSize = qtf.getSize();
 
       // Validate frames that have preset sizes
-      qtf.validate();
       
       // Pack frmaes otherwise
       //qtf.pack();
@@ -60,8 +60,8 @@ final public class QT {
       int x = screenSize.width/2 - frameSize.width/2;
       int y = screenSize.height/2 - frameSize.height/2;
       qtf.setLocation(x,y);
+      qtf.validate();
       qtf.setVisible(true);
-
    }
    
    /**
@@ -82,6 +82,9 @@ final public class QT {
 } // Omp
 
 //$Log$
+//Revision 1.9  2002/02/24 06:50:56  mrippa
+//Reset Window size of the QtFrame.
+//
 //Revision 1.8  2001/11/24 04:56:20  mrippa
 //Added a BasicWindowMonitor so as to cleanly exit the QT.
 //
