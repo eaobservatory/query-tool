@@ -31,40 +31,33 @@ import java.net.*;
    @version 1.0 1st June 1999
    @author M.Tan@roe.ac.uk, modified by Mathew Rippa
 */
-final public class ProgramTree extends JPanel
-   implements TreeSelectionListener,ActionListener
-{
+final public class ProgramTree extends JPanel 
+   implements TreeSelectionListener,ActionListener {
 
-   /** 
-       public programTree(menuSele m) is
-       the constructor. The class has only one constructor so far.
-       a few thing are done during the construction. They are mainly
-       about adding a run button and setting up a listener
+   /** public programTree(menuSele m) is the constructor. The class
+       has only one constructor so far.  a few thing are done during
+       the construction. They are mainly about adding a run button and
+       setting up a listener
       
        @param  none
        @return none
-       @throws none
+       @throws none 
    */
-   public ProgramTree()
-   {
-      Border border=BorderFactory.createMatteBorder(2, 2,
-						    2,2, Color.white);
-      setBorder(new TitledBorder(border,
-				 "Fetched Science Program (SP)",0,0,
-				 new Font("Roman",Font.BOLD,12),Color.black));
-      
-      setLayout( new BorderLayout() );
+   public ProgramTree()  {
+      Border border=BorderFactory.createMatteBorder(2, 2, 2, 2, Color.white);
+      setBorder(new TitledBorder(border, 
+				 "Fetched Science Program (SP)", 
+				 0, 0, new Font("Roman",Font.BOLD,12),Color.black));
+      setLayout(new BorderLayout() );
       
       //menu=m;
       run=new JButton("Send for execution");
       run.setMargin(new Insets(5,10,5,10));
       run.setEnabled(true);
-      
       run.addActionListener(this);
       add(run,"South");
       
       //consoleFrames.addFrameListEventListener(this);
-      
    }
   
    /** public void actionPerformed(ActionEvent evt) is a public method
@@ -76,36 +69,25 @@ final public class ProgramTree extends JPanel
        @throws none
       
    */
-   public void actionPerformed (ActionEvent evt)
-   {
-      
+   public void actionPerformed (ActionEvent evt) {
       Object source = evt.getSource();
-      
-      if (source == run)
-	 {
-
-	    if (path == null)
-	       {
-		  //errorBox =new ErrorBox("You have not selected an observation!"+
-		  //"\nPlease select an observation.");
-		  System.err.print("You have not selected an observation!");
-		  return;
-	       }
-
-	    // 	  try {
-
-	    // 	    System.out.println("TEST:"+path.toString());
-
-	    // 	  } catch (NullPointerException e)
-	    // 	    {
-	    // 	      errorBox =new ErrorBox("You have not selected an observation!"+
-	    // 				     "\nPlease select an observation object.");
-	    // 	      return;
-	    // 	    }
-	  
-	    execution();
-	  
+      if (source == run) {
+	 if (path == null) {
+	    //errorBox =new ErrorBox("You have not selected an observation!"+
+	    //"\nPlease select an observation.");
+	    System.err.print("You have not selected an observation!");
+	    return;
 	 }
+	 // 	  try {
+	 // 	    System.out.println("TEST:"+path.toString());
+	 // 	  } catch (NullPointerException e)
+	 // 	    {
+	 // 	      errorBox =new ErrorBox("You have not selected an observation!"+
+	 // 				     "\nPlease select an observation object.");
+	 // 	      return;
+	 // 	    }
+	 execute();
+      }
    }
   
    /**  private void execution() is a private method
@@ -117,97 +99,82 @@ final public class ProgramTree extends JPanel
 	@throws none
        
    */
-   private void execution()
-   {
-      
-      SpItem item=findItem(_spItem,path.getLastPathComponent().toString());
-
+   private void execute() {
+      SpItem item = findItem(_spItem, path.getLastPathComponent().toString());
       if (item == null) {
-        
-//  	 errorBox =new ErrorBox("You have not selected an observation!"+
-//  				"\nPlease select an observation.");
+	 //errorBox =new ErrorBox("You have not selected an observation!"+
+	 //                       "\nPlease select an observation.");
 	 System.err.print("You have not selected an observation!");
 	 return;
       }
 
-      if(!item.typeStr().equals("ob"))
-	 {
-	  
-//  	    errorBox =new ErrorBox("Your selection: "+item.getTitle()+
-//  				   " is not an observation"+
-//  				   "\nPlease select an observation.");
-	    System.err.print("Your selection: "+item.getTitle()+ 
-			     " is not an observation"+ 
-			     "\nPlease select an observation.");
-	    return;
-	  
-	 } else
-	    {
-	       run.setEnabled(false);
-	       run.setForeground(Color.white);
-	    
-	       SpItem observation=item;
-	    
-	       if(!observation.equals(null))
-		  {
-		
-		     SpItem inst= (SpItem) SpTreeMan.findInstrument(item);
-		
-		     Translating tFlush =new Translating();
-		     tFlush.start();
-		
-		     String tname=trans(observation);
-		
-		     tFlush.getFrame().dispose();
-		     tFlush.stop();
+      if(!item.typeStr().equals("ob")) {
+	 //  	    errorBox =new ErrorBox("Your selection: "+item.getTitle()+
+	 //  				   " is not an observation"+
+	 //  				   "\nPlease select an observation.");
+	 System.err.print("Your selection: "+item.getTitle()+ 
+			  " is not an observation"+ 
+			  "\nPlease select an observation.");
+	 return;
+      } else {
+	 run.setEnabled(false);
+	 run.setForeground(Color.white);
 
-		     // Catch null sequence names - probably means translation
-		     // failed:
-		     if (tname == null) {
-			//errorBox = new ErrorBox ("Translation failed. Please report this!");
-			System.err.println("Translation failed. Please report this!");
-			run.setEnabled(true);
-			run.setForeground(Color.black);		    
-			return;
-		     }else{
-			System.out.println ("Trans OK");
-		     }
+	 SpItem observation=item;
 
-		     // Prevent IRCAM3 and CGS4 from running together
-		
-		     //figure out if the same inst. is already in use or
-		     //whether IRCAM3 and CGS4 would be running together
-		     sequenceFrame f;
-		     for(int i=0;i<consoleFrames.getList().size();i++) {
-			f = (sequenceFrame) 
-			   consoleFrames.getList().elementAt(i);
-		    
-			if(inst.type().getReadable().equals(f.getInstrument())) {
-			   f.resetObs(observation.getTitle(),tname);
-			   run.setEnabled(true);
-			   run.setForeground(Color.black);
-			   return;
-			}
+	 if(!observation.equals(null)) {
+	    SpItem inst= (SpItem) SpTreeMan.findInstrument(item);
+	    Translating tFlush = new Translating();
+	    tFlush.start();
+	    String tname=trans(observation);
+	    tFlush.getFrame().dispose();
+	    tFlush.stop();
 
-			if(inst.type().getReadable().equals("IRCAM3") && f.getInstrument().equals("CGS4")) {
-			   //new AlertBox ("IRCAM3 and CGS4 cannot run at the same time.");
-			   run.setEnabled(true);
-			   run.setForeground(Color.black);		    
-			   return;
-			}
-		  
-			if(inst.type().getReadable().equals("CGS4") && f.getInstrument().equals("IRCAM3")) {
-			   //new AlertBox ("CGS4 and IRCAM3 cannot run at the same time.");
-			   run.setEnabled(true);
-			   run.setForeground(Color.black);		    
-			   return;
-			}
-		     }
-		     creatNewRemoteFrame(observation,inst);
-		  }
+	    // Catch null sequence names - probably means translation
+	    // failed:
+	    if (tname == null) {
+	       //errorBox = new ErrorBox ("Translation failed. Please report this!");
+	       System.err.println("Translation failed. Please report this!");
+	       run.setEnabled(true);
+	       run.setForeground(Color.black);		    
+	       return;
+	    }else{
+	       System.out.println ("Trans OK");
 	    }
+
+	    // Prevent IRCAM3 and CGS4 from running together
+
+	    //figure out if the same inst. is already in use or
+	    //whether IRCAM3 and CGS4 would be running together
+	     SequenceFrame f;
+	     for(int i=0;i<consoleFrames.getList().size();i++) {
+		f = (SequenceFrame)consoleFrames.getList().elementAt(i);
+		
+		if(inst.type().getReadable().equals(f.getInstrument())) {
+		   f.resetObs(observation.getTitle(),tname);
+		   run.setEnabled(true);
+		   run.setForeground(Color.black);
+		   return;
+		}
+		
+		if(inst.type().getReadable().equals("IRCAM3") && f.getInstrument().equals("CGS4")) {
+		   //new AlertBox ("IRCAM3 and CGS4 cannot run at the same time.");
+		   run.setEnabled(true);
+		   run.setForeground(Color.black);		    
+		   return;
+		}
+		
+		if(inst.type().getReadable().equals("CGS4") && f.getInstrument().equals("IRCAM3")) {
+		   //new AlertBox ("CGS4 and IRCAM3 cannot run at the same time.");
+		   run.setEnabled(true);
+		   run.setForeground(Color.black);		    
+		   return;
+		}
+	     }
+	     creatNewRemoteFrame(observation, inst);
+	 }
+      }
    }
-  
 
    /**  
 	private void creatNewRemoteFrame(SpItem observation,SpItem inst) 
@@ -221,23 +188,21 @@ final public class ProgramTree extends JPanel
 	@throws RemoteException,MalformedURLException
        
    */
-  
-   private void creatNewRemoteFrame(SpItem observation,SpItem inst)
-   {
+   private void creatNewRemoteFrame(SpItem observation, SpItem inst) {
       try {
-	 frame = new remoteFrame(inst.type().getReadable(),
-				 observation.getTitle(),consoleFrames);
+	 frame = new RemoteFrame(inst.type().getReadable(),
+				 observation.getTitle(), consoleFrames);
 	  
 	 // Create a security manager (should replace by a policy file)
 	 //	System.setSecurityManager(new RMISecurityManager());
 
 	 String instStr = inst.type().getReadable();
-	 Naming.rebind(System.getProperty(instStr+"_OBJE"),frame);
+	 Naming.rebind(System.getProperty(instStr+"_OBJE"), frame);
 	 Naming.rebind(System.getProperty(instStr+"_OBJE")+"-COMM",
 		       frame.getCommandSent());
 	 System.out.println("RMI Server for the "+instStr+" console is ready.");
 	  
-	 if (System.getProperty("RMIS_MESS").equals("ON")) 
+	 if (System.getProperty("RMIS_MESS").equals("ON"))
 	    frame.setLog(System.err);
 
       } catch (RemoteException re) {
@@ -247,7 +212,6 @@ final public class ProgramTree extends JPanel
       }  catch (NullPointerException e) {
 	 System.out.println("NullPointerException in programTree:" + e);
       }
-      
       
       //add inst into the instrument list on the OM frame
       //      if (menu.getActiveInstrumentList().getItemCount()>0) {
@@ -260,14 +224,13 @@ final public class ProgramTree extends JPanel
       //      }
 
       try {
-	
 	 //menu.getActiveInstrumentList().addItem(inst.type().getReadable());
 	 consoleFrames.addFrameList (frame.getFrame());
 	 loadDramaTasks (inst.type().getReadable());
-
+	 
 	 //connect it to the TCS if it is the first instrument
 	 if (consoleFrames.getList().size()==1) {
-	    sequenceFrame sf = (sequenceFrame) consoleFrames.getList().elementAt(0);
+	    SequenceFrame sf = (SequenceFrame) consoleFrames.getList().elementAt(0);
 	    sf.connectTCS();
 	 }
 	 if (inst.type().getReadable().equalsIgnoreCase("UFTI")) {
@@ -279,7 +242,6 @@ final public class ProgramTree extends JPanel
       } catch (NullPointerException e) {
 	 System.out.println("NullPointerException in programTree 2:" + e);
       }
-    
    }
   
   
@@ -294,27 +256,22 @@ final public class ProgramTree extends JPanel
       @throws RemoteException,MalformedURLException
      
    */
-  
-   private String trans (SpItem observation)
-   {
-      SpTranslator translation=new SpTranslator((SpObs)observation);
+   private String trans (SpItem observation) {
+      SpTranslator translation = new SpTranslator((SpObs)observation);
       translation.setSequenceDirectory(System.getProperty("EXEC_PATH"));
       translation.setConfigDirectory(System.getProperty("CONF_PATH"));
       
-      Properties temp=System.getProperties();
+      Properties temp = System.getProperties();
       String tname = null;
       try {
 	 tname=translation.translate();
 	 temp.put(new String("execFilename"),tname);
-
       }catch (Exception e) {
 	 System.out.println ("Translation failed!, exception was "+e);
       }
-      
       return tname;
    }
-  
-  
+
    /**
       public void addTree(String title,SpItem sp) is a public method
       to set up a JTree GUI bit for a science program object in the panel
@@ -602,9 +559,10 @@ final public class ProgramTree extends JPanel
    private SpItem _spItem;
    private DefaultMutableTreeNode root;
    private TreePath path;
-   //private ErrorBox errorBox;
-   private FrameList consoleFrames=new FrameList();
-   private remoteFrame frame;
+   private FrameList consoleFrames = new FrameList();
+   private RemoteFrame frame;
+
    //private menuSele menu;
+   //private ErrorBox errorBox;
 }
 
