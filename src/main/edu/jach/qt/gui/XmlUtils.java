@@ -435,7 +435,16 @@ public class XmlUtils {
 		s= s.trim();
 		if (s.equals("") || ids.contains(s)) {
 		}
+		else if (start == 0 || length == 1) {
+		    // This was added to trap some random problems
+		    // with the SAX parser.  I dont really know
+		    // why it happens, but this trap should get
+		    // rid of them
+		}
 		else {
+		    System.out.println("Found project "+s);
+		    System.out.println("\tAt position "+start);
+		    System.out.println("\tOf length "+length);
 		    ids.add(s);
 		    getNextPriority = true;
 		}
