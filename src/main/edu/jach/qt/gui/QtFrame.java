@@ -1,16 +1,15 @@
 package edu.jach.qt.gui;
 
-import edu.jach.qt.app.Querytool;
-import edu.jach.qt.gui.WidgetDataBag;
-import edu.jach.qt.utils.TextReader;
+import ocs.utils.ObeyNotRegisteredException;
+import edu.jach.qt.app.*;
+import edu.jach.qt.gui.*;
+import edu.jach.qt.utils.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.IOException;
-import java.util.Hashtable;
+import java.io.*;
+import java.util.*;
 import javax.swing.*;
 import javax.swing.event.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.table.*;
 
 /**
@@ -44,9 +43,9 @@ public class QtFrame extends JFrame implements MenuListener, ListSelectionListen
   private OmpOM			om;
   private WidgetDataBag		widgetBag;
   private Querytool		localQuerytool;
+  private InfoPanel		infoPanel;
 
-
-  /**
+ /**
    * Creates a new <code>QtFrame</code> instance.
    *
    * @param wdb a <code>WidgetDataBag</code> value
@@ -85,7 +84,7 @@ public class QtFrame extends JFrame implements MenuListener, ListSelectionListen
 
     //Input Panel Setup
     WidgetPanel inputPanel = new WidgetPanel(new Hashtable(), widgetBag);
-    InfoPanel infoPanel = new InfoPanel(msbQTM, localQuerytool, this);
+    infoPanel = new InfoPanel(msbQTM, localQuerytool, this);
 
     // Build split-pane view
     //inputPanel.setMinimumSize(new Dimension(770,275) );
@@ -132,26 +131,78 @@ public class QtFrame extends JFrame implements MenuListener, ListSelectionListen
 	  if (e.getClickCount() == 2){
 	    if (selRow != -1) {
 	      if (om == null) {
-		om = new OmpOM();		      
+
+		String projectid = (String) msbQTM.getValueAt(selRow, MSBQueryTableModel.PROJECTID);
+		String checksum = (String) msbQTM.getValueAt(selRow, MSBQueryTableModel.CHECKSUM);
+
+		System.out.println("Vals are: "+projectid+", "+checksum);
+		
+		om = new OmpOM();
+
+		om.setProjectID(projectid);
+		om.setChecksum(checksum);
 	      }
-	      Integer msbID = msbQTM.getSpSummaryId(selRow);
+	      final Led blinker = infoPanel.getBlinker();
+	      
+	      final SwingWorker worker = new SwingWorker() {
+		  Boolean isStatusOK;
+		  Integer msbID = msbQTM.getSpSummaryId(selRow);
 
-	      /* This writes the XML to a file since the SpObs stuff
-	       * needs a file.  I have not found a constructor that loads
-	       * a ProgramTree with just an XML string; only a File! 
-	       */
-	      localQuerytool.fetchMSB(msbID);
+		  public Object construct() {
 
-	      om.addNewTree(msbID);
-	      System.out.println("ID is "+msbID);
-	      buildStagingPanel(msbID);
+		    /* This writes the XML to a file since the SpObs stuff
+		     * needs a file.  I have not found a constructor that loads
+		     * a ProgramTree with just an XML string; only a File! 
+		     */
+		    isStatusOK = new Boolean(localQuerytool.fetchMSB(msbID));
+		    return isStatusOK;  //not used yet
+		  }
+
+		  //Runs on the event-dispatching thread.
+		  public void finished() { 
+		    blinker.blinkLed(false);
+		    if ( isStatusOK.booleanValue()) {
+		      
+		      om.addNewTree(msbID);
+		      //om.addNewTree();
+		      System.out.println("ID is "+msbID);
+		      buildStagingPanel(msbID);
+		      
+		    }
+
+		    else {
+		      System.out.println("No msb ID retrieved!");
+		      
+		    } // end of else
+		    
+		  }
+		};
+
+	      blinker.blinkLed(true);
+	      //blinkThread.start();
+	      worker.start();  //required for SwingWorker 3
+
 	    }
 	    else
 	      JOptionPane.showMessageDialog(null, "Must select a project summary first!");
 	  }
 	  if (SwingUtilities.isRightMouseButton(e)) {
+
 	  }
 	}
+
+	public void mousePressed(MouseEvent e) {
+	  if (e.isPopupTrigger()) {
+	    //popup.show((Component)e.getSource(), e.getX(), e.getY());
+	  }
+	}
+	public void mouseReleased(MouseEvent e) {
+	  if (e.isPopupTrigger()) {
+	    //popup.show((Component)e.getSource(),e.getX(), e.getY());
+	  }
+	}
+
+
       } );
     table.setVisible(true);
   }
@@ -351,6 +402,13 @@ public class QtFrame extends JFrame implements MenuListener, ListSelectionListen
   protected void processWindowEvent(WindowEvent e) {
     super.processWindowEvent(e);
     if (e.getID() == WindowEvent.WINDOW_CLOSING) {
+
+      try {
+	infoPanel.getCSODcHub().closeDcHub();
+      } catch (ObeyNotRegisteredException onre) {
+	
+      } // end of try-catch
+      
       System.exit(0);
     }
   }
