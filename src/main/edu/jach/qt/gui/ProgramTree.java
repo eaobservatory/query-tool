@@ -355,6 +355,7 @@ final public class ProgramTree extends JPanel implements
 	    item = DeferredProgramList.currentItem;
 	}
 	setExecutable(false);
+	run.setToolTipText("Run button disabled during execution");
 	if (System.getProperty("telescope").equalsIgnoreCase("ukirt")) {
 	    try {
 		ExecuteUKIRT execute = new ExecuteUKIRT();
@@ -397,6 +398,7 @@ final public class ProgramTree extends JPanel implements
 	    if ( ExecuteJCMT.isRunning() ) {
 		setExecutable (false);
 		logger.debug ( "Disabling run button since ExecuteJCMT is still running" );
+		run.setToolTipText("Button disabled during execution");
 		return;
 	    }
 	    else {
@@ -413,54 +415,7 @@ final public class ProgramTree extends JPanel implements
 		    setExecutable(true);
 		}
 	    }
-	    /*
-	    ExecuteJCMT execute;
-	    try {
-		if (isDeferred) {
-		    execute = ExecuteJCMT.getInstance(item);
-		}
-		else {
-		    execute = ExecuteJCMT.getInstance(_spItem);
-		}
-		failed = execute.run();
-		File failFile = new File ("/jcmtdata/orac_data/deferred/.failure");
-		if (failFile.exists()) {
-		    logger.info("Execution failed");
-		    failed = true;
-		}
-		if (!isDeferred && !failed) {
-		    if (instrumentContext instanceof SpInstSCUBA) {
-			model.clear();
-			_spItem = null;
-			selectedItem = null;
-		    }
-		    else {
-			// For heterodyne, mark all the observation as done and bring up the popup
-			for (int i=0; i<obsList.getModel().getSize(); i++) {
-			    markAsDone(i);
-			    if (TelescopeDataPanel.DRAMA_ENABLED) {
-				anObservationHasBeenDone = true;
-				msbPendingFile = new File (msbPendingDir+projectID+"_"+checkSum+".pending");
-				msbDone = showMSBDoneDialog();
-			    }
-			}
-		    }
-		}
-		else if (!failed) {
-		    DeferredProgramList.markThisObservationAsDone(item);
-		}
-	
-		setExecutable(true);
-	    }
-	    catch (Exception e) {
-		logger.error("Failed to execute",e);
-		if ( t!=null && t.isAlive()) {
-		    logger.info("Last execution still running");
-		}
-		setExecutable(true);
-		return;
-	    }
-	    */
+	    setExecutable(true);
 	}
    }
 
