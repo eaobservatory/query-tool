@@ -26,8 +26,13 @@ public class SimpleMoon {
     private GeocentricCoords gc;
     private TopocentricCoords tc;
 
+    private TelescopeInformation ti;
+
     // Constructor - sets up current information
     public SimpleMoon() {
+	ti = new TelescopeInformation(System.getProperty("telescope"));
+	latitude = ((Double)(ti.getValue("latitude"))).doubleValue();
+	longitude = ((Double)(ti.getValue("longitude"))).doubleValue();
 	getCurrentPosition();
     }
 
