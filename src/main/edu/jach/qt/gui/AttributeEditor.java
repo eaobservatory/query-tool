@@ -14,6 +14,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 import javax.swing.*;
+import javax.swing.event.*;
 import javax.swing.table.*;
 import javax.swing.text.*;
 import org.apache.log4j.Logger;
@@ -23,7 +24,7 @@ import org.apache.log4j.Logger;
  * @author  ab
  */
 public class AttributeEditor extends JDialog 
-  implements ActionListener {
+  implements ActionListener, ListSelectionListener {
 
   static Logger logger = Logger.getLogger(AttributeEditor.class);
 
@@ -214,6 +215,7 @@ public class AttributeEditor extends JDialog
     initColumnSizes();
     editorTable.setPreferredScrollableViewportSize(editorTable.getPreferredSize());
     editorTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    editorTable.getSelectionModel().addListSelectionListener(this);
 
     buttonPanel = new JPanel();
     buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
@@ -742,6 +744,14 @@ public class AttributeEditor extends JDialog
   public static double scaleFactorUsed() {
     return _scaleFactorUsed;
   }
+
+    public void valueChanged(ListSelectionEvent e) {
+	if (!e.getValueIsAdjusting()) { 
+	    editorTable.grabFocus();
+	    editorTable.setColumnSelectionInterval(1,1);
+	    editorTable.editCellAt(editorTable.getSelectedRow(), 1);
+	}
+    }
 
   private static double _scaleFactorUsed = 1.0;
 
