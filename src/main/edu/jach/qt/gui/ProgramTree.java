@@ -260,7 +260,6 @@ final public class ProgramTree extends JPanel implements
 	if (selectedItem == null) {
 	    isDeferred =  true;
 	    item = DeferredProgramList.currentItem;
-	    System.out.println(item.toXML());
 	}
 	run.setEnabled(false);
 	if (System.getProperty("telescope").equalsIgnoreCase("ukirt")) {
