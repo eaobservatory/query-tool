@@ -131,30 +131,39 @@ public class InfoPanel extends JPanel implements ActionListener {
 
 	      //Runs on the event-dispatching thread.
 	      public void finished() { 
-		logoPanel.stop();
 		if ( isStatusOK.booleanValue()) {
 		  qtf.updateColumnSizes();
+
  		  Thread tableFill = new Thread(msb_qtm);
-		  Thread projectFill = new Thread (qtf.getProjectModel());
-		  projectFill.start();
 		  tableFill.start();
 		  try {
-		      projectFill.join();
 		      tableFill.join();
 		  }
 		  catch (InterruptedException iex) {
 		      logger.warn("Problem joining tablefill thread");
 		  };
-		  qtf.setColumnSizes();
+
+		  Thread projectFill = new Thread (qtf.getProjectModel());
+		  projectFill.start();
+		  try {
+		      projectFill.join();
+		  }
+		  catch (InterruptedException iex) {
+		      logger.warn("Problem joining projectfill thread");
+		  };
+
 		  qtf.initProjectTable();
 		  msb_qtm.setProjectId("All");
+		  qtf.setColumnSizes();
+		  logoPanel.stop();
+		  qtf.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 		}
 	      }
 	    };
 	  logger.info("Query Sent");
 
 	  localQuerytool.printXML();
-      
+	  qtf.setCursor(new Cursor(Cursor.WAIT_CURSOR));
 	  logoPanel.start();
 	  worker.start();  //required for SwingWorker 3
 	}
