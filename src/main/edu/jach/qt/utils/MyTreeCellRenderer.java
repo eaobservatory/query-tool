@@ -13,8 +13,8 @@ import java.lang.*;
     @version 1.0 1st June 1999
     @author M.Tan@roe.ac.uk
 */
-final public class MyTreeCellRenderer extends JLabel
-   implements TreeCellRenderer
+final public class MyTreeCellRenderer extends DefaultTreeCellRenderer
+					      //implements TreeCellRenderer
 {
    /** public treeCellRenderer() is
        the constructor. The class has only one constructor so far.
@@ -27,9 +27,10 @@ final public class MyTreeCellRenderer extends JLabel
    */
    public MyTreeCellRenderer()
    {
-
-      Border border=BorderFactory.createMatteBorder(0,6,0,0, Color.white);
-      setBorder(border);
+       //super();
+      //Border border=BorderFactory.createMatteBorder(0,6,0,0, Color.white);
+      //setBorder(border);
+      setOpaque(true);
 
       icon=new ImageIcon[6];
       icon[0]=new ImageIcon(System.getProperty("IMAG_PATH")+"note-tiny.gif");
@@ -60,12 +61,20 @@ final public class MyTreeCellRenderer extends JLabel
 
       // Find out which node we are rendering and get its text
       DefaultMutableTreeNode node = (DefaultMutableTreeNode)value;
+
       SpItem item= (SpItem)node.getUserObject();
 
       String text=item.getTitle();
       String type=item.typeStr();
-
-      setFont( new Font( "Roman", Font.PLAIN, 12));
+      
+      if (bSelected) {
+	  setFont( new Font( "Courier", Font.BOLD, 14));
+	  setForeground(Color.black);
+      }
+      else {
+	  setFont( new Font( "Courier", Font.TRUETYPE_FONT, 14));
+	  setForeground(Color.darkGray);
+      }
 
       if(type.equals("no"))
 	 setIcon(icon[0]);
@@ -79,43 +88,44 @@ final public class MyTreeCellRenderer extends JLabel
 	 setIcon(icon[4]);
       else if(type.equals("pr")) {
 	 setIcon(icon[5]);
-	 setFont( new Font( "Roman", Font.BOLD, 12));
+	 setFont( new Font( "Roman", Font.BOLD, 18));
       }
 
       setText(text);
-      setForeground(Color.black);
+
+      //setForeground(Color.black);
       
-      this.setIconTextGap(10);
-      tree.setRowHeight(20);
+      //this.setIconTextGap(10);
+      //tree.setRowHeight(20);
       
-      this.bSelected = bSelected;
+      //this.bSelected = bSelected;
       return this;
    }
 
-   /** public void paint( Graphics g )
-      is a hack to paint the background.  Normally a JLabel can
-      paint its own background, but due to an apparent bug or
-      limitation in the TreeCellRenderer, the paint method is
-      required to handle this.
+//     /** public void paint( Graphics g )
+//        is a hack to paint the background.  Normally a JLabel can
+//        paint its own background, but due to an apparent bug or
+//        limitation in the TreeCellRenderer, the paint method is
+//        required to handle this.
 
-      @param Graphics g
-      @return  none
-      @throws none
-  */
-   public void paint( Graphics g ) {
-      Color bColor;
-      Icon  currentI = getIcon();
+//        @param Graphics g
+//        @return  none
+//        @throws none
+//    */
+//     public void paint( Graphics g ) {
+//        Color bColor;
+//        Icon  currentI = getIcon();
       
-      // Set the correct background color
-      bColor = bSelected ? Color.cyan : Color.white;
-      g.setColor( bColor );
+//        // Set the correct background color
+//        bColor = bSelected ? Color.black : Color.white;
+//        g.setColor( bColor );
       
-      // Draw a rectangle in the background of the cell
-      g.fillRect( 0, 0, getWidth() - 1, getHeight() - 1 );
+//        // Draw a rectangle in the background of the cell
+//        g.fillRect( 0, 0, getWidth() - 1, getHeight() - 1 );
       
-      super.paint( g );
-   }
+//        super.paint( g );
+//     }
   
    private ImageIcon[] icon;
-   private boolean     bSelected;
+   //private boolean     bSelected;
 }
