@@ -505,7 +505,17 @@ public class QtFrame extends JFrame implements PopupMenuListener, ActionListener
 	    // Add it to the deferred queue
 	    DeferredProgramList.addCalibration(item);
 	}
-	if (thisItem.getText().equals("Exit"))
+	else if ( thisItem.getText().equalsIgnoreCase("Index") ) {
+	    HelpPage helpPage = new HelpPage();
+	}
+	else if (thisItem.getText().equalsIgnoreCase("Exit") ) {
+	    exitQT();
+	}
+    }
+    else if (source instanceof JButton) {
+	JButton thisButton = (JButton) source;
+
+	if (thisButton.getText().equals("Exit"))
 	    {
 		exitQT();
 	    }
@@ -514,9 +524,7 @@ public class QtFrame extends JFrame implements PopupMenuListener, ActionListener
 		logger.debug("Popup send MSB");
 		msbWorker.start();
 	    }
-
     }
-    
   }
 
   /**
