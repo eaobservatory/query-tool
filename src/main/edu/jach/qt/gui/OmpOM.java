@@ -1,36 +1,25 @@
 package edu.jach.qt.gui;
 
 
-import edu.jach.qt.gui.DragDropObject;
+//import orac.jcmt.inst.*;
+//import orac.jcmt.iter.*;
+import edu.jach.qt.gui.*;
 import edu.jach.qt.utils.*;
-import gemini.sp.SpItem;
-import gemini.sp.SpMSB;
-import gemini.sp.SpTreeMan;
+import gemini.sp.*;
 import gemini.sp.iter.*;
 import gemini.sp.obsComp.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
-import java.util.Enumeration;
-import java.util.Properties;
+import java.util.*;
 import javax.swing.*;
-import javax.swing.JSplitPane;
 import javax.swing.border.*;
 import javax.swing.event.*;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeNode;
-import jsky.app.ot.FileInfo;
-import jsky.app.ot.OtCfg;
-import jsky.app.ot.OtFileIO;
-import jsky.app.ot.OtTreeWidget;
-import jsky.app.ot.OtWindow;
-//import orac.jcmt.inst.*;
-//import orac.jcmt.iter.*;
+import javax.swing.tree.*;
+import jsky.app.ot.*;
 import orac.ukirt.inst.*;
 import orac.ukirt.iter.*;
 import orac.util.*;
-import java.util.Hashtable;
-import java.util.Vector;
 
 /**
  * This is the top most class of the OMP-OM.  This 
@@ -130,9 +119,35 @@ public class OmpOM extends JPanel{
   }
   
   public String getProgramName() {
-    Vector progVector = SpTreeMan.findAllItems(spItem, "gemini.sp.SpMSB");
     
-    return (String) ((SpMSB) (progVector.elementAt(0))).getTitle();
+    Vector progVector = SpTreeMan.findAllItems(spItem, "gemini.sp.SpMSB");
+
+    System.out.println("progVector "+progVector);
+
+    try {
+       
+      if ( progVector == null  || progVector.size() == 0) {
+	progVector = SpTreeMan.findAllItems(spItem, "gemini.sp.SpObs");
+
+	if ( progVector != null && progVector.size() >0) {
+	  return (String) ((SpObs) (progVector.firstElement())).getTitle();  
+	}
+
+	else {
+	  return "Title Not Found";
+	}
+      
+      }
+      else {
+	return (String) ((SpMSB) (progVector.firstElement())).getTitle();
+      } // end of else
+      
+    } catch (NoSuchElementException nse) {
+      System.out.println();
+      nse.printStackTrace();
+      return "Title Not Found";
+    } // end of try-catch
+
   }
 
 
