@@ -227,7 +227,7 @@ public class WidgetPanel extends JPanel
 	CompInfo info = makeList();
 	    
 	instrumentPanel = new ButtonPanel(abbrevTable, widgetBag, info);
-	gbc.fill = GridBagConstraints.BOTH;
+	gbc.fill = GridBagConstraints.HORIZONTAL;
 	//gbc.anchor = GridBagConstraints.NORTH;
 	gbc.weightx = 100;
 	gbc.weighty = 100;

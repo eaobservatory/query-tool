@@ -51,7 +51,7 @@ public class QtFrame
   private JCheckBoxMenuItem	observability;
   private JCheckBoxMenuItem	remaining;
   private JCheckBoxMenuItem	allocation;
-  private JSplitPane		splitPane;
+//   private JSplitPane		splitPane;
   private GridBagConstraints	gbc;
   private JTabbedPane		tabbedPane;
   private OmpOM			om;
@@ -63,6 +63,7 @@ public class QtFrame
   private JMenu                 calibrationMenu = new JMenu("Calibrations");
   private WidgetPanel           _widgetPanel;
   private int []                tableColumnSizes;
+  private boolean               queryExpired = false;
 
 
   SwingWorker msbWorker;
@@ -83,14 +84,16 @@ public class QtFrame
     getContentPane().setLayout(layout);
 
     try {
-      compInit();
-      splitPane.validate();
-      validateTree();
+//       compInit();
+//       splitPane.validate();
+//       validateTree();
 
       om = new OmpOM();
       om.addNewTree(null);
-      buildStagingPanel();
       om.setExecutable( localQuerytool.canExecute());
+
+      compInit();
+      validateTree();
       tabbedPane.setSelectedIndex(0);
 
 
@@ -148,10 +151,10 @@ public class QtFrame
 	}
     }
 
-
     //Input Panel Setup
     WidgetPanel inputPanel = new WidgetPanel(new Hashtable(), widgetBag);
     _widgetPanel = inputPanel;
+    buildStagingPanel();
     //Table setup
     try {
 	msbQTM = new MSBQueryTableModel();
@@ -160,6 +163,8 @@ public class QtFrame
 	logger.error("Unable to create table model", e);
 	exitQT();
     }
+    infoPanel = new InfoPanel (msbQTM, localQuerytool, this);
+
 
     ProjectTableModel ptm = new ProjectTableModel();
     projectTableSetup(ptm);
@@ -173,29 +178,52 @@ public class QtFrame
 					   projectPane,
 					   resultsPanel);
     tablePanel.setDividerSize(0);
+    tablePanel.validate();
 
-    infoPanel = new InfoPanel(msbQTM, localQuerytool, this);
 
-    // Build split-pane view
-    //inputPanel.setMinimumSize(new Dimension(770,275) );
-    splitPane =  new JSplitPane( JSplitPane.VERTICAL_SPLIT,
-				 inputPanel,
-				 tablePanel);
+//     infoPanel.setMinimumSize(new Dimension(175, 450));
+//     tabbedPane.setMinimumSize(new Dimension(-1, 450));
+    tablePanel.setMinimumSize(new Dimension (-1, 100));
+//     tablePanel.setPreferredSize(new Dimension (-1, 300));
+
+    JSplitPane topPanel = new JSplitPane (JSplitPane.HORIZONTAL_SPLIT,
+					  infoPanel,
+					  tabbedPane);
+    topPanel.setMinimumSize(new Dimension(-1, 450));
+    topPanel.setDividerSize(0);
+    topPanel.validate();
+
 
     //Build Menu
     buildMenu();
 
+    getContentPane().setLayout(new BorderLayout());
+    getContentPane().add(topPanel, BorderLayout.NORTH);
+    getContentPane().add(tablePanel, BorderLayout.CENTER);
 
-    gbc.fill = GridBagConstraints.BOTH;
-    //gbc.anchor = GridBagConstraints.CENTER;
-    gbc.weightx = 0;
-    gbc.weighty = 100;
-    add(infoPanel, gbc, 0, 0, 1, 1);
+//     gbc.fill = GridBagConstraints.HORIZONTAL;
+//     gbc.anchor = GridBagConstraints.NORTH;
+//     gbc.weightx = 1.0;
+//     gbc.weighty = 0.0;
+//     add(topPanel, gbc, 0, 0, 2, 2);
 
-    gbc.fill = GridBagConstraints.BOTH;
-    gbc.weightx = 100;
-    gbc.weighty = 100;
-    add(splitPane, gbc, 1, 0, 1, 2);
+//     gbc.fill = GridBagConstraints.NONE;
+// //     gbc.anchor = GridBagConstraints.NORTHWEST;
+//     gbc.weightx = 0;
+//     gbc.weighty = 0.0;
+//     add(infoPanel, gbc, 0, 0, 1, 1);
+
+//     gbc.fill = GridBagConstraints.BOTH;
+// //     gbc.anchor = GridBagConstraints.NORTH;
+//     gbc.weightx = 0.1;
+//     gbc.weighty = 0;
+//     add(tabbedPane, gbc, GridBagConstraints.RELATIVE, 0, GridBagConstraints.REMAINDER, 1);
+
+//     gbc.fill = GridBagConstraints.BOTH;
+//     gbc.anchor = GridBagConstraints.CENTER;
+// //     gbc.weightx = 0;
+// //     gbc.weighty =0.0 ;
+//     add(tablePanel, gbc, 0, 2, 2, 1);
 
     //Read the config to determine the widgets
     try{
@@ -292,8 +320,7 @@ public class QtFrame
 
 	  if (SwingUtilities.isLeftMouseButton(e) && e.getClickCount() == 2) {
 	      if (selRow != -1) {
-
-		msbWorker.start();
+		  sendToStagingArea();
 	      }
 
 	      else {
@@ -387,6 +414,34 @@ public class QtFrame
    * on the QT interface.
    */
   public void sendToStagingArea () {
+      if (queryExpired == true) {
+	  String [] options = {"Resubmit", "New Query"};
+	  int rtn = JOptionPane.showOptionDialog (this,
+						  "Query has Expired;\nNew Query Required",
+						  null,
+						  JOptionPane.YES_NO_OPTION,
+						  JOptionPane.WARNING_MESSAGE,
+						  null,
+						  options,
+						  options[0]
+						  );
+	  if (rtn == JOptionPane.YES_OPTION) {
+	      // Resubmit the existing query
+	      InfoPanel.searchButton.doClick();
+	      return;
+	  }
+	  else {
+	      // Reset the panel to the search panel
+	      tabbedPane.setSelectedIndex(0);
+	      // Clear the summary model
+	      msbQTM.clear();
+	      // Clear the project model
+	      ((ProjectTableModel)projectTable.getModel()).clear();
+	      initProjectTable();
+	      return;
+	  }
+      }				
+					
 
     if (table.getSelectedRow() != -1) {
 
@@ -427,10 +482,10 @@ public class QtFrame
 
     if (tabbedPane == null) {
       tabbedPane = new JTabbedPane(SwingConstants.TOP);
-      remove(splitPane);
-      tabbedPane.addTab("Query", splitPane);
+//       remove(splitPane);
+      tabbedPane.addTab("Query", _widgetPanel);
       tabbedPane.addTab(om.getProgramName(), om.getTreePanel());
-      add(tabbedPane, gbc, 1, 0, 1, 2);
+//       add(tabbedPane, gbc, 1, 0, 1, 2);
       validate();
       tabbedPane.setVisible(true);
     }
@@ -457,6 +512,10 @@ public class QtFrame
 	if ( !(allocation.isSelected()) ) {
 	    allocation.doClick();
 	}
+    }
+
+    public void setQueryExpired (boolean flag) {
+	queryExpired = flag;
     }
 
 
@@ -804,6 +863,5 @@ public class QtFrame
   public void popupMenuCanceled(PopupMenuEvent param1) {
     // TODO: implement this javax.swing.event.PopupMenuListener method
   }
-
 
 }//QtFrame

@@ -74,6 +74,7 @@ public class SatPanel extends JLabel implements TimerListener {
 	  url = new URL(currentWebPage);
       }
       catch (Exception mue) {
+	  System.out.println("Unable to convert to URL");
 	  url = null;
       }
       final URL thisURL = url;

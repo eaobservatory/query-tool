@@ -511,9 +511,9 @@ public class Querytool implements Runnable, Observer {
     return (_xmlString == null);
   }
 
-    private Element processDate( LabeledRangeTextField lrtf,
-			      Document doc,
-			      Element root) {
+    private Element processDate (LabeledRangeTextField lrtf,
+				 Document doc,
+				 Element root) {
 	Element item, sub;
 	String tmpStr;
 
@@ -529,6 +529,7 @@ public class Querytool implements Runnable, Observer {
 	}
 	
 	tmpStr = lrtf.getLowerText()+"T"+time;
+
 	if (! lrtf.timerRunning() ) {
 	    TimeUtils tu = new TimeUtils();
 	    if (tu.isValidDate(tmpStr) ) {

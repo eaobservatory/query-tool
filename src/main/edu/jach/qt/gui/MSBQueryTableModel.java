@@ -31,13 +31,14 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
   public static final String MSB_SUMMARY_TEST = System.getProperty("msbSummaryTest");
 
    
-    public static String[] colNames;
-    public static Class [] colClasses;
-    private int            colCount;
-    public static int      PROJECTID;
-    public static int      CHECKSUM;
-    public static int      MSBID;
-    private BitSet         currentBitSet;
+    public static String[] colNames;           // Array of column names
+    public static Class [] colClasses;         // Array of class types for each column
+    private int            colCount;           // The number of columns TO DISPLAY
+                                               // This may be less than the actual number of columns
+    public static int      PROJECTID;          // Index of column containing the project ID
+    public static int      CHECKSUM;           // Index of column containing the project checksum
+    public static int      MSBID;              // Index of column containing the MSB Id
+    private BitSet         currentBitSet;      // Bit mask showing which columns to display
     private Vector         model;
     private Vector         modelIndex = new Vector();
     private XmlUtils.MSBTableModel currentModel;
@@ -58,27 +59,38 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
      * Constructs a tabe model with 200 possible entries.
      */
   public MSBQueryTableModel() throws Exception{
-      //    colNames = XmlUtils.getColumnNames(MSB_SUMMARY);
+
+    // Do a query to get the names of the columns
     colNames = MsbClient.getColumnNames();
     if (colNames == null) {
 	throw new Exception("No results returned");
     }
-    currentBitSet = new BitSet(colNames.length);
+    // Set the column count to the total number -2 since we will
+    // by default hide the MSB id and checksum, since these mean
+    // nothing to the observer and are for internal use only.
     colCount = colNames.length - 2;
+
+    // Do the query to get the classes for each column
     String [] colClassNames = MsbClient.getColumnClasses();
     colClasses = new Class [ colNames.length ];
     Vector vectorOfNames = new Vector();
+    currentBitSet = new BitSet(colNames.length);
+    // Loop over each column
     for (int i=0; i< colNames.length; i++) {
 	if (colClassNames[i].equalsIgnoreCase("Integer")) {
 	    colClasses[i] = Integer.class;
 	}
 	else if (colClassNames[i].equalsIgnoreCase("Float")) {
-	    colClasses[i] = Number.class;
+	    colClasses[i] = Number.class; // Does not seem to like Float.class - don't know why
 	}
 	else {
 	    colClasses[i] = String.class;
 	}
 	vectorOfNames.add((Object)colNames[i]);
+	// TJs code guarantees that the msbid and checksum are the
+	// last two columns returned in a query, so we don't need
+	// to do any explicit checking.  This will need to be modified
+	// in the event that this changes.
 	if (i<colCount) {
 	    currentBitSet.set(i);
 	}
@@ -94,6 +106,10 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
   }
 
 
+    /**
+     * Set the current project id.
+     * @param project   The name of the current project
+     */
     public void setProjectId(String project) {
 	_projectId = project;
 	fireTableChanged(null);
@@ -104,57 +120,53 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
      * Creates a DOM document for populating the table.
      */
   public void run() {
-    /**
-       Constructor - create a DOM
-    */
+      // Clear the current model
       if (model != null) {
 	  model.clear();
       }
       modelIndex.clear();
 
-    try {
-      DocumentBuilderFactory factory =
-	DocumentBuilderFactory.newInstance();
-      //factory.setValidating(true);   
-      //factory.setNamespaceAware(true);
-	 
-      DocumentBuilder builder = factory.newDocumentBuilder();
-      doc = builder.parse( new File(MSB_SUMMARY));
-      //doc = builder.parse( new File(MSB_SUMMARY_TEST));
-      //System.out.println("doc: "+doc);
-      docIsNull = false;
-
-
-    } catch (SAXException sxe) {
-      Exception  x = sxe;
-      if (sxe.getException() != null)
-	x = sxe.getException();
-      //x.printStackTrace();
-      logger.error("SAX Error generated during parsing", x);
-
-    } catch(ParserConfigurationException pce) {
-      logger.error("ParseConfiguration Error generated during parsing", pce);
-      //pce.printStackTrace();
-    } catch (IOException ioe) {
-      // I/O error
-      logger.error("IO Error generated attempting to build Document", ioe);
-      //ioe.printStackTrace();
-    }
-
-    if (doc != null) {
-	logger.info("Building new model");
-// 	model = XmlUtils.getNewModel(doc, ROOT_ELEMENT_TAG);
-	adjustColumnData(currentBitSet);
-	if (model != null) {
-	    logger.info("Model has "+model.size()+" projects");
-	    for (int i=0; i<model.size();i++) {
-		modelIndex.add(((XmlUtils.MSBTableModel)model.elementAt(i)).getProjectId());
-	    }
-	}
-    }
-//     fireTableChanged(null);
+      // Parse the MSB summary which should have already been generated from the query.
+      try {
+	  DocumentBuilderFactory factory =
+	      DocumentBuilderFactory.newInstance();
+	  
+	  DocumentBuilder builder = factory.newDocumentBuilder();
+	  doc = builder.parse( new File(MSB_SUMMARY));
+	  docIsNull = false;
+	  
+      } 
+      catch (SAXException sxe) {
+	  Exception  x = sxe;
+	  if (sxe.getException() != null)
+	      x = sxe.getException();
+	  logger.error("SAX Error generated during parsing", x);
+	  
+      } 
+      catch(ParserConfigurationException pce) {
+	  logger.error("ParseConfiguration Error generated during parsing", pce);
+      } 
+      catch (IOException ioe) {
+	  logger.error("IO Error generated attempting to build Document", ioe);
+      }
+      
+      // If the document exists, build a new model so we don't need to keep
+      // going back to the XML.
+      if (doc != null) {
+	  logger.info("Building new model");
+	  model = XmlUtils.getNewModel(doc, ROOT_ELEMENT_TAG);
+	  // Move the columns around to the current bitset.
+	  adjustColumnData(currentBitSet);
+	  if (model != null) {
+	      logger.info("Model has "+model.size()+" projects");
+	      // Create an internal map of projects to MSBs
+	      for (int i=0; i<model.size();i++) {
+		  modelIndex.add(((XmlUtils.MSBTableModel)model.elementAt(i)).getProjectId());
+	      }
+	  }
+      }
   }
-
+    
     /**
      * Return the current DOM document.
      */
@@ -194,12 +206,6 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
   public int getRowCount() {
       int rowCount = 0;
       if (model == null || model.size() == 0 || _projectId == null) {
-// 	  logger.info("Returning 0 rows");
-// 	  System.out.println("\tmodel: "+model);
-// 	  if (model != null) {
-// 	      System.out.println("\tsize: "+model.size());
-// 	  }
-// 	  System.out.println("\tproject: "+_projectId);
 	  return rowCount;
       }
       if (_projectId.equalsIgnoreCase("all")) {
@@ -315,7 +321,6 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
 	Vector colVector = new Vector();
 	Vector classVector = new Vector();
 	// Initialsise the vector
-// 	colNames = XmlUtils.getColumnNames(MSB_SUMMARY);
 	colNames = MsbClient.getColumnNames();
 	String [] colClassName = MsbClient.getColumnClasses();
 	for (int i=0; i< colNames.length; i++) {
@@ -376,6 +381,12 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
 		}
 	    }
 	}
+    }
+
+    public void clear() {
+	model.removeAllElements();
+	modelIndex.removeAllElements();
+	updateColumns(currentBitSet);
     }
 
 }// MSBQueryTableModel

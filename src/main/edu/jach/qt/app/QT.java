@@ -90,7 +90,7 @@ final public class QT {
 
       
       qtf.addWindowListener(new BasicWindowMonitor());
-      qtf.setSize(1150,550);
+      qtf.setSize(1150,620);
       //qtf.setSize(new Dimension(1150, 600));
       qtf.setTitle("OMP Query Tool Observation Manager");
 
@@ -156,6 +156,9 @@ final public class QT {
 
 /*
  * $Log$
+ * Revision 1.23  2003/01/30 21:05:17  dewitt
+ * Merged wide_mode_qt branch
+ *
  * Revision 1.22  2003/01/30 01:14:38  dewitt
  * Undone last merge - some left over problem.  Will get back to it
  *

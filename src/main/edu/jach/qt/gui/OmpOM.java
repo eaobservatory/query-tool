@@ -214,7 +214,6 @@ public class OmpOM extends JPanel{
      */
   public void setSpItem(SpItem item) {
     spItem = item;
-//      NotePanel.setNote(spItem);
   }
 
     /** 

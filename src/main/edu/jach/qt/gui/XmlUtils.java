@@ -450,6 +450,10 @@ public class XmlUtils {
 	return data;
     }
 
+    public static void clearProjectData() {
+	File pdf = new File (System.getProperty("msbSummary")+"."+System.getProperty("user.name"));
+	pdf.delete();
+    }
 
     public static int getProjectCount() {
 	return getProjectData()[0].size();
@@ -537,6 +541,12 @@ public class XmlUtils {
 	    _columnData = new Vector [nColumns];
 	    for (int i=0; i< nColumns; i++) {
 		_columnData[i] = new Vector();
+	    }
+	}
+
+	public void clear() {
+	    for (int i=0; i<_columnData.length; i++) {
+		_columnData[i].clear();
 	    }
 	}
 
