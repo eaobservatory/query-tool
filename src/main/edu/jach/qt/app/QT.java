@@ -90,7 +90,7 @@ final public class QT {
 
       
       qtf.addWindowListener(new BasicWindowMonitor());
-      qtf.setSize(1150,620);
+      qtf.setSize(1150,550);
       //qtf.setSize(new Dimension(1150, 600));
       qtf.setTitle("OMP Query Tool Observation Manager");
 
@@ -156,8 +156,8 @@ final public class QT {
 
 /*
  * $Log$
- * Revision 1.21  2003/01/29 21:06:57  dewitt
- * Merge from wide_mode_qt branch
+ * Revision 1.22  2003/01/30 01:14:38  dewitt
+ * Undone last merge - some left over problem.  Will get back to it
  *
  * Revision 1.20  2002/12/02 20:50:33  dewitt
  * Added extra error handling within the main to try to trap most exceptions and dump the info to the log file.  Any uncaught error should propogate up to here and will be caught and handled.

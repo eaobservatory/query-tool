@@ -1190,6 +1190,24 @@ final public class ProgramTree extends JPanel implements
 	    }
 	}
 	obsList.setEnabled(true);
+// 	if (IsModelEmpty() && 
+// 	    TelescopeDataPanel.DRAMA_ENABLED && 
+// 	    anObservationHasBeenDone) {
+// 	    int mark = showMSBDoneDialog();
+// 	    if (mark == JOptionPane.YES_OPTION) {
+// 		MsbClient.doneMSB(projectID, checkSum);
+// 		// Since the MSBID has changed, redo the search...
+// 		InfoPanel.searchButton.doClick();
+// 		msbDone = true;
+// 	    }
+// 	    else if (mark == JOptionPane.NO_OPTION) {
+// 		// Reserved for marking MSB as rejected
+// 		msbDone = true;
+// 	    }
+// 	    else {
+// 		// Do nothing - user will need to send an observation to retrigger
+// 	    }
+// 	} // end of if ()
     }
 
     private int showMSBDoneDialog() {

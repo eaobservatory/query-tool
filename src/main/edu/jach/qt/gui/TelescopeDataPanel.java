@@ -196,7 +196,6 @@ public class TelescopeDataPanel extends JPanel implements ActionListener {
     GridBagConstraints gbc = new GridBagConstraints();
 
     csoTau.setForeground(java.awt.Color.white);
-//     csoTau.setFont(csoTau.getFont().deriveFont((float)2.0));
     seeing.setForeground(java.awt.Color.white);
     airmass.setForeground(java.awt.Color.white);
     csoTauValue.setForeground(java.awt.Color.green);
@@ -207,13 +206,12 @@ public class TelescopeDataPanel extends JPanel implements ActionListener {
     updateButton.addActionListener(this);
 
     gbc.fill = GridBagConstraints.NONE;
-    gbc.anchor = GridBagConstraints.NORTH;
-    gbc.insets.top = 2;
-    gbc.insets.bottom = 2;
+    //gbc.anchor = GridBagConstraints.CENTER;
+    gbc.insets.bottom = 5;
     gbc.insets.left = 5;
     gbc.insets.right = 5;
-    gbc.weightx = 0;
-    gbc.weighty = 0;
+    gbc.weightx = 100;
+    gbc.weighty = 100;
 
     add(csoTau, gbc, 0, 0, 1, 1);
     add(csoTauValue, gbc, 1, 0, 1, 1);

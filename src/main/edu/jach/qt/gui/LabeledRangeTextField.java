@@ -12,7 +12,6 @@ import java.lang.*;
 import java.text.*;
 
 import edu.jach.qt.utils.*;
-import org.apache.log4j.Logger;
 
 /**
  * LabeldRangeTextField.java
@@ -26,8 +25,6 @@ import org.apache.log4j.Logger;
 
 public class LabeledRangeTextField extends WidgetPanel 
   implements DocumentListener,ActionListener, KeyListener {
-
-    static Logger logger = Logger.getLogger(LabeledRangeTextField.class);
 
   private JTextField upperBound;
   private JTextField lowerBound;
@@ -271,19 +268,19 @@ public class LabeledRangeTextField extends WidgetPanel
     }
 
     /**
-     * ReStarts the timer running.
-     * The timer keeps the Date/Time fields updating.
-     */
-    public void restartTimer() {
-	timer.restart();
-    }
-
-    /**
      * Stops the timer running.
      * The timer keeps the Date/Time fields updating.
      */
     public void stopTimer() {
 	timer.stop();
+    }
+
+    /**
+     * Restarts the timer running.
+     * The timer keeps the Date/Time fields updating.
+     */
+    public void restartTimer() {
+	timer.restart();
     }
 
     /**

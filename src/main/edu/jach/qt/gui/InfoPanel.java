@@ -8,8 +8,6 @@ import edu.jach.qt.utils.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.lang.Boolean;
 import javax.swing.*;
 import javax.swing.border.*;
@@ -77,7 +75,6 @@ public class InfoPanel extends JPanel implements ActionListener {
   //private JButton xmlPrintButton;
   private JButton exitButton;
   private JButton fetchMSB;
-  private Timer   queryExpiredTimer;
 
 
   /**
@@ -98,9 +95,8 @@ public class InfoPanel extends JPanel implements ActionListener {
     setBackground(Color.black);
     setBorder(matte);
     setLayout(gbl);
-    setMinimumSize(new Dimension(174, 450));
-    setPreferredSize(new Dimension(174, 450));
-    setMaximumSize(new Dimension(174, 450));
+    setMinimumSize(new Dimension(174, 550));
+    setPreferredSize(new Dimension(288, 550));
 
     compInit();
 
@@ -126,6 +122,9 @@ public class InfoPanel extends JPanel implements ActionListener {
 	      Boolean isStatusOK;
 
 	      public Object construct() {
+// 		  if (qtf.getSelectedTab() != 0) {
+// 		      qtf.setSelectedTab(0);
+// 		  }
 		isStatusOK = new Boolean(localQuerytool.queryMSB());
 		return isStatusOK;  //not used yet
 	      }
@@ -158,17 +157,6 @@ public class InfoPanel extends JPanel implements ActionListener {
 		  qtf.setColumnSizes();
 		  logoPanel.stop();
 		  qtf.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-		  if (queryExpiredTimer != null) {
-		      queryExpiredTimer.cancel();
-		  }
-		  queryExpiredTimer = new Timer();
-		  qtf.setQueryExpired (false);
-		  System.out.println("Query expiration: "+System.getProperty("queryTimeout"));
-		  Integer timeout = new Integer(System.getProperty("queryTimeout"));
-		  if (timeout.intValue() != 0) {
-		      int delay = timeout.intValue() * 60 * 1000; // Conversion from minutes of milliseconds
-		      queryExpiredTimer.schedule(new QueryExpiredTask(), delay);
-		  }
 		}
 	      }
 	    };
@@ -201,13 +189,13 @@ public class InfoPanel extends JPanel implements ActionListener {
     exitButton.addActionListener(this);
 
     gbc.fill = GridBagConstraints.BOTH;
-    gbc.anchor = GridBagConstraints.NORTH;
-    gbc.weighty = 0.0;
+    gbc.anchor = GridBagConstraints.CENTER;
+    gbc.weighty = 0.2;
     add(logoPanel, gbc, 0, 0, 1, 1);
 
-    gbc.fill = GridBagConstraints.HORIZONTAL;
+    gbc.fill = GridBagConstraints.BOTH;
     gbc.anchor = GridBagConstraints.CENTER;
-    gbc.insets = new Insets(2,15,2,15);
+    gbc.insets = new Insets(5,15,5,15);
     gbc.weighty = 0.0;
         
     /*Add all the buttons*/
@@ -215,24 +203,24 @@ public class InfoPanel extends JPanel implements ActionListener {
     add(fetchMSB, gbc, 0, 10, 1, 1);
     add(exitButton, gbc, 0, 15, 1, 1);
 
-    gbc.fill = GridBagConstraints.HORIZONTAL;
+    gbc.fill = GridBagConstraints.BOTH;
     gbc.anchor = GridBagConstraints.CENTER;
     gbc.weightx = 100;
     gbc.insets = new Insets(0,2,0,2);
-    gbc.weighty = 0;
+    gbc.weighty = 0.6;
     add(telescopeInfoPanel, gbc, 0, 20, 1, 1);
 
     add(satPanel, gbc, 0, 30, 1, 1);
 
 
-    gbc.fill = GridBagConstraints.HORIZONTAL;
+    gbc.fill = GridBagConstraints.BOTH;
     gbc.weightx = 100;
     gbc.weighty = 0;
     gbc.insets.left = 0;
     gbc.insets.right = 0;
     add(timePanel, gbc, 0, 40, 1, 1);
 
-    gbc.fill = GridBagConstraints.HORIZONTAL;
+    gbc.fill = GridBagConstraints.BOTH;
     gbc.weightx = 100;
     gbc.weighty = 0;
     gbc.insets.left = 0;
@@ -332,14 +320,6 @@ public class InfoPanel extends JPanel implements ActionListener {
       qtf.sendToStagingArea();
     }
   }
-
-    public class QueryExpiredTask extends TimerTask {
-	public void run() {
-	    System.out.println("Query has expired");
-	    qtf.setQueryExpired(true);
-	    cancel();
-	}
-    }
 }// InfoPanel
 
 

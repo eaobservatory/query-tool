@@ -5,7 +5,7 @@ import java.util.*;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.border.*;
-import java.text.SimpleDateFormat;
+import java.text.DateFormat;
 /**
  * Class associateing local time with a label for display on an interface.
  *
@@ -28,11 +28,11 @@ public class TimePanel extends JLabel
 
       //MatteBorder matte = new MatteBorder(1,1,1,1,Color.white);
 
-//       TitledBorder border = BorderFactory.createTitledBorder
-// 	(BorderFactory.createLineBorder(new Color(51, 134, 206)), 
-// 	"Local Time",
-// 	 TitledBorder.CENTER, TitledBorder.DEFAULT_POSITION);
-//       setBorder(border);
+      TitledBorder border = BorderFactory.createTitledBorder
+	(BorderFactory.createLineBorder(new Color(51, 134, 206)), 
+	"Local Time",
+	 TitledBorder.CENTER, TitledBorder.DEFAULT_POSITION);
+      setBorder(border);
       
       this.setOpaque(true);
       Timer t = new Timer(1000);
@@ -51,8 +51,9 @@ public class TimePanel extends JLabel
       //g.setFont( g.getFont().deriveFont((float)16.0));
       Calendar cal = Calendar.getInstance();
       Date date = cal.getTime();
-      SimpleDateFormat dateFormatter = new SimpleDateFormat("kk.mm.ss z");
-//       DateFormat dateFormatter = DateFormat.getTimeInstance(DateFormat.MEDIUM);
+      DateFormat dateFormatter = DateFormat.getTimeInstance(DateFormat.MEDIUM);
+      //      g.clearRect(0,0,200,200);
+      //      g.drawString(dateFormatter.format(date), 10, 20);
       setText("" + dateFormatter.format(date));
    }
    
