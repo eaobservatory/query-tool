@@ -14,8 +14,9 @@ class ProjectTableSelectionModel
     public ProjectTableSelectionModel (QtFrame parent) {
 	_qtf = parent;
 	this.setSelectionMode(DefaultListSelectionModel.SINGLE_SELECTION);
-	addListSelectionListener(this);
 	this.setSelectionInterval(0,0);
+	addListSelectionListener(this);
+	_qtf.getModel().setProjectId("All");
 
     }
 
@@ -23,9 +24,8 @@ class ProjectTableSelectionModel
 	// Get the MSBQueryTableModel
 	String projectID = (String)_qtf.getProjectModel().getValueAt(getMinSelectionIndex(), 0);
 	if (projectID == null || projectID.equals("") || projectID.startsWith("-")) return;
-	_qtf.updateColumnSizes();
+  	_qtf.updateColumnSizes();
 	_qtf.getModel().setProjectId(projectID);
-
-	_qtf.setColumnSizes();
+  	_qtf.setColumnSizes();
     }
 }
