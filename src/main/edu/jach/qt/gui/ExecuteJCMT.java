@@ -145,7 +145,7 @@ public class ExecuteJCMT extends Execute implements Runnable {
  		    command = "/jac_sw/omp/QT/bin/insertSCUQUEUE.ksh "+ new String(odfFile).trim();
 		}
 		else {
-		    command = "/home/dewitt/omp/QT/bin/loadSCUQUEUE.ksh "+ new String(odfFile).trim();
+		    command = "/jac_sw/omp/QT/bin/loadSCUQUEUE.ksh "+ new String(odfFile).trim();
 		}
 		logger.debug ("Running command "+command);
 		Process p = rt.exec(command);
