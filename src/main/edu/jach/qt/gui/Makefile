@@ -37,8 +37,8 @@ SOURCES = \
 	Timer.java \
 	TimerEvent.java \
 	TimerListener.java \
-	XmlUtils.java
-
+	XmlUtils.java \
+	TrashCan.java
 
 ifeq ($(INSTALL),true)
 include $(BUILD)/makeinstall.tail
