@@ -112,7 +112,14 @@ public class ExecuteJCMT extends Execute implements Runnable {
 	    try {
 		rt = Runtime.getRuntime();
 // 		command = "/home/dewitt/bin/loadSCUQUEUE.ksh "+ new String (odfFile);
-		String command = "/jac_sw/omp/QT/bin/loadSCUQUEUE.ksh "+ new String (odfFile);
+		String command;
+		if (super.isDeferred) {
+// 		    command = "/export/data/dewitt/omp/QT/bin/insertSCUQUEUE.ksh "+ new String (odfFile);
+ 		    command = "/jac_sw/omp/QT/bin/insertSCUQUEUE.ksh "+ new String (odfFile);
+		}
+		else {
+		    command = "/jac_sw/omp/QT/bin/loadSCUQUEUE.ksh "+ new String (odfFile);
+		}
 		logger.debug ("Running command "+command+" &");
 		Process p = rt.exec(command);
 		InputStream istream = p.getInputStream();
