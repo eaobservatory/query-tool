@@ -28,8 +28,17 @@ public class MsbClient extends SoapClient {
 	 //System.out.println(doCall(url, "urn:OMP::MSBServer", "queryMSB"));
 
 	 FileWriter fw = new FileWriter(System.getProperty("msbSummary"));
-	 fw.write((String) doCall(url, "urn:OMP::MSBServer", "queryMSB"));
-	 fw.close();
+	 Object tmp = doCall(url, "urn:OMP::MSBServer", "queryMSB");
+
+	 if (tmp != null ) {
+
+	   fw.write( (String)tmp );
+	   fw.close();
+	 } // end of if ()
+
+	 else 
+	   return false;
+	 
       } catch (Exception e) {
 	e.printStackTrace();
 	return false;
