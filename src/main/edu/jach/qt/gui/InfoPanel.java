@@ -76,6 +76,7 @@ public class InfoPanel extends JPanel implements ActionListener {
   private JButton exitButton;
   private JButton fetchMSB;
 
+
   /**
    * Creates a new <code>InfoPanel</code> instance.
    *
@@ -207,6 +208,9 @@ public class InfoPanel extends JPanel implements ActionListener {
 	return qtf;
     }
 
+    public Querytool getQuery() {
+	return localQuerytool;
+    }
   private void add(Component c, GridBagConstraints gbc, 
 		  int x, int y, int w, int h) {
     gbc.gridx = x;
