@@ -144,6 +144,12 @@ public class InfoPanel extends JPanel implements ActionListener {
 
     InfoPanel.searchButton.setBackground(java.awt.Color.gray);
 
+    /*
+    xmlPrintButton.setText("Fetch MSB");
+    xmlPrintButton.setName("Fetch MSB");
+    xmlPrintButton.setBackground(java.awt.Color.gray);
+    xmlPrintButton.addActionListener(this);
+    */
     fetchMSB.setText("Fetch MSB");
     fetchMSB.setName("Fetch MSB");
     fetchMSB.setBackground(java.awt.Color.gray);
