@@ -38,9 +38,11 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
    
     public static String[] colNames;
     public static Class [] colClasses;
+    private int            colCount;
     public static int      PROJECTID;
     public static int      CHECKSUM;
     public static int      MSBID;
+    private BitSet         currentBitSet;
 
 //   public static String[] colNames ={
 //       "projectid",  //0
@@ -112,11 +114,19 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
     if (colNames == null) {
 	throw new Exception("No results returned");
     }
+    currentBitSet = new BitSet(colNames.length);
+    colCount = colNames.length - 2;
     colClasses = new Class [ colNames.length ];
     Vector vectorOfNames = new Vector();
     for (int i=0; i< colNames.length; i++) {
 	colClasses[i] = String.class;
 	vectorOfNames.add((Object)colNames[i]);
+	if (i<colCount) {
+	    currentBitSet.set(i);
+	}
+	else {
+	    currentBitSet.clear(i);
+	}
     }
     this.MSBID     = vectorOfNames.indexOf("msbid");
     this.CHECKSUM  = vectorOfNames.indexOf("checksum");
@@ -183,8 +193,14 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
      @return    the number of columns in the model
   */
   public int getColumnCount() {
-    return colClasses.length-2;
+    return colCount;
   }
+
+  public int getRealColumnCount() {
+    return colNames.length;
+  }
+
+
   /**
      Return the number of persons in an XML document
  
@@ -262,5 +278,35 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
   */
   public void setValueAt(Object value, int r, int c) {
   }
+
+
+    public void updateColumns(BitSet colSet) {
+	int nHidden = 0;
+	currentBitSet = colSet;
+	Vector colVector = new Vector();
+	// Initialsise the vector
+	colNames = XmlUtils.getColumnNames(MSB_SUMMARY);
+	for (int i=0; i< colNames.length; i++) {
+	    colVector.add((Object)colNames[i]);
+	}
+	// Now manipulate the vector
+	for (int i=colNames.length-1; i >= 0; i--) {
+	    if (!colSet.get(i)) {
+		nHidden++;
+		// Get the contents and move them to the end...
+		Object o = colVector.remove(i);
+		colVector.add(o);
+	    }		
+	}
+	colCount = colNames.length - nHidden;
+	for (int i=0; i< colNames.length; i++) {
+	    colNames[i] = (String)colVector.get(i);
+	}
+	fireTableChanged(null);
+    }
+
+    public BitSet getBitSet() {
+	return currentBitSet;
+    }
 
 }// MSBQueryTableModel
