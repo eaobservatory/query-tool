@@ -19,10 +19,13 @@ import java.util.*;
 import java.lang.*;
 import java.io.*;
 import javax.swing.*;
+import java.net.URL;
+import java.awt.Dimension;
 
 import ocs.utils.*;
 
 import org.apache.log4j.Logger;
+import calpa.html.CalHTMLPane;
 
 
 /**
@@ -34,21 +37,45 @@ import org.apache.log4j.Logger;
  * @author $Author$
  * @version $Id$
  */
-public class ExecuteJCMT extends Execute implements Runnable {
+public class ExecuteJCMT extends Execute {
 
     static Logger logger = Logger.getLogger(ExecuteJCMT.class);
     private SpItem _itemToExecute;
     private static String jcmtDir = File.separator +
 	"jcmtdata" + File.separator + "orac_data";
+    static boolean isRunning = false;
+    static ExecuteJCMT _instance;
     
     /**
      * Constructor.
      * @param  item      The item to send to SCUQUEUE
      * @throws Exception From the base class.
      */
-    public ExecuteJCMT(SpItem item) throws Exception {
+    private ExecuteJCMT(SpItem item) throws Exception {
 	_itemToExecute = item;
     };
+
+    private ExecuteJCMT() throws Exception {
+    }
+
+    public static ExecuteJCMT getInstance (SpItem item)
+    {
+	if (isRunning) {
+	    logger.error("Already running");
+	    return null;
+	}
+	try {
+	    _instance = new ExecuteJCMT (item);
+	}
+	catch (Exception e) {
+	    logger.error("Unable to construct");
+	}
+	return _instance;
+    }
+
+    public static boolean isRunning() {
+	return isRunning;
+    }
 
     /**
      * Implementation of the <code>Runnable</code> interface.
@@ -62,7 +89,8 @@ public class ExecuteJCMT extends Execute implements Runnable {
      * <bold>Note:</bold>  This method currently uses hard coded path
      * names for the files and for the commands to execute the queue.
      */
-    public void run() {
+    public boolean run() {
+	isRunning = true;
 	// To execute JCMT, we write the execution to a file
 	File success = new File ("/jcmtdata/orac_data/deferred/.success");
 	File failure = new File ("/jcmtdata/orac_data/deferred/.failure");
@@ -74,7 +102,8 @@ public class ExecuteJCMT extends Execute implements Runnable {
 	}
 	catch (IOException ioe) {
 	    logger.error("Unable to create success/fail file");
-	    return;
+	    isRunning = false;
+	    return true;
 	}
 
 	logger.info("Executing observation "+_itemToExecute.getTitle());
@@ -88,7 +117,8 @@ public class ExecuteJCMT extends Execute implements Runnable {
 	    logger.error("Error writing translation file");
 	    file.delete();
 	    success.delete();
-	    return;
+	    isRunning = false;
+	    return true;
 	}
 
 	// Now send this file as an argument to the translate process
@@ -97,7 +127,8 @@ public class ExecuteJCMT extends Execute implements Runnable {
 	    logger.error("No translation process defined");
 	    file.delete();
 	    success.delete();
-	    return;
+	    isRunning = false;
+	    return true;
 	}
 	byte [] odfFile = new byte [1024];
 	byte [] errorMessage = new byte [1024];
@@ -122,18 +153,21 @@ public class ExecuteJCMT extends Execute implements Runnable {
 			  new String(errorMessage).trim(),
 			  JOptionPane.ERROR_MESSAGE).start();
 		success.delete();
-		return;
+		isRunning = false;
+		return true;
 	    }
 	}
 	catch (InterruptedException ie) {
 	    logger.error ("Translation exited prematurely...", ie);
 	    success.delete();
-	    return;
+	    isRunning = false;
+	    return true;
 	}
 	catch (IOException ioe) {
 	    logger.error("Error executing translator...", ioe);
 	    success.delete();
-	    return;
+	    isRunning = false;
+	    return true;
 	}
 	file.delete();
 
@@ -142,7 +176,8 @@ public class ExecuteJCMT extends Execute implements Runnable {
 		String fName = new String (odfFile);
 		fName = fName.trim();
 		if ( fName.substring(fName.lastIndexOf('.')+1).equals("html") ) {
-		    HTMLViewer viewer = new HTMLViewer(fName);
+			HTMLViewer viewer = new HTMLViewer(null, fName);
+			failure.delete();
 		}
 		else {
 		    rt = Runtime.getRuntime();
@@ -170,7 +205,8 @@ public class ExecuteJCMT extends Execute implements Runnable {
 				   new String(errorMessage).trim(),
 				   JOptionPane.ERROR_MESSAGE).start();
 			success.delete();
-			return;
+			isRunning = false;
+			return true;
 		    }
 		}
 	    }
@@ -180,16 +216,19 @@ public class ExecuteJCMT extends Execute implements Runnable {
 			   new String(errorMessage),
 			   JOptionPane.ERROR_MESSAGE).start();
 		success.delete();
-		return;
+		isRunning = false;
+		return true;
 	    }
 	    catch (InterruptedException ie) {
 		logger.error ("LOADQ exited prematurely...", ie);
 		success.delete();
-		return;
+		isRunning = false;
+		return true;
 	    }
 	}
+	isRunning = false;
 	failure.delete();
-	return;
+	return false;
     }
 
     public class PopUp extends Thread implements Serializable{

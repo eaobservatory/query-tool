@@ -380,21 +380,34 @@ final public class ProgramTree extends JPanel implements
 		setExecutable(true);
 		return;
 	    }
+	    setExecutable(true);
 	}
 	else if (System.getProperty("telescope").equalsIgnoreCase("jcmt")) {
+	    if ( ExecuteJCMT.isRunning() ) {
+		setExecutable (false);
+		return;
+	    }
+	    else {
+		if (isDeferred) {
+		    new ExecuteInThread (item, isDeferred).start();
+		}
+		else {
+		    new ExecuteInThread (_spItem, isDeferred).start();
+		}
+	    }
+	    /*
 	    ExecuteJCMT execute;
 	    try {
 		if (isDeferred) {
-		    execute = new ExecuteJCMT(item);
+		    execute = ExecuteJCMT.getInstance(item);
 		}
 		else {
-		    execute = new ExecuteJCMT(_spItem);
+		    execute = ExecuteJCMT.getInstance(_spItem);
 		}
-		t = new Thread(execute);
-		t.start();
-		t.join();
+		failed = execute.run();
 		File failFile = new File ("/jcmtdata/orac_data/deferred/.failure");
 		if (failFile.exists()) {
+		    logger.info("Execution failed");
 		    failed = true;
 		}
 		if (!isDeferred && !failed) {
@@ -429,6 +442,7 @@ final public class ProgramTree extends JPanel implements
 		setExecutable(true);
 		return;
 	    }
+	    */
 	}
    }
 
@@ -1274,4 +1288,58 @@ final public class ProgramTree extends JPanel implements
 
 
     public JButton getRunButton () {return run;}
+
+    public class ExecuteInThread extends Thread {
+	SpItem _item;
+	boolean _isDeferred;
+
+	public ExecuteInThread ( SpItem item, boolean deferred ) {
+	    _item = item;
+	    _isDeferred = deferred;
+	}
+
+	public void run () {
+	    ExecuteJCMT execute;
+	    boolean failed = false;
+
+	    execute = ExecuteJCMT.getInstance(_item);
+	    failed = execute.run();
+	    File failFile = new File ("/jcmtdata/orac_data/deferred/.failure");
+	    if (failFile.exists()) {
+		logger.info("Execution failed");
+		failed = true;
+	    }
+	    if (!_isDeferred && !failed) {
+		if (instrumentContext instanceof SpInstSCUBA) {
+		    model.clear();
+		    _spItem = null;
+		    selectedItem = null;
+		}
+		else {
+		    // See if the HTMLViewer is still visible.  If it is, put
+		    // this thread to sleep for a while.
+		    while ( HTMLViewer.visible() ) {
+			try {
+			    Thread.sleep(500);
+			}
+			catch ( Exception x) {}
+			continue;
+		    }
+		    // For heterodyne, mark all the observation as done and bring up the popup
+		    for (int i=0; i<obsList.getModel().getSize(); i++) {
+			markAsDone(i);
+			if (TelescopeDataPanel.DRAMA_ENABLED) {
+			    anObservationHasBeenDone = true;
+			    msbPendingFile = new File (msbPendingDir+projectID+"_"+checkSum+".pending");
+			    msbDone = showMSBDoneDialog();
+			}
+		    }
+		}
+	    }
+	    else if (!failed) {
+		DeferredProgramList.markThisObservationAsDone(_item);
+	    }
+	    setExecutable (true);
+	}
+    }
 }

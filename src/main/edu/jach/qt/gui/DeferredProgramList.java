@@ -376,17 +376,13 @@ final public class DeferredProgramList extends JPanel implements
 	    return;
 	}
 	else if (System.getProperty("telescope").equalsIgnoreCase("jcmt")) {
+	    new ExecuteInThread (currentItem, true).start();
+	    /*
 	    try {
 		logger.info("Sending observation "+currentItem.getTitle()+" for execution.");
-
-		ExecuteJCMT execute = new ExecuteJCMT(currentItem);
 		
-		// Set up the thread execution
-		t = new Thread(execute, "JCMT Execution Thread");
-// 		logger.info("Thread "+t.getName()+" started.");
-		t.start();
-		t.join();
-// 		logger.info("Thread "+t.getName()+" stopped.");
+		ExecuteJCMT execute = ExecuteJCMT.getInstance(currentItem);
+		execute.run();
 		File failFile = new File ("/jcmtdata/orac_data/deferred/.failure");
 		File successFile = new File ("/jcmtdata/orac_data/deferred/.success");
 		if (failFile.exists()) {
@@ -410,6 +406,7 @@ final public class DeferredProgramList extends JPanel implements
 		    logger.error("Last observation still seems to be running");
 		}
 	    }
+	    */
 	    return;
 	}
     }
@@ -781,4 +778,38 @@ final public class DeferredProgramList extends JPanel implements
 	}
     }
 
+    public class ExecuteInThread extends Thread {
+	SpItem _item;
+	boolean _isDeferred;
+
+	public ExecuteInThread ( SpItem item, boolean deferred ) {
+	    _item = item;
+	    _isDeferred = deferred;
+	}
+
+	public void run () {
+	    ExecuteJCMT execute;
+	    boolean failed = false;
+
+	    execute = ExecuteJCMT.getInstance(_item);
+	    failed = execute.run();
+
+	    File failFile = new File ("/jcmtdata/orac_data/deferred/.failure");
+	    File successFile = new File ("/jcmtdata/orac_data/deferred/.success");
+	    if (failFile.exists()) {
+		new ErrorBox("Failed to Execute. Check messages.");
+		logger.warn ("Failed to execute observation");
+	    }
+	    else if (successFile.exists()) {
+		// Mark this observation as having been done
+		markThisObservationAsDone(currentItem);
+		logger.info("Observation executed successfully");
+	    }
+	    else {
+		// Neither file exists - report an error to the user
+		new ErrorBox("Unable to determine success status - assuming failed.");
+		logger.error ("Unable to determine success status for observation.");
+	    }
+	}
+    }
 }

@@ -210,10 +210,12 @@ public class MSBDoneDialog extends JDialog {
 			    return;
 			}
 			catch (Exception x) {
-			    x.printStackTrace();
 			}
 			setVisible (false);
-			dispose();
+			try {
+			    dispose();
+			}
+			catch (Exception ex) {};
 		    }
 		}
 	    });
