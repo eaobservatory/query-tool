@@ -297,11 +297,14 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
 	int nHidden = 0;
 	currentBitSet = colSet;
 	Vector colVector = new Vector();
+	Vector classVector = new Vector();
 	// Initialsise the vector
 // 	colNames = XmlUtils.getColumnNames(MSB_SUMMARY);
 	colNames = MsbClient.getColumnNames();
+	String [] colClassName = MsbClient.getColumnClasses();
 	for (int i=0; i< colNames.length; i++) {
 	    colVector.add((Object)colNames[i]);
+	    classVector.add((Object)colClassName[i]);
 	}
 	// Now manipulate the vector
 	for (int i=colNames.length-1; i >= 0; i--) {
@@ -310,11 +313,23 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
 		// Get the contents and move them to the end...
 		Object o = colVector.remove(i);
 		colVector.add(o);
+
+		o = classVector.remove(i);
+		classVector.add(o);
 	    }		
 	}
 	colCount = colNames.length - nHidden;
 	for (int i=0; i< colNames.length; i++) {
 	    colNames[i] = (String)colVector.get(i);
+	    if (((String)classVector.get(i)).equalsIgnoreCase("Integer")) {
+		colClasses[i] = Integer.class;
+	    }
+	    else if (((String)classVector.get(i)).equalsIgnoreCase("Float")) {
+		colClasses[i] = Number.class;
+	    }
+	    else {
+		colClasses[i] = String.class;
+	    }
 	}
 	fireTableChanged(null);
     }
