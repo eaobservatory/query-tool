@@ -6,8 +6,8 @@
   <!-- ==================================================== -->
   <!--             OMP -QT BUILD TOOL-                      -->
   <!-- ==================================================== -->
-  <taskdef name="modificationset" classname="net.sourceforge.cruisecontrol.ModificationSet"/>
-  <taskdef name="junit" classname="org.apache.tools.ant.taskdefs.optional.junit.JUnitTask" />
+  <!--    <taskdef name="modificationset" classname="net.sourceforge.cruisecontrol.ModificationSet"/> -->
+  <!--    <taskdef name="junit" classname="org.apache.tools.ant.taskdefs.optional.junit.JUnitTask" /> -->
 
   <!-- ================================================ -->
   <!--   Set the properties related to the source tree  -->
@@ -37,7 +37,7 @@
   <!--    ==================================================== -->
   <!--       Set the properties for the build area             -->
   <!--    ==================================================== -->
-  <property name="build.dir" value="install"/>
+  <property name="build.dir" value="/home/mrippa/root/install/omp/QT"/>
   <property name="build.classes" value="${build.dir}/classes"/>
   <property name="build.config" value="${build.dir}/config"/>
   <property name="build.icons" value="${build.dir}/icons"/>
@@ -184,7 +184,10 @@
     <javac srcdir="${java.dir}/" 
 	   destdir="${build.classes}" 
 	   debug="on">
-      <exclude name="qt/gui/JCheckBoxWidget.java"/>
+      <exclude name="edu/jach/qt/gui/MsbNode.java"/>
+      <exclude name="edu/jach/qt/gui/DragDropObject.java"/>
+      <exclude name="edu/jach/qt/gui/PersonalInfo.java"/>
+      <exclude name="edu/jach/qt/gui/DnDJTree.java"/>
       <classpath>
 	<pathelement location="/home/mrippa/netroot/src/orac3/OT/install/classes" />
 	<pathelement location="/home/mrippa/netroot/src/orac3/GEMINI/install/classes" />
@@ -234,7 +237,10 @@
     <javac srcdir="${java.dir}/" 
 	   destdir="${dist.classes}" 
 	   debug="on">
-      <exclude name="qt/gui/JCheckBoxWidget.java"/>
+      <exclude name="edu/jach/qt/gui/MsbNode.java"/>
+      <exclude name="edu/jach/qt/gui/DragDropObject.java"/>
+      <exclude name="edu/jach/qt/gui/PersonalInfo.java"/>
+      <exclude name="edu/jach/qt/gui/DnDJTree.java"/>
       <classpath>
 	<pathelement location="/home/mrippa/netroot/src/orac3/OT/install/classes" />
 	<pathelement location="/home/mrippa/netroot/src/orac3/GEMINI/install/classes" />
@@ -326,7 +332,17 @@
   <!--    ==================================================== -->
   <!--                 Create the qt.jar                       -->
   <!--    ==================================================== -->
-  <target name="jar" depends="compile-dist">
+  <target name="jar" depends="compile">
+    <jar jarfile="${build.lib}/qt.jar"
+	 basedir="${build.classes}"
+	 manifest="${manifest}">
+    </jar>
+  </target>
+
+  <!--    ==================================================== -->
+  <!--                 Create the qt.jar                       -->
+  <!--    ==================================================== -->
+  <target name="jar-dist" depends="compile-dist">
     <jar jarfile="${dist.lib}/qt.jar"
 	 basedir="${dist.classes}"
 	 manifest="${manifest}">
@@ -385,7 +401,7 @@
   <!--    ==================================================== -->
   <!--                       MAIN                              -->
   <!--    ==================================================== -->
-  <target name="main" depends="compile" description="The default target built when no args passed to ant.">
+  <target name="main" depends="jar" description="The default target built when no args passed to ant.">
     <!--      <antstructure output="project.dtd"/> -->
     <echo message="EVERYTHING LOOKS GOOD!"/>
     <echo message="Run ${build.dir}/bin/qt"/>
@@ -394,7 +410,7 @@
   <!--    ==================================================== -->
   <!--                       DIST                              -->
   <!--    ==================================================== -->
-  <target name="dist" depends="jar, javadocs">
+  <target name="dist" depends="jar-dist, javadocs">
     <!--      <antstructure output="project.dtd"/> -->
     <echo message="EVERYTHING LOOKS GOOD!"/>
     <echo message="Run ${dist.dir}/bin/qt"/>
