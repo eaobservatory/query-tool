@@ -80,18 +80,18 @@ public class ExecuteJCMT extends Execute implements Runnable {
 	try {
 	    rt = Runtime.getRuntime();
 	    String command = translator +" "+ file.getPath();
-	    System.out.println("Running command "+command);
+	    logger.debug("Running command "+command);
 	    Process p = rt.exec(command);
 	    InputStream istream = p.getInputStream();
 	    istream.read(odfFile);
 	    InputStream estream = p.getErrorStream();
 	    estream.read(errorMessage);
 	    int rtn = p.waitFor();
-	    System.out.println("Translator returned with exit status "+rtn);
-	    System.out.println("Output from translator: "+new String(odfFile).trim());
-	    System.out.println("Error from translator: "+new String(errorMessage).trim());
+	    logger.info("Translator returned with exit status "+rtn);
+	    logger.debug("Output from translator: "+new String(odfFile).trim());
+	    logger.debug("Error from translator: "+new String(errorMessage).trim());
 	    if (rtn != 0) {
-		System.out.println("Returning with non-zero error status following translation");
+		logger.error("Returning with non-zero error status following translation");
 		success.delete();
 		return;
 	    }
@@ -113,7 +113,7 @@ public class ExecuteJCMT extends Execute implements Runnable {
 		rt = Runtime.getRuntime();
 // 		command = "/home/dewitt/bin/loadSCUQUEUE.ksh "+ new String (odfFile);
 		String command = "/jac_sw/omp/QT/bin/loadSCUQUEUE.ksh "+ new String (odfFile);
-		System.out.println ("Running command "+command+" &");
+		logger.debug ("Running command "+command+" &");
 		Process p = rt.exec(command);
 		InputStream istream = p.getInputStream();
 		InputStream estream = p.getErrorStream();
@@ -121,10 +121,11 @@ public class ExecuteJCMT extends Execute implements Runnable {
 		estream.read(errorMessage);
 		p.waitFor();
 		int rtn = p.exitValue();
-		System.out.println("LoadSCUQUEUE returned with exit status "+rtn);
-		System.out.println("Output from LoadSCUQUEUE: "+new String(odfFile));
-		System.out.println("Error from LoadSCUQUEUE: "+new String(errorMessage));
+		logger.info("LoadSCUQUEUE returned with exit status "+rtn);
+		logger.debug("Output from LoadSCUQUEUE: "+new String(odfFile));
+		logger.debug("Error from LoadSCUQUEUE: "+new String(errorMessage));
 		if (rtn != 0) {
+		    logger.error("Error loading queue");
 		    success.delete();
 		    return;
 		}
