@@ -190,9 +190,10 @@ public class OmpOM extends JPanel{
 
   public JSplitPane getTreePanel() {
       
-    CalibrationArea ca = new CalibrationArea();
-    JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, 
-					  ptree, ca);
+    //CalibrationArea ca = new CalibrationArea();
+    //JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, ptree, ca);
+
+    JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, ptree, null);
     return splitPane;
   }
 
