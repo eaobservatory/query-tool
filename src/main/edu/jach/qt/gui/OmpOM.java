@@ -94,8 +94,8 @@ public class OmpOM extends JPanel{
     spItem = new SpSiteQualityObsComp();
 
     /* Init JCMT Instruments */
-    spItem = new SpInstSCUBA();
-    spItem = new SpInstHeterodyne();
+    //spItem = new SpInstSCUBA();
+    //spItem = new SpInstHeterodyne();
 
     /* Init JCMT SpTypes */
     spItem = new SpIterFocusObs();
@@ -111,6 +111,15 @@ public class OmpOM extends JPanel{
     /* Init JCMT Miscellaneous */
     //spItem = new orac.jcmt.obsComp.SpSiteQualityObsComp();
 
+    ptree = new ProgramTree();
+  }
+
+  public void setProjectID(String projectID) {
+    ptree.setProjectID(projectID);
+  }
+
+  public void setChecksum(String checksum) {
+    ptree.setChecksum(checksum);
   }
 
   /**
@@ -125,8 +134,7 @@ public class OmpOM extends JPanel{
     file = new File(System.getProperty("msbFile"));
     spRootItem = OtFileIO.fetchSp(file.getParent(), file.getName());
      
-    ptree = new ProgramTree();
-    ptree.addTree(spRootItem);
+    ptree.addList(spRootItem);
     ptree.setMinimumSize(new Dimension(400,550) );
 
     ptreeHashtable.put(msbID, ptree);
@@ -138,11 +146,13 @@ public class OmpOM extends JPanel{
    * to use as the ProgramTree object.
    */
   public void addNewTree() {
-    file = new File(System.getProperty("arrayTests"));
+    file = 
+      new File(System.getProperty("arrayTests", 
+				  "/home/mrippa/install/omp/QT/config/array_tests.xml"));
     spRootItem = OtFileIO.fetchSp(file.getParent(), file.getName());
      
-    ptree = new ProgramTree();
-    ptree.addTree(spRootItem);
+    //ptree.addTree(spRootItem);
+    ptree.addList(spRootItem);
     ptree.setMinimumSize(new Dimension(400,550) );
 
     ptreeHashtable.put(new Integer(41), ptree);
@@ -150,7 +160,7 @@ public class OmpOM extends JPanel{
 
   public void resetTree() {
     spRootItem = OtFileIO.fetchSp(file.getParent(), file.getName());
-    ptree.addTree(spRootItem);
+    ptree.addList(spRootItem);
   }
 
   public JSplitPane getTreePanel(Integer msbID) {
