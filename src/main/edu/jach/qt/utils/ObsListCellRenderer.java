@@ -5,6 +5,8 @@ import gemini.sp.*;
 import java.awt.*;
 import javax.swing.*;
 
+import edu.jach.qt.gui.DnDList;
+
 
 /**
  * ObsListCellRenderer.java
@@ -18,7 +20,7 @@ import javax.swing.*;
 
 public class ObsListCellRenderer extends DefaultListCellRenderer {
   final static ImageIcon obsIcon = new ImageIcon(System.getProperty("IMAG_PATH")+"observation.gif");
-  
+   
   // This is the only method defined by ListCellRenderer.
   // We just reconfigure the JLabel each time we're called.
   
@@ -30,17 +32,27 @@ public class ObsListCellRenderer extends DefaultListCellRenderer {
   {
     String s = ((SpObs)value).getTitle();
     setText(s);
+    if (((SpObs)value).isOptional() == false)
+	{
+	    setForeground(list.getForeground());
+	}
+    else
+	{
+	    setForeground(Color.blue);
+	}
+    setText(s);
     setIcon(obsIcon);
 
     if (isSelected) {
-      setForeground(OracColor.blue);
+      setBackground(OracColor.blue);
+	//setForeground(OracColor.blue);
       //setBackground(list.getSelectionBackground());
       //setForeground(list.getSelectionForeground());
     }
 
     else {
       setBackground(list.getBackground());
-      setForeground(list.getForeground());
+      //setForeground(list.getForeground());
     }
 
     setEnabled(list.isEnabled());
