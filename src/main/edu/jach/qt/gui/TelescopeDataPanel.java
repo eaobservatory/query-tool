@@ -124,7 +124,8 @@ public class TelescopeDataPanel extends JPanel implements ActionListener {
    * @param param1 <description>
    */
   public void actionPerformed(ActionEvent param1) {
-
+    System.out.println("The tau: "+ TelescopeDataPanel.csoTauValue.getText());
+        
     WidgetPanel.getAtmospherePanel().setTau(TelescopeDataPanel.csoTauValue.getText());
     //WidgetPanel.getAtmospherePanel().setSeeing(TelescopeDataPanel.seeingValue.getText());
     //WidgetPanel.getAtmospherePanel().setAirmass(TelescopeDataPanel.airmassValue.getText());
