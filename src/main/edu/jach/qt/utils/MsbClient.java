@@ -47,16 +47,30 @@ public class MsbClient extends SoapClient {
 
    }
 
-   public static void fetchMSB(Integer msbid) {
+   public static boolean fetchMSB(Integer msbid) {
       try {
 	 URL url = new URL("http://www.jach.hawaii.edu/JAClocal/cgi-bin/msbsrv.pl");
 	 addParameter("key", Integer.class, msbid);
 	 //System.out.println(doCall(url, "urn:OMP::MSBServer", "fetchMSB"));
 
 	 FileWriter fw = new FileWriter(System.getProperty("msbFile"));
-	 fw.write((String) doCall(url, "urn:OMP::MSBServer", "fetchMSB"));
-	 fw.close();
+	 Object tmp = doCall(url, "urn:OMP::MSBServer", "fetchMSB");
+
+	 if (tmp != null ) {
+
+	   System.out.println("The msb says:\n "+ tmp);
+	   
+	   fw.write( (String)tmp );
+	   fw.close();
+	 } // end of if ()
+
+	 else 
+	   return false;
 	 
-      } catch (Exception e) {e.printStackTrace();}
+      } catch (Exception e) {
+	e.printStackTrace();
+	return false;
+      }
+      return true;
    }
 }

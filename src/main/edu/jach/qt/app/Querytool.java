@@ -271,8 +271,8 @@ public class Querytool implements Runnable, Observer {
    *
    * @param i an <code>Integer</code> value
    */
-  public void fetchMSB(Integer i) {
-    MsbClient.fetchMSB(i);
+  public boolean fetchMSB(Integer i) {
+    return MsbClient.fetchMSB(i);
   }
 
   /**
