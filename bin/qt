@@ -192,13 +192,10 @@ endif
 #Test for scenario mode
 if (! ${?IMP_STARTUP} || ${scenario}) then
    set dramaEnabled = "false"
-
-else
-   if (! ${?IMP_SCRATCH} ) then
+else if (! ${?IMP_SCRATCH} ) then
       setenv IMP_SCRATCH /tmp
       echo "IMP_SCRATCH set to ${IMP_SCRATCH}"
-else
-   if (${IMP_SCRATCH} != "/tmp") then	
+else if (${IMP_SCRATCH} != "/tmp") then	
       echo "*******************************************************"
       echo "IMP_SCRATCH NOT SET TO /tmp"
       echo "Hope you know what you are doing."
