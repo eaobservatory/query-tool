@@ -145,7 +145,7 @@ public class QtTools {
     script[0] = System.getProperty("LOAD_DHSC");
     script[1] = new String(name);
     script[2] = "-"+System.getProperty("QUICKLOOK", "noql");
-    script[3] = "-"+System.getProperty("SIMULATE","sim");
+    script[3] = "-"+System.getProperty("SIMULATE","simTel");
     script[4] = "-"+System.getProperty("ENGINEERING","eng");
 
     System.out.println ("About to start script "+
