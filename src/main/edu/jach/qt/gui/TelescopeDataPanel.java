@@ -37,9 +37,10 @@ public class TelescopeDataPanel extends JPanel implements ActionListener {
   private JLabel seeingValue;
   private JLabel airmass;
   private JButton updateButton;
+    private InfoPanel infoPanel;
   private DcHub hub;
 
-  public TelescopeDataPanel() {
+  public TelescopeDataPanel(InfoPanel panel) {
     csoTau		= new JLabel("CSO Tau: ", JLabel.LEADING);
     seeing		= new JLabel("Seeing: ", JLabel.LEADING);
     airmass		= new JLabel("Airmass: ", JLabel.LEADING);
@@ -47,6 +48,7 @@ public class TelescopeDataPanel extends JPanel implements ActionListener {
     seeingValue		= new JLabel(tauString, JLabel.LEADING);
     airmassValue	= new JLabel(tauString, JLabel.LEADING);
     updateButton	= new JButton("Set Current");
+    this.infoPanel      = panel;
     boolean locked=false;
 
     /*
@@ -71,7 +73,7 @@ public class TelescopeDataPanel extends JPanel implements ActionListener {
     if (TelescopeDataPanel.DRAMA_ENABLED) {
       hub = DcHub.getHandle();
       hub.register("CSOMON");
-      //hub.register("TELMON");
+//       hub.register("TELMON");
     }
     else if (locked) {
       Object[] options = { "CONTINUE", "CANCEL" };
@@ -240,6 +242,39 @@ public class TelescopeDataPanel extends JPanel implements ActionListener {
 	  //WidgetPanel.getAtmospherePanel().setSeeing(TelescopeDataPanel.seeingValue.getText());
 	  //WidgetPanel.getAtmospherePanel().setAirmass(TelescopeDataPanel.airmassValue.getText());
       }
+
+      if (!TelescopeDataPanel.airmassValue.getText().equals(tauString)) {
+	  String zCurrentAirmass = TelescopeDataPanel.airmassValue.getText();
+	  Double currentAirmass;
+	  try {
+	      currentAirmass = new Double(zCurrentAirmass);
+
+	      WidgetPanel bag = infoPanel.getFrame().getWidgets();
+	      // Loop through the element in the bag until we find the airmass.
+	      Component [] components = bag.getComponents();
+	      for (int component=0; component<bag.getComponentCount(); component++) {
+ 		  if ( components[component] instanceof LabeledRangeTextField ) {
+		      LabeledRangeTextField lrtf = (LabeledRangeTextField) components[component];
+		      if ( components[component].getName().equalsIgnoreCase("airmass") ) {
+			  double upperLimit = currentAirmass.doubleValue();
+			  upperLimit = upperLimit - 20.*upperLimit/100.;
+			  if (upperLimit < 1.0 ) upperLimit = 1.0;
+
+			  double lowerLimit = currentAirmass.doubleValue();
+			  lowerLimit = lowerLimit + 20.*lowerLimit/100.;
+			  if (lowerLimit > 3.0) lowerLimit = 3.0;
+
+			  lrtf.setLowerText (new Double(upperLimit));
+			  lrtf.setUpperText (new Double(lowerLimit));
+		      }
+		      
+ 		  }
+	      }
+	  }
+	  catch ( NumberFormatException nfe ) {
+	  }
+      }
+    
   }
    
 }
