@@ -26,22 +26,29 @@ public class MSBDoneDialog extends JDialog {
     private String defaultUserDir = "/tmp/last_user";
 
     private String getDefaultUserId() {
-	String _usr="";
+	String _usr=null;
 
-	File userDir = new File(defaultUserDir);
-	if (userDir.exists() && userDir.isDirectory()) {
-	    String [] fNames = userDir.list();
-	    for (int i=0; i<fNames.length; i++) {
-		if (fNames[i].startsWith(".")) {
-		    continue;
-		}
-		else {
-		    _usr = fNames[i];
-		    break;
+	if (System.getProperty("userid") == null) {
+	    File userDir = new File(defaultUserDir);
+	    if (userDir.exists() && userDir.isDirectory()) {
+		String [] fNames = userDir.list();
+		for (int i=0; i<fNames.length; i++) {
+		    if (fNames[i].startsWith(".")) {
+			continue;
+		    }
+		    else {
+			_usr = fNames[i];
+			break;
+		    }
 		}
 	    }
+	    if (_usr == null || _usr.equals("") ) {
+		_usr = System.getProperty("user.name");
+	    }
+	    System.setProperty("userid", _usr);
 	}
-	return _usr;
+	
+	return System.getProperty("userid");
     }
 
     private void setDefaultUserId(String usr) {
@@ -73,6 +80,8 @@ public class MSBDoneDialog extends JDialog {
 	}
 	catch (IOException ioe) {
 	}
+
+	System.setProperty("userid", usr);
     }
 	    
     public boolean getAccepted() {
@@ -191,7 +200,8 @@ public class MSBDoneDialog extends JDialog {
 		}
 	    });
 
-	validate();
+	validateTree();
+	pack();
 	setVisible(true);
 	this.getRootPane().requestFocus();
     }
