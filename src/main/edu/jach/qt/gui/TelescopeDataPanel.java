@@ -20,8 +20,12 @@ import ocs.utils.*;
 
 public class TelescopeDataPanel extends JPanel implements ActionListener {
    
-  private JLabel csoTau;
+  public final static boolean	DRAMA_ENABLED = "true".equals(System.getProperty("DRAMA_ENABLED"));
+
+  public static String	tauString = "-----";
+
   private static JLabel csoTauValue;
+  private JLabel csoTau;
   private JLabel seeing;
   private JLabel seeingValue;
   private JLabel airmass;
@@ -29,20 +33,34 @@ public class TelescopeDataPanel extends JPanel implements ActionListener {
   private JButton updateButton;
   private DcHub hub;
 
-  public static String tauString = "-----";
-
   public TelescopeDataPanel() {
-    csoTau = new JLabel("CSO Tau: ", JLabel.LEADING);
-    seeing = new JLabel("Seeing: ", JLabel.LEADING);
-    airmass = new JLabel("Airmass: ", JLabel.LEADING);
-    csoTauValue = new JLabel(tauString, JLabel.LEADING);
-    seeingValue = new JLabel("0.25\"", JLabel.LEADING);
-    airmassValue = new JLabel("1.2", JLabel.LEADING);
+    csoTau		= new JLabel("CSO Tau: ", JLabel.LEADING);
+    seeing		= new JLabel("Seeing: ", JLabel.LEADING);
+    airmass		= new JLabel("Airmass: ", JLabel.LEADING);
+    csoTauValue		= new JLabel(tauString, JLabel.LEADING);
+    seeingValue		= new JLabel("0.25\"", JLabel.LEADING);
+    airmassValue	= new JLabel("1.2", JLabel.LEADING);
+    updateButton	= new JButton("Set Current");
 
-    updateButton = new JButton("Set Current");
+    if (TelescopeDataPanel.DRAMA_ENABLED) {
+      hub = DcHub.getHandle();
+      hub.register("CSOMON");
+    }
 
-    hub = DcHub.getHandle();
-    hub.register("CSOMON");
+    else {
+      Object[] options = { "CONTINUE", "CANCEL" };
+      int n = JOptionPane.showOptionDialog(null, 
+					   "          NOT A DRAMA ENABLED SYSTEM!.\n\n"+
+					   "Continue will allow you to run the QT in Senario Mode.\n"+
+					   "Cancel will shutdown the QT", 
+					   "Warning", 
+					   JOptionPane.OK_CANCEL_OPTION, 
+					   JOptionPane.WARNING_MESSAGE, null, options, options[0]);
+
+      if( (n == JOptionPane.NO_OPTION) || (n == JOptionPane.CLOSED_OPTION))
+	System.exit(0);
+
+    }
   }
   
   public static void setTau(double val) {
