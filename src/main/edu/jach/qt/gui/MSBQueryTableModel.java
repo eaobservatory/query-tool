@@ -36,55 +36,61 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
     "PI"
     };*/
    
-  public static final String[] colNames ={
-      "projectid",  //0
-      "title",      //1
-      "instrument", //2
-      "waveband",   //3
-      "target",     //4
-      "ra",         //5
-      "coordstype",  //6
-      "ha",         //7
-      "timeest",    //8
-      "priority",   //9
-      "remaining",  //10
-      "obscount",   //11
-      "checksum",   //12
-      "msbid",      //13
-  };
-   
-  public static final Class[] colClasses = {
-    String.class,	//0
-    String.class,	//1
-    String.class,	//2
-    String.class,	//3
-    String.class,	//4
-    String.class,	//5
-    String.class,	//6
-    String.class,	//7
-    Integer.class,	//8
-    Integer.class,	//9
-    Integer.class,	//10
-    Integer.class,	//11
-    String.class,	//12
-    Integer.class,	//13
-  };
+    public static String[] colNames;
+    public static Class [] colClasses;
+    public static int      PROJECTID;
+    public static int      CHECKSUM;
+    public static int      MSBID;
 
-  public static final int 
-    PROJECTID           = 0,
-    TITLE               = 1,
-    INSTRUMENT          = 2,
-    WAVEBAND		= 3,
-    TARGET              = 4,
-    RA		        = 5, 
-    COORDSTYPE          = 6, 
-    HA		        = 7,
-    TIMEEST             = 8, //INT
-    PRIORITY            = 9,  //INT
-    REMAINING           = 10, //INT
-    OBSCOUNT            = 11, //INT
-    CHECKSUM            = 12,
-    MSBID		= 13; //INT
+//   public static String[] colNames ={
+//       "projectid",  //0
+//       "title",      //1
+//       "instrument", //2
+//       "waveband",   //3
+//       "target",     //4
+//       "ra",         //5
+//       "coordstype",  //6
+//       "ha",         //7
+//       "timeest",    //8
+//       "priority",   //9
+//       "remaining",  //10
+//       "obscount",   //11
+//       "checksum",   //12
+//       "msbid",      //13
+//   };
+   
+//   public static Class[] colClasses = {
+//     String.class,	//0
+//     String.class,	//1
+//     String.class,	//2
+//     String.class,	//3
+//     String.class,	//4
+//     String.class,	//5
+//     String.class,	//6
+//     String.class,	//7
+//     Integer.class,	//8
+//     Integer.class,	//9
+//     Integer.class,	//10
+//     Integer.class,	//11
+//     String.class,	//12
+//     Integer.class,	//13
+//   };
+
+//   public static int 
+//     PROJECTID           = 0,
+//     TITLE               = 1,
+//     INSTRUMENT          = 2,
+//     WAVEBAND		= 3,
+//     TARGET              = 4,
+//     RA		        = 5, 
+//     COORDSTYPE          = 6, 
+//     HA		        = 7,
+//     TIMEEST             = 8, //INT
+//     PRIORITY            = 9,  //INT
+//     REMAINING           = 10, //INT
+//     OBSCOUNT            = 11, //INT
+//     CHECKSUM            = 12,
+//     MSBID		= 13; //INT
       
   //DATA
   //DOM object to hold XML document contents
@@ -101,10 +107,24 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
      * Constructor.
      * Constructs a tabe model with 200 possible entries.
      */
-  public MSBQueryTableModel() {
+  public MSBQueryTableModel() throws Exception{
+    colNames = XmlUtils.getColumnNames(MSB_SUMMARY);
+    if (colNames == null) {
+	throw new Exception("No results returned");
+    }
+    colClasses = new Class [ colNames.length ];
+    Vector vectorOfNames = new Vector();
+    for (int i=0; i< colNames.length; i++) {
+	colClasses[i] = String.class;
+	vectorOfNames.add((Object)colNames[i]);
+    }
+    this.MSBID     = vectorOfNames.indexOf("msbid");
+    this.CHECKSUM  = vectorOfNames.indexOf("checksum");
+    this.PROJECTID = vectorOfNames.indexOf("projectid");
     docIsNull = true;
     projectIds = new Integer[200];
   }
+
 
     /**
      * Impelmentation of <code>Runnable</code> interface.
@@ -163,7 +183,7 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
      @return    the number of columns in the model
   */
   public int getColumnCount() {
-    return colClasses.length;
+    return colClasses.length-2;
   }
   /**
      Return the number of persons in an XML document
