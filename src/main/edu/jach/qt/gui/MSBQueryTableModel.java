@@ -158,12 +158,13 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
 	  // Move the columns around to the current bitset.
 	  adjustColumnData(currentBitSet);
 	  if (model != null) {
-	      logger.info("Model has "+model.size()+" projects");
 	      // Create an internal map of projects to MSBs
 	      for (int i=0; i<model.size();i++) {
 		  modelIndex.add(((XmlUtils.MSBTableModel)model.elementAt(i)).getProjectId());
 	      }
 	  }
+	  _projectId = "all";
+	  logger.info("Result contained "+getRowCount()+" MSBs in "+modelIndex.size()+" Projects");
       }
   }
     
