@@ -114,7 +114,7 @@ public class MsbClient extends SoapClient {
       flushParameter();
       addParameter("key", Integer.class, msbid);
 	
-      FileWriter fw = new FileWriter(System.getProperty("msbFile"));
+      FileWriter fw = new FileWriter(System.getProperty("msbFile")+"."+System.getProperty("user.name"));
       String spXML = (String) doCall(url, "urn:OMP::MSBServer", "fetchMSB");
 	
       if (spXML != null ) {
