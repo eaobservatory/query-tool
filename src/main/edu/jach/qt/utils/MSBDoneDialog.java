@@ -122,12 +122,13 @@ public class MSBDoneDialog extends JDialog {
 
 	final String acceptString = "Accept";
 	final String rejectString = "Reject";
-	final String cancelString = "Cancel";
-	Object [] options = {acceptString, rejectString, cancelString};
+	final String cancelString = "Decide Later";
+	final String noDataString = "Took No Data";
+	Object [] options = {acceptString, rejectString, cancelString, noDataString};
 
 	optionPane = new JOptionPane(inputArray, 
 				     JOptionPane.QUESTION_MESSAGE,
-				     JOptionPane.YES_NO_CANCEL_OPTION,
+				     JOptionPane.DEFAULT_OPTION,
 				     null,
 				     options,
 				     options[0]);
@@ -172,20 +173,28 @@ public class MSBDoneDialog extends JDialog {
 			    File cancelFile = new File ("/tmp/cancel");
 			    File acceptFile = new File ("/tmp/accept");
 			    File rejectFile = new File ("/tmp/reject");
+			    File noDataFile = new File ("/tmp/noData");
 			    if (value.equals(acceptString)) {
-				MsbClient.doneMSB(projId, chkSum, userId, comment);
+ 				MsbClient.doneMSB(projId, chkSum, userId, comment);
 				cancelFile.delete();
 				rejectFile.delete();
-
+				noDataFile.delete();
 			    }
 			    else if (value.equals(rejectString)) {
-				MsbClient.rejectMSB(projId, chkSum, userId, comment);
+ 				MsbClient.rejectMSB(projId, chkSum, userId, comment);
 				cancelFile.delete();
 				acceptFile.delete();
+				noDataFile.delete();
+			    }
+			    else if (value.equals(noDataString)) {
+				acceptFile.delete();
+				rejectFile.delete();
+				cancelFile.delete();
 			    }
 			    else {
 				acceptFile.delete();
 				rejectFile.delete();
+				noDataFile.delete();
 			    }
 			}
 			catch (InvalidUserException iue) {
