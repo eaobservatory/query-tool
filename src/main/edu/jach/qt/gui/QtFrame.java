@@ -111,6 +111,7 @@ public class QtFrame
    * shutdown.
    */
   public void exitQT() {
+      logger.info("QT shutdown by user");
       if (DeferredProgramList.deferredFilesExist()) {
 	  Object [] options = {"Save", "Delete"};
 	  int selection = JOptionPane.showOptionDialog( null,
@@ -292,6 +293,7 @@ public class QtFrame
 		    
 		InfoPanel.logoPanel.start();
 		logger.info("Setting up staging panel for the first time.");
+		om.enableList(false);
 
 		if (om == null)
 		  om = new OmpOM();
@@ -310,6 +312,7 @@ public class QtFrame
 	      //Runs on the event-dispatching thread.
 	      public void finished() { 
 		InfoPanel.logoPanel.stop();
+		om.enableList(true);
 
 		if ( isStatusOK.booleanValue()) {
 		  om.addNewTree(msbID);
