@@ -289,6 +289,8 @@ final public class ProgramTree extends JPanel implements
 	boolean isDeferred = false;
 	boolean failed = false;
 
+	Thread t = null;
+
 	if (selectedItem == null) {
 	    isDeferred =  true;
 	    item = DeferredProgramList.currentItem;
@@ -297,7 +299,7 @@ final public class ProgramTree extends JPanel implements
 	if (System.getProperty("telescope").equalsIgnoreCase("ukirt")) {
 	    try {
 		ExecuteUKIRT execute = new ExecuteUKIRT();
-		Thread t = new Thread(execute);
+		t = new Thread(execute);
 		t.start();
 		t.join();
 		File failFile = new File ("/ukirtdata/orac_data/deferred/.failure");
@@ -328,7 +330,10 @@ final public class ProgramTree extends JPanel implements
 		run.setEnabled(true);
 	    }
 	    catch (Exception e) {
-		logger.error("Failed to execute");
+		logger.error("Failed to execute",e);
+		if ( t!=null && t.isAlive() ) {
+		    logger.info("Last execution still running");
+		}
 		run.setEnabled(true);
 		return;
 	    }
@@ -342,7 +347,7 @@ final public class ProgramTree extends JPanel implements
 		else {
 		    execute = new ExecuteJCMT(_spItem);
 		}
-		Thread t = new Thread(execute);
+		t = new Thread(execute);
 		t.start();
 		t.join();
 		File failFile = new File ("/jcmtdata/orac_data/deferred/.failure");
@@ -361,7 +366,10 @@ final public class ProgramTree extends JPanel implements
 		run.setEnabled(true);
 	    }
 	    catch (Exception e) {
-		logger.error("Failed to execute");
+		logger.error("Failed to execute",e);
+		if ( t!=null && t.isAlive()) {
+		    logger.info("Last execution still running");
+		}
 		run.setEnabled(true);
 		return;
 	    }
