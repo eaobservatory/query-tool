@@ -166,6 +166,10 @@ final public class ProgramTree extends JPanel implements
     this.checkSum = checksum;
   }
 
+    public void setExecutable (boolean flag) {
+	run.setEnabled(flag);
+    }
+
   public void setImage(JLabel label) throws Exception {
     URL url = new URL("file://"+BIN_IMAGE);
     if(url != null) {
