@@ -2,6 +2,7 @@ package edu.jach.qt.djava;
 
 import au.gov.aao.drama.*;
 import ocs.utils.CommandReceiver;
+import org.apache.log4j.Logger;
 
 /**
  * <code>CSOPathResponseHandler</code> This class is used to
@@ -11,10 +12,13 @@ import ocs.utils.CommandReceiver;
  * $Id$ */
 public class CSOPathResponseHandler extends DramaPath.ResponseHandler {
 
+  static Logger logger = Logger.getRootLogger();
+
   private CommandReceiver cr;
   public CSOPathResponseHandler(DramaPath p, CommandReceiver cr) {
     super(p);
     this.cr = cr;
+    logger.debug(logger.getClass().getName());
   }
 
   /** 
@@ -23,7 +27,8 @@ public class CSOPathResponseHandler extends DramaPath.ResponseHandler {
   public boolean Success(DramaPath path, DramaTask task) throws DramaException {
     
     // Informational message
-    task.MsgOut("Got path to task "+path.TaskName() +".");
+    //task.MsgOut("Got path to task "+path.TaskName() +".");
+    logger.info("Got path to task "+path.TaskName() +".");
     
     // Start the monitor operation.
     DramaMonitor Monitor = new DramaMonitor(path, new CSO_MonResponse(cr), true, "CSOTAU");
@@ -37,8 +42,8 @@ public class CSOPathResponseHandler extends DramaPath.ResponseHandler {
    */
   public boolean Error(DramaPath path, DramaTask task)  throws DramaException {
     DramaStatus status = task.GetEntStatus();
-    DramaErs.Report("Failed to get path to task \"" + path + "\"");
-    DramaErs.Report("Failed with status - " + status);
+    logger.warn("Failed to get path to task \"" + path + "\"");
+    logger.warn("Failed with status - " + status);
 
     cr.setPathLock(false);
 
@@ -47,3 +52,9 @@ public class CSOPathResponseHandler extends DramaPath.ResponseHandler {
 
 }
 
+/*
+ * $Log$
+ * Revision 1.5  2002/04/20 02:41:24  mrippa
+ * Added log4j functionality.
+ *
+ */
