@@ -2,6 +2,7 @@ package edu.jach.qt.app;
 
 import edu.jach.qt.gui.QtFrame;
 import edu.jach.qt.gui.WidgetDataBag;
+import edu.jach.qt.utils.QtTools;
 import java.awt.*;
 import javax.swing.UIManager;
 
@@ -27,6 +28,8 @@ final public class QT {
     * frame is also set be centered on the screen.
     */
    public QT () {
+      QtTools.loadConfig("config/qt.conf");
+
       WidgetDataBag wdb = new WidgetDataBag ();
       Querytool qt = new Querytool(wdb);
       QtFrame qtf = new QtFrame(wdb, qt);
@@ -74,6 +77,10 @@ final public class QT {
 } // Omp
 
 //$Log$
+//Revision 1.4  2001/09/20 01:58:07  mrippa
+//Added QtTools.loadConfig("config.qt.conf"); which loads
+//the main config file for the QT.
+//
 //Revision 1.3  2001/09/18 21:53:39  mrippa
 //All classes and methods documented.
 //
