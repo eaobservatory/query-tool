@@ -110,7 +110,7 @@ public class QtTools {
      @return  String a filename
      
   */
-  public static String translate(SpItem observation) {
+  public static String translate(SpItem observation, String inst) {
     SpTranslator translation = new SpTranslator((SpObs)observation);
     translation.setSequenceDirectory(System.getProperty("EXEC_PATH"));
     translation.setConfigDirectory(System.getProperty("CONF_PATH"));
@@ -119,10 +119,9 @@ public class QtTools {
     String tname = null;
     try {
       tname=translation.translate();
-
       System.out.println("exec: "+System.getProperty("EXEC_PATH")+"/"+tname);
       
-      temp.put(new String("execFilename"),tname);
+      temp.put(new String(inst+"ExecFilename"),tname);
     }catch (NullPointerException e) {
       System.out.println ("Translation failed!, exception was "+e);
       e.printStackTrace();
@@ -132,5 +131,29 @@ public class QtTools {
     }
     return tname;
   }
+
+
+  /**
+   * Describe <code>loadDramaTasks</code> method here.
+   *
+   * @param name a <code>String</code> value
+   */
+  public static void loadDramaTasks(String name) {
+    //starting the drama tasks
+    String[] script = new String[5];
+      
+    script[0] = System.getProperty("LOAD_DHSC");
+    script[1] = new String(name);
+    script[2] = "-"+System.getProperty("QUICKLOOK", "noql");
+    script[3] = "-"+System.getProperty("SIMULATE","sim");
+    script[4] = "-"+System.getProperty("ENGINEERING","eng");
+
+    System.out.println ("About to start script "+script[0]+
+			" "+script[1]+" "+script[2]+
+			" "+script[3]+" "+script[4]);
+
+    int status = QtTools.execute(script);
+  }
+
   
 }
