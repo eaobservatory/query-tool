@@ -270,6 +270,7 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
 	for (int i=0; i< colNames.length; i++) {
 	    colVector.add((Object)colNames[i]);
 	    classVector.add((Object)colClassName[i]);
+	    System.out.println("("+colNames[i]+","+colClassName[i]+")");
 	}
 	// Now manipulate the vector
 	for (int i=colNames.length-1; i >= 0; i--) {
@@ -297,6 +298,9 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
 		colClasses[i] = String.class;
 	    }
 	}
+	this.MSBID     = colVector.indexOf("msbid");
+	this.CHECKSUM  = colVector.indexOf("checksum");
+	this.PROJECTID = colVector.indexOf("projectid");
 	fireTableChanged(null);
     }
 
