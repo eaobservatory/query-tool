@@ -28,12 +28,9 @@ public class TelescopeDataPanel extends JPanel {
   private JLabel airmassValue;
   private JButton updateButton;
 
-  public static String tauString = ""+0.00;
+  public static String tauString = "-----";
 
   public TelescopeDataPanel() {
-    DcHub hub = new DcHub();
-    hub.register("CSOMON");
-
     csoTau = new JLabel("CSO Tau: ", JLabel.LEADING);
     seeing = new JLabel("Seeing: ", JLabel.LEADING);
     airmass = new JLabel("Airmass: ", JLabel.LEADING);
@@ -42,11 +39,14 @@ public class TelescopeDataPanel extends JPanel {
     airmassValue = new JLabel("1.2", JLabel.LEADING);
 
     updateButton = new JButton("Set Current");
-    repaint();
+
+    DcHub hub = new DcHub();
+    hub.register("CSOMON");
   }
   
   public static void setTau(double val) {
     
+    //The arg to following constructor is a pattern for formating
     DecimalFormat myFormatter = new DecimalFormat("0.000");
     String output = myFormatter.format(val);
 
