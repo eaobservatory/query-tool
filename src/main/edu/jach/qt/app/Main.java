@@ -5,6 +5,7 @@ import edu.jach.qt.gui.WidgetDataBag;
 import edu.jach.qt.utils.QtTools;
 import java.awt.*;
 import javax.swing.UIManager;
+import edu.jach.qt.utils.BasicWindowMonitor;
 
 /**
  * This is the top most OMP-QT class.  Upon init it instantiates 
@@ -34,6 +35,7 @@ final public class Main {
       Querytool qt = new Querytool(wdb);
       QtFrame qtf = new QtFrame(wdb, qt);
       
+      qtf.addWindowListener(new BasicWindowMonitor());
       qtf.setSize(new Dimension(950, 550));
       qtf.setTitle("OMP Query Tool Observation Manager");
 
@@ -80,6 +82,9 @@ final public class Main {
 } // Omp
 
 //$Log$
+//Revision 1.8  2001/11/24 04:56:20  mrippa
+//Added a BasicWindowMonitor so as to cleanly exit the QT.
+//
 //Revision 1.7  2001/11/05 18:58:16  mrippa
 //New system wide config file is read in.
 //
