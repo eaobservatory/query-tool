@@ -19,7 +19,7 @@ import javax.swing.event.*;
  */
 
 public class LabeledTextField extends WidgetPanel
-  implements DocumentListener {
+  implements KeyListener, DocumentListener{
 
   protected JTextField textField;
   protected JLabel label;
@@ -49,6 +49,7 @@ public class LabeledTextField extends WidgetPanel
      
     add(textField);
     textField.getDocument().addDocumentListener(this);
+    textField.addKeyListener(this);
   }
 
   public String getName() {
@@ -70,7 +71,8 @@ public class LabeledTextField extends WidgetPanel
     }
     return result;
   }
- 
+
+
   /**
    * The <code>insertUpdate</code> adds the current text to the
    * WidgetDataBag.  All observers are notified.
@@ -100,5 +102,38 @@ public class LabeledTextField extends WidgetPanel
   public void changedUpdate(DocumentEvent e) {
       
   }
+
+  // implementation of java.awt.event.KeyListener interface
+
+  /**
+   *
+   * @param param1 <description>
+   */
+  public void keyTyped(KeyEvent param1) {
+    // TODO: implement this java.awt.event.KeyListener method
+
+    
+    if ( param1.getKeyChar() == 10) {
+      InfoPanel.searchButton.doClick();
+    } // end of if ()
+    
+  }
+
+  /**
+   *
+   * @param param1 <description>
+   */
+  public void keyPressed(KeyEvent param1) {
+    // TODO: implement this java.awt.event.KeyListener method
+  }
+
+  /**
+   *
+   * @param param1 <description>
+   */
+  public void keyReleased(KeyEvent param1) {
+    // TODO: implement this java.awt.event.KeyListener method
+  }
+
 
 }// LabeledTextField
