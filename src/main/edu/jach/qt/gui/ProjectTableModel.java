@@ -76,14 +76,18 @@ public class ProjectTableModel
 	projectIds.clear();
 	priorities.clear();
 	Vector [] data = XmlUtils.getProjectData();
-	projectIds = data[0];
-	priorities = data[1];
+	if (data != null) {
+	    projectIds = data[0];
+	    priorities = data[1];
+	}
     }
 
     public void clear() {
-	projectIds.clear();
-	priorities.clear();
-	XmlUtils.clearProjectData();
-	fireTableChanged(null);
+	if (projectIds.size() != 0) {
+	    projectIds.clear();
+	    priorities.clear();
+	    XmlUtils.clearProjectData();
+	    fireTableChanged(null);
+	}
     }
 }
