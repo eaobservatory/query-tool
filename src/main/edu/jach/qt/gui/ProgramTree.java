@@ -67,7 +67,7 @@ final public class ProgramTree extends JPanel implements
   private GridBagConstraints		gbc;
   private JButton			run;
   private JTree				tree;
-  private JList			        obsList;
+  private static JList			        obsList;
   private DefaultListModel		model;
   private JScrollPane			scrollPane = new JScrollPane();;
   private SpItem			_spItem;
@@ -420,6 +420,7 @@ final public class ProgramTree extends JPanel implements
 			if (selectedItem != obsList.getSelectedValue() ) {
 			    // Select the new item
 			    selectedItem = (SpItem) obsList.getSelectedValue();
+			    DeferredProgramList.clearSelection();
 			}
 			else {
 			    obsList.clearSelection();
@@ -453,6 +454,11 @@ final public class ProgramTree extends JPanel implements
   //public MsbNode getMsbNode() {
   //   return myObs;
   // }
+
+    public static void clearSelection() {
+	obsList.clearSelection();
+	selectedItem = null;
+    }
 
   public JTree getTree() {
     return tree;
@@ -602,6 +608,8 @@ final public class ProgramTree extends JPanel implements
 	    JOptionPane.showMessageDialog(null,
 					  "Can not delete a mandatory observation!"
 					  );
+	    selectedItem = null;
+	    obsList.clearSelection();
 	    return;
 	}
 	
