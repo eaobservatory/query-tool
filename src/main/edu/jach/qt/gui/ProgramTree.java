@@ -166,6 +166,7 @@ final public class ProgramTree extends JPanel implements
 	edit.addActionListener(this);
 	scalePopup.add (edit);
 	scale = new JMenuItem (scaleText);
+	scale.setEnabled(false);
 	scale.addActionListener(this);
 	scalePopup.add (scale);
 	scaleAgain = new JMenuItem (rescaleText);
