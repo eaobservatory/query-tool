@@ -59,6 +59,7 @@ public class QtFrame extends JFrame implements PopupMenuListener, ActionListener
   private TreeMap               calibrationList;
   private JMenu                 calibrationMenu = new JMenu("Calibrations");
   private WidgetPanel           _widgetPanel;
+  private int []                tableColumnSizes;
 
 
   SwingWorker msbWorker;
@@ -149,7 +150,6 @@ public class QtFrame extends JFrame implements PopupMenuListener, ActionListener
     WidgetPanel inputPanel = new WidgetPanel(new Hashtable(), widgetBag);
     _widgetPanel = inputPanel;
     //Table setup
-    doColumnQuery();
     try {
 	msbQTM = new MSBQueryTableModel();
     }
@@ -193,18 +193,6 @@ public class QtFrame extends JFrame implements PopupMenuListener, ActionListener
 
   }
 
-    private void doColumnQuery() {
-	localQuerytool.setAllocationConstraint(true);
-	localQuerytool.setRemainingConstraint(true);
-	localQuerytool.setObservabilityConstraint(true);
-	localQuerytool.setQueue("SERV");
-	boolean result = localQuerytool.queryMSB();
-	localQuerytool.setAllocationConstraint(false);
-	localQuerytool.setRemainingConstraint(false);
-	localQuerytool.setObservabilityConstraint(false);
-	localQuerytool.setQueue(null);
-	return;
-    }
 
   private void tableSetup() {
     final TableSorter sorter = new TableSorter(msbQTM);
@@ -212,7 +200,7 @@ public class QtFrame extends JFrame implements PopupMenuListener, ActionListener
     ToolTipManager.sharedInstance().unregisterComponent(table);
     ToolTipManager.sharedInstance().unregisterComponent(table.getTableHeader());
     sorter.addMouseListenerToHeaderInTable(table);
-    table.sizeColumnsToFit(JTable.AUTO_RESIZE_ALL_COLUMNS);
+    table.setAutoResizeMode(JTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
     table.setMinimumSize(new Dimension(770,275) );
 
     ListSelectionModel listMod =  table.getSelectionModel();
@@ -311,6 +299,36 @@ public class QtFrame extends JFrame implements PopupMenuListener, ActionListener
       } );
     table.setVisible(true);
   }
+
+    public void updateColumnSizes() {
+	TableColumnModel tcm = table.getColumnModel();
+	tableColumnSizes = new int [table.getColumnCount()];
+	for (int i=0; i<msbQTM.getColumnCount(); i++) {
+	    tableColumnSizes[i] = tcm.getColumn(i).getWidth();
+	}
+    }
+
+    public void setColumnSizes() {
+	TableColumnModel tcm = table.getColumnModel();
+	for (int i=0; i<tableColumnSizes.length; i++) {
+	    tcm.getColumn(i).setPreferredWidth(tableColumnSizes[i]);
+	}
+	table.setColumnModel(tcm);
+	table.updateUI();
+    }
+
+    public void setTableToDefault() {
+	TableColumnModel tcm = table.getColumnModel();
+	for (int i=0; i<msbQTM.getColumnCount(); i++) {
+	    tcm.getColumn(i).setPreferredWidth(-1);
+	}
+	table.setColumnModel(tcm);
+    }
+
+    public MSBQueryTableModel getModel() {
+	return msbQTM;
+    }
+
 
   /**
    * Sends the selected MSB to the Staging Area.
@@ -603,7 +621,7 @@ public class QtFrame extends JFrame implements PopupMenuListener, ActionListener
 	    exitQT();
 	}
 	else if (thisItem.getText().equalsIgnoreCase("Columns...") ) {
-	    ColumnSelector colSelector = new ColumnSelector(msbQTM);
+	    ColumnSelector colSelector = new ColumnSelector(this);
 	    return;
 	}
 	else if (thisItem.getText().equalsIgnoreCase("Infra Red") ) {
