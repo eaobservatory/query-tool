@@ -578,26 +578,24 @@ final public class ProgramTree extends JPanel implements
 
     /* Drop Target Interface */
     public void drop(DropTargetDropEvent evt){
-	/* Make sure we are not trying to get rid of a mandatory obs */
-	SpObs obs = (SpObs) obsList.getSelectedValue();
-	if (obs != null) {
-	    if (obs.isOptional() == false) {
-		JOptionPane.showMessageDialog(null,
-					      "Can not remove mandatory observations!"
-					      );
-		return;
-	    }
+	SpObs itemForDrop;
+	if (selectedItem != null) {
+	    itemForDrop = (SpObs)selectedItem;
+	}
+	else {
+	    itemForDrop = (SpObs)DeferredProgramList.currentItem;
 	}
 
-
-	try{
-	    Transferable t = evt.getTransferable();
-	    evt.acceptDrop(DnDConstants.ACTION_MOVE);
-	    String s = (String)t.getTransferData(DataFlavor.stringFlavor);
-	    evt.getDropTargetContext().dropComplete(true);
+	if (itemForDrop != null && !itemForDrop.isOptional()) {
+	    JOptionPane.showMessageDialog(null,
+					  "Can not delete a mandatory observation!"
+					  );
+	    return;
 	}
-	catch (IOException ioe) {System.out.println("Caught IO Excption");}
-	catch (UnsupportedFlavorException ufe) {System.out.println("Caught Flavor Excption");}
+	
+	evt.acceptDrop(DnDConstants.ACTION_MOVE);
+	evt.getDropTargetContext().dropComplete(true);
+	return;
     }
 
     /* Drop Target Interface */
@@ -639,10 +637,14 @@ final public class ProgramTree extends JPanel implements
 
     public void dragDropEnd(DragSourceDropEvent evt){
 	if (evt.getDropSuccess() == true) {
-	    removeCurrentNode();
-	    selectedItem=null;
+	    SpObs obs = (SpObs) obsList.getSelectedValue();
+	    if (obs != null) {
+		if (obs.isOptional() == true) {
+		    removeCurrentNode();
+		    selectedItem=null;
+		}
+	    }
 	}
-
     }
 
   public JButton getRunButton () {return run;}
