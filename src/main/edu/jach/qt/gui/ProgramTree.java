@@ -573,6 +573,7 @@ final public class ProgramTree extends JPanel implements
 		    if (selectedItem != obsList.getSelectedValue() ) {
 			// Select the new item
 			selectedItem = (SpItem) obsList.getSelectedValue();
+			DeferredProgramList.clearSelection();
 		    }
 		else if (e.getClickCount() == 1)
 		    {
