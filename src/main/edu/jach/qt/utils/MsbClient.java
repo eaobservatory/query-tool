@@ -20,7 +20,7 @@ public class MsbClient extends SoapClient {
       MsbClient.fetchMSB(new Integer(96));
    }
 
-   public static void queryMSB(String xmlQueryString) {
+   public static boolean queryMSB(String xmlQueryString) {
       try {
 	 URL url = new URL(System.getProperty("msbServer"));
 	 addParameter("xmlquery", String.class, xmlQueryString);
@@ -30,7 +30,11 @@ public class MsbClient extends SoapClient {
 	 FileWriter fw = new FileWriter(System.getProperty("msbSummary"));
 	 fw.write((String) doCall(url, "urn:OMP::MSBServer", "queryMSB"));
 	 fw.close();
-      } catch (Exception e) {e.printStackTrace();}
+      } catch (Exception e) {
+	e.printStackTrace();
+	return false;
+      }
+      return true;
 
    }
 
