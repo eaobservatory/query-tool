@@ -52,7 +52,6 @@ public class MsbClient extends SoapClient {
 
 	String fileName = System.getProperty("msbSummary") + "." +
 	    System.getProperty("user.name");
-	System.out.println(fileName);
 
 	FileWriter fw = new FileWriter(fileName);
 	Object tmp = doCall(url, "urn:OMP::MSBServer", "queryMSB");
