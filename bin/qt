@@ -3,7 +3,7 @@
 set JAVA = /local/java/jdk/bin/java
 
 set baseOTConfigDir	= /jac_sw/orac3/OT/install/cfg
-set qtConfig	        = /jac_sw/omp/QT/config/qt.conf
+set qtConfig	        = /jac_sw/omp/QT/config/qtSystem.conf
 
 set usage		= "Usage: $0 <telescope> [-h] [-options] \n\nwhere telescope is:\n\tukirt\t\tspecifies the UKIRT widget set\n\tjcmt\t\tspecifies the jcmt widget set\n\nand options include:\n\t-jac\t\tspecifies JAC global configs instead of local user configs\n\t-config file\tspecies the absolute path to the \042file\042 used for this session\n\n\n"
 
@@ -28,7 +28,7 @@ while ($#argv != 0)
         shift
         breaksw
       case -jac:
-        set qtConfig = /jac_sw/omp/QT/configs/qtSystem.conf
+        set qtConfig = /jac_sw/omp/QT/config/qtSystem.conf
         echo Global configs to be used
         shift
         breaksw
@@ -44,12 +44,14 @@ while ($#argv != 0)
       case ukirt:
         set widgetFile   = /jac_sw/omp/QT/config/qtUkirtWidget.conf
 	set instConfigDir = ${baseOTConfigDir}/ukirt
+	set telescope	  = Ukirt
         echo Telescope set to use ukirt widget set
         shift
         breaksw
       case jcmt:
         set widgetFile   = /jac_sw/omp/QT/config/qtJcmtWidget.conf
 	set instConfigDir = ${baseOTConfigDir}/jcmt
+	set telescope	  = Jcmt
         echo Telescope set to use jcmt widget set
         shift
         breaksw
@@ -78,4 +80,4 @@ endif
 
 set CLASSPATH = /jac_sw/omp/QT/lib/qt.jar:/jac_sw/omp/QT/lib/xerces.jar:/jac_sw/omp/QT/lib/mail.jar:/jac_sw/omp/QT/lib/activation.jar:/jac_sw/omp/QT/lib/soap.jar:/jac_sw/orac3/OT/install/classes:/jac_sw/orac3/GEMINI/install/classes:/jac_sw/itsroot/install/ompSM/classes:/jac_sw/orac3/ORAC/install/classes:/jac_sw/orac3/ODB/install/classes:/jac_sw/omp/QT/lib/jsky.jar:/jac_sw/omp/QT/lib/diva.jar:/jac_sw/omp/QT/lib/junit.jar:/jac_sw/omp/QT/icons:/local/java/jdk/lib/tools.jar:/jac_sw/itsroot/install/dcHub/lib/dcHub.jar:/local/progs/drama/drama_source/djava
 
-${JAVA} ${classic} ${xdebug} ${xnoagent} ${xrunjdwptrans} ${xbootclasspath} -Ddebug=${debug} -DqtConfig=${qtConfig} -Dot.cfgdir=${instConfigDir}/ -DwidgetFile=${widgetFile} -DOMP -cp ${CLASSPATH} edu.jach.qt.app.Main &
+${JAVA} ${classic} ${xdebug} ${xnoagent} ${xrunjdwptrans} ${xbootclasspath} -Ddebug=${debug} -Dtelescope=${telescope} -DqtConfig=${qtConfig} -Dot.cfgdir=${instConfigDir}/ -DwidgetFile=${widgetFile} -DOMP -cp ${CLASSPATH} edu.jach.qt.app.Main &
