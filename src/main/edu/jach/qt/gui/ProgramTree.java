@@ -227,7 +227,12 @@ final public class ProgramTree extends JPanel implements
      * @param  flag  <code>true</code> to enable execution.
      */
     public void setExecutable (boolean flag) {
-	run.setEnabled(flag);
+	if (!TelescopeDataPanel.DRAMA_ENABLED) {
+	    run.setEnabled(false);
+	}
+	else {
+	    run.setEnabled(flag);
+	}
     }
 
     /**
@@ -814,8 +819,13 @@ final public class ProgramTree extends JPanel implements
      *
      **/
     private void enableRun() {
-	run.setEnabled(true);
-	run.setForeground(Color.black);
+	if (TelescopeDataPanel.DRAMA_ENABLED) {
+	    run.setEnabled(true);
+	    run.setForeground(Color.black);
+	}
+	else {
+	    run.setEnabled(false);
+	}
     }
 
 
