@@ -50,6 +50,7 @@ public class Querytool implements Runnable, Observer {
   private final String ALLOCATION_DISABLED    = "allocation";
 
   private boolean remaining, observability, allocation;
+  private boolean areResultsExecutable = true;
 
   /**
    * Creates a new <code>Querytool</code> instance.
@@ -222,6 +223,18 @@ public class Querytool implements Runnable, Observer {
 	    //  		  String seeing = abstractButton.getText();
 	    //  		  item.appendChild(doc.createTextNode(moon));
 	  }
+	}
+	else if (next.equalsIgnoreCase("country")) {
+	    item = doc.createElement(next);
+	    for (ListIterator iter = ((LinkedList)(ht.get(next))).listIterator(0); 
+		 iter.hasNext(); 
+		 iter.nextIndex()) {
+		abstractButton = (JRadioButton) (iter.next());
+		if (abstractButton.isSelected()) {
+		    item.appendChild( doc.createTextNode( abstractButton.getText() ));
+		    root.appendChild(item);
+		}
+	    }
 	}
 	else if (ht.get(next) instanceof LinkedList ) {
 	  item = doc.createElement(next);
@@ -479,9 +492,30 @@ public class Querytool implements Runnable, Observer {
 	    tmpStr = tu.convertLocalISODatetoUTC(tmpStr);
 	    item.appendChild (doc.createTextNode(tmpStr.trim()));
 	    root.appendChild (item); 
+	    areResultsExecutable = false;
 	}
+	else {
+	    // We will use the current date, so set execution to true
+	    areResultsExecutable = true;
+	}
+	try {
+	    NodeList list = root.getElementsByTagName("moon");
+	    if (list.getLength() != 0) {
+		root.removeChild(list.item(0));
+	    }
+
+	}
+	catch ( DOMException dme ) {System.out.println("Can not remove node moon");}
 
 	return root;
+    }
+
+    public boolean canExecute() {
+	return areResultsExecutable;
+    }
+
+    public void setExecutable (boolean flag) {
+	areResultsExecutable = flag;
     }
 
 }// Querytool
