@@ -19,6 +19,7 @@ set xbootclasspath = ""
 set tosim = "nosim" 
 set toql = "ql" 
 set toeng = "noeng" 
+set debug = ""
 
 set solHost = "kiki"
  
