@@ -13,7 +13,7 @@ import org.apache.soap.util.xml.QName;
 
 
 /**
- * SoapClient.java
+ * <code>SoapClient.java</code>
  *
  *
  * Created: Mon Aug 27 18:30:31 2001

@@ -1,4 +1,7 @@
 package edu.jach.qt.utils;
+
+import java.io.*;
+
 /**
   Class TextReader provides methods for reading character type data an input 
   source, either the keyboard or a text file (characters such as digits and 
@@ -15,7 +18,6 @@ package edu.jach.qt.utils;
   minor modifications by Rick Mercer.
 */
 
-import java.io.*;
 
 public class TextReader
 {
@@ -39,6 +41,8 @@ public class TextReader
 /**
   Construct an object used to obtain input from the disk file with 
   only text data such as letters, digits and other characters like * % $ 
+  *
+  * @param fileName     Name of file dor reading.
   */
   public TextReader( String fileName )
   { // pre : fileName is the name of a file that can be opened for reading
@@ -53,6 +57,11 @@ public class TextReader
     }
   }
 
+    /**
+     * Error handling method.
+     *
+     * @param where    <code>String indicating where error occurred.
+     */
   private void error( String where )
   { // Have a standard way of displaying error messages
     System.out.println("\n***Failure in " + where + " message. Program terminated***" );
@@ -62,6 +71,8 @@ public class TextReader
 /** 
   Allows user to read in a True or fAlSe value into a boolean variable. 
   The case on input does not matter, but only the strings TRUE or FALSE are accepted
+  *
+  * @return    <code>true</code> ot <code>false</code>
   */
   public boolean readBoolean()
   {  // return true
@@ -139,6 +150,7 @@ public class TextReader
 
 /**
   Puts the given character back into the input stream to be read again
+  * @param ch  Character to put back into stream
   */
   public void unread( char ch )
   { 

@@ -5,13 +5,19 @@ import javax.swing.*;
 import java.util.*;
 import java.net.*;
 
-
+/**
+ * Ultra simplistic Trashcan class.
+ * All it does is associate a icon with a label!
+ */
 public class TrashCan extends JLabel
 {
     public static final String BIN_IMAGE = System.getProperty("binImage");
     public static final String BIN_SEL_IMAGE = System.getProperty("binImage");
 
 
+    /**
+     * Contructor.
+     */
     public TrashCan()
     {
 	try {

@@ -245,6 +245,11 @@ public class WidgetPanel extends JPanel
 
   }//parseConfig
 
+    /**
+     * Special function for setting the value of the Moon buttons.
+     * Assumes that dark occurs when the moon is set, grey when the moon
+     * is up but less than 25% illuminated and bright otherwise.
+     */
     private void setButtons() {
 	// Currently sets the moon based on whether it is up and the illuminated fraction
 	SimpleMoon moon = new SimpleMoon();
@@ -293,6 +298,12 @@ public class WidgetPanel extends JPanel
 	}
     }
 
+    /**
+     * Add a nes Text Field to the JTextFieldPanel.
+     * @param type    The type of the textfield.  Must one of <italic>Labeled</italic>,
+     *                <italic>MinMax</italic> or <italic>Range</italic>.
+     * @param gbc     The GridBatConstraints class for these objets.
+     */
   private void addTextFields(String type, GridBagConstraints gbc) {
     String next, tmp;
     do {
@@ -317,6 +328,9 @@ public class WidgetPanel extends JPanel
     }while (true);
   }
 
+    /**
+     * Populate the linked list containing all of the text fields associated with this component.
+     */
   private CompInfo makeList () {
     String next, view, tmpTitle = "";
     CompInfo info = new CompInfo();
@@ -412,18 +426,36 @@ public class WidgetPanel extends JPanel
     numComponents++;
   }
 
+    /**
+     * Set the atmosphere panel to the current panel.
+     * @param panel  The <code>WidgetPanel</code> object corresponding to the
+     *               atmosphere panel.
+     */
   public void setAtmospherePanel(WidgetPanel panel) {
     atmospherePanel = (JTextFieldPanel)panel;
   }
 
+    /**
+     * Set the moon panel to the current panel.
+     * @param panel  The <code>WidgetPanel</code> object corresponding to the
+     *               moon panel.
+     */
   public void setMoonPanel(WidgetPanel panel) {
     moonPanel = (RadioPanel)panel;
   }
 
+    /**
+     * Return the Atmosphere Panel Object.
+     * @return    The atmosphere panel object and its associated components.
+     */
   public static JTextFieldPanel getAtmospherePanel() {
     return WidgetPanel.atmospherePanel;
   }
 
+    /**
+     * Return the Moon Panel Object.
+     * @return    The Moon panel object and its associated components.
+     */
     public static RadioPanel getMoonPanel() {
 	return WidgetPanel.moonPanel;
     }
@@ -472,6 +504,16 @@ public class WidgetPanel extends JPanel
     widgetBag.put(abbrevTable.get(key), value);
   }
 
+  /**
+   * Provided for convienince, <code>setAttribute</code> method with
+   * this signature is supported but not encouraged.  All classes
+   * using this methods should move towards the (String, LinkedList)
+   * signature as meand of updateing widget state to the
+   * WidgetDataBag object.
+   *
+   * @param key a <code>String</code> value
+   * @param value a <code>Object</code> value
+   */
   public void setAttribute(String key, Object obj) {
     widgetBag.put(abbrevTable.get(key), obj);
   }
@@ -492,6 +534,10 @@ public class WidgetPanel extends JPanel
     widgetBag.put(abbrevTable.get(title), list);
   }
 
+    /**
+     * Returns The <code>WidgetDataBag</code> associated with this class.
+     * @return The <code>WidgetDataBag</code> associated with this class.
+     */
     public WidgetDataBag getBag() {
 	return widgetBag;
     }

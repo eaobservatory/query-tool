@@ -6,6 +6,15 @@ import java.lang.*;
 import java.util.*;
 
 
+/**
+ * Class to handle lock files in java.
+ * The class creates a temporary lock file in a common
+ * directory.  This file gets deleted when the JVM exits.
+ *
+ * @author   $Author$
+ * @version  $Revision$
+ * @deprecated No replacement. Now handled by startup script.
+ */
 public class LockFile
 {
 
@@ -20,6 +29,12 @@ public class LockFile
     private static String lockFileDirName = tmpFileDirName.toLowerCase();
     private static File lockFileDir = new File (lockFileDirName);
 
+    /**
+     * Constructor.
+     * Makes surew the directory exists or tries to create it if not. Loops
+     * through directory contents to make sure a lock does not already exist
+     * and warns the user if it does.
+     */
     private LockFile()
     {
 	_exists = false;
@@ -46,16 +61,29 @@ public class LockFile
 	}
     }
 
+    /**
+     * Checks whether a lockfile currently exists.
+     *
+     * @return       <code>true</code> if a lockfile exists; <code>false</code> otherwise.
+     */
     public static boolean exists() {
 	LockFile l = new LockFile();
 	return l._exists;
     }
 
+    /**
+     * Get the current owner of the lockfile.
+     *
+     * @returns     The username of the person currently holding the lock.
+     */
     public static String owner() {
 	LockFile l = new LockFile();
 	return _owner;
     }
 
+    /**
+     * Create a lockfile.  The lockfile name is of the form lock_<usermname>.
+     */
     public static void createLock() {
 	String lockFileName = lockFileDirName+
 	    File.separator+

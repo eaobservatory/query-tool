@@ -46,7 +46,7 @@ import org.apache.log4j.Logger;
 
 /**
    final public class programTree is a panel to select
-   an observation from a JTree object. 
+   an observation from a List object. 
 
    @version 1.0 1st June 1999
    @author M.Tan@roe.ac.uk, modified by Mathew Rippa
@@ -84,10 +84,10 @@ final public class ProgramTree extends JPanel implements
     private final String                 scaleText = "Scale Exposure Times...";
     private String                 rescaleText = "Re-do Scale Exposure Times";
 
-  /** public programTree(menuSele m) is the constructor. The class
+  /** public programTree() is the constructor. The class
       has only one constructor so far.  a few thing are done during
       the construction. They are mainly about adding a run button and
-      setting up a listener
+      setting up listeners.
       
       @param  none
       @return none
@@ -160,18 +160,35 @@ final public class ProgramTree extends JPanel implements
 
   }
 
+    /**
+     * Set the <code>projectID</code> to a specified value.
+     * @param projectID  The value to set.
+     */
   public void setProjectID(String projectID) {
     this.projectID = projectID;
   }
 
+    /**
+     * Set the <code>checkSum</code> to a specified value.
+     * @param checksum  The value to set.
+     */
   public void setChecksum(String checksum) {
     this.checkSum = checksum;
   }
 
+    /**
+     * Set the "Send for Execution" to (dis)abled.
+     * @param  flag  <code>true</code> to enable execution.
+     */
     public void setExecutable (boolean flag) {
 	run.setEnabled(flag);
     }
 
+    /**
+     * Set the Trash Can image.
+     * @param label  The <code>JLabel</code> with which to associate the image.
+     * @exception Exception is unabe to set the image.
+     */
   public void setImage(JLabel label) throws Exception {
     URL url = new URL("file://"+BIN_IMAGE);
     if(url != null) {
@@ -183,7 +200,7 @@ final public class ProgramTree extends JPanel implements
   }
 
   /**
-   * Describe <code>add</code> method here.
+   * Add a compnent to the <code>GridBagConstraints</code>
    *
    * @param c a <code>Component</code> value
    * @param gbc a <code>GridBagConstraints</code> value
@@ -389,6 +406,7 @@ final public class ProgramTree extends JPanel implements
      @param String title and SpItem sp
      @return  none
      @throws none
+     @deprecated  Replaced by {@link #addList(SpItem)}
      
   */
   public void addTree(SpItem sp)
@@ -429,6 +447,10 @@ final public class ProgramTree extends JPanel implements
     this.validate();
   }
 
+    /**
+     * Set up the List GUI and populate it with the results of a query.
+     * @param sp  The list of obervations in the MSB.
+     */
   public void addList(SpItem sp) {
 
     model = new DefaultListModel();
@@ -498,11 +520,18 @@ final public class ProgramTree extends JPanel implements
   //   return myObs;
   // }
 
+    /**
+     * Clear the selection from the Prgram Tree List.
+     */
     public static void clearSelection() {
 	obsList.clearSelection();
 	selectedItem = null;
     }
 
+    /**
+     * Get the current <code>JTree</code>.
+     * @return The current tree structure.
+     * @deprecated - this class now implements a list, not a tree. Not Replaced
   public JTree getTree() {
     return tree;
   }
@@ -515,6 +544,7 @@ final public class ProgramTree extends JPanel implements
      @param none
      @return  none
      @throws none
+     @deprecated Not replaced.
       
   */
   public void removeTree()
@@ -530,6 +560,7 @@ final public class ProgramTree extends JPanel implements
      @param TreeSelectionEvent event
      @return  none
      @throws none
+     @deprecated Not replaced.
      
   */
   public void valueChanged(TreeSelectionEvent event)
@@ -550,17 +581,29 @@ final public class ProgramTree extends JPanel implements
       }
   }
 
+    /**
+     * Implementation opf <code>KeyListener</code> interface.
+     * If the delete key is pressed, removes the currently selected item.
+     */
   public void keyPressed(KeyEvent e) {
     if( (e.getKeyCode() == KeyEvent.VK_DELETE))
       removeCurrentNode();
       
   }
 
+    /**
+     * Implementation of <code>KeyListener</code> interface.
+     */
   public void keyReleased(KeyEvent e) { }
 
+    /**
+     * Implementation of <code>KeyListener</code> interface.
+     */
   public void keyTyped(KeyEvent e) { }
 
-  /** Remove the currently selected node. */
+  /**
+   * Remove the currently selected node. 
+   */
     public void removeCurrentNode() {
 
 	Object item = obsList.getSelectedValue();
@@ -576,13 +619,14 @@ final public class ProgramTree extends JPanel implements
 	
     }
    
-  /** public void getItems (SpItem spItem,DefaultMutableTreeNode node)
-      is a public method to add ALL the items of a sp object into the
-      JTree *recursively*.
-      
-      @param SpItem spItem,DefaultMutableTreeNode node
-      @return  none
-      @throws none
+  /**
+   * public void getItems (SpItem spItem,DefaultMutableTreeNode node)
+   * is a public method to add ALL the items of a sp object into the
+   * JTree *recursively*.
+   *   
+   *   @param SpItem spItem,DefaultMutableTreeNode node
+   *   @return  none
+   *   @throws none
       
   */
   private void getItems (SpItem spItem,DefaultMutableTreeNode node)
@@ -602,8 +646,8 @@ final public class ProgramTree extends JPanel implements
   
   
   /** 
-      public void getItems (SpItem spItem,DefaultMutableTreeNode node)
-      is a public method to get an item in a sp.
+      public void findItems (SpItem spItem,DefaultMutableTreeNode node)
+      is a public method to find a named item in the SpItem list.
       
       @param SpItem spItem, String name
       @return  SpItem
@@ -782,19 +826,31 @@ final public class ProgramTree extends JPanel implements
 	}	
     }    
 
-    /* Drop Target Interface */
+    /**
+     * Implementation of <code>DropTargetListener</code> Interface 
+     * @param evt  <code>DropTargetDragEvent</code> event
+     */
     public void dragEnter(DropTargetDragEvent evt){
     }
   
-    /* Drop Target Interface */
+    /**
+     * Implementation of <code>DropTargetListener</code> Interface 
+     * @param evt  <code>DropTargetEvent</code> event
+     */
     public void dragExit(DropTargetEvent evt){
     }
 
-    /* Drop Target Interface */
+    /**
+     * Implementation of <code>DropTargetListener</code> Interface 
+     * @param evt  <code>DropTargetDragEvent</code> event
+     */
     public void dragOver(DropTargetDragEvent evt){
     }
 
-    /* Drop Target Interface */
+    /**
+     * Implementation of <code>DropTargetListener</code> Interface 
+     * @param evt  <code>DropTargetDropEvent</code> event
+     */
     public void drop(DropTargetDropEvent evt){
 	SpObs itemForDrop;
 	if (selectedItem != null) {
@@ -816,12 +872,16 @@ final public class ProgramTree extends JPanel implements
 	return;
     }
 
-    /* Drop Target Interface */
+    /**
+     * Implementation of <code>DropTargetListener</code> Interface 
+     * @param evt  <code>DropTargetDragEvent</code> event
+     */
     public void dropActionChanged(DropTargetDragEvent evt){
     }
 
     /**
-     * a drag gesture has been initiated
+     * Implementation of <code>DragGestureListener</code> Interface
+     * @param event  <code>DragGestureEvent</code> event
      * 
      */
   
@@ -842,21 +902,46 @@ final public class ProgramTree extends JPanel implements
 	}
     }
 
+    /**
+     * Implementation of <code>DragSourceListener </code> Interface
+     * @param event  <code>DragSourceDragEvent</code> event
+     * 
+     */
     public void dragEnter (DragSourceDragEvent event) {
     }
 
+    /**
+     * Implementation of <code>DragSourceListener </code> Interface
+     * @param evt  <code>DragSourceDragEvent</code> event
+     * 
+     */
     public void dragOver(DragSourceDragEvent evt){
 	/* Chnage the cursor to indicate drop allowed */
 	evt.getDragSourceContext().setCursor(DragSource.DefaultMoveDrop);
     }
 
+    /**
+     * Implementation of <code>DragSourceListener </code> Interface
+     * @param evt  <code>DragSourceEvent</code> event
+     * 
+     */
     public void dragExit(DragSourceEvent evt){
 	evt.getDragSourceContext().setCursor(DragSource.DefaultMoveNoDrop);
     }
 
+    /**
+     * Implementation of <code>DragSourceListener </code> Interface
+     * @param evt  <code>DragSourceDragEvent</code> event
+     * 
+     */
     public void dropActionChanged(DragSourceDragEvent evt){
     }
 
+    /**
+     * Implementation of <code>DragSourceListener </code> Interface
+     * @param evt  <code>DragSourceDropEvent</code> event
+     * 
+     */
     public void dragDropEnd(DragSourceDropEvent evt){
 	if (evt.getDropSuccess() == true) {
 	    SpObs obs = (SpObs) obsList.getSelectedValue();

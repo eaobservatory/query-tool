@@ -3,7 +3,9 @@ package edu.jach.qt.gui;
 import javax.swing.tree.*;
 
 /** This class forces "male" nodes to have leaf icons and
-forbids male childbaring ability */
+forbids male childbaring ability 
+@deprecated Not replaced.
+*/
 public class MsbNode extends DefaultMutableTreeNode  {
 
   public MsbNode(DragDropObject info) {

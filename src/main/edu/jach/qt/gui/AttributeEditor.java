@@ -29,6 +29,8 @@ public class AttributeEditor extends JDialog
 
   /**
    * This constructor creates the table based attribute editor.
+   * @param parent   The parent frame.
+   * @param modal    <code>true</code> if the window is modal.
    */
   public AttributeEditor(java.awt.Frame parent,
 			 boolean modal) {
@@ -39,6 +41,9 @@ public class AttributeEditor extends JDialog
 
   /**
    * This constructor creates the table based attribute editor.
+   * @param observation   The observation to edit.
+   * @param parent        The parent frame.
+   * @param modal         <code>true</code> if the window is modal.
    */
   public AttributeEditor(SpObs observation, java.awt.Frame parent,
                          boolean modal) {
@@ -50,6 +55,13 @@ public class AttributeEditor extends JDialog
 
   /**
    * This constructor creates the attribute scaling form.
+   * @param observation        The observation to edit.
+   * @param parent             The parent frame.
+   * @param modal              <code>true</code> if the window is modal.
+   * @param configAttribute    The name of the attribute
+   * @param haveScaledThisObs  <code>true</code> if this has bee previouslty scaled.
+   * @param oldFactor          The last scaling factor used
+   * @param rescale            <code>true</code> if rescaling required.
    */
   public AttributeEditor(SpObs          observation,
 			 java.awt.Frame parent,
@@ -724,6 +736,9 @@ public class AttributeEditor extends JDialog
     new AttributeEditor(new JFrame(), true).show();
   }
 
+    /**
+     * Get the last scale factor used.
+     */
   public static double scaleFactorUsed() {
     return _scaleFactorUsed;
   }

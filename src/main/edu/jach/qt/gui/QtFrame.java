@@ -90,8 +90,8 @@ public class QtFrame extends JFrame implements PopupMenuListener, ActionListener
   }
 
   /**
-   * Describe <code>exitQT</code> method here.
-   *
+   * On exit, prompt the user if they want to save any deferred observation, then
+   * shutdown.
    */
   public void exitQT() {
       if (DeferredProgramList.deferredFilesExist()) {
@@ -115,7 +115,11 @@ public class QtFrame extends JFrame implements PopupMenuListener, ActionListener
     System.exit(0);
   }
 
-  /**Component initialization*/
+  /**
+   * Component initialization.
+   * Initialises all of the components on the frame.
+   * @exception Exception on error.
+   */
   private void compInit() throws Exception  {
     gbc = new GridBagConstraints();
 
@@ -277,8 +281,9 @@ public class QtFrame extends JFrame implements PopupMenuListener, ActionListener
   }
 
   /**
-   * Describe <code>sendToStagingArea</code> method here.
-   *
+   * Sends the selected MSB to the Staging Area.
+   * The MSB must have frist been retriebed and selected from the results table 
+   * on the QT interface.
    */
   public void sendToStagingArea () {
 
@@ -295,6 +300,9 @@ public class QtFrame extends JFrame implements PopupMenuListener, ActionListener
   }
    
 
+    /**
+     * Build the Staging Area GUI.
+     */
   public void buildStagingPanel() {
 
     if (tabbedPane == null) {
@@ -481,7 +489,9 @@ public class QtFrame extends JFrame implements PopupMenuListener, ActionListener
   }
 
   /**
-   * Describe <code>actionPerformed</code> method here.
+   * Implementation of the ActionListener interface.
+   * Called on changing a Check Box, Selecting a Menu Item,or
+   * pressing a button.
    *
    * @param evt an <code>ActionEvent</code> value
    */
@@ -587,6 +597,9 @@ public class QtFrame extends JFrame implements PopupMenuListener, ActionListener
     }
   }
 
+    /**
+     * Return the (code>WidgetPanel</code> from this frame.
+     */
     public WidgetPanel getWidgets() {
 	return _widgetPanel;
     }
@@ -594,7 +607,7 @@ public class QtFrame extends JFrame implements PopupMenuListener, ActionListener
   // implementation of javax.swing.event.PopupMenuListener interface
 
   /**
-   * Describe <code>popupMenuWillBecomeVisible</code> method here.
+   * Implementation of the PopupMenuListener interface.
    *
    * @param param1 <description>
    */
@@ -603,7 +616,7 @@ public class QtFrame extends JFrame implements PopupMenuListener, ActionListener
   }
 
   /**
-   * Describe <code>popupMenuWillBecomeInvisible</code> method here.
+   * Implementation of the PopupMenuListener interface.
    *
    * @param param1 <description>
    */
@@ -612,7 +625,7 @@ public class QtFrame extends JFrame implements PopupMenuListener, ActionListener
   }
 
   /**
-   * Describe <code>popupMenuCanceled</code> method here.
+   * Implementation of the PopupMenuListener interface.
    *
    * @param param1 <description>
    */

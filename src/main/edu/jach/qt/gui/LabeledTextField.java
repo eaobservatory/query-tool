@@ -15,7 +15,7 @@ import javax.swing.event.*;
  * Created: Thu Mar 22 11:04:49 2001
  *
  * @author <a href="mailto: "Mathew Rippa</a>
- * @version
+ * @version $Id$
  */
 
 public class LabeledTextField extends WidgetPanel
@@ -30,7 +30,7 @@ public class LabeledTextField extends WidgetPanel
    * Creates a new <code>LabeledTextField</code> instance.
    *
    * @param parent a <code>WidgetPanel</code> value
-   * @param text a <code>String</code> value
+   * @param text a <code>String</code> value for the name of the LabeledTextField
    */
   public LabeledTextField (Hashtable ht, WidgetDataBag wdb, String text) {
     super(ht, wdb);
@@ -52,18 +52,37 @@ public class LabeledTextField extends WidgetPanel
     textField.addKeyListener(this);
   }
 
+    /**
+     * Get the abbreviated name of the current <code>LabeledTextField</code>.
+     * The abbreviated name is the name on the interface up to, but not including
+     * any white space characters.
+     * @return The abbreviated name of the text field.
+     */
   public String getName() {
     return abbreviate(name);
   }
 
+    /**
+     * Get the text currently contained in the <code>LabeledTextField</code>.
+     * @return The information in the text field.
+     */
   public String getText() {
     return textField.getText();
   }
 
+    /**
+     * Set the text currently contained in the <code>LabeledTextField</code>.
+     * @param val  The value to be set.
+     */
   public void setText(String val) {
     textField.setText(val);
   }
 
+    /*
+     * Get the current text as a <code>Vector</code> list.
+     * A list may be given by typing comma separated values.
+     * @return A <code>Vector</code> containing each item in the list.
+     */
   public Vector getList() {
     String tmpStr = getText();
     Vector result = new Vector();
@@ -110,8 +129,9 @@ public class LabeledTextField extends WidgetPanel
   // implementation of java.awt.event.KeyListener interface
 
   /**
-   *
-   * @param param1 <description>
+   * Implementation of <code>java.awt.event.KeyListener</code> interface.
+   * If a CR character is pressed a Search is performed.
+   * @param param1 A <code>KeyEvent</code> object.
    */
   public void keyTyped(KeyEvent param1) {
     // TODO: implement this java.awt.event.KeyListener method
@@ -124,16 +144,18 @@ public class LabeledTextField extends WidgetPanel
   }
 
   /**
+   * Implementation of <code>java.awt.event.KeyListener</code> interface.
+   * @param param1 A <code>KeyEvent</code> object.
    *
-   * @param param1 <description>
    */
   public void keyPressed(KeyEvent param1) {
     // TODO: implement this java.awt.event.KeyListener method
   }
 
   /**
+   * Implementation of <code>java.awt.event.KeyListener</code> interface.
+   * @param param1 A <code>KeyEvent</code> object.
    *
-   * @param param1 <description>
    */
   public void keyReleased(KeyEvent param1) {
     // TODO: implement this java.awt.event.KeyListener method

@@ -7,6 +7,10 @@ import java.awt.Font;
 import java.awt.BorderLayout;
 
 
+/**
+ * CalibrationArea
+ * @deprecated Replaced by {@link DeferredProgramList}
+ */
 public class CalibrationArea extends JPanel {
 
    public CalibrationArea() {

@@ -15,6 +15,11 @@ public class CSOPathResponseHandler extends DramaPath.ResponseHandler {
   static Logger logger = Logger.getRootLogger();
 
   private CommandReceiver cr;
+    /**
+     * Constructor.
+     * @param p           A DramaPath Object
+     * @param cr          A CommandReceiver Object
+     */
   public CSOPathResponseHandler(DramaPath p, CommandReceiver cr) {
     super(p);
     this.cr = cr;
@@ -23,6 +28,10 @@ public class CSOPathResponseHandler extends DramaPath.ResponseHandler {
 
   /** 
    * Sucess is invoked when we have completed the get path operation.
+   * @param path     A DramaPath Object
+   * @param task     A DramaTask Object
+   * @return         <code>true</code> always.
+   * @exception      DramaException if the monitor task fails.
    */
   public boolean Success(DramaPath path, DramaTask task) throws DramaException {
     
@@ -38,7 +47,11 @@ public class CSOPathResponseHandler extends DramaPath.ResponseHandler {
   }
 
   /** 
-   * Invoked if the GetPath operation fails
+   * Invoked if the GetPath operation fails.
+   * @param path     A DramaPath Object
+   * @param task     A DramaTask Object
+   * @return         <code>false</code> always.
+   * @exception      DramaException if the monitor task fails.
    */
   public boolean Error(DramaPath path, DramaTask task)  throws DramaException {
     DramaStatus status = task.GetEntStatus();
@@ -54,6 +67,9 @@ public class CSOPathResponseHandler extends DramaPath.ResponseHandler {
 
 /*
  * $Log$
+ * Revision 1.8  2002/07/29 22:40:10  dewitt
+ * Updated commenting.
+ *
  * Revision 1.7  2002/07/02 21:36:23  mrippa
  * Changed CSO_MonResponse to QT_MonResponse
  *

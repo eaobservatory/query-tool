@@ -54,6 +54,9 @@ public class JTextFieldPanel extends WidgetPanel
     config();
   }
 
+    /**
+     * Configures the panel.
+     */
   private void config() {
     iterator = myElems.listIterator(0);
     //setOpaque(false);
@@ -72,6 +75,11 @@ public class JTextFieldPanel extends WidgetPanel
     }
   }
 
+    /**
+     * Set a given textfield with a value.
+     * @param field     The Name of the associated <code>JTextField</code> object
+     * @param value     The value to set in the <code>JTextField</code>.
+     */
   public void setTextField(String field, String val) {
       ListIterator iterator = fieldElems.listIterator(0);
       while (iterator.hasNext()) {
@@ -82,6 +90,10 @@ public class JTextFieldPanel extends WidgetPanel
       }
   }
 
+    /**
+     * Set the Tau in the specific text field dealing with it..
+     * @param value     The value to set in the <code>JTextField</code>.
+     */
    public void setTau(String val) {
      LabeledTextField temp = (LabeledTextField) (fieldElems.getFirst());
      temp.setText(val);

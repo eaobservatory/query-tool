@@ -70,7 +70,7 @@ public class QtTools {
   }
 
   /**
-   * Describe <code>execute</code> method here.
+   * Execute a DRAMA command
    *
    * @param someExec a <code>String[]</code> value
    */
@@ -137,7 +137,7 @@ public class QtTools {
 
 
   /**
-   * Describe <code>loadDramaTasks</code> method here.
+   * Loads a DRAMA task
    *
    * @param name a <code>String</code> value
    */

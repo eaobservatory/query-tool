@@ -17,6 +17,7 @@ import jsky.util.gui.BasicWindowMonitor;
  * Created: Wed Nov 21 13:28:52 2001
  *
  * @author <a href="mailto: mrippa@jach.hawaii.edu"Mathew Rippa</a>
+ * @deprecated  Not repalced.
  */
 
 public class Led extends JPanel {

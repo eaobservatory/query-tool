@@ -1,4 +1,14 @@
 package edu.jach.qt.gui;
+
+// Imports for picking up mouse events from the JTable. 
+import java.awt.event.*;
+import java.util.*;
+import javax.swing.JTable;
+import javax.swing.event.TableModelEvent;
+import javax.swing.table.*;
+
+import org.apache.log4j.Logger;
+
 /**
  * ****USED BY THE OMP-QT TO SORT THE COLUMNS OF THE RESULT TABLE.****
  *    
@@ -19,15 +29,6 @@ package edu.jach.qt.gui;
  * @author Philip Milne
  */
 
-// Imports for picking up mouse events from the JTable. 
-import java.awt.event.*;
-import java.util.*;
-import javax.swing.JTable;
-import javax.swing.event.TableModelEvent;
-import javax.swing.table.*;
-
-import org.apache.log4j.Logger;
-
 public class TableSorter extends TableMap {
    int             indexes[];
    Vector          sortingColumns = new Vector();
@@ -35,19 +36,42 @@ public class TableSorter extends TableMap {
    int compares;
   static Logger logger = Logger.getLogger(WidgetPanel.class);
 
+    /**
+     * Contructor.
+     * Default contstructor which creates a 0 size <code>TableMap</code>
+     */
    public TableSorter() {
       indexes = new int[0]; // for consistency
    }
 
+    /**
+     * Constructor.
+     * Uses an existing model to contruct the <code>TableMap</code>.
+     * @param model   The <code>TableModel</code> to use to construct the Map.
+     */
    public TableSorter(TableModel model) {
       setModel(model);
    }
 
+   /**
+    * Set the model for the <code>TableMap</code>.
+    * @param model   The <code>TableModel</code> to use to construct the Map.
+    */
    public void setModel(TableModel model) {
       super.setModel(model); 
       reallocateIndexes(); 
    }
 
+    /**
+     * Compare the values is a specfic table column in two rows.
+     * Works independently of the type of data in the column.
+     * @param row1   The first row to use.
+     * @param row2   The second row to use.
+     * @param column The column of data we are comparing.
+     * @return       -1 if value in row1 < value in row2, 
+     *               1 if the value in row 1 > value in row2
+     *               0 if the values are identical.
+     */
    public int compareRowsByColumn(int row1, int row2, int column) {
       Class type = model.getColumnClass(column);
       TableModel data = model;
@@ -148,6 +172,15 @@ public class TableSorter extends TableMap {
       }
    }
 
+    /**
+     * Compare values in two rows from a <code>sortingColumns</code>.
+     * @param row1  The first row to use in the comparison.
+     * @param row2  The second row to use in the comparison.
+     * @returns     (-1, 0, 1) depending on the values in the two
+     *              rows and whether the table is being sorted in
+     *              ascending or descending order.
+     * @see compareRowsByColumn
+     */
    public int compare(int row1, int row2) {
       compares++;
       for (int level = 0; level < sortingColumns.size(); level++) {
@@ -160,6 +193,10 @@ public class TableSorter extends TableMap {
       return 0;
    }
 
+    /**
+     * Sets up a new array of indexes with the right number of elements for the 
+     * current <code>model</code>.
+     */
    public void reallocateIndexes() {
       int rowCount = model.getRowCount();
 
@@ -173,6 +210,9 @@ public class TableSorter extends TableMap {
       }
    }
 
+    /**
+     * Implementation of the <code>TableModelListener</code> interface.
+     */
    public void tableChanged(TableModelEvent e) {
       logger.debug("Sorter: tableChanged"); 
       reallocateIndexes();
@@ -180,12 +220,20 @@ public class TableSorter extends TableMap {
       super.tableChanged(e);
    }
 
+    /**
+     * Checks whether the number of indices allocated matches the size
+     * of the current Table model.
+     */
    public void checkModel() {
       if (indexes.length != model.getRowCount()) {
 	 logger.error("Sorter not informed of a change in model.");
       }
    }
 
+    /**
+     * Starts the sorting process.
+     * @param sender    The object that sent the sort request (normally a colmun header).
+     */
    public void sort(Object sender) {
       checkModel();
 
@@ -196,6 +244,9 @@ public class TableSorter extends TableMap {
       logger.debug("Compares: "+compares);
    }
 
+    /**
+     * Perform an N-squared sort on a table.
+     */
    public void n2sort() {
       for (int i = 0; i < getRowCount(); i++) {
 	 for (int j = i+1; j < getRowCount(); j++) {
@@ -206,13 +257,20 @@ public class TableSorter extends TableMap {
       }
    }
 
-   // This is a home-grown implementation which we have not had time
-   // to research - it may perform poorly in some circumstances. It
-   // requires twice the space of an in-place algorithm and makes
-   // NlogN assigments shuttling the values between the two
-   // arrays. The number of compares appears to vary between N-1 and
-   // NlogN depending on the initial order but the main reason for
-   // using it here is that, unlike qsort, it is stable.
+    /**
+     *  This is a home-grown implementation which we have not had time
+     * to research - it may perform poorly in some circumstances. It
+     * requires twice the space of an in-place algorithm and makes
+     * NlogN assigments shuttling the values between the two
+     * arrays. The number of compares appears to vary between N-1 and
+     * NlogN depending on the initial order but the main reason for
+     * using it here is that, unlike qsort, it is stable.
+     * @param from   ?
+     * @param to     ?
+     * @param low    ?
+     * @param high   ?
+     * @deprecated Replaced by {@link #n2sort()}
+     */
    public void shuttlesort(int from[], int to[], int low, int high) {
       if (high - low < 2) {
 	 return;
@@ -258,6 +316,11 @@ public class TableSorter extends TableMap {
       }
    }
 
+    /**
+     * Swap to rows in a table.
+     * @param i  Index of first row.
+     * @param j  Index of second row.
+     */
    public void swap(int i, int j) {
       int tmp = indexes[i];
       indexes[i] = indexes[j];
@@ -267,20 +330,42 @@ public class TableSorter extends TableMap {
    // The mapping only affects the contents of the data rows.
    // Pass all requests to these rows through the mapping array: "indexes".
 
+    /**
+     * Retrieve the value at a particular row and column in the table.
+     * @param aRow    The row from which to get the data.
+     * @param aColumn The column from which to get the data.
+     * @return        The Object entry at the required point.
+     */
    public Object getValueAt(int aRow, int aColumn) {
       checkModel();
       return model.getValueAt(indexes[aRow], aColumn);
    }
 
+    /**
+     * Set a value at a particular row and column in the table.
+     * @param aRow    The row from which to set the data.
+     * @param aColumn The column from which to set the data.
+     * @param aValue  The Object entry at the required point.
+     */
    public void setValueAt(Object aValue, int aRow, int aColumn) {
       checkModel();
       model.setValueAt(aValue, indexes[aRow], aColumn);
    }
 
+    /**
+     * Sort the table by the specified column.
+     * @param column   The index of the column to sort by.
+     */
    public void sortByColumn(int column) {
       sortByColumn(column, true);
    }
 
+    /**
+     * Sort the table by the specified column in either ascending or
+     * descending order.
+     * @param column     The index of the column to sort by.
+     * @param ascending  <code>true</code> to sort in ascending order.
+     */
    public void sortByColumn(int column, boolean ascending) {
       this.ascending = ascending;
       sortingColumns.removeAllElements();
@@ -292,6 +377,10 @@ public class TableSorter extends TableMap {
    // There is no-where else to put this. 
    // Add a mouse listener to the Table to trigger a table sort 
    // when a column heading is clicked in the JTable. 
+    /**
+     * Add a mouse listener to the column headers.
+     * @param table   The table to add the listener to.
+     */
    public void addMouseListenerToHeaderInTable(JTable table) { 
       final TableSorter sorter = this; 
       final JTable tableView = table; 

@@ -25,6 +25,10 @@ public class LogoPanel extends JLabel implements Runnable, ActionListener {
   javax.swing.Timer timer;
   Vector images;
 
+    /**
+     * Constructor.
+     * Builds the QT logo and user interface.
+     */
   public LogoPanel () {
     setHorizontalAlignment(SwingConstants.CENTER);
 
@@ -42,6 +46,9 @@ public class LogoPanel extends JLabel implements Runnable, ActionListener {
 
   //Note: Container must use BorderLayout, which is the 
   //default layout manager for content panes.
+    /**
+     * Sets up animation of the QT interface.
+     */
   void buildUI() {
     int fps = 40;
 
@@ -55,10 +62,16 @@ public class LogoPanel extends JLabel implements Runnable, ActionListener {
 
   }
 
+    /**
+     * Starts the QT logo animation sequence.
+     */
   public void start() {
     startAnimation();
   }
 
+    /**
+     * Stops the QT logo animation sequence.
+     */
   public void stop() {
     stopAnimation();
     try {
@@ -69,6 +82,9 @@ public class LogoPanel extends JLabel implements Runnable, ActionListener {
     } 
   }
 
+    /**
+     * Starts the QT logo animation sequence.
+     */
   public synchronized void startAnimation() {
     if (frozen) { 
       //Do nothing.  The user has requested that we 
@@ -81,6 +97,9 @@ public class LogoPanel extends JLabel implements Runnable, ActionListener {
     }
   }
 
+    /**
+     * Stops the QT logo animation sequence.
+     */
   public synchronized void stopAnimation() {
     //Stop the animating thread.
     if (timer.isRunning()) {
@@ -88,6 +107,11 @@ public class LogoPanel extends JLabel implements Runnable, ActionListener {
     }
   }
 
+    /**
+     * Implementation of <code>ActionListener</code> interface.
+     * Stops the interface scrolling.
+     * @param e   An <code>ActionEvent</code>.
+     */
   public void actionPerformed(ActionEvent e) {
     frameNumber++;
     //System.out.println("New Image: "+((ImageIcon)images.elementAt(LogoPanel.frameNumber%10)));
@@ -95,6 +119,9 @@ public class LogoPanel extends JLabel implements Runnable, ActionListener {
     setIcon( ((ImageIcon)images.elementAt(LogoPanel.frameNumber%10)) );
   }
 
+  /** 
+  * Implementation of the <code>Runnable</code> interface.
+  */
   public void run() {
     
   }

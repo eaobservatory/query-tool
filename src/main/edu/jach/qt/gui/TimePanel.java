@@ -7,7 +7,7 @@ import javax.swing.*;
 import javax.swing.border.*;
 import java.text.DateFormat;
 /**
- * TimePanel.java
+ * Class associateing local time with a label for display on an interface.
  *
  *
  * Created: Fri Apr 20 14:55:26 2001
@@ -19,6 +19,10 @@ import java.text.DateFormat;
 public class TimePanel extends JLabel
    implements TimerListener {
    
+    /**
+     * Constructor.
+     * Sets a timer running and adds a listener.
+     */
    public TimePanel () {
       setHorizontalAlignment(SwingConstants.CENTER);
 
@@ -35,6 +39,11 @@ public class TimePanel extends JLabel
       t.addTimerListener(this);
    }
    
+    /**
+     * Implenetation of the <code>timeElapsed</code> interface.
+     * Updates the associated label.
+     * @param evt   the <code>TimerEvent</code> to consume.
+     */
    public void timeElapsed(TimerEvent evt) {
       setBackground(Color.black);
       setForeground(Color.green);

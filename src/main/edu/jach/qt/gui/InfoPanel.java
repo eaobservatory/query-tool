@@ -204,13 +204,22 @@ public class InfoPanel extends JPanel implements ActionListener {
     add(utPanel, gbc, 0, 60, 1, 1);
   }
 
+    /**
+     * Get the parent frame.
+     * @return The parent QT Frame object.
+     */
     public QtFrame getFrame() {
 	return qtf;
     }
 
+    /**
+     * Get the current query.
+     * @return The current <code>QueryTool</code> object.
+     */
     public Querytool getQuery() {
 	return localQuerytool;
     }
+
   private void add(Component c, GridBagConstraints gbc, 
 		  int x, int y, int w, int h) {
     gbc.gridx = x;
@@ -230,6 +239,10 @@ public class InfoPanel extends JPanel implements ActionListener {
     return localQuerytool.getXML();
   }
 
+    /**
+     * Get the <code>TelescopeDataPanel</code>
+     * @return  the current telescope panel.
+     */
     public TelescopeDataPanel getTelescopeDataPanel()
     {
 	return telescopeInfoPanel;
@@ -255,7 +268,7 @@ public class InfoPanel extends JPanel implements ActionListener {
    * <code>actionPerformed</code> satisfies the ActionListener
    * interface.  This is called when any ActionEvents are triggered by
    * registered ActionListeners. In this case it's either the exit
-   * button or the xmlPrintButton.
+   * button or the fetchMSB button.
    *
    * @param e an <code>ActionEvent</code> value 
    */

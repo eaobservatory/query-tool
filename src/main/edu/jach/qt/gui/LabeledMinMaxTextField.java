@@ -24,6 +24,12 @@ public class LabeledMinMaxTextField extends LabeledTextField {
    protected LinkedList valueList;
    protected JComboBox rangeList;
 
+    /** 
+     * Constructor.
+     * @param ht <code>Hashtable</code> of widget names and abbreviated names.
+     * @param wdb <code>WidgetDataBag</code> of widget information.
+     * @param text  The label for this object.
+     */
    public LabeledMinMaxTextField(Hashtable ht, WidgetDataBag wdb, String text) {
       super(ht, wdb, text);
 

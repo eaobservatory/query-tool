@@ -73,6 +73,17 @@ public class MsbClient extends SoapClient {
 
   }
 
+    /**
+     * <code>queryCalibration</code>
+     * Perform a query to the MsbServer with the special calibration query
+     * String. Success will return a true value and write the msbSummary
+     * xml to file.  A unique file will be written for each user to allow
+     * multiple users on th same machine.  This file should not be read by
+     * the code.
+     *
+     * @param xmlQueryString a <code>String</code> value. The xml representing the query.
+     * @return a <code>String</code> value of the results in XML.
+     */
     public static String queryCalibration(String xmlQueryString) {
 	Object tmp;
 	try {

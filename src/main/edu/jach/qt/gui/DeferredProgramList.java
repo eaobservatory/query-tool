@@ -35,6 +35,11 @@ import edu.jach.qt.utils.*;
 /* Miscellaneous imports */
 import ocs.utils.*;
 
+/**
+ * Implements the Deferred List functionality.
+ * @author $Author$
+ * @version $Id$
+ */
 final public class DeferredProgramList extends JPanel implements
     DropTargetListener,
     DragSourceListener,
@@ -54,6 +59,10 @@ final public class DeferredProgramList extends JPanel implements
     static Logger logger = Logger.getLogger(DeferredProgramList.class);
 
 
+    /**
+     * Constructor.
+     * Creates the Interface and makes it a drop target.
+     */
     public DeferredProgramList()
     {
 	Border border=BorderFactory.createMatteBorder(2, 2, 2, 2, Color.white);
@@ -88,6 +97,11 @@ final public class DeferredProgramList extends JPanel implements
 	displayList();
     }
 
+    /**
+     * Gets the current set of deferred observations.
+     * These observations are stored on disk, and the directory is read looking for
+     * suitable observations.
+     */
     public void getCurrentList()
     {
 	
@@ -130,12 +144,20 @@ final public class DeferredProgramList extends JPanel implements
 	return;
     }
     
+    /**
+     * Add a new observation to the deferred list.
+     * @param obs  The observation to add.
+     */
     public void addElement(SpItem obs)
     {
 	model.addElement(obs);
 	displayList();
     }
 
+    /**
+     * Add a calibration observation from the Calibrations Menu to the list.
+     * @parsm cal  The calibration observation to add.
+     */
     public static void addCalibration (SpItem cal) {
 	cal.getTable().set("project", "CAL");
 	cal.getTable().set("msbid", "CAL");
@@ -150,11 +172,17 @@ final public class DeferredProgramList extends JPanel implements
 	}
     }
 
+    /**
+     * Deselects the currently selected deferred observation.
+     */
     public static void clearSelection() {
 	obsList.clearSelection();
 	currentItem = null;
     }
 
+    /**
+     * Display the current list of deferred observations.
+     */
     public void displayList()
     {
 	obsList = new JList (model);
@@ -205,6 +233,10 @@ final public class DeferredProgramList extends JPanel implements
 	
     }
 
+    /**
+     * Append a new observation to the current list.
+     * @param obs  The observation to append.
+     */
     public void appendItem(SpItem obs)
     {
 	obs.getTable().set("project", "CAL");
@@ -247,6 +279,11 @@ final public class DeferredProgramList extends JPanel implements
 	
     }
 
+    /**
+     * Check whether the current observation is already in the deferred list.
+     * @param obs  The observation to compare.
+     * @return     <code>true</code> is the observation already exists; <code>false</code> otherwise.
+     */
     public static boolean isDuplicate (SpItem obs)
     {
 	boolean isDuplicate=false;
@@ -269,6 +306,16 @@ final public class DeferredProgramList extends JPanel implements
     }
 
 
+    /**
+     * Add a compnent to the <code>GridBagConstraints</code>
+     *
+     * @param c a <code>Component</code> value
+     * @param gbc a <code>GridBagConstraints</code> value
+     * @param x an <code>int</code> value
+     * @param y an <code>int</code> value
+     * @param w an <code>int</code> value
+     * @param h an <code>int</code> value
+     */
     public void add(Component c, GridBagConstraints gbc, 
 		    int x, int y, int w, int h) {
 	gbc.gridx = x;
@@ -319,6 +366,10 @@ final public class DeferredProgramList extends JPanel implements
 	return fName;
     }
 
+    /**
+     * Check to see whether any deferre observations exist.
+     * @return <code>true</code> if deferred observations exist; <code>false> otherwise.
+     */
     public static boolean deferredFilesExist()
     {
 	boolean filesExist=true;
@@ -333,11 +384,21 @@ final public class DeferredProgramList extends JPanel implements
 	return filesExist;
     }
 
+    /**
+     * Get the number of deferred observations.
+     * @return  The number of deferred observations.
+     */
     private static int getNumberOfDeferredItems()
     {
 	return fileToObjectMap.size();
     }
 
+    /**
+     * Checks whether any deferred observation files exist.
+     * These do nat have to have been read into the current
+     * list of displayed observations.
+     * @return <code>true</code> if deferred observatio files exist; <code>false</code> otherwise.
+     */
     public static boolean obsExist()
     {
 	boolean exists=false;
@@ -382,6 +443,10 @@ final public class DeferredProgramList extends JPanel implements
 
     }
 
+    /**
+     * Delete all deferred observation files and clear the contents of the
+     * Deferred Program List.
+     */
     public static void deleteAllFiles()
     {
 	// Does not assume a current hashmap exists - get
@@ -403,6 +468,10 @@ final public class DeferredProgramList extends JPanel implements
 	return;
     }
 
+    /**
+     * Mark an observation as done.
+     * This is done by timestamping the title.
+     */
     public static void markThisObservationAsDone (SpItem thisObservation)
     {
 	// Add a dat-time stamp to the title
@@ -431,22 +500,44 @@ final public class DeferredProgramList extends JPanel implements
      * Add the event listeners
      */
     /* DROP TARGET EVENTS */
+    /**
+     * Implementation of <code>DropTargetListener</code> interface.
+     * @param evt A <code>DropTargetDragEvent</code> object.
+     */
     public void dragEnter(DropTargetDragEvent evt)
     {
     }
 
+    /**
+     * Implementation of <code>DropTargetListener</code> interface.
+     * @param evt A <code>DropTargetEvent</code> object.
+     */
     public void dragExit(DropTargetEvent evt)
     {
     }
 
+    /**
+     * Implementation of <code>DropTargetListener</code> interface.
+     * @param evt A <code>DropTargetDragEvent</code> object.
+     */
     public void dragOver(DropTargetDragEvent evt)
     {
     }
 
+    /**
+     * Implementation of <code>DropTargetListener</code> interface.
+     * @param evt A <code>DropTargetDragEvent</code> object.
+     */
     public void dropActionChanged(DropTargetDragEvent evt)
     {
     }
 
+    /**
+     * Implementation of <code>DropTargetListener</code> interface.
+     * Adds the currently selected item from the Program List to
+     * the deferred list.
+     * @param evt A <code>DropTargetDropEvent</code> object.
+     */
     public void drop (DropTargetDropEvent evt)
     {
 	if (this.dropTarget.isActive()) {
@@ -470,6 +561,10 @@ final public class DeferredProgramList extends JPanel implements
 	}
     }
 
+    /**
+     * Deletes an observation from the current list.
+     * @param thisObservation  The observation to remove.
+     */
     public static void removeThisObservation (SpItem thisObservation)
     {
 	String fileToRemove = (String) fileToObjectMap.get(obsList.getSelectedValue());
@@ -486,6 +581,11 @@ final public class DeferredProgramList extends JPanel implements
 
 
     /* DRAG SOURCE EVENTS */
+    /**
+     * Implementation of the <code>DragSourceListener</code> interface.
+     * Removes the entry from the list on successful drop.
+     * @param evt  A <code>DragSourceDropEvent</code> object.
+     */
     public void dragDropEnd (DragSourceDropEvent evt)
     {
 	if (evt.getDropSuccess() ) {
@@ -505,24 +605,47 @@ final public class DeferredProgramList extends JPanel implements
 	this.dropTarget.setActive(true);
     }
 
+    /**
+     * Implementation of the <code>DragSourceListener</code> interface.
+     * @param evt  A <code>DragSourceDragEvent</code> object.
+     */
     public void dragEnter (DragSourceDragEvent evt)
     {
     }
 
+    /**
+     * Implementation of the <code>DragSourceListener</code> interface.
+     * @param evt  A <code>DragSourceEvent</code> object.
+     */
     public void dragExit(DragSourceEvent evt)
     {
 	evt.getDragSourceContext().setCursor(DragSource.DefaultMoveNoDrop);
     }
 
+    /**
+     * Implementation of the <code>DragSourceListener</code> interface.
+     * @param evt  A <code>DragSourceDragEvent</code> object.
+     */
     public void dragOver(DragSourceDragEvent evt)
     {
 	evt.getDragSourceContext().setCursor(DragSource.DefaultMoveDrop);
     }
 
+    /**
+     * Implementation of the <code>DragSourceListener</code> interface.
+     * @param evt  A <code>DragSourceDragEvent</code> object.
+     */
     public void dropActionChanged(DragSourceDragEvent evt)
     {
     }
 
+    /**
+     * Implementation of the <code>DragGestureListener</code> interface.
+     * Disables the current list from being a drop target temporarily so that
+     * we cant drop items from the list back on to the list.
+     *
+     * @param event  A <code>DragGestureEvent</code> object.
+     */
     public void dragGestureRecognized( DragGestureEvent event) 
     {
 	SpItem selected = (SpItem) obsList.getSelectedValue();

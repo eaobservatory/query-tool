@@ -31,7 +31,12 @@ public class AttributeOrigin {
   private String _name;
   private int    _index;
 
-  /** Basic constructor */
+  /** 
+   * Basic constructor 
+   * @param item  The originating item.
+   * @param name  The name of the attribute
+   * @param index The index to associate with this attribute.
+   */
   public AttributeOrigin(SpItem item, String name, int index) {
     _item  = item;
     _name  = name;

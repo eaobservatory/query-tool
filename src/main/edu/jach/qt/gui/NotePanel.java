@@ -10,11 +10,20 @@ import javax.swing.border.*;
 import gemini.sp.*;
 
 
+/**
+ * Constructs a scrollable text panel.
+ * @author $Author$
+ * @version $Id$
+ */
 final public class NotePanel extends JPanel {
 
     private GridBagConstraints		gbc;
     private JTextArea textPanel;
 
+    /**
+     * Constructs a scrollable non-editable text panel.
+     * Sets the label of "Observer Notes", and the line wrapping convention.
+     */
     public NotePanel() {
 	Border border=BorderFactory.createMatteBorder(2, 2, 2, 2, Color.white);
 	setBorder(new TitledBorder(border, "Observer Notes", 
@@ -42,6 +51,16 @@ final public class NotePanel extends JPanel {
 	add(scrollPane, gbc, 0, 0, 2, 1);
     }
     
+  /**
+   * Add a compnent to the <code>GridBagConstraints</code>
+   *
+   * @param c a <code>Component</code> value
+   * @param gbc a <code>GridBagConstraints</code> value
+   * @param x an <code>int</code> value
+   * @param y an <code>int</code> value
+   * @param w an <code>int</code> value
+   * @param h an <code>int</code> value
+   */
     public void add(Component c, GridBagConstraints gbc, 
 		    int x, int y, int w, int h) {
 	gbc.gridx = x;
@@ -51,6 +70,11 @@ final public class NotePanel extends JPanel {
 	add(c, gbc);      
     }
 
+    /**
+     * Sets the text in the panel.
+     * Uses <code>SpNote.isObserveInstruction() </code> to locate Observer Note.
+     * @param sp  the SpItem tree which may contain an Observer Note.
+     */
     public void setNote(SpItem sp) {
 	Vector noteVector = SpTreeMan.findAllItems(sp, "gemini.sp.SpNote");
 	Enumeration e = noteVector.elements();

@@ -511,10 +511,23 @@ public class Querytool implements Runnable, Observer {
 	return root;
     }
 
+    /**
+     * Check to see whether the results of any current query
+     * are executable.
+     * If the Date or Time on the GUI have been changed, then the
+     * results are not allowed to be executed.
+     * @return     <code>true</code> if results can be executed;
+     *             <code>false</code> otherwise.
+     */
     public boolean canExecute() {
 	return areResultsExecutable;
     }
 
+    /**
+    * Set whether results can be executed or not.
+    * @param flag       <code>boolean</code> flag stating whether to
+    *                   make the results executable.
+    */
     public void setExecutable (boolean flag) {
 	areResultsExecutable = flag;
     }

@@ -15,7 +15,7 @@ import java.util.*;
 import javax.swing.JOptionPane;
 
 /**
- *
+ * Implements a table model for the attributes associated with an observation.
  * @author  ab
  */
 public class AttributeTableModel extends javax.swing.table.AbstractTableModel {
@@ -39,6 +39,12 @@ public class AttributeTableModel extends javax.swing.table.AbstractTableModel {
     }
   }
 
+    /**
+     * Constructor.
+     * @param instName           Not used
+     * @param avPairs            List of (attribute, value) pairs for the table
+     * @param iterAivTriplets    List of (attribute, value) pairs within an iterator.
+     */
   public AttributeTableModel (String instName,
 			      Vector avPairs, 
                               Vector iterAivTriplets) {
@@ -81,34 +87,73 @@ public class AttributeTableModel extends javax.swing.table.AbstractTableModel {
 
   }
 
+    /**
+     * Implementation of <code>AbstarctTableModel</code> class.
+     * @return The number of columns.
+     */
   public int getColumnCount() {
     return columnNames.length;
   }
 
+    /**
+     * Implementation of <code>AbstarctTableModel</code> class.
+     * @return The number of rows.
+     */
   public int getRowCount() {
     return data.length;
   }
 
+    /**
+     * Get the name of a specified column.
+     * @param col   The column index of the required column.
+     * @return      The name of the column.
   public String getColumnName(int col) {
     return columnNames[col];
   }
 
+    /**
+     * Implementation of <code>AbstarctTableModel</code> class.
+     * @param row   The row index of the data to extract.
+     * @param col   The column index of the data to extract.
+     * @return      The value of an object at the specified location.
+     */
   public Object getValueAt(int row, int col) {
     return data[row][col];
   }
 
+    /**
+     * Get the original value of the data at a specified location in the table.
+     * The original value is that before editing and scaling.
+     * @param row   The row index of the data to extract.
+     * @param col   The column index of the data to extract.
+     * @return      The original value of an object at the specified location.
+     */
   public Object getOriginalValueAt(int row, int col) {
     return originalValue[row];
   }
 
+    /**
+     * Check whether the value at a particular row in the table has been edited.
+     * @param row    The row index of the data to  check.
+     * @return       <code>true</code> is the row has been changed.
+     */
   public boolean isChangedAt(int row) {
     return isChanged[row];
   }
 
+    /**
+     * Check whether the data in a specified row is numeric.
+     * @param row    The row index of the data to  check.
+     * @return       <code>true</code> is the values are numeric.
+     */
   public boolean isNumberAt(int row) {
     return isNumber[row];
   }
 
+    /**
+     * Set whether the current table is editable.
+     * @param editable   <code>true</code> if the table is editable.
+     */
   public void setEditable(boolean editable) {
     isEditable = editable;
   }
@@ -117,9 +162,12 @@ public class AttributeTableModel extends javax.swing.table.AbstractTableModel {
   //     return getValueAt(0, c).getClass();
   //   }
 
-  /*
+  /**
    * Don't need to implement this method unless your table's
    * editable.
+   * @param row   The row index of the data to check.
+   * @param col   The column index of the data to check.
+   * @return      <code>true</code>> if the cell is editable.
    */
   public boolean isCellEditable(int row, int col) {
     //Note that the data/cell address is constant,

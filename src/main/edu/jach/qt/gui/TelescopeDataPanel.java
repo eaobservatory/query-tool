@@ -15,12 +15,15 @@ import edu.jach.qt.utils.*;
 
 
 /**
- * TelescopeDataPanel.java
+ * A Data Panel on the QT.
+ * All information is displayed on this panel, and can be used for seaching, fetching
+ * and setting query parameters.
  *
  *
  * Created: Tue Sep 25 18:02:01 2001
  *
  * @author <a href="mailto: mrippa@jach.hawaii.edu"Mathew Rippa</a>
+ * @version $Id$
  */
 
 public class TelescopeDataPanel extends JPanel implements ActionListener {
@@ -40,6 +43,15 @@ public class TelescopeDataPanel extends JPanel implements ActionListener {
     private InfoPanel infoPanel;
   private DcHub hub;
 
+    /**
+     * Constructor.
+     * This constructor does the following tasks:
+     * <ul>
+     * <li> Checks to see if the QT is locked and if so converts to scenario mode.
+     * <li> Gets handles for the DRAMA monitired tasks.
+     * </ul>
+     * @param panel   the <code>InfoPanel</code> Object contructing this panel.
+     */
   public TelescopeDataPanel(InfoPanel panel) {
     csoTau		= new JLabel("CSO Tau: ", JLabel.LEADING);
     seeing		= new JLabel("Seeing: ", JLabel.LEADING);
@@ -108,6 +120,10 @@ public class TelescopeDataPanel extends JPanel implements ActionListener {
     config();
   }
   
+    /**
+     * Set the Tau value on the appropriate <code>JLabel</code>
+     * @param val   the value to set as a decimal number.
+     */
   public static void setTau(double val) {
   
     //The arg in the following constructor is a pattern for formating
@@ -117,6 +133,10 @@ public class TelescopeDataPanel extends JPanel implements ActionListener {
     TelescopeDataPanel.csoTauValue.setText(""+output);
   }
 
+    /**
+     * Set the Airmass value on the appropriate <code>JLabel</code>
+     * @param val   the value to set as a decimal number.
+     */
   public static void setAirmass(double val) {
   
     //The arg in the following constructor is a pattern for formating
@@ -126,6 +146,10 @@ public class TelescopeDataPanel extends JPanel implements ActionListener {
     TelescopeDataPanel.airmassValue.setText(""+output);
   }
 
+    /**
+     * Builds the components of the interface.
+     * Adds buttons, labels and other panels.
+     */
   public void config() {
       
     setBackground(Color.black);
@@ -166,6 +190,10 @@ public class TelescopeDataPanel extends JPanel implements ActionListener {
             
   }
 
+    /**
+     * Returns the current DRAMA hub.
+     * @return  The current DRAMA hub created by the constructor.
+     */
   public DcHub getHub() {
     return hub;
   }
@@ -192,8 +220,15 @@ public class TelescopeDataPanel extends JPanel implements ActionListener {
   // implementation of java.awt.event.ActionListener interface
 
   /**
-   *
-   * @param param1 <description>
+   * Implementation of java.awt.event.ActionListener interface.
+   * This will update the following fields:
+   * <ul>
+   * <li> The Tau value
+   * <li> The airmass value
+   * <li> The Date and Time fields
+   * <li> The information about the moon.
+   *</ul>
+   * @param param1 ActionEvent created by the "Set Current" button.
    */
     public void actionPerformed(ActionEvent param1) {
 	logger.debug("New tau: "+ TelescopeDataPanel.csoTauValue.getText());

@@ -124,23 +124,47 @@ public class OmpOM extends JPanel{
     ptree = new ProgramTree();
   }
 
+    /**
+     * Set the Project Identifier.
+     * Set the projectID to that passed in.
+     * @param projectID   The value of the project id to set.
+     */
   public void setProjectID(String projectID) {
     ptree.setProjectID(projectID);
   }
 
+    /**
+     * Set the Checksum.
+     * Set the projectID to that passed in.
+     * @param projectID   The value of the checksum to set.
+     */
   public void setChecksum(String checksum) {
     ptree.setChecksum(checksum);
   }
 
+    /**
+     * Set the SpItem.
+     * Set the SpItem to that passed in.
+     * @param item   The value of the SpItem to set.
+     */
   public void setSpItem(SpItem item) {
 
     spItem = item;
   }
 
+    /** 
+     * Set whether the current SpItems can be executed.
+     * @param flag   <code>true</code> if items can be executed.
+     */
     public void setExecutable (boolean flag) {
 	ptree.setExecutable(flag);
     }
   
+    /**
+     * Get the name of the program.
+     * Gets the name of the program from Title field in the first observation.
+     * @return The name of the program, or <italic>Title Not Found</italic> on error.
+     */
   public String getProgramName() {
     
     Vector progVector = SpTreeMan.findAllItems(spItem, "gemini.sp.SpMSB");
@@ -175,7 +199,7 @@ public class OmpOM extends JPanel{
 
 
   /**
-   * Describe <code>addNewTree</code> method here. This adds a
+   * This adds a
    * <code>ProgramTree</code>, referrenced by the msbID, to the list
    * of trees.
    *
@@ -189,7 +213,7 @@ public class OmpOM extends JPanel{
   }
 
   /**
-   * Describe <code>addNewTree</code> method here.
+   * 
    * The method used for debugging.  It loads in a hard-wired MSB file
    * to use as the ProgramTree object.
    */
@@ -206,25 +230,36 @@ public class OmpOM extends JPanel{
     ptreeHashtable.put(new Integer(41), ptree);
   }
 
+    /**
+     * Reloads the current program.
+     */
   public void resetTree() {
     spItem = OtFileIO.fetchSp(file.getParent(), file.getName());
     ptree.addList(spItem);
   }
 
+
+    /**
+     * Construct the Staging Panel.
+     * Builds the deferred list and Observer Notes panel and displaays as a tabbed pane.
+     * @return The <code>JSplitPanel</code> staging area.
+     */
   public JSplitPane getTreePanel() {
       
-    //CalibrationArea ca = new CalibrationArea();
-    //JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, ptree, ca);
       DeferredProgramList deferredList = new DeferredProgramList();
       NotePanel notes = new NotePanel();
       notes.setNote(spItem);
       JSplitPane dsp = new JSplitPane(JSplitPane.VERTICAL_SPLIT, deferredList, notes);
       dsp.setDividerLocation(250);
-//     JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, ptree, new DeferredProgramList());
       JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, ptree, dsp);
       return splitPane;
   }
 
+    /**
+     * Constructs a drag tree panel.
+     * @return The <code>JSplitPanel</code> staging area.
+     * @deprected Not Replaced.
+     */
   public JSplitPane getDragTreePanel() {
       
     DragDropObject ddo = new DragDropObject(spItem);
@@ -240,6 +275,9 @@ public class OmpOM extends JPanel{
     return splitPane;
   }
 
+    /**
+     * Tests the display.
+     */
   public void test() {
       
     JFrame f = new JFrame();

@@ -26,7 +26,12 @@ public class AVPair {
   private String          _value;
   private AttributeOrigin _origin;
 
-  /** Basic constructor */
+  /**
+   * Basic constructor 
+   * @param  attribute   The name of the attribute.
+   * @param  value       The value of the attribute.
+   * @param  origin      The originating source of the attribute.
+   */
   public AVPair(String attribute,
 		String value,
 		AttributeOrigin origin) {
@@ -35,7 +40,14 @@ public class AVPair {
     _origin    = origin;
   }
 
-  /** Basic constructor */
+  /**
+   * Basic constructor 
+   * @param  attribute   The name of the attribute.
+   * @param  value       The value of the attribute.
+   * @param  item        The item which is the source of the attribute
+   * @param  name        The name associated with the <code>item</code>
+   * @param  index       An index to associate with the <code>item</code>.
+   */
   public AVPair(String attribute,
 		String value,
 		SpItem item,
@@ -46,7 +58,8 @@ public class AVPair {
     _origin    = new AttributeOrigin(item, name, index);
   }
 
-  /** Empty constructor */
+  /** Default constructor 
+   */
   public AVPair() {
   }
 

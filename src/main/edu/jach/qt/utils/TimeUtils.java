@@ -3,27 +3,52 @@ package edu.jach.qt.utils;
 import java.util.*;
 import java.text.*;
 
-
+/**
+ * Time Utilities.
+ *
+ * @author  $Author$
+ * @version $Id$
+ */
 public class TimeUtils {
     private final String dateFormat = "yyyy-MM-dd";
     private final String timeFormat = "HH:mm:ss";
     private final String isoFormat  = "yyyy-MM-dd'T'HH:mm:ss";
 
+    /**
+     * Constructor.
+     */
     public TimeUtils() {
     }
 
+    /**
+     * Get the current local date.
+     * @return    Current date as yyyy-mm-dd
+     */
     public String getLocalDate() {
 	Calendar localCal = Calendar.getInstance();
 	SimpleDateFormat df = new SimpleDateFormat(dateFormat);
 	return df.format(localCal.getTime());
     }
 
+    /** 
+     * Get the current local time.
+     *
+     * @return    Current time in HH:MM:SS format.
+     */
     public String getLocalTime() {
 	Calendar localCal = Calendar.getInstance();
 	SimpleDateFormat df = new SimpleDateFormat(timeFormat);
 	return df.format(localCal.getTime());
     }
 
+    /**
+     * Checks whether the date/time <code>String</code> is
+     * in ISO format.
+     * ISO format defined as YYYY-MM-DD'T'HH:MM:SS
+     *
+     * @param dateString    Date/Time string
+     * @return              <code>true</code> if valid; <code>false</code> otherwise.
+     */
     public boolean isValidDate(String dateString) {
 	boolean valid = true;
 	Date date = parseDate(dateString);
@@ -33,6 +58,12 @@ public class TimeUtils {
 	return valid;
     }
 
+    /**
+     * Convert a date/time string to the corresponding UTC.
+     *
+     * @param isoDate    Local Date/Time <code>String</code> in ISO format
+     * @return           UTC in ISO format.
+     */
     public String convertLocalISODatetoUTC(String isoDate) {
 	// Parse the date to get the local Date
 	Date date = parseDate(isoDate);
@@ -75,6 +106,14 @@ public class TimeUtils {
 	return convertedDate;
     }
 
+    /**
+     * Convert an ISO format date/time string into a <code>Calendar</code>
+     * object.
+     * @see java.util.Calendar
+     *
+     * @param isoDateTime     Date/Time <code>String</code> is ISO format.
+     * @return                Corrsponding <code>Calendar</code> object
+     */
     public Calendar toCalendar(String isoDateTime) {
 	Calendar cal = null;
 	if (isValidDate(isoDateTime)) {
@@ -96,6 +135,14 @@ public class TimeUtils {
 	return cal;
     }
 
+    /**
+    * Convert a date/time string to a <code>Date</code> object.
+    * date/time must be in ISO format.
+    * @see java.util.Date
+    * @param dateString       Date/Time string to convert
+    * @return                 Corresponding <code>Date</code> object or
+    *                         <code>null</code> on failure.
+    */
     private Date parseDate(String dateString) {
 	ParsePosition p = new ParsePosition(0);
 	SimpleDateFormat df = new SimpleDateFormat(isoFormat);

@@ -14,18 +14,24 @@ import javax.swing.border.TitledBorder;
 
 
 /**
- * SatPanel.java
- *
+ * Associates an image with a label.
+ *In this case, the image is a satelliet image derived from a configurable URL.
  *
  * Created: Mon Apr  8 10:18:45 2002
  *
  * @author <a href="mailto: mrippa@jach.hawaii.edu"Mathew Rippa</a>
+ * @version $Id$
  */
 
 public class SatPanel extends JLabel implements TimerListener {
 
   private TitledBorder satBorder;
 
+    /**
+     * Constructor.
+     * Sets the look and feel of the <code>JLabel</code> and associates a timer
+     * with it to update the display.
+     */
   public SatPanel (){
     setHorizontalAlignment(SwingConstants.CENTER);
 
@@ -44,13 +50,16 @@ public class SatPanel extends JLabel implements TimerListener {
   // implementation of edu.jach.qt.gui.TimerListener interface
 
   /**
-   *
-   * @param param1 <description>
+   * Implementation of edu.jach.qt.gui.TimerListener interface
+   * @param param1 A <code>TimerEvent</code>
    */
   public void timeElapsed(TimerEvent param1) {
     refreshIcon();
   }
 
+    /**
+     * Redraws the associated image.
+     */
   public void refreshIcon() {
     try {
       String imageSuffix = URLReader.getImageString(new URL(InfoPanel.SAT_WEBPAGE));
@@ -66,9 +75,18 @@ public class SatPanel extends JLabel implements TimerListener {
 
 }// SatPanel
 
+/**
+ * Reads a URL.
+ */
 class URLReader {
 
-  public static String getImageString(URL url) throws Exception {
+    /**
+     * Get the String associated with a URL.
+     * @param url  The URL associated with the satellite image.
+     * @return The name of the Image.
+     * @exception Exception if unable to open the URL.
+     */
+    public static String getImageString(URL url) throws Exception {
 
     String imgString = "";
     String inputLine, html="";

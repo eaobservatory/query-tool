@@ -97,11 +97,19 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
   protected java.util.List tableModelListeners = 
     new ArrayList();        
 
+    /**
+     * Constructor.
+     * Constructs a tabe model with 200 possible entries.
+     */
   public MSBQueryTableModel() {
     docIsNull = true;
     projectIds = new Integer[200];
   }
 
+    /**
+     * Impelmentation of <code>Runnable</code> interface.
+     * Creates a DOM document for populating the table.
+     */
   public void run() {
     /**
        Constructor - create a DOM
@@ -138,6 +146,9 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
       fireTableChanged(null);
   }
 
+    /**
+     * Return the current DOM document.
+     */
   public Document getDoc() {
     return doc;
   }
@@ -183,6 +194,11 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
     return XmlUtils.getValue( row , colNames[c] );
   }
 
+    /**
+     * Get the Summary Identifier of the current row.
+     * @param row  The selected row of the table.
+     * @return The SpSummaryId from the selected row.
+     */
   public Integer getSpSummaryId(int row) {
     return projectIds[row];
   }
@@ -211,7 +227,7 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
  
      @param	    r	the row whose value is to be looked up
      @param	    c	the column whose value is to be looked up
-     @return	true if the cell is editable.
+     @return	<code>false</code> always..
   */
   public boolean isCellEditable(int r, int c) {
     return false;

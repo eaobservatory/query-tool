@@ -1,8 +1,16 @@
 package edu.jach.qt.utils;
+//import edu.jach.qt.utils.*;
 
 import java.util.*;
 
-
+/**
+ * <code>SimpleMoon</code> is used to derive location and illumination
+ * information about the moon.
+ *
+ * @author     $Author$
+ * @version    $Revision$
+ *
+ */
 public class SimpleMoon {
 
     // Set up some stuff we are going to use
@@ -29,6 +37,13 @@ public class SimpleMoon {
     private TelescopeInformation ti;
 
     // Constructor - sets up current information
+    /**
+     * Default constructor.
+     * Calulates the Right Ascension and Declination of the moon
+     * for the current local time and location.
+     *
+     * @see TelescopeInformation
+     */
     public SimpleMoon() {
 	ti = new TelescopeInformation(System.getProperty("telescope"));
 	latitude = ((Double)(ti.getValue("latitude"))).doubleValue();
@@ -37,6 +52,17 @@ public class SimpleMoon {
     }
 
     // Constructor - sets up information based on a specified time
+    /**
+     * Constructor which calculates the Moons Right Ascension and 
+     * Declination for a specified time at the current location.
+     * The time must be in the format yyyy-mm-ddThh:mm:ss (the T is
+     * a literal).  If an illegal string is used, the current time
+     * is assumed.
+     *
+     * @see                 TelescopeInformation
+     * @param isoDateTime   <code>String</code> containing the required
+     *                      date.
+     */
     public SimpleMoon (String isoDateTime) {
 	ti = new TelescopeInformation(System.getProperty("telescope"));
 	latitude = ((Double)(ti.getValue("latitude"))).doubleValue();
@@ -45,6 +71,16 @@ public class SimpleMoon {
     }
 
     // Get the faction illuminated
+    /**
+     * Returns the fraction of the moon illuminated.
+     * Calulated by getting the angle subtended by the moon and sun
+     * positions.
+     *
+     * @see       Sun
+     * 
+     * @return    <code>double</code> indicating the fraction of the
+     *            moon illuminated.
+     */
     public double getIllumination() {
 	// Get the current position of the Sun
 	Sun sun = new Sun();
@@ -74,6 +110,14 @@ public class SimpleMoon {
     }
 
     // Find out whether the moon is up
+    /**
+     * Returns whether the moon is currently above the horizon.
+     * Currently does not take account of elevation, though this
+     * may be added at a later date.
+     *
+     * @return     <code>true</code> if the moon is up; <code>false</code> otherwise.
+     *
+     */
     public boolean isUp() {
 	// Calculates the current altitude - if -ve returns false
 	boolean up = true;
@@ -96,6 +140,12 @@ public class SimpleMoon {
     }
 
     // Get the current RA and Dec os the moon
+    /**
+     * Calculate the current right ascension and declination of the
+     * moon.
+     * Uses the formaula in Astronomical Almanacs for calculating
+     * the approximate position.
+     */
     private void getCurrentPosition() {
 	//
 	// Calculate the JD corresponding to the current UT
@@ -156,6 +206,15 @@ public class SimpleMoon {
     }
 
     // Get the RA and Dec of the moon at a specified local time
+    /**
+     * Calculate the right ascension and declination of the
+     * moon at a apecified date..
+     * Uses the formaula in Astronomical Almanacs for calculating
+     * the approximate position.
+     *
+     * @param isoDateTime     <code>String</code> giving the current
+     *                        time in ISO format (yyyy-mm-dd'T'HH:MM:SS)
+     */
     private void getCurrentPosition(String isoDateTime) {
 	//
 	// Calculate the JD corresponding to the current UT
@@ -219,6 +278,13 @@ public class SimpleMoon {
 
 
     // Convert a calendar class to a Julian Date
+    /**
+     * Converts a <code>Calendar</code> object to a Julian Date.
+     * Uses the eqn 7.1 in Meeus.
+     *
+     * @param c             <code>Calendar</code> object to convert
+     * @return              The Julian date.
+     */
     private double toJulianDate(Calendar c) {
 	//
 	// Using eqn by Meeus (eqn 7.1)
@@ -247,6 +313,15 @@ public class SimpleMoon {
     }
 
     // Get the siderial time corresponding to a specified Julian Date
+    /**
+    * Calculate the siderial time corresponding to a particular
+    * Julian Date.
+    * Always returns the local siderial time, unless the Julian Date
+    * is derived from UTC.
+    *
+    * @param jDate       The Julian Date to use
+    * @return            The Siderial Time is decimal hours.
+    */
     private double getST(double jDate) {
 
 	double jDays = Math.floor(jDate);
@@ -272,7 +347,7 @@ public class SimpleMoon {
 	return gst;
     }
 
-    /*
+    /**
      * Inner class which will gold the geocentric position of an object.
      * It holds the directional cosines (l, m and n), and then rectangular
      * coordinates (x, y, z), as well as the distance in earth radii
@@ -288,6 +363,16 @@ public class SimpleMoon {
 	private double _z;
 	private double _d;
 	
+	/**
+	 * Contructor.
+	 * Calculates the directional cosines, distance
+	 * and rectangular coordinates of an object at the specified 
+	 * ecliptic position.
+	 *
+	 * @param l       ecliptic longitude
+	 * @param b       ecliptic latitude
+	 * @param p       hoizontal parallax
+	 */
 	public GeocentricCoords ( double l,
 				  double b,
 				  double p )
@@ -304,34 +389,79 @@ public class SimpleMoon {
 	    _y = _d * _m;
 	    _z = _d * _n;
 	}
+	/**
+	 * Get the x coordinate.
+	 * x axis is from centre of earth through the Greenwich Meridian
+	 *
+	 * @return     The distance of an object along the x-axis in
+	 *             earth radii
+	 */
 	public double getx() {
 	    return _x;
 	}
+	/**
+	 * Get the y coordinate.
+	 * y axis is from centre of earth through 90 degrees
+	 * east of the Greenwich Meridian
+	 *
+	 * @return     The distance of an object along the y-axis in
+	 *             earth radii
+	 */
 	public double gety() {
 	    return _y;
 	}
+	/**
+	 * Get the z coordinate.
+	 * z axis is from centre of earth through North Pole
+	 *
+	 * @return     The distance of an object along the z-axis in
+	 *             earth radii
+	 */
 	public double getz() {
 	    return _z;
 	}
+	/**
+	 * Get the l directional cosine.
+	 *
+	 * @return     The l directional cosine
+	 */
 	public double getl() {
 	    return _l;
 	}
+	/**
+	 * Get the m directional cosine.
+	 *
+	 * @return     The m directional cosine
+	 */
 	public double getm() {
 	    return _m;
 	}
+	/**
+	 * Get the n directional cosine.
+	 *
+	 * @return     The n directional cosine
+	 */
 	public double getn() {
 	    return _n;
 	}
+	/**
+	 * Get the distance from the centre of the earth.
+	 *
+	 * @return     The distance in earth radii
+	 */
 	public double getd() {
 	    return _d;
 	}
+	/**
+	 * Print the directional cosines and rectangular coordinates.
+	 */
 	public void print() {
 	    System.out.println("Directional Cosines: ("+_l+","+_m+","+_n+")");
 	    System.out.println("Rectangluar coords : ("+_x+","+_y+","+_z+")");
 	}
     } // End of Inner class GeocentricCoords
 
-    /*
+    /**
      * Inner class which will gold the topocentric position of an object.
      * It holds the directional cosines (l, m and n), and then rectangular
      * coordinates (x, y, z), as well as the distance in earth radii
@@ -347,6 +477,15 @@ public class SimpleMoon {
 	private double _n;
 	private double _d;
 
+	/** 
+	 * Constructor.
+	 *
+	 * @param x      Geocentric x location
+	 * @param y      Geocentric y location
+	 * @param z      Geocentric z location
+	 * @param lat    Geocentric latitude of required location
+	 * @param lst    Local Siderial time at required location
+	 */
 	public TopocentricCoords (double x,
 				  double y,
 				  double z,
@@ -364,33 +503,77 @@ public class SimpleMoon {
 	    _n = _z/_d;
 	    
 	}
+	/**
+	 * Get the x coordinate.
+	 * x axis is from centre of earth through the Greenwich Meridian
+	 *
+	 * @return     The distance of an object along the x-axis in
+	 *             earth radii from the current location
+	 */
 	public double getx() {
 	    return _x;
 	}
+	/**
+	 * Get the y coordinate.
+	 * y axis is from centre of earth through the Greenwich Meridian
+	 *
+	 * @return     The distance of an object along the y-axis in
+	 *             earth radii from the current location
+	 */
 	public double gety() {
 	    return _y;
 	}
+	/**
+	 * Get the z coordinate.
+	 * z axis is from centre of earth through the Greenwich Meridian
+	 *
+	 * @return     The distance of an object along the z-axis in
+	 *             earth radii from the current location
+	 */
 	public double getz() {
 	    return _z;
 	}
+	/**
+	 * Get the l directional cosine.
+	 *
+	 * @return     The l directional cosine
+	 */
 	public double getl() {
 	    return _l;
 	}
+	/**
+	 * Get the m directional cosine.
+	 *
+	 * @return     The m directional cosine
+	 */
 	public double getm() {
 	    return _m;
 	}
+	/**
+	 * Get the n directional cosine.
+	 *
+	 * @return     The n directional cosine
+	 */
 	public double getn() {
 	    return _n;
 	}
+	/**
+	 * Get the distance to the object from the current location.
+	 *
+	 * @return     The distance in eath radii.
+	 */
 	public double getd() {
 	    return _d;
 	}
+	/**
+	 * Print the rectangular topcentric coordinates.
+	 */
 	public void print() {
 	    System.out.println("Rectangluar coords : ("+_x+","+_y+","+_z+")");
 	}
     } // End of Inner class TopocentricCoords
 
-    /*
+    /**
      * Inner class holding information on the loation of the sun.  Needed for
      * calculating the illuminated fraction of the moon.  Has a public contructor
      * which gets the current RA and DEC and methods for getting the RA and Dec.
@@ -399,10 +582,18 @@ public class SimpleMoon {
 	public double currentRA;
 	public double currentDec;
 
+	/**
+	 * Constructor calculates the current RA and Dec of the Sun.
+	 */
 	public Sun() {
 	    getPosition();
 	}
 
+	/**
+	 * Calaculate the current RA and Dec of the Sun. 
+	 * Uses  the approximation equations contained in the 
+	 * Astronomical Almanac.
+	 */
 	public void getPosition() {
 	    Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
 	    double jDate = toJulianDate(cal);
@@ -429,21 +620,36 @@ public class SimpleMoon {
 	    currentDec = declination*DINR;
 	}
 
+	/**
+	 * Get the Right Ascension of the sun.
+	 *
+	 * @return      The right ascension in decimal hours
+	 */
 	public double getRA() {
 	    return currentRA;
 	}
+	/**
+	 * Get the Declination of the sun.
+	 *
+	 * @return      The declination in decimal degrees.
+	 */
 	public double getDec() {
 	    return currentDec;
 	}
     } // End of Inner Class Sun
 
+    /*
     public static void main (String [] args) {
 
+	System.setProperty("telescope", "ukirt");
+	System.setProperty("qtConfig", "/home/dewitt/omp/QT/config/qtSystem.conf");
+	System.setProperty("telescopeConfig", "telescopedata.xml");
 	SimpleMoon moon = new SimpleMoon();
 	System.out.println("RA: "+moon.currentRA);
 	System.out.println("Dec: "+ moon.currentDec);
 	System.out.println("Up: "+moon.isUp());
 	System.out.println("Illum: "+moon.getIllumination());
     }
+    */
 
 }

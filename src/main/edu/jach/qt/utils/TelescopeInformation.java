@@ -9,11 +9,30 @@ import org.apache.xml.serialize.*;
 import org.apache.log4j.Logger;
 import org.w3c.dom.*;
 
+/**
+ * Read information about a specific telescope.
+ * The information, in XML format, is contained in the config file
+ * telescopedata.xml.  Currently, only latitude and longitude are contained
+ * in this file, but the class should be extensible to allow adding of new 
+ * attributes without changing this class.
+ *
+ * @author    $Author$
+ * @version   $Id$
+ */
 public class TelescopeInformation {
     private Hashtable data = new Hashtable();
 
     static Logger logger = Logger.getLogger(TelescopeInformation.class);
 
+    /**
+     * Constructor.
+     * Requires the System parameters qtConfig and telescopeConfig to be
+     * set.  In the future this may throw an exception if it can not
+     * be constructed.
+     * Data is held internally is a <code>Hashtable</code>.
+     *
+     * @param name     The name of the telescope.
+     */
     public TelescopeInformation (String name) {
 	Document doc = null;
 
@@ -73,11 +92,28 @@ public class TelescopeInformation {
     }
 
     // Find out whether the specified key exists in the data
+    /**
+     * See if the required information exists in the data.
+     *
+     * @param key         The information required (e.g. latitude).
+     * @return            <code>true</code> if the information exists;
+     *                    <code>false</code> otherwise.
+     */
     public boolean hasKey(Object key) {
 	return data.containsKey(((String)key).toLowerCase());
     }
 
     // get the value associated with a specific key
+    /**
+     * Return the value associated with a specific Key.  this method
+     * will return a <code>String</code>, <code>Double</code> or
+     * <code>Integer</code> class depndent on the value.  The calling 
+     * routine is responsible for interpretation.
+     *
+     * @param key    The key for the entry in the <code>Hashtable</code>.
+     * @return       The value associated with the key as an appropriate
+     *               <code>Object</code>
+     */
     public Object getValue(Object key) {
 	boolean returnInt = false;
 	boolean returnDbl = false;
@@ -129,7 +165,7 @@ public class TelescopeInformation {
 	
     }
 
-
+    /*
     public static void main (String [] args) {
 	System.setProperty("qtConfig", 
 			   "/home/dewitt/omp/QT/config/qtSystem.conf");
@@ -141,4 +177,5 @@ public class TelescopeInformation {
 	System.out.println("Longitude: "+ti.getValue("Longitude"));
 	System.out.println("Elevation: "+ti.getValue("elevation"));
     }
+    */
 }

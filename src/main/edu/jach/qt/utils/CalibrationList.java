@@ -22,15 +22,16 @@ import org.apache.xml.serialize.*;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;  
 
-/*
- * This class returns a Hashtable of calibrations.  Each entry in the
- * hashtable takes the form (String <title>, Integer <id>), where 
+/**
+ * This class returns a <code>Hashtable</code> of calibrations.  Each entry in the
+ * hashtable takes the form (String title, Integer id), where 
  * title is the title of the Observation and ID is its unique identifier.
  * Calibration entries are expected to be in the datase and belong to a
  * project called "CAL".  This project must be uniquye and ONLY contain
  * calibration observations.
  *
- * There is only one public interface: getCalibrations(String <telescope>
+ * @author   $Author$
+ * @version  $Revision$
  */
 
 public class CalibrationList {
@@ -43,10 +44,20 @@ public class CalibrationList {
 
     static Logger logger = Logger.getLogger(CalibrationList.class);
 
-    /* Private default constructor */
+    /**
+     * Constructor
+     */
     private CalibrationList() {
     }
 
+    /**
+     * Get the list of calibration observations for a specified telescope.
+     *
+     * @param telescope     The name os the telescope.
+     * @return              A <code>Hashtable</code> of observations.  If no
+     *                      observations are found then there will be
+     *                      zero entries in the table.
+     */
     public static Hashtable getCalibrations(String telescope) {
 	SpItem sp;
 	Hashtable myCalibrations = new Hashtable();

@@ -5,7 +5,7 @@ import ocs.utils.CommandReceiver;
 import org.apache.log4j.Logger;
 
 /**
- * <code>CSOPathResponseHandler</code> This class is used to
+ * <code>TELPathResponseHandler</code> This class is used to
  * handle responses to the GetPath() method.
  *
  * @author <a href="mailto:mrippa@jach.hawaii.edu">Mathew Rippa</a>
@@ -15,6 +15,11 @@ public class TELPathResponseHandler extends DramaPath.ResponseHandler {
   static Logger logger = Logger.getRootLogger();
 
   private CommandReceiver cr;
+    /**
+     * Constuctor.
+     * @apram p        A DramaPath Object
+     * @param cr       A CommandReceiver object
+     */
   public TELPathResponseHandler(DramaPath p, CommandReceiver cr) {
     super(p);
     this.cr = cr;
@@ -23,6 +28,10 @@ public class TELPathResponseHandler extends DramaPath.ResponseHandler {
 
   /** 
    * Sucess is invoked when we have completed the get path operation.
+   * @param path       A DramaPath Object
+   * @param task       A DramaTask Object
+   * @return           <code>true</code> always.
+   * @exception        DramaException if the monitor task fails.
    */
   public boolean Success(DramaPath path, DramaTask task) throws DramaException {
     
@@ -38,7 +47,11 @@ public class TELPathResponseHandler extends DramaPath.ResponseHandler {
   }
 
   /** 
-   * Invoked if the GetPath operation fails
+   * Invoked if the GetPath operation fails.
+   * @param path      A DramaPath Object
+   * @param task      A DramaTask Object
+   * @return          <code>false</code> always
+   * @exception        DramaException if task fails.
    */
   public boolean Error(DramaPath path, DramaTask task)  throws DramaException {
     DramaStatus status = task.GetEntStatus();
@@ -54,6 +67,9 @@ public class TELPathResponseHandler extends DramaPath.ResponseHandler {
 
 /*
  * $Log$
+ * Revision 1.2  2002/07/29 22:40:44  dewitt
+ * Updated commenting.
+ *
  * Revision 1.1  2002/07/02 08:37:18  mrippa
  * Airmass callback
  *

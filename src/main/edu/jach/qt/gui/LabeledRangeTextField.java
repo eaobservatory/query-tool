@@ -20,6 +20,7 @@ import edu.jach.qt.utils.*;
  * Created: Tue Sep 25 15:55:43 2001
  *
  * @author <a href="mailto: mrippa@jach.hawaii.edu"Mathew Rippa</a>
+ * @version $Id$
  */
 
 public class LabeledRangeTextField extends WidgetPanel 
@@ -37,6 +38,15 @@ public class LabeledRangeTextField extends WidgetPanel
   private String name;
     private final String obsFieldName = "Observation Date";
 
+    /**
+     * Contructor.
+     * Associates the input text with the field name, and add the object to
+     * the <code>WidgetDataBag</code> and <code>Hashtable</code>.  Constructs
+     * the Min and Max text fields.
+     * @param ht  The <code>Hashtable</code> of widget names and abbreviations.
+     * @param wdb The <code>WidgetDataBag</code> containing the widget information.
+     * @param text The label of the current field.
+     */
   public LabeledRangeTextField(Hashtable ht, WidgetDataBag wdb, String text) {
     super(ht, wdb);
 
@@ -86,38 +96,76 @@ public class LabeledRangeTextField extends WidgetPanel
     upperBound.getDocument().addDocumentListener(this);
   }
 
+    /**
+     * Get the name associated with the current object.
+     * @return The <code>LabeledRangeTextField</code> label.
+     */
   public String getName() {
     return abbreviate(name);
   }
 
+    /**
+     * Get the value in the Upper Value text field.
+     * this will either be the Max. value or the time for a date/time field.
+     * @return The value contained in the field.
+     */
   public String getUpperText() {
     return upperBound.getText();
   }
 
+    /**
+     * Get the value in the Lower Value text field.
+     * this will either be the Min. value or the date for a date/time field.
+     * @return The value contained in the field.
+     */
   public String getLowerText() {
     return lowerBound.getText();
   }
 
+    /** 
+     * Set the value in the upper text field.
+     * Sets a numeric value to two decimal places.
+     * @param val  A <code>Double</code> object.
+     */
   public void setUpperText(Double val) {
       DecimalFormat df = new DecimalFormat("0.00");
       String value = df.format(val.doubleValue());
       upperBound.setText(value);
   }
 
+    /** 
+     * Set the value in the lower text field.
+     * Sets a numeric value to two decimal places.
+     * @param val  A <code>Double</code> object.
+     */
   public void setLowerText(Double val) {
       DecimalFormat df = new DecimalFormat("0.00");
       String value = df.format(val.doubleValue());
       lowerBound.setText(value);
   }
 
+    /** 
+     * Set the value in the upper text field.
+     * Sets the text to that passed in..
+     * @param val  The text to set.
+     */
   public void setUpperText(String val) {
       upperBound.setText(val);
   }
 
+    /** 
+     * Set the value in the lower text field.
+     * Sets the text to that passed in..
+     * @param val  The text to set.
+     */
   public void setLowerText(String val) {
       lowerBound.setText(val);
   }
 
+    /** Return the contents of the (maximum) text field as a <code>Vector</code>.
+     * A list of inputs may be specified by separating each entry with a comma.
+     * @return The contents of the text field.
+     */
   public Vector getUpperList() {
     String tmpStr = getUpperText();
     Vector result = new Vector();
@@ -130,6 +178,10 @@ public class LabeledRangeTextField extends WidgetPanel
     return result;
   }
  
+    /** Return the contents of the (minimum) text field as a <code>Vector</code>.
+     * A list of inputs may be specified by separating each entry with a comma.
+     * @return The contents of the text field.
+     */
   public Vector getLowerList() {
     String tmpStr = getLowerText();
     Vector result = new Vector();
@@ -172,30 +224,60 @@ public class LabeledRangeTextField extends WidgetPanel
       
   }
 
+    /**
+     * Implementation of <code>ActionListener</code> interface.
+     * Sets the Date/Time fields if present to the current values.
+     * @param e  An <code>ActionEvent</code> object.
+     */
     public void actionPerformed( ActionEvent e) {
 	TimeUtils tu = new TimeUtils();
 	setUpperText(tu.getLocalTime());
 	setLowerText(tu.getLocalDate());
     }
 
+    /**
+     * Implementation of <code>KeyListener</code> interface.
+     * @param e  An <code>ActionEvent</code> object.
+     */
     public void keyPressed(KeyEvent evt) {
     }
 
+    /**
+     * Implementation of <code>KeyListener</code> interface.
+     * @param e  An <code>ActionEvent</code> object.
+     */
     public void keyReleased( KeyEvent evt) {
     }
 
+    /**
+     * Implementation of <code>KeyListener</code> interface.
+     * Stops the Date/Time field from updating if either field is edited.
+     * @param e  An <code>ActionEvent</code> object.
+     */
     public void keyTyped( KeyEvent evt) {
 	stopTimer();
     }
 
+    /**
+     * Starts the timer running.
+     * The timer keeps the Date/Time fields updating.
+     */
     public void startTimer() {
 	timer.start();
     }
 
+    /**
+     * Stops the timer running.
+     * The timer keeps the Date/Time fields updating.
+     */
     public void stopTimer() {
 	timer.stop();
     }
 
+    /**
+     * Check whether the timer used for updating the Date/Time field is running..
+     * @return <code>true</code> if the timer is running; <code>flase</code> otherwise.
+     */
     public boolean timerRunning() {
 	return timer.isRunning();
     }

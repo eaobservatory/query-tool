@@ -29,7 +29,12 @@ public class AIVTriplet {
   private String          _value;
   private AttributeOrigin _origin;
 
-  /** Basic constructor */
+  /** Basic constructor
+   * @param iterator   The name of the iterator
+   * @param attribute  The name of the attribute
+   * @param value      The value of the attribute
+   * @param origin     The original source of the attribute.
+   */
   public AIVTriplet(String iterator,
 		    String attribute,
 		    String value,

@@ -10,16 +10,28 @@ import ocs.utils.CommandReceiver;
  * handler.
  *
  * @author <a href="mailto:mrippa@jach.hawaii.edu">Mathew Rippa</a>
- * $Id$ */
+ * $Id$ 
+ */
 public class QT_MonResponse extends MonitorResponse {
 
   
+    /**
+     * Constructor.
+     * @param cr      A CommandReceiver Object
+     */
   public QT_MonResponse(CommandReceiver cr) {
     super(cr);
   }
 
-  // This function is invoked when a monitored parameter changes.
-  //  This is the core of parameter monitoring.
+    /**
+     * This function is invoked when a monitored parameter changes.
+     * This is the core of parameter monitoring.
+     * @param monitor     A DramaMonoitor Object
+     * @param task        A DramaTask Object
+     * @param name        The name of the DRAMA value
+     * @param value       The value associated with the name.
+     * @exception         DramaException if the task fails.
+     */
   public void Changed(DramaMonitor monitor, DramaTask task, String name, Arg value)
     throws DramaException {
 

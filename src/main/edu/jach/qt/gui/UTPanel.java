@@ -6,19 +6,21 @@ import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.border.*;
 import java.text.DateFormat;
+
 /**
- * TimePanel.java
+ * Display the UTC time in a panel as a <code>JLabel</code>..
  *
- *
- * Created: Fri Apr 20 14:55:26 2001
- *
- * @author <a href="mailto: "Mathew Rippa</a>
- * @version
+ * @author $Author$
+ * @version $Id$
  */
 
 public class UTPanel extends JLabel
    implements TimerListener {
    
+    /**
+     * Constructor.
+     * Starts a timer so that the display is updated once a second.
+     */
    public UTPanel () {
       setHorizontalAlignment(SwingConstants.CENTER);
 
@@ -34,6 +36,11 @@ public class UTPanel extends JLabel
       t.addTimerListener(this);
    }
    
+    /**
+     * Implementation of TimeListener.
+     * Sets the date and time on the associated object once a second.
+     * @param evt  A timer event.
+     */
    public void timeElapsed(TimerEvent evt) {
       setBackground(Color.black);
       setForeground(Color.green);
