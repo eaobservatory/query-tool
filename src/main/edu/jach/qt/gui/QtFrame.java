@@ -183,11 +183,28 @@ public class QtFrame
     // Check whether deferred Observations currently exist and ask the user if he wants to
     // use these.  If they don't then delete the current files
     if (DeferredProgramList.obsExist()) {
-	int selection = JOptionPane.showConfirmDialog(this,
-						      "Use current Deferred Observations?",
-						      "Deferred Observations Exist",
-						      JOptionPane.YES_NO_OPTION
-						      );
+	JOptionPane pane = new JOptionPane ( "Use current deferred Observations?",
+		                             JOptionPane.QUESTION_MESSAGE,
+					     JOptionPane.YES_NO_OPTION);
+
+	final JDialog dialog = pane.createDialog (this, "Deferred Observations Exist");
+	dialog.addWindowListener( new WindowAdapter () {
+		 public void windowDeactivated(WindowEvent we) {
+		     dialog.toFront();
+		 }
+        });
+	dialog.show();
+	int selection;
+	Object selectedValue = pane.getValue();
+	if ( selectedValue == null ) {
+	    // User didn't make a choice so take the safe option and assume
+	    // they didn't want to delete
+	    selection = JOptionPane.YES_OPTION;
+	}
+	else {
+	    selection = ( (Integer)selectedValue).intValue();
+	}
+	
 	if (selection == JOptionPane.NO_OPTION) {
 	    DeferredProgramList.deleteAllFiles();
 	}
