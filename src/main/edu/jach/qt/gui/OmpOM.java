@@ -127,6 +127,10 @@ public class OmpOM extends JPanel{
     spItem = item;
   }
   
+  public String getProgramName() {
+    return spItem.getTitle();
+  }
+
 
   /**
    * Describe <code>addNewTree</code> method here. This adds a
@@ -139,7 +143,7 @@ public class OmpOM extends JPanel{
 
     ptree.addList(spItem);
     ptree.setMinimumSize(new Dimension(400,550) );
-    ptreeHashtable.put(msbID, ptree);
+    //ptreeHashtable.put(msbID, ptree);
   }
 
   /**
@@ -165,11 +169,11 @@ public class OmpOM extends JPanel{
     ptree.addList(spItem);
   }
 
-  public JSplitPane getTreePanel(Integer msbID) {
+  public JSplitPane getTreePanel() {
       
     CalibrationArea ca = new CalibrationArea();
     JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, 
-					  (ProgramTree)ptreeHashtable.get(msbID), ca);
+					  ptree, ca);
     return splitPane;
   }
 
@@ -232,7 +236,7 @@ public class OmpOM extends JPanel{
     JFrame f = new JFrame();
     OmpOM om = new OmpOM();
     om.addNewTree();
-    f.getContentPane().add(om.getTreePanel(new Integer(41)));
+    f.getContentPane().add(om.getTreePanel());
     f.setSize(400, 300);
     f.setVisible(true);
   }
