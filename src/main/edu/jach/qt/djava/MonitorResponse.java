@@ -47,9 +47,9 @@ public abstract class MonitorResponse extends DramaMonitor.MonResponse {
    *  is used to set the GUI into its runtime state.
    */
   public void Started(DramaMonitor monitor, DramaTask task ) throws DramaException {
-    task.MsgOut("Parameter monitoring started");
+    task.MsgOut("CSO Parameter monitoring started");
 
-    cr.setTaskLock(false);
+    cr.setPathLock(false);
   }
                                              
   /** This function is invoked when a monitored parameter changes.
