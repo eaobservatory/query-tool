@@ -1,33 +1,39 @@
-BUILD     = ../../../../../../..
-include	    $(BUILD)/makeInclude
-
-PACKAGE	    = $(QT_PACKAGE)/gui
-
 #### Targets settings
 
+TOP = ../../../../../../..
+
+PACKAGE = edu/jach/qt/gui
+
 SOURCES = \
-	../app/Subject.java \
-	../app/Observer.java \
-	../app/Querytool.java \
-	WidgetDataBag.java \
-	WidgetPanel.java \
-	LabeledTextField.java \
-	JTextFieldPanel.java \
+	AIVTriplet.java \
+	AVPair.java \
+	AttributeEditor.java \
+	AttributeOrigin.java \
+	AttributeTableModel.java \
 	ButtonPanel.java \
 	CalibrationArea.java \
+	ColumnSelector.java \
 	CompInfo.java \
+	DeferredProgramList.java \
 	DnDJTree.java \
 	DragDropObject.java \
+	Execute.java \
+	ExecuteJCMT.java \
+	ExecuteUKIRT.java \
+	HelpPage.java \
 	InfoPanel.java \
+	JTextFieldPanel.java \
 	LabeledMinMaxTextField.java \
 	LabeledRangeTextField.java \
 	Led.java \
 	LogoPanel.java \
 	MSBQueryTableModel.java \
 	MsbNode.java \
+	NotePanel.java \
 	OmpOM.java \
 	ProgramTree.java \
 	ProjectTableModel.java \
+	ProjectTableSelectionModel.java \
 	QtFrame.java \
 	RadioPanel.java \
 	SatPanel.java \
@@ -39,41 +45,12 @@ SOURCES = \
 	Timer.java \
 	TimerEvent.java \
 	TimerListener.java \
-	XmlUtils.java \
 	TrashCan.java \
-	DeferredProgramList.java \
-	NotePanel.java \
+	TreeViewer.java \
 	UTPanel.java \
-	AIVTriplet.java \
-	AVPair.java \
-	AttributeOrigin.java \
-	AttributeEditor.java \
-	AttributeTableModel.java \
-	HelpPage.java \
-	Execute.java \
-	ExecuteUKIRT.java \
-	ExecuteJCMT.java \
-	ColumnSelector.java \
-	ProjectTableSelectionModel.java \
-	TreeViewer.java
+	WidgetDataBag.java \
+	WidgetPanel.java \
+	XmlUtils.java
 
-include $(BUILD)/make.tail
-
-
-# Phony Targets
-.PHONY: clean build help
-
-#### Help
-help:
-	@echo "Usage: make [targets...]"
-	@echo ""
-	@echo "where targets include:"
-	@echo ""
-	@echo "  help           display this help"
-	@echo "  all            compile all (default)"
-	@echo "  clean          remove all class files"
-	@echo "  build          rebuild all inconditionnally"
-	@echo "  <class file>   compile the given file"
-	@echo "  <subdir>.make  compile the given subdir"
-	@echo "  <subdir>.clean clean the given subdir"
+include ${TOP}/Makefile
 
