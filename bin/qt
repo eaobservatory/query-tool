@@ -14,6 +14,7 @@ set xdebug = ""
 set xnoagent = ""
 set xrunjdwptrans = ""
 set xbootclasspath = ""
+set jCompiler = ""
 
 # set default behaviour to -ql -nosim -noeng for UKIRT 
 set tosim = "nosim" 
@@ -36,6 +37,27 @@ while ($#argv != 0)
 	set timeout = $argv[1]
 	shift
 	breaksw
+      case -jswat:
+       shift
+	set port = $argv[1]
+	set xdebug = "-Xdebug"
+        set xnoagent = "-Xnoagent"
+	set jCompiler = "-Djava.compiler=NONE"
+	set xrunjdwptrans = "-Xrunjdwp:transport=dt_socket,address=${port},server=n,suspend=y"
+	echo SM Will be controled by JSWAT!
+	set JAVA = /local/java/jdk1.4/bin/java
+        shift
+        breaksw
+      case -jswatr:
+        shift
+	set port = $argv[1]
+	set xdebug = "-Xdebug"
+        set xnoagent = "-Xnoagent"
+	set jCompiler = "-Djava.compiler=NONE"
+	set xrunjdwptrans = "-Xrunjdwp:transport=dt_socket,server=y,suspend=n"
+	echo SM Will be controled by JSWAT!
+        shift
+        breaksw
       case -jdebug:
         set xdebug = "-Xdebug"
         set xnoagent = "-Xnoagent"
@@ -229,9 +251,12 @@ else
    endif
 endif
 
-setenv DUL_DIR /local/progs/drama/release/dul/r0_10_1/
-setenv GIT_DIR /local/progs/drama/release/git/r0_9_2/
-setenv DTCL_DIR /local/progs/drama/release/dtcl/r1_2_3/
+#setenv DUL_DIR /local/progs/drama/release/dul/r0_10_1/
+#setenv GIT_DIR /local/progs/drama/release/git/r0_9_2/
+#setenv DTCL_DIR /local/progs/drama/release/dtcl/r1_2_3/
+setenv DUL_DIR /jac_sw/drama/drama-v1.4.1/include/
+setenv GIT_DIR /jac_sw/drama/drama-v1.4.1/include/
+setenv DTCL_DIR /jac_sw/drama/drama-v1.4.1/include/
 
 set CLASSPATH = /jac_sw/omp/QT/lib/qt.jar:/jac_sw/omp/QT/lib/xercesImpl.jar:/jac_sw/omp/QT/lib/xmlParserAPIs.jar:/jac_sw/omp/QT/lib/mail.jar:/jac_sw/omp/QT/lib/activation.jar:/jac_sw/omp/QT/lib/soap.jar:/jac_sw/orac3/OT/install/classes:/jac_sw/orac3/GEMINI/install/classes:/jac_sw/itsroot/install/ompSM/classes:/jac_sw/orac3/ORAC/install/classes:/jac_sw/orac3/OMP/install/classes:/jac_sw/orac3/ODB/install/classes:/jac_sw/omp/QT/lib/jsky.jar:/jac_sw/omp/QT/lib/diva.jar:/jac_sw/omp/QT/lib/junit.jar:/jac_sw/omp/QT/icons:/local/java/jdk/lib/tools.jar:/jac_sw/itsroot/install/dcHub/lib/dcHub.jar:/jac_sw/drama/drama-v1.4.1/javalib:/jac_sw/orac3/OM/install/classes
 
