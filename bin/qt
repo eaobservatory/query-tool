@@ -128,6 +128,26 @@ while ($#argv != 0)
    endsw
 end
 
+if ( ${scenario} == 0 ) then
+    # Check if the lock already exists - if it does, dont do anything...
+    echo "Starting lock processin"
+    switch ( $telescope )
+	case Ukirt:
+	    set lockDir = /ukirtdata/orac_data/deferred
+	    breaksw
+	case Jcmt:
+	    set lockDir = /jcmtdata/orac_data/deferred
+	    breaksw
+    endsw
+    if ( ! -e ${lockDir}/.lock ) then
+	# If the lock file does not exist - create it
+	touch ${lockDir}/.lock
+    else
+	# Otherwise default to scenario mode
+	set scenario = 1
+    endif
+endif
+
 
 if (`domainname` == "JAC.ukirt") then
    set solHost = "kiki"
@@ -204,6 +224,9 @@ ${JAVA} ${classic} ${xdebug} ${xnoagent} ${xrunjdwptrans} ${xbootclasspath} -Dde
 
 tidy: 
 onintr - 
+if ( ${scenario} == 0 ) then
+ \rm ${lockDir}/.lock
+endif
 cleanup 
 unsetenv DUL_DIR
 unsetenv GIT_DIR
