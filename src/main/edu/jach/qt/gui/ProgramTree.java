@@ -816,7 +816,6 @@ final public class ProgramTree extends JPanel implements
      **/
     private void editAttributes() {
 	
-
 	// Recheck that this is an observation
 	if (selectedItem.type()==SpType.OBSERVATION) {
 
@@ -824,16 +823,23 @@ final public class ProgramTree extends JPanel implements
 
 	    SpObs observation = (SpObs) selectedItem;
 
-	    if (!observation.equals(null)) {
-		new AttributeEditor(observation, new javax.swing.JFrame(), true).show();
-	    } 
-	    else {
-		JOptionPane.showMessageDialog(this,
-					      "Current selection is not an observation.",
-					      "Not an Obs!",
-					      JOptionPane.INFORMATION_MESSAGE);
+	    try {
+		if (!observation.equals(null)) {
+		    new AttributeEditor(observation, new javax.swing.JFrame(), true).show();
+		} 
+		else {
+		    JOptionPane.showMessageDialog(this,
+						  "Current selection is not an observation.",
+						  "Not an Obs!",
+						  JOptionPane.INFORMATION_MESSAGE);
+		}
 	    }
-	    setExecutable(true);
+	    catch (Exception e) {
+		logger.error("Error instantiating AttributeEditor", e);
+	    }
+	    finally {
+		setExecutable(true);
+	    }
 	}
     }
  
