@@ -21,7 +21,7 @@ import orac.ukirt.iter.*;
 import orac.util.*;
 
 /**
- * This is the top most class in the <code>OmpOM</code>.  This 
+ * This is the top most class of the OMP-OM.  This 
  * starts off all subsequent OMP-OM specific classes.
  *
  * @author <a href="mailto:mrippa@jach.hawaii.edu">Mathew Rippa</a>

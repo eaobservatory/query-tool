@@ -12,13 +12,14 @@ import edu.jach.qt.gui.WidgetDataBag;
 /**
  * RadioPanel.java
  *
+ * This class is a generic radioPanel with it's group of JRadioButtons
+ * enclosed with a titled border.
  *
  * Created: Tue Aug  7 09:35:40 2001
  *
- * @author <a href="mailto: "Mathew Rippa</a>
- * @version
+ * @author <a href="mailto:mrippa@jach.hawaii.edu">Mathew Rippa</a>
+ * $Id$
  */
-
 public class RadioPanel extends WidgetPanel 
    implements ActionListener{
 
@@ -27,9 +28,26 @@ public class RadioPanel extends WidgetPanel
    private LinkedList myElems;
    private ListIterator iterator;
 
+   /**
+    * The variable <code>group</code> is the list of JRadioButtons.
+    *
+    */
    public ButtonGroup group = new ButtonGroup();
+
+   /**
+    * The variable <code>radioElems</code> is a LinkedList of the buttons.
+    *
+    */
    public LinkedList radioElems = new LinkedList();
 
+   /**
+    * Creates a new <code>RadioPanel</code> instance.
+    *
+    * @param ht a <code>Hashtable</code> value
+    * @param wdb a <code>WidgetDataBag</code> value
+    * @param title a <code>String</code> value
+    * @param elems a <code>LinkedList</code> value
+    */
    public RadioPanel (Hashtable ht, WidgetDataBag wdb, String title, LinkedList elems){
       super(ht, wdb);
       myTitle = title;
@@ -57,8 +75,14 @@ public class RadioPanel extends WidgetPanel
       }
    }
 
+   /**
+    * The <code>actionPerformed</code> method will notify the
+    * WidgetDataBag of changes.  This updates the XML string contained
+    * in the Querytool.
+    *
+    * @param evt an <code>ActionEvent</code> value
+    */
    public void actionPerformed (ActionEvent evt) {
-      printTable();
       setAttribute(myTitle, radioElems);
    }
 }// RadioPanel

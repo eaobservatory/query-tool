@@ -8,21 +8,27 @@ import java.util.Iterator;
 
 /**
  * WidgetDataBag.java
- *
+ * 
+ * This class provides a gateway between the gui and app
+ * partitions. The data describing this class is just a hashtable
+ * consisting of widget names as keys and the objects that define them
+ * as the values.  The WidgetDataBag is instantiated in the WidgetPanel
+ * class where widgets are added to the bag.  This essentially
+ * regeisters the widget to be observed by the Querytool class.
  *
  * Created: Mon Jul 23 13:02:58 2001
  *
- * @author <a href="mailto: "Mathew Rippa</a>
- * @version
+ * @author <a href="mailto:mrippa@jach.hawaii.edu">Mathew Rippa</a>
+ * $Id$
  */
-
 public class WidgetDataBag implements Subject {
 
    private Hashtable table = new Hashtable();
    private ArrayList observers = new ArrayList();
 
    /**
-    * Describe <code>put</code> method here.
+    * The <code>put</code> method adds the key value pair to the
+    * Hashtable and notifies subscribed observers.
     *
     * @param key an <code>Object</code> value
     * @param value an <code>Object</code> value
@@ -35,7 +41,9 @@ public class WidgetDataBag implements Subject {
    }
 
    /**
-    * Describe <code>toString</code> method here.
+    * The <code>toString</code> method represents this Hashtable as a
+    * string. The result is a list of comma delimited Key=value pairs
+    * enclosed in curly braces.
     *
     * @return a <code>String</code> value
     */
@@ -53,7 +61,8 @@ public class WidgetDataBag implements Subject {
    }
 
    /**
-    * Describe <code>remove</code> method here.
+    * The <code>remove</code> method removes "key" the Hashtable and
+    * notifies subscribed observers.
     *
     * @param key a <code>String</code> value
     * @return a <code>String</code> value
@@ -68,7 +77,8 @@ public class WidgetDataBag implements Subject {
    }
 
    /**
-    * Describe <code>addObserver</code> method here.
+    * The <code>addObserver</code> method adds an observer to the
+    * ArrayList of observers.
     *
     * @param o an <code>Observer</code> value
     */
@@ -77,7 +87,8 @@ public class WidgetDataBag implements Subject {
    }
    
    /**
-    * Describe <code>removeObserver</code> method here.
+    * The <code>removeObserver</code> method removes an observer from
+    * the ArrayList of observers.
     *
     * @param o an <code>Observer</code> value
     */

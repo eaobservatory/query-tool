@@ -81,8 +81,23 @@ public class WidgetPanel extends JPanel
 	 //which widget?
 	 widget = tr.readWord();
 	 
-	 //JTextField
+	 //JLabeldTextField
 	 if (widget.equals("JTextField")) {
+	    //next = tr.readLine();
+	    tr.readLine();
+	    gbc.fill = GridBagConstraints.HORIZONTAL;
+	    gbc.anchor = GridBagConstraints.NORTH;
+	    gbc.weightx = 100;
+	    gbc.weighty = 100;
+	    gbc.insets.top = 10;
+	    gbc.insets.bottom = 5;
+	    gbc.insets.left = 10;
+	    gbc.insets.right = 5;
+	    addTextFields("Labeled", gbc);
+	 }
+
+	 else if (widget.equals("JRangeField")) {
+	    tr.readLine();
 	    gbc.fill = GridBagConstraints.HORIZONTAL;
 	    gbc.anchor = GridBagConstraints.NORTH;
 	    gbc.weightx = 100;
@@ -91,18 +106,7 @@ public class WidgetPanel extends JPanel
 	    gbc.insets.bottom = 5;
 	    gbc.insets.left = 10;
 	    gbc.insets.right = 5;
-	    next = tr.readLine();
-	    do {
-	       next = tr.readLine();
-	       if (next.equals("[EndSection]"))
-		  break;
-	       tmp = abbreviate(next);
-	       //System.out.println("[next]:"+ next +"[tmp]: "+tmp);
-	       abbrevTable.put(next, tmp);
-       	       add(new LabeledTextField(abbrevTable, widgetBag, next),
-		   gbc, 0, numComponents, 1, 1);
-	       //widgetBag.put(tmp, "");
-	    }while (true);
+	    addTextFields("Range", gbc);
 	 }
 
 	 //JCheckBox
@@ -168,6 +172,28 @@ public class WidgetPanel extends JPanel
       }//end while
    }//parseConfig
 
+   private void addTextFields(String type, GridBagConstraints gbc) {
+      String next, tmp;
+      do {
+	 next = tr.readLine();
+	 if (next.equals("[EndSection]"))
+	    break;
+	 tmp = abbreviate(next);
+	 //System.out.println("[next]:"+ next +"[tmp]: "+tmp);
+	 abbrevTable.put(next, tmp);
+	 
+	 if(type.equals("Labeled")) {
+	    add(new LabeledTextField(abbrevTable, widgetBag, next),
+		gbc, 0, numComponents, 1, 1);
+	    //widgetBag.put(tmp, "");
+	 }
+	 else if(type.equals("Range")) {
+	    add(new LabeledMinMaxTextField(abbrevTable, widgetBag, next),
+		gbc, 0, numComponents, 1, 1);
+	 }
+      }while (true);
+   }
+
    private String makeList (LinkedList list) {
       String next, title = "";
       next = tr.readLine();
@@ -212,12 +238,16 @@ public class WidgetPanel extends JPanel
       String result = "ERROR";
       if (!next.equals("")) {
 	 result = "";
-	 StringTokenizer st = new StringTokenizer(next);
-	 while (st.hasMoreTokens()) {
-	    result += st.nextToken();
+	 next.trim();
+	 char[] chars = next.toCharArray();
+	 for(int i=0; i<chars.length; i++) {
+	    if(chars[i] <91 && chars[i] >64)
+	       result += chars[i];
 	 }
+	 if (result.length() < 2)
+	    result += String.copyValueOf(chars,1,2);
       }
-      return result;
+      return result.toUpperCase();
    }
 
    /**
@@ -270,14 +300,14 @@ public class WidgetPanel extends JPanel
 
       if (source.equals(cb[1])) {
 	 if (cb[1].isSelected()) {
-	    instrumentPanel.setSelected(true);
+	    instrumentPanel.setSelected(false);
 	    instrumentPanel.setEnabled(false);
 	 }
 	 else {
 	    instrumentPanel.setEnabled(true);
 	    instrumentPanel.setSelected(false);
 	 }
-	 widgetBag.put(abbrevTable.get(cb[1].getLabel()), ""+cb[1].isSelected());
+	 //widgetBag.put(abbrevTable.get(cb[1].getLabel()), ""+cb[1].isSelected());
       }
    }
 

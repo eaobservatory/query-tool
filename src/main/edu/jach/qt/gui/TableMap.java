@@ -1,5 +1,7 @@
 package edu.jach.qt.gui;
 /** 
+ * ****USED BY THE OMP-QT TO SORT THE COLUMNS OF THE RESULT TABLE.****
+ *
  * In a chain of data manipulators some behaviour is common. TableMap
  * provides most of this behavour and can be subclassed by filters
  * that only need to override a handful of specific methods. TableMap 

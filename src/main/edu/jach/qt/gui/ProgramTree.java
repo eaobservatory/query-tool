@@ -7,7 +7,6 @@ import edu.jach.qt.utils.*;
 
 import gemini.sp.*;
 import gemini.sp.SpItem;
-//import gemini.sp.ipc.*;
 import orac.ukirt.inst.*;
 import orac.ukirt.iter.*;
 import orac.ukirt.util.SpTranslator;
@@ -27,10 +26,10 @@ import java.net.*;
 
 /**
    final public class programTree is a panel to select
-   an observation from a JTree object
+   an observation from a JTree object. 
 
    @version 1.0 1st June 1999
-   @author M.Tan@roe.ac.uk
+   @author M.Tan@roe.ac.uk, modified by Mathew Rippa
 */
 final public class ProgramTree extends JPanel
    implements TreeSelectionListener,ActionListener

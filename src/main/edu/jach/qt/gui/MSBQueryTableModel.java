@@ -4,35 +4,32 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;  
 import javax.xml.parsers.FactoryConfigurationError;  
 import javax.xml.parsers.ParserConfigurationException;
- 
 import org.xml.sax.SAXException;  
 import org.xml.sax.SAXParseException;  
-
 import java.io.File;
 import java.io.IOException;
-
 import org.w3c.dom.*;
-
 import java.awt.*;
 import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.table.*;
 import java.util.*;
 import java.io.*;
+
 /**
  * MSBQueryTableModel.java
  *
  *
  * Created: Tue Aug 28 16:49:16 2001
  *
- * @author <a href="mailto: "Mathew Rippa</a>
- * @version
  */
 
 public class MSBQueryTableModel extends AbstractTableModel {
-   //TABLE META DATA
+
    public static final String ROOT_ELEMENT_TAG = "SpMSBSummary";
-   
+
+   public static final String MSB_SUMMARY = System.getProperty("msbSummary");
+
    public static final String[] colNames ={
       "projectid",
       "checksum",
@@ -80,7 +77,7 @@ public class MSBQueryTableModel extends AbstractTableModel {
 	 //factory.setNamespaceAware(true);
 	 
 	 DocumentBuilder builder = factory.newDocumentBuilder();
-	 doc = builder.parse( new File("/home/mrippa/root/src/omp/omp/QT/config/msbSummary.xml"));
+	 doc = builder.parse( new File(MSB_SUMMARY));
 	 docIsNull = false;
       } catch (SAXException sxe) {
 	 // Error generated during parsing)

@@ -26,11 +26,9 @@ public class InfoPanel extends JPanel
 
    //reconsider icons dir 'An absolute path!'
    private static final String LOGO_IMAGE
-      = "/home/mrippa/netroot/src/omp/omp/QT/icons/omp_logo1.gif";
+      = "/home/mrippa/netroot/install/omp/QT/icons/omp_logo1.gif";
 
-   private MyQueryTableModel local_mqtm;
    private MSBQueryTableModel msb_qtm;
-   private MsbFrame calibrateDialog = null;
    private TimePanel timePanel ;
    private Querytool localQuerytool;
 
@@ -45,7 +43,7 @@ public class InfoPanel extends JPanel
     * Creates a new <code>InfoPanel</code> instance.
     *
     * @param parent a <code>JFrame</code> value
-    * @param mqtm a <code>MyQueryTableModel</code> value
+    * @param mqtm a <code>MSBQueryTableModel</code> value
     */
    public InfoPanel (MSBQueryTableModel msbQTM, Querytool qt){
       msb_qtm = msbQTM;
@@ -194,12 +192,6 @@ public class InfoPanel extends JPanel
       else if (source == xmlPrintButton) {
 	 localQuerytool.printXML();
       }
-      //      else if (source == calibrateButton) {
-      // if (calibrateDialog == null)
-      //    calibrateDialog = new MsbFrame(myParent);
-      // calibrateDialog.show();
-      //}
-      
    }
 
 

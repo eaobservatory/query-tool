@@ -11,7 +11,7 @@ import java.util.LinkedList;
 
 /**
  * LabeledTextField.java
- *
+ * This offers a JTextField with a JLabel packaged up in a JPanel.
  *
  * Created: Thu Mar 22 11:04:49 2001
  *
@@ -22,10 +22,11 @@ import java.util.LinkedList;
 public class LabeledTextField extends WidgetPanel
    implements DocumentListener {
 
-   private JTextField textField;
-   private String attribute;
+   protected JTextField textField;
+   protected JLabel label;
+
+   private String name;
    
-   public LinkedList valueList;
    /**
     * Creates a new <code>LabeledTextField</code> instance.
     *
@@ -34,65 +35,45 @@ public class LabeledTextField extends WidgetPanel
     */
    public LabeledTextField (Hashtable ht, WidgetDataBag wdb, String text) {
       super(ht, wdb);
-      attribute = text;
-      valueList = new LinkedList();
+      textField = new JTextField("");
+      label = new JLabel(text + ": ", JLabel.LEADING);
+
       setup();
    }
 	
    private void setup() {
-      this.setLayout(new GridLayout(1,3));
-      add(new JLabel(attribute + ": ", JLabel.LEADING));
+      name = label.getText().trim();
 
-      String[] list = {"max","min"};
+      this.setLayout(new GridLayout(1,2));
+      add(label);
 
-      JComboBox rangeList = new JComboBox(list);
-      rangeList.setSelectedIndex(0);
-      rangeList.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-	       JComboBox cb = (JComboBox)e.getSource();
-	       String selection = (String)cb.getSelectedItem();
-	    }
-	 });
-      add(rangeList);
-      valueList.add(0,rangeList);
-
-      add(textField = new JTextField(""));
+      add(textField);
       textField.getDocument().addDocumentListener(this);
-      
    }
  
-
    /**
-    * Describe <code>getLabel</code> method here.
-    *
-    * @return a <code>String</code> value
-    */
-   public String getLabel() {
-      return attribute;
-   }
-
-   /**
-    * Describe <code>insertUpdate</code> method here.
+    * The <code>insertUpdate</code> adds the current text to the
+    * WidgetDataBag.  All observers are notified.
     *
     * @param e a <code>DocumentEvent</code> value
     */
    public void insertUpdate(DocumentEvent e) {
-      valueList.add(1,textField.getText());
-      setAttribute(getLabel(), valueList);
+      //setAttribute(getLabel(), valueList);
+      setAttribute(name.substring(0,name.length()-1), textField.getText());
    }
 
    /**
-    * Describe <code>removeUpdate</code> method here.
+    * The <code>removeUpdate</code> adds the current text to the
+    * WidgetDataBag.  All observers are notified.
     *
     * @param e a <code>DocumentEvent</code> value
     */
    public void removeUpdate(DocumentEvent e) {
-      valueList.add(1,textField.getText());
-      setAttribute(getLabel(), valueList);
+      setAttribute(name.substring(0,name.length()-1), textField.getText());
    }
 
    /**
-    * Describe <code>changedUpdate</code> method here.
+    * The <code>changedUpdate</code> method is not implemented.
     *
     * @param e a <code>DocumentEvent</code> value
     */
