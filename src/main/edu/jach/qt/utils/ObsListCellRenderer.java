@@ -32,6 +32,8 @@ public class ObsListCellRenderer extends DefaultListCellRenderer {
 						boolean cellHasFocus)    // the list and the cell have the focus
   {
     String s = ((SpObs)value).getTitle();
+    String duration = (String)((SpObs)value).getTable().get("estimatedDuration");
+    s = s + "( "+duration+" seconds )";
     setText(s);
     boolean isDone=false;
 
