@@ -55,25 +55,29 @@ public class SatPanel extends JLabel implements TimerListener {
    * @param param1 A <code>TimerEvent</code>
    */
   public void timeElapsed(TimerEvent param1) {
-    refreshIcon();
+	      refreshIcon();
   }
 
     /**
      * Redraws the associated image.
      */
   public void refreshIcon() {
-    try {
-      String imageSuffix = URLReader.getImageString(new URL(this.SAT_WEBPAGE));
-      String timeString = imageSuffix.substring(8, imageSuffix.indexOf('.'));
-
-      //System.out.println("IMG=>>>"+InfoPanel.IMG_PREFIX + imageSuffix+"<<<");
-      setIcon(new ImageIcon(new URL(InfoPanel.IMG_PREFIX + imageSuffix)));
-
-      satBorder.setTitle(timeString+" UTC");
-    } catch ( Exception e) { } 
-
+      SwingWorker worker = new SwingWorker() {
+	      public Object construct () {
+		  try {
+		      String imageSuffix = URLReader.getImageString(new URL(SAT_WEBPAGE));
+		      String timeString = imageSuffix.substring(8, imageSuffix.indexOf('.'));
+		      
+		      //System.out.println("IMG=>>>"+InfoPanel.IMG_PREFIX + imageSuffix+"<<<");
+		      setIcon(new ImageIcon(new URL(InfoPanel.IMG_PREFIX + imageSuffix)));
+		      
+		      satBorder.setTitle(timeString+" UTC");
+		  } catch ( Exception e) { } 
+		  return null;
+	      }
+	  };
+      worker.start();
   }
-
 }// SatPanel
 
 /**
