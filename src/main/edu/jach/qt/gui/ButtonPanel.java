@@ -34,10 +34,10 @@ public class ButtonPanel extends WidgetPanel  {
     * @param title a <code>String</code> value
     * @param options a <code>LinkedList</code> value
     */
-   public ButtonPanel(Hashtable ht, WidgetDataBag wdb, String title, LinkedList options) {
+   public ButtonPanel(Hashtable ht, WidgetDataBag wdb, CompInfo info) {
       super(ht, wdb);
-      myTitle = title;
-      iterator = options.listIterator(0);
+      myTitle = info.getTitle();
+      iterator = info.getList().listIterator(0);
       //setBackground(java.awt.Color.gray);
 
       setBorder(BorderFactory.createTitledBorder
@@ -45,7 +45,7 @@ public class ButtonPanel extends WidgetPanel  {
 		 TitledBorder.CENTER, TitledBorder.DEFAULT_POSITION));
       buttonList = new LinkedList();
       
-      setLayout(new GridLayout(2, options.size()/2));
+      setLayout(new GridLayout(2, info.getSize()/2));
       for (iterator.nextIndex(); iterator.hasNext(); iterator.nextIndex()) {
 	    next = (String)iterator.next();
 	    JCheckBox cb = new JCheckBox(next);
