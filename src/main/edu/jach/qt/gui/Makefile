@@ -48,7 +48,10 @@ SOURCES = \
 	AttributeOrigin.java \
 	AttributeEditor.java \
 	AttributeTableModel.java \
-	HelpPage.java
+	HelpPage.java \
+	Execute.java \
+	ExecuteUKIRT.java \
+	ExecuteJCMT.java
 
 include $(BUILD)/make.tail
 
