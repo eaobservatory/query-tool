@@ -7,6 +7,11 @@
  
 #set JAVA = /usr/java1.1/bin/java
 set JAVA = /local/java/jdk/bin/java
+
+if (! ${?IMP_SCRATCH} && (${HOST} == "lokahi")) then
+    setenv IMP_SCRATCH /tmp/${USER}
+    echo "IMP_SCRATCH set to /tmp/${USER}"
+endif
  
 #  set PRG       = `which $0` 
 #  set PRG_HOME  = `dirname $PRG` 
