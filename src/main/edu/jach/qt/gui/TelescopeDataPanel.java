@@ -69,6 +69,7 @@ public class TelescopeDataPanel extends JPanel implements ActionListener {
     if (TelescopeDataPanel.DRAMA_ENABLED) {
       hub = DcHub.getHandle();
       hub.register("CSOMON");
+      hub.register("TELMON");
     }
 
     else if (!locked) {
@@ -182,7 +183,9 @@ public class TelescopeDataPanel extends JPanel implements ActionListener {
     // Ignore case where the tau value is set to the default
     if (!TelescopeDataPanel.csoTauValue.getText().equals(tauString))
 	{
-    WidgetPanel.getAtmospherePanel().setTau(TelescopeDataPanel.csoTauValue.getText());
+	    WidgetPanel.getAtmospherePanel().setTextField("tau:",
+						  TelescopeDataPanel.csoTauValue.getText());
+	    //WidgetPanel.getAtmospherePanel().setTau(TelescopeDataPanel.csoTauValue.getText());
 	}
     //WidgetPanel.getAtmospherePanel().setSeeing(TelescopeDataPanel.seeingValue.getText());
     //WidgetPanel.getAtmospherePanel().setAirmass(TelescopeDataPanel.airmassValue.getText());
