@@ -313,8 +313,6 @@ public class TelescopeDataPanel extends JPanel implements ActionListener {
 	WidgetPanel widgetPanel = infoPanel.getFrame().getWidgets();
 	Component [] components = widgetPanel.getComponents();
 	for (int i=0; i<widgetPanel.getComponentCount(); i++ ) {
-	    System.out.println("Found component class "+ components[i].getClass().toString());
-	    System.out.println("Found component name "+ components[i].getName());
 	    if ( components[i] instanceof LabeledTextField ) {
 		((LabeledTextField)components[i]).setText("");
 	    }
