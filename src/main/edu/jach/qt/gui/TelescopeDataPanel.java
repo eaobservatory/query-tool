@@ -224,20 +224,22 @@ public class TelescopeDataPanel extends JPanel implements ActionListener {
 	    bright = true;
 	}
 	RadioPanel moonPanel = WidgetPanel.getMoonPanel();
-	ListIterator iter = moonPanel.radioElems.listIterator(0);
-	while (iter.hasNext()) {
-	    JToggleButton abstractButton = (JRadioButton)iter.next();
-	    if (abstractButton.getText().equalsIgnoreCase("dark") && dark == true) {
-		abstractButton.setSelected(true);
-		abstractButton.doClick();
-	    }
-	    else if (abstractButton.getText().equalsIgnoreCase("Grey") && grey == true) {
-		abstractButton.setSelected(true);
-		abstractButton.doClick();
-	    }
-	    else if (abstractButton.getText().equalsIgnoreCase("Bright") && bright == true) {
-		abstractButton.setSelected(true);
-		abstractButton.doClick();
+	if (moonPanel != null) {
+	    ListIterator iter = moonPanel.radioElems.listIterator(0);
+	    while (iter.hasNext()) {
+		JToggleButton abstractButton = (JRadioButton)iter.next();
+		if (abstractButton.getText().equalsIgnoreCase("dark") && dark == true) {
+		    abstractButton.setSelected(true);
+		    abstractButton.doClick();
+		}
+		else if (abstractButton.getText().equalsIgnoreCase("Grey") && grey == true) {
+		    abstractButton.setSelected(true);
+		    abstractButton.doClick();
+		}
+		else if (abstractButton.getText().equalsIgnoreCase("Bright") && bright == true) {
+		    abstractButton.setSelected(true);
+		    abstractButton.doClick();
+		}
 	    }
 	}
 
