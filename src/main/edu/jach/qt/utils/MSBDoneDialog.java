@@ -5,6 +5,7 @@ import javax.swing.JTextField;
 import javax.swing.JDialog;
 import javax.swing.JTextArea;
 import javax.swing.JLabel;
+import javax.swing.JButton;
 import javax.swing.Timer;
 import java.io.File;
 import java.io.IOException;
@@ -12,6 +13,8 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Frame;
+import java.awt.Component;
+import java.awt.Container;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.ActionListener;
@@ -148,6 +151,9 @@ public class MSBDoneDialog extends JDialog {
 		}
 	    });
 
+	// Walk throught the elements looking for JButtons, and add tooltips
+        findButtons (optionPane);
+
 	optionPane.addPropertyChangeListener( new PropertyChangeListener() {
 		public void propertyChange(PropertyChangeEvent e) {
 		    String prop = e.getPropertyName();
@@ -226,4 +232,29 @@ public class MSBDoneDialog extends JDialog {
 	this.getRootPane().requestFocus();
     }
 
+    private void findButtons( Container c ) {
+	// Get all the children
+	Component [] components = c.getComponents();
+	for ( int i=0; i<components.length; i++ ) {
+	    if ( components[i] instanceof JButton ) {
+		String current = ( (JButton)components[i] ).getText();
+		if ( current.equalsIgnoreCase("ACCEPT" ) ) {
+			( (JButton)components[i] ).setToolTipText(
+								   "Reduce the MSB's database count by 1 and charge the program for it. Dothis only when you're sure the MSB is, or will, be, completed." );
+		}
+		else if ( current.equalsIgnoreCase( "REJECT" ) ) {
+		    ( (JButton)components[i] ).setToolTipText( "Don't reduce the MSB count, don't charge the project, log the fact that the MSB was attempted and allow you to provide a comment as to why the MSB was not completed.");
+		}
+		else if ( current.equalsIgnoreCase( "DECIDE LATER" ) ) {
+		    ( (JButton)components[i] ).setToolTipText( "Click this if you want to change exposure time on the last observation of an MSB, or execute a new query while an observation is underway. The dialogue box will reappear later to accept the current MSB.");
+		}
+		else if ( current.equalsIgnoreCase( "TOOK NO DATA" ) ) {
+		    ( (JButton)components[i] ).setToolTipText( "Don't reduce the MSB count, don't charge the program anything. The MSB's observations are removed from the staging area.");
+		}
+	    }
+	    else if ( components[i] instanceof Container ) {
+		findButtons ( (Container)components[i] );
+	    }
+	}
+    }
 }
