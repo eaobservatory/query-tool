@@ -17,8 +17,8 @@ import orac.ukirt.iter.*;
 import orac.util.*;
 
 /* ORAC-OM imports */
-import om.console.*;
-import om.util.*;
+// import om.console.*;
+// import om.util.*;
 
 /* QT imports */
 import edu.jach.qt.utils.*;
@@ -40,7 +40,7 @@ import javax.swing.plaf.*;
 import javax.swing.tree.*;
 
 /* Miscellaneous imports */
-import ocs.utils.*;
+//import ocs.utils.*;
 import org.apache.log4j.Logger;
 
 
@@ -305,6 +305,7 @@ final public class ProgramTree extends JPanel implements
 		File failFile = new File ("/ukirtdata/orac_data/deferred/.failure");
 		if (failFile.exists()) {
 		    failed = true;
+		    new ErrorBox(this, "Failed to Execute. Check messages.");
 		}
 		if (!isDeferred && !failed) {
 		    model.remove(obsList.getSelectedIndex());

@@ -2,7 +2,7 @@ package edu.jach.qt.utils;
 
 import java.awt.*;
 import javax.swing.*;
-import om.util.OracColor;
+//import om.util.OracColor;
 
 /** translating class is to show the translation in process
     Please note this will be run at a different thread

@@ -12,8 +12,8 @@ import orac.ukirt.inst.*;
 import orac.ukirt.iter.*;
 import orac.util.*;
 
-import om.console.*;
-import om.util.*;
+//import om.console.*;
+//import om.util.*;
 
 import java.util.*;
 import javax.swing.*;

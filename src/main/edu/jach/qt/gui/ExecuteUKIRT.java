@@ -7,8 +7,8 @@ import java.io.*;
 import java.util.*;
 import javax.swing.*;
 import ocs.utils.*;
-import om.console.*;
-import om.util.*;
+//import om.console.*;
+//import om.util.*;
 import orac.jcmt.inst.*;
 import orac.jcmt.iter.*;
 import orac.jcmt.obsComp.*;
@@ -66,13 +66,15 @@ public class ExecuteUKIRT extends Execute implements Runnable {
 			    " OOS_"+myInst, 
 			    " -state", 
 			    " State"};
+    int oosState = QtTools.oosTest(oosStateCmd);
 
     // If this oos is all ready in a Running state then abort.
-    if ( QtTools.oosTest(oosStateCmd) == 1) {
-      logger.error(myInst +" is Running. Aborting Execution.");
+    if ( (oosState == QtTools.OOS_STATE_RUNNING) ||
+	 (oosState == QtTools.OOS_STATE_PAUSED))  {
+      logger.error(myInst +" is Running or Paused. Sequence Console needs to be stopped first. Aborting Execution.");
       success.delete();
       return;
-    } 
+    }
     
 
     // *TODO* Replace this crap!
@@ -115,7 +117,7 @@ public class ExecuteUKIRT extends Execute implements Runnable {
 
     String[] oosActiveCmd = {"/jac_sw/omp/QT/bin/oosTest", " -instrument", " OOS_"+myInst, " -active"};
 
-    if ( QtTools.oosTest(oosActiveCmd) == 0 ) {
+    if ( QtTools.oosTest(oosActiveCmd) == QtTools.OOS_INACTIVE ) {
       logger.debug("not running... send oosLoad");
     }
     else {

@@ -26,8 +26,8 @@ import orac.ukirt.iter.*;
 import orac.util.*;
 
 /* ORAC-OM imports */
-import om.console.*;
-import om.util.*;
+//import om.console.*;
+//import om.util.*;
 
 /* QT imports */
 import edu.jach.qt.utils.*;

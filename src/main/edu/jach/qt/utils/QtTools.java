@@ -40,6 +40,14 @@ public class QtTools {
       @throws none
   */
 
+  public static final int OOS_STATE_UNKNOWN	= -1;
+  public static final int OOS_STATE_IDLE	= 0;
+  public static final int OOS_STATE_STOPPED	= 1;
+  public static final int OOS_STATE_PAUSED	= 2;
+  public static final int OOS_STATE_RUNNING	= 3;
+  public static final int OOS_ACTIVE		= 4;
+  public static final int OOS_INACTIVE		= 5;
+  
   static Logger logger = Logger.getLogger(QtTools.class);
 
   public static void loadConfig(String filename) {
@@ -211,15 +219,28 @@ public class QtTools {
       while ((s = stdOut.readLine()) != null) {
 	System.err.println(s);
 	logger.debug("oosTest output: >>>"+s+"<<<");
-	if ( s.endsWith("NOT RUNNING")) {
-	  status = 0;
+	if ( s.endsWith("IS INACTIVE")) {
+	  status = QtTools.OOS_INACTIVE;
 	}
-	else if ( s.endsWith("IS RUNNING")) {
-	  status = 1;
+	else if ( s.endsWith("IS ACTIVE")) {
+	  status = QtTools.OOS_ACTIVE;
+	}
+	else if ( s.endsWith("Idle ")) {
+	  status = QtTools.OOS_STATE_IDLE;
+	}
+	else if ( s.endsWith("Stopped ")) {
+	  status = QtTools.OOS_STATE_STOPPED;
+	}
+	else if ( s.endsWith("Paused ")) {
+	  status = QtTools.OOS_STATE_PAUSED;
 	}
 	else if ( s.endsWith("Running ")) {
-	  status = 1;
+	  status = QtTools.OOS_STATE_RUNNING;
 	}
+	else {
+	  logger.error("UNKNOWN OOS STATE.");
+	  status = QtTools.OOS_STATE_UNKNOWN;
+	} 
 	
       }
     } catch (IOException e) {
