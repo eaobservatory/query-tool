@@ -85,7 +85,7 @@ public class XmlUtils {
 		  return (new Integer(s));
 
 	       else if(tagName.equals("priority"))
-		  return (new Integer(s));
+		  return (new Float(s));
 
 	       else if(tagName.equals("tagpriority"))
 		  return (new Integer(s));
