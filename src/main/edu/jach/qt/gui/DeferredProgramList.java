@@ -665,7 +665,7 @@ final public class DeferredProgramList extends JPanel implements
 		evt.getDropTargetContext().dropComplete(true);
 	    }
 	    else {
-		JOptionPane.showMessageDialog(null,
+		JOptionPane.showMessageDialog(this,
 					      "Can not defer mandatory observations!"
 					      );
 		evt.getDropTargetContext().dropComplete(false);

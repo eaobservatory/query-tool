@@ -742,13 +742,13 @@ final public class ProgramTree extends JPanel implements
 		((DefaultListModel)obsList.getModel()).removeElementAt(obsList.getSelectedIndex());
 	    }
 	    else if (item == null) {
-		JOptionPane.showMessageDialog(null,
+		JOptionPane.showMessageDialog(this,
 					      "No Observation to remove",
 					      "Message", JOptionPane.INFORMATION_MESSAGE);
 		return;
 	    }
 	    else {
-		JOptionPane.showMessageDialog(null,
+		JOptionPane.showMessageDialog(this,
 					      "Encountered a problem deleting this observation",
 					      "Message", JOptionPane.WARNING_MESSAGE);
 	    }
@@ -828,7 +828,7 @@ final public class ProgramTree extends JPanel implements
 		new AttributeEditor(observation, new javax.swing.JFrame(), true).show();
 	    } 
 	    else {
-		JOptionPane.showMessageDialog(null,
+		JOptionPane.showMessageDialog(this,
 					      "Current selection is not an observation.",
 					      "Not an Obs!",
 					      JOptionPane.INFORMATION_MESSAGE);
@@ -867,7 +867,7 @@ final public class ProgramTree extends JPanel implements
 	    }
 	} 
 	else {
-	    JOptionPane.showMessageDialog(null,
+	    JOptionPane.showMessageDialog(this,
 					  "Current selection is not an observation.",
 					  "Not an Obs!",
 					  JOptionPane.INFORMATION_MESSAGE);
@@ -903,7 +903,7 @@ final public class ProgramTree extends JPanel implements
 	    }
 	} 
 	else {
-	    JOptionPane.showMessageDialog(null,
+	    JOptionPane.showMessageDialog(this,
 					  "Current selection is not an observation.",
 					  "Not an Obs!",
 					  JOptionPane.INFORMATION_MESSAGE);
@@ -1066,7 +1066,7 @@ final public class ProgramTree extends JPanel implements
 	}
 
 	if (itemForDrop != null && !itemForDrop.isOptional()) {
-	    JOptionPane.showMessageDialog(null,
+	    JOptionPane.showMessageDialog(this,
 					  "Can not delete a mandatory observation!"
 					  );
 	    return;

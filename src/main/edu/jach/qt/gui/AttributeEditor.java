@@ -434,18 +434,18 @@ public class AttributeEditor extends JDialog
 	if (Math.abs(_scaleFactorUsed) < 1e-6) {
 	    message = "Zero (or very small) scale factor (" +
 		scaleFactor.getText() + ").";
-	    JOptionPane.showMessageDialog (null,
+	    JOptionPane.showMessageDialog (this,
 					   message,
-					   "Does not Compue",
+					   "Does not Compute",
 					   JOptionPane.WARNING_MESSAGE );
 	  return false;
 	} 
 	else if (_scaleFactorUsed < 0) {
 	    message = "Negative scale factor (" +
 		scaleFactor.getText() + ").";
-	    JOptionPane.showMessageDialog (null,
+	    JOptionPane.showMessageDialog (this,
 					   message,
-					   "Does not Compue",
+					   "Does not Compute",
 					   JOptionPane.WARNING_MESSAGE );
 	  return false;
 	} 
@@ -455,7 +455,7 @@ public class AttributeEditor extends JDialog
       } 
       catch (Exception e) {
 	  message = "Invalid scale factor (" + scaleFactor.getText() + ").";
-	    JOptionPane.showMessageDialog (null,
+	    JOptionPane.showMessageDialog (this,
 					   message,
 					   "Unable to comply",
 					   JOptionPane.ERROR_MESSAGE );

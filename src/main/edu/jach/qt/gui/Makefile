@@ -50,7 +50,8 @@ SOURCES = \
 	UTPanel.java \
 	WidgetDataBag.java \
 	WidgetPanel.java \
-	XmlUtils.java
+	XmlUtils.java \
+	LogViewer.java
 
 include ${TOP}/Makefile
 
