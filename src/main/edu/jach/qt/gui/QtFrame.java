@@ -302,6 +302,14 @@ public class QtFrame
     table.setAutoResizeMode(JTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
     table.setMinimumSize(new Dimension(770,275) );
 
+    // Add a mouse motion listener to the header to cature drag events
+    table.getTableHeader().addMouseMotionListener ( new MouseMotionAdapter() {
+	    public void mouseDragged(MouseEvent e) {
+		updateColumnSizes();
+	    }
+	});
+	    
+
     ListSelectionModel listMod =  table.getSelectionModel();
     listMod.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     listMod.addListSelectionListener(this);
