@@ -77,8 +77,6 @@ public class SoapClient {
       }
       else {
 	Fault fault = resp.getFault ();
-	System.err.println (methodName + " generated fault: ");
-
 	JOptionPane.showMessageDialog(null,
 				      "Code:    "+fault.getFaultCode()+"\n" + 
 				      "Problem: "+fault.getFaultString(), 
