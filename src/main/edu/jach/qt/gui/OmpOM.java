@@ -136,6 +136,10 @@ public class OmpOM extends JPanel{
 
     spItem = item;
   }
+
+    public void setExecutable (boolean flag) {
+	ptree.setExecutable(flag);
+    }
   
   public String getProgramName() {
     
