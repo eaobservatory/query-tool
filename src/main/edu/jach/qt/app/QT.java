@@ -28,7 +28,7 @@ final public class QT {
     * frame is also set be centered on the screen.
     */
    public QT () {
-      QtTools.loadConfig("/home/mrippa/netroot/install/omp/QT/config/qt.conf");
+      QtTools.loadConfig(System.getProperty("qtConfig"));
 
       WidgetDataBag wdb = new WidgetDataBag ();
       Querytool qt = new Querytool(wdb);
@@ -69,17 +69,20 @@ final public class QT {
     * @param args a <code>String[]</code> value
     */
    public static void main(String[] args) {
-      try {
-	 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-      }
-      catch(Exception e) {
-	 e.printStackTrace();
-      }
+//        try {
+//  	 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+//        }
+//        catch(Exception e) {
+//  	 e.printStackTrace();
+//        }
       new QT();
    }
 } // Omp
 
 //$Log$
+//Revision 1.7  2001/11/05 18:58:16  mrippa
+//New system wide config file is read in.
+//
 //Revision 1.6  2001/10/20 04:12:11  mrippa
 //The main config file is now in $install/omp/QT/config/qt.conf
 //
