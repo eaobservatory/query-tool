@@ -26,7 +26,8 @@ import javax.swing.border.TitledBorder;
 public class SatPanel extends JLabel implements TimerListener {
 
   private TitledBorder satBorder;
-
+  private static final String SAT_WEBPAGE = System.getProperty("satellitePage");
+  private static final String IMG_PREFIX = System.getProperty("imagePrefix");
     /**
      * Constructor.
      * Sets the look and feel of the <code>JLabel</code> and associates a timer
@@ -62,7 +63,7 @@ public class SatPanel extends JLabel implements TimerListener {
      */
   public void refreshIcon() {
     try {
-      String imageSuffix = URLReader.getImageString(new URL(InfoPanel.SAT_WEBPAGE));
+      String imageSuffix = URLReader.getImageString(new URL(this.SAT_WEBPAGE));
       String timeString = imageSuffix.substring(8, imageSuffix.indexOf('.'));
 
       //System.out.println("IMG=>>>"+InfoPanel.IMG_PREFIX + imageSuffix+"<<<");
