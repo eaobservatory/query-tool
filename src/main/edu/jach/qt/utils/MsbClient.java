@@ -110,6 +110,7 @@ public class MsbClient extends SoapClient {
     public static SpItem fetchMSB(Integer msbid) {
 
         SpItem spItem = null;
+        String spXML = null;
         try {
 
             logger.debug("Sending fetchMSB: "+msbid);
@@ -118,33 +119,34 @@ public class MsbClient extends SoapClient {
             addParameter("key", Integer.class, msbid);
 
             FileWriter fw = new FileWriter(System.getProperty("msbFile")+"."+System.getProperty("user.name"));
-	    String input = (String) doCall(url, "urn:OMP::MSBServer", "fetchMSB");
-            //byte [] input = (byte []) doCall(url, "urn:OMP::MSBServer", "fetchMSB");
+            Object o = doCall(url, "urn:OMP::MSBServer", "fetchMSB");
+// 	    byte [] input = (byte []) doCall(url, "urn:OMP::MSBServer", "fetchMSB");
 
-            String spXML = null;
-//            if (input != null ) {
-//                if ( (char)input[0] != '<' && (char)input[1] != '?' ) {
-//                    // File is gzipped
-//                    ByteArrayInputStream bis = new ByteArrayInputStream(input);
-//                    GZIPInputStream gis = new GZIPInputStream(bis);
-//                    byte [] read = new byte[1024];
-//                    int len;
-//                    StringBuffer sb = new StringBuffer();
-//                    while ( (len = gis.read(read)) > 0) {
-//                        sb.append(new String(read, 0, len));
-//                    }
-//                    gis.close();
-//                    spXML = sb.toString();
-//                }
-//                else {
-//                    // File is not compressed
-                    spXML = new String(input);
-//                }
+            if (o != null ) {
+                if ( !(o instanceof String) ) {
+//                 if ( (char)input[0] != '<' && (char)input[1] != '?' ) {
+                    // File is gzipped
+                    byte [] input = (byte [])o;
+                    ByteArrayInputStream bis = new ByteArrayInputStream(input);
+                    GZIPInputStream gis = new GZIPInputStream(bis);
+                    byte [] read = new byte[1024];
+                    int len;
+                    StringBuffer sb = new StringBuffer();
+                    while ( (len = gis.read(read)) > 0) {
+                        sb.append(new String(read, 0, len));
+                    }
+                    gis.close();
+                    spXML = sb.toString();
+                }
+                else {
+                    // File is not compressed
+                    spXML = (String)o;
+                }
                 fw.write( spXML );
                 fw.close();
                 StringReader r = new StringReader(spXML);
-                spItem = (SpItem)(new SpInputXML()).xmlToSpItem(r);
-//            }
+                spItem = (SpItem)(new SpInputXML()).xmlToSpItem(spXML);
+           }
 
         } catch (Exception e) {
             logger.error("queryMSB threw Exception", e);
