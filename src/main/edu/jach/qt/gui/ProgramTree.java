@@ -317,6 +317,8 @@ final public class ProgramTree extends JPanel implements
 						  "Project ID: "+projectID+"\n"+
 						  "CheckSum: "+checkSum+"\n"+
 						  "has been marked as done!");
+		    // Since the MSBID has changed, redo the search...
+		    InfoPanel.searchButton.doClick();
 		} // end of if ()
 
 		run.setEnabled(true);
