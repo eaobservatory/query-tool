@@ -145,9 +145,11 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
 	logger.info("Building new model");
 	model = XmlUtils.getNewModel(doc, ROOT_ELEMENT_TAG);
 	adjustColumnData(currentBitSet);
-	logger.info("Model has "+model.size()+" projects");
-	for (int i=0; i<model.size();i++) {
-	    modelIndex.add(((XmlUtils.MSBTableModel)model.elementAt(i)).getProjectId());
+	if (model != null) {
+	    logger.info("Model has "+model.size()+" projects");
+	    for (int i=0; i<model.size();i++) {
+		modelIndex.add(((XmlUtils.MSBTableModel)model.elementAt(i)).getProjectId());
+	    }
 	}
     }
 //     fireTableChanged(null);
