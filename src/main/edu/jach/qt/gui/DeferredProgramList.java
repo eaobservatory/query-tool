@@ -97,6 +97,14 @@ final public class DeferredProgramList extends JPanel implements
     }
 
     /**
+     * Updates the display of the deferred observations.
+     */
+    public void reload() {
+	getCurrentList();
+	displayList();
+    }
+
+    /**
      * Gets the current set of deferred observations.
      * These observations are stored on disk, and the directory is read looking for
      * suitable observations.
