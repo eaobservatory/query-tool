@@ -25,7 +25,8 @@ public class TimePanel extends JLabel
       //MatteBorder matte = new MatteBorder(1,1,1,1,Color.white);
 
       TitledBorder border = BorderFactory.createTitledBorder
-	(BorderFactory.createLineBorder(new Color(51, 134, 206)), "HST",
+	(BorderFactory.createLineBorder(new Color(51, 134, 206)), 
+	"Local Time",
 	 TitledBorder.CENTER, TitledBorder.DEFAULT_POSITION);
       setBorder(border);
       
