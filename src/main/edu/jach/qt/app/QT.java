@@ -100,12 +100,12 @@ final public class QT {
 } // Omp
 
 //$Log$
+//Revision 1.12  2002/04/17 03:29:32  mrippa
+//Replaced Main.java with QT.java
+//
 //Revision 1.11  2002/04/17 03:15:47  mrippa
 //The new Main.java is now called QT.java
-//
-//Revision 1.1  2002/04/17 03:07:34  mrippa
-//Replace Main.java
-//
+
 //Revision 1.10  2002/03/08 10:08:14  mrippa
 //The PRE-translator thingy was added here. Everything was completely
 //broken without it!
@@ -140,7 +140,3 @@ final public class QT {
 //
 //Revision 1.1.1.1  2001/08/28 02:53:45  mrippa
 //Import of QT
-//
-//Revision 1.3  2001/07/27 19:49:05  mrippa
-//More comments
-//
