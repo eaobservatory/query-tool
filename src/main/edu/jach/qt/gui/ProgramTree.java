@@ -79,6 +79,7 @@ final public class ProgramTree extends JPanel implements
     private DropTarget                  dropTarget=null;
     private DragSource                  dragSource=null;
     private TrashCan                    trash=null;
+    public static  SpItem          selectedItem=null;
 
   /** public programTree(menuSele m) is the constructor. The class
       has only one constructor so far.  a few thing are done during
@@ -92,6 +93,9 @@ final public class ProgramTree extends JPanel implements
   public ProgramTree()  {
     scm = SequenceManager.getHandle();
 
+    // Ensure nothing is selected 
+    selectedItem = null;
+
     Border border=BorderFactory.createMatteBorder(2, 2, 2, 2, Color.white);
     setBorder(new TitledBorder(border, "Fetched Science Program (SP)", 
 			       0, 0, new Font("Roman",Font.BOLD,12),Color.black));
@@ -103,20 +107,18 @@ final public class ProgramTree extends JPanel implements
 
     run=new JButton("Send for Execution");
     run.setMargin(new Insets(5,10,5,10));
-    run.setEnabled(true);
+    if (TelescopeDataPanel.DRAMA_ENABLED) {
+	run.setEnabled(true);
+    }
+    else {
+	run.setEnabled(false);
+    }
     run.addActionListener(this);
 
     dropTarget=new DropTarget();
     try{
 	dropTarget.addDropTargetListener(this);
     }catch(TooManyListenersException tmle){System.out.println("Too many listeners");}
-//     JLabel trash = new JLabel();
-//     try {
-//       setImage(trash);
-//       trash.setDropTarget(dropTarget);
-//     } catch(Exception e) {
-//       e.printStackTrace();
-//     }
 
     trash = new TrashCan();
     trash.setDropTarget(dropTarget);
@@ -210,15 +212,27 @@ final public class ProgramTree extends JPanel implements
      * @param item is the selected observation
      */
     //SpItem item = findItem(_spItem, path.getLastPathComponent().toString());
-    
-    SpItem item = (SpItem) obsList.getSelectedValue();
-
-    if (item == null) {
-      new ErrorBox("You have not selected an observation!"+
-		   "\nPlease select an observation.");
-      logger.error("You have not selected an MSB!");
-      return;
-    }
+      SpItem item;
+      boolean isDeferredObs = false;
+      if (selectedItem != null && DeferredProgramList.currentItem != null) {
+	  new ErrorBox("You may only select one observation!"+
+		       "\nPlease deselect an observation.");
+	  logger.error("Multiple observations selected!");
+	  return;
+      }
+      else if (selectedItem == null && DeferredProgramList.currentItem == null){
+	  new ErrorBox("You have not selected an observation!"+
+		       "\nPlease select an observation.");
+	  logger.error("You have not selected an MSB!");
+	  return;
+      }
+      else if (selectedItem != null) {
+	  item = selectedItem;
+      }
+      else {
+	  item = DeferredProgramList.currentItem;
+	  isDeferredObs =  true;
+      }
 
     // Switch to "og" to check if selection is an MSB. However, we can only send
     // type "ob" observations since an MSB can have multiple instruments and we 
@@ -255,7 +269,12 @@ final public class ProgramTree extends JPanel implements
 	}else{
 	  logger.info("Trans OK");
 
-	  model.remove(obsList.getSelectedIndex());
+	  if (!isDeferredObs) {
+	      model.remove(obsList.getSelectedIndex());
+	  }
+	  else {
+	      DeferredProgramList.removeThisObservation(item);
+	  }
 
 	  if ( model.isEmpty()) {
 	    MsbClient.doneMSB(projectID, checkSum);
@@ -381,6 +400,17 @@ final public class ProgramTree extends JPanel implements
 		if (e.getClickCount() == 2)
 		    {
 			execute();
+		    }
+		else if (e.getClickCount() == 1)
+		    {
+			if (selectedItem != obsList.getSelectedValue() ) {
+			    // Select the new item
+			    selectedItem = (SpItem) obsList.getSelectedValue();
+			}
+			else {
+			    obsList.clearSelection();
+			    selectedItem = null;
+			}
 		    }
 	    }
 	};
@@ -548,20 +578,20 @@ final public class ProgramTree extends JPanel implements
     public void drop(DropTargetDropEvent evt){
 	/* Make sure we are not trying to get rid of a mandatory obs */
 	SpObs obs = (SpObs) obsList.getSelectedValue();
-	if (obs.isOptional() == false)
-	    {
+	if (obs != null) {
+	    if (obs.isOptional() == false) {
 		JOptionPane.showMessageDialog(null,
 					      "Can not remove mandatory observations!"
 					      );
 		return;
 	    }
+	}
 
 
 	try{
 	    Transferable t = evt.getTransferable();
 	    evt.acceptDrop(DnDConstants.ACTION_MOVE);
 	    String s = (String)t.getTransferData(DataFlavor.stringFlavor);
-	    removeCurrentNode();
 	    evt.getDropTargetContext().dropComplete(true);
 	}
 	catch (IOException ioe) {System.out.println("Caught IO Excption");}
@@ -579,6 +609,7 @@ final public class ProgramTree extends JPanel implements
   
     public void dragGestureRecognized( DragGestureEvent event) {
 	Object selected = obsList.getSelectedValue();
+	selectedItem = (SpItem)selected;
 	if ( selected != null ){
 	    StringSelection text = new StringSelection( selected.toString());
         
@@ -605,6 +636,11 @@ final public class ProgramTree extends JPanel implements
     }
 
     public void dragDropEnd(DragSourceDropEvent evt){
+	if (evt.getDropSuccess() == true) {
+	    removeCurrentNode();
+	    selectedItem=null;
+	}
+
     }
 
   public JButton getRunButton () {return run;}
