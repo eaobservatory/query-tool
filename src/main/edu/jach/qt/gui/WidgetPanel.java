@@ -45,6 +45,7 @@ public class WidgetPanel extends JPanel
   private int numRadPanels = 0;
 
   private  static JTextFieldPanel atmospherePanel;
+  private  static RadioPanel      moonPanel;
   /**
    * Describe variable <code>instrumentPanel</code> here.
    *
@@ -196,6 +197,7 @@ public class WidgetPanel extends JPanel
 	    }
 	    else if (info.getTitle().equalsIgnoreCase("Moon") ) {
 	      add(panel, gbc, 1, 20, 2, info.getSize()+1);
+	      setMoonPanel(panel);
 	    }
 
 	    else {
@@ -237,8 +239,57 @@ public class WidgetPanel extends JPanel
     }//end while
 
     validateTree();
+    setButtons();
 
   }//parseConfig
+
+    private void setButtons() {
+	// Currently sets the moon based on whether it is up and the illuminated fraction
+	SimpleMoon moon = new SimpleMoon();
+	Hashtable ht = widgetBag.getHash();
+	
+	boolean dark = false;
+	boolean grey = false;
+	boolean bright = false;
+	
+	if (moon.isUp() == false ) {
+	    dark = true;
+	}
+	else if (moon.getIllumination() < 0.25) {
+	    grey = true;
+	}
+	else {
+	    bright = true;
+	}
+
+	for (Enumeration e = ht.keys(); e.hasMoreElements() ; ) {
+	    String next = ((String)e.nextElement());
+	    if (next.equalsIgnoreCase("Moon")) {
+		for (ListIterator iter = ((LinkedList)(ht.get(next))).listIterator(0);
+		     iter.hasNext();
+		     iter.nextIndex()) {
+		    Object o = iter.next();
+		    if (o  instanceof JRadioButton) {
+			JToggleButton abstractButton = (JRadioButton) o;
+			String buttonName = abstractButton.getText();
+			if (buttonName.equalsIgnoreCase("Dark") && dark == true) {
+			    abstractButton.setSelected(true);
+			    abstractButton.doClick();
+			}
+			else if (buttonName.equalsIgnoreCase("Grey") && grey == true) {
+			    abstractButton.setSelected(true);
+			    abstractButton.doClick();
+			}
+			else if (buttonName.equalsIgnoreCase("Bright") && bright == true) {
+			    abstractButton.setSelected(true);
+			    abstractButton.doClick();
+			}
+		    }
+		}
+	    }
+	    break;
+	}
+    }
 
   private void addTextFields(String type, GridBagConstraints gbc) {
     String next, tmp;
@@ -363,9 +414,17 @@ public class WidgetPanel extends JPanel
     atmospherePanel = (JTextFieldPanel)panel;
   }
 
+  public void setMoonPanel(WidgetPanel panel) {
+    moonPanel = (RadioPanel)panel;
+  }
+
   public static JTextFieldPanel getAtmospherePanel() {
     return WidgetPanel.atmospherePanel;
   }
+
+    public static RadioPanel getMoonPanel() {
+	return WidgetPanel.moonPanel;
+    }
   
   /**
    * This <code>actionPerformed</code> method is mandated by
@@ -430,5 +489,6 @@ public class WidgetPanel extends JPanel
   public void setAttribute(String title, LinkedList list) {
     widgetBag.put(abbrevTable.get(title), list);
   }
+
 
 }// WidgetPanel
