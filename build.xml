@@ -37,7 +37,7 @@
   <!--    ==================================================== -->
   <!--       Set the properties for the build area             -->
   <!--    ==================================================== -->
-  <property name="build.dir" value="/home/mrippa/root/install/omp/${Name}"/>
+  <property name="build.dir" value="/home/mrippa/netroot/install/omp/${Name}"/>
   <property name="build.classes" value="${build.dir}/classes"/>
   <property name="build.config" value="${build.dir}/config"/>
   <property name="build.icons" value="${build.dir}/icons"/>
@@ -56,7 +56,7 @@
     <fileset dir="/jac_sw/orac3/GEMINI/install/classes">
       <include name="**/*.jar"/>
     </fileset>
-    <fileset dir="/home/mrippa/root/src/omp/QT/lib">
+    <fileset dir="/home/mrippa/netroot/src/omp/QT/lib">
       <include name="xerces.jar"/>
     </fileset> 
   </path>
