@@ -228,9 +228,11 @@ final public class ProgramTree extends JPanel implements
       }
       else if (selectedItem != null) {
 	  item = selectedItem;
+	  selectedItem=null;
       }
       else {
 	  item = DeferredProgramList.currentItem;
+	  DeferredProgramList.currentItem=null;
 	  isDeferredObs =  true;
       }
 
@@ -273,7 +275,7 @@ final public class ProgramTree extends JPanel implements
 	      model.remove(obsList.getSelectedIndex());
 	  }
 	  else {
-	      DeferredProgramList.removeThisObservation(item);
+	      DeferredProgramList.markThisObservationAsDone(item);
 	  }
 
 	  if ( model.isEmpty()) {
