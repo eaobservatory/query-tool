@@ -73,7 +73,7 @@ public class JTextFieldPanel extends WidgetPanel
   }
 
   public void setTau(String val) {
-    JTextField temp = (JTextField) (fieldElems.getFirst());
+    LabeledTextField temp = (LabeledTextField) (fieldElems.getFirst());
     temp.setText(val);
   }
 
