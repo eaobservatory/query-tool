@@ -26,6 +26,7 @@
 
   <property name="Name" value="QT"/>
   <property name="name" value="qt"/>
+  <property name="version" value="_0p1"/>
   <property name="src.dir" value="src"/>
   <property name="lib.dir" value="lib"/>
   <property name="config.dir" value="config"/>
@@ -50,7 +51,7 @@
   <!--    ==================================================== -->
   <!--       Set the properties for the dist area             -->
   <!--    ==================================================== -->
-  <property name="dist.dir" value="/jac_sw/omp/${Name}"/>
+  <property name="dist.dir" value="/jac_sw/omp/${Name}${version}"/>
   <property name="dist.classes" value="${dist.dir}/classes"/>
   <property name="dist.config" value="${dist.dir}/config"/>
   <property name="sys.dist.config" value="/jac_sw/omp/config"/>
