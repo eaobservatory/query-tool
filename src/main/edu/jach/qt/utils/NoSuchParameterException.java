@@ -1,4 +1,4 @@
-package edu.jach.qt.app;
+package edu.jach.qt.utils;
 
 /**
  * NoSuchParameterException.java
