@@ -56,7 +56,7 @@ public class QtFrame extends JFrame implements PopupMenuListener, ActionListener
   private Querytool		localQuerytool;
   private InfoPanel		infoPanel;
   private JPopupMenu		popup;
-  private Hashtable             calibrationList;
+  private TreeMap               calibrationList;
   private JMenu                 calibrationMenu = new JMenu("Calibrations");
   private WidgetPanel           _widgetPanel;
 
@@ -504,9 +504,11 @@ public class QtFrame extends JFrame implements PopupMenuListener, ActionListener
 			));
 
     calibrationList = CalibrationList.getCalibrations(System.getProperty("telescope"));
-    Enumeration keys = calibrationList.keys();
-    while (keys.hasMoreElements() ) {
-	JMenuItem item = new JMenuItem((String)keys.nextElement());
+    // Get the set of keys:
+    Set keys = calibrationList.keySet();
+    Iterator keyIter = keys.iterator();
+    while ( keyIter.hasNext()  ) {
+	JMenuItem item = new JMenuItem((String)keyIter.next());
 	item.addActionListener(this);
 	calibrationMenu.add(item);
     }
