@@ -1,13 +1,26 @@
 package edu.jach.qt.utils;
 
 
-import gemini.sp.SpItem;
-import gemini.sp.SpObs;
+import gemini.sp.*;
+import gemini.sp.obsComp.*;
+
+import jsky.app.ot.*;
+
 import java.io.*;
-import java.util.Properties;
+import java.util.*;
+
 import om.dramaSocket.ExecDtask;
+import om.util.*;
+
 import orac.ukirt.util.SpTranslator;
 import org.apache.log4j.Logger;
+
+import orac.jcmt.inst.*;
+import orac.jcmt.iter.*;
+import orac.ukirt.inst.*;
+import orac.ukirt.iter.*;
+import orac.util.*;
+
 
 /**
  * QtTools.java
@@ -161,5 +174,5 @@ public class QtTools {
     
     int status = QtTools.execute(script);
   }
-  
+
 }
