@@ -105,6 +105,7 @@ public class ColumnSelector
 	}
 
 	_msbqtm.updateColumns(selected);
+	_msbqtm.adjustColumnData(selected);
 	if (parent != null) {
 	    parent.setTableToDefault();
 	}
