@@ -155,6 +155,8 @@ endif
 
 if (`domainname` == "JAC.ukirt") then
    set solHost = "kiki"
+else if (`domainname` == "JAC.jcmt") then
+   set solHost = "localhost"
 else if (`domainname` == "JAC.Hilo") then
    set solHost = ${solHost}
 
