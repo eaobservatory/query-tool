@@ -136,6 +136,40 @@ public class MsbClient extends SoapClient {
     return spItem;
   }
 
+
+    public static String [] getColumnNames () {
+	String [] columns;
+	try {
+	    URL url = new URL(System.getProperty("msbServer"));
+	    flushParameter();
+	    addParameter("telescope", String.class, System.getProperty("telescope"));
+	    Object o = doCall(url, "urn:OMP::MSBServer", "getResultColumns");
+	    columns = (String [])o;
+	}
+	catch (Exception e) {
+	    logger.error("getColumnNames threw exception", e);
+	    columns = null;
+	}
+	return columns;
+    }
+
+    public static String [] getColumnClasses () {
+	String [] columns;
+	try {
+	    URL url = new URL(System.getProperty("msbServer"));
+	    flushParameter();
+	    addParameter("telescope", String.class, System.getProperty("telescope"));
+	    Object o = doCall(url, "urn:OMP::MSBServer", "getTypeColumns");
+	    columns = (String [])o;
+	}
+	catch (Exception e) {
+	    logger.error("getColumnNames threw exception", e);
+	    columns = null;
+	}
+	return columns;
+    }
+
+
   /**
    * <code>doneMSB</code> Mark the given project ID as done in the database.
    *
