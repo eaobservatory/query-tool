@@ -76,6 +76,19 @@ public class XmlUtils {
 	    else {
 	       if(tagName.equals("remaining"))
 		  return (new Integer(s));
+
+	       else if(tagName.equals("obscount"))
+		  return (new Integer(s));
+
+	       else if(tagName.equals("priority"))
+		  return (new Integer(s));
+
+	       else if(tagName.equals("tagpriority"))
+		  return (new Integer(s));
+
+	       else if(tagName.equals("msbid"))
+		  return (new Integer(s));
+
 	       return s;
 	    }
 	 }
