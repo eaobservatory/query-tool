@@ -231,37 +231,45 @@ public class OmpOM extends JPanel{
      */
   public String getProgramName() {
     
-      if (spItem == null) {
+      SpItem currentItem;
+      if (ptree != null) {
+	  currentItem = ptree.getCurrentItem();
+	  if (currentItem == null) {
+	      return "No Observations";
+	  }
+      }
+      else {
 	  return "No Observations";
       }
-    Vector progVector = SpTreeMan.findAllItems(spItem, "gemini.sp.SpMSB");
 
-    logger.debug("progVector "+progVector);
+      Vector progVector = SpTreeMan.findAllItems(currentItem, "gemini.sp.SpMSB");
+      
+      logger.debug("progVector "+progVector);
 
-    try {
-       
-      if ( progVector == null  || progVector.size() == 0) {
-	progVector = SpTreeMan.findAllItems(spItem, "gemini.sp.SpObs");
-
-	if ( progVector != null && progVector.size() >0) {
-	  return (String) ((SpObs) (progVector.firstElement())).getTitle();  
-	}
-
-	else {
+      try {
+	  
+	  if ( progVector == null  || progVector.size() == 0) {
+	      progVector = SpTreeMan.findAllItems(currentItem, "gemini.sp.SpObs");
+	      
+	      if ( progVector != null && progVector.size() >0) {
+		  return (String) ((SpObs) (progVector.firstElement())).getTitle();  
+	      }
+	      
+	      else {
+		  return "Title Not Found";
+	      }
+	  }
+	  
+	  else {
+	      return (String) ((SpMSB) (progVector.firstElement())).getTitle();
+	  }
+	  
+      } catch (NoSuchElementException nse) {
+	  logger.warn("Title Not Found");
+	  nse.printStackTrace();
 	  return "Title Not Found";
-	}
-      }
-
-      else {
-	return (String) ((SpMSB) (progVector.firstElement())).getTitle();
       }
       
-    } catch (NoSuchElementException nse) {
-      logger.warn("Title Not Found");
-      nse.printStackTrace();
-      return "Title Not Found";
-    }
-
   }
 
 
