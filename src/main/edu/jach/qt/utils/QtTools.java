@@ -151,7 +151,7 @@ public class QtTools {
     script[3] = "-"+System.getProperty("SIMULATE","simTel");
     script[4] = "-"+System.getProperty("ENGINEERING","eng");
 
-    logger.fatal("About to start script "+
+    logger.info("About to start script "+
 		 script[0]
 		 +			" "+script[1] 
 		 +			" "+script[2] 
