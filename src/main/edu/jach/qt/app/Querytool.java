@@ -32,7 +32,7 @@ import org.w3c.dom.Document;
  * @author <a href="mailto:mrippa@jach.hawaii.edu">Mathew Rippa</a>
  * @version 1.0
  */
-public class Querytool implements Observer {
+public class Querytool implements Runnable, Observer {
 
    private String xmlString;
    private WidgetDataBag bag;
@@ -162,7 +162,7 @@ public class Querytool implements Observer {
     * The <code>queryMSB</code> method starts the SOAP client.
     * A successful query will write all MSB Summaries to file.
     */
-   public void queryMSB() {
+   public void run() {
       //QuerytoolClient qtc = new QuerytoolClient();
       MsbClient.queryMSB(xmlString);
    }
