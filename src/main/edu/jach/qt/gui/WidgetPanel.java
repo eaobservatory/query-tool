@@ -226,6 +226,7 @@ public class WidgetPanel extends JPanel
       else if (widget.equals("JCheckBoxGroup")) {
 	//LinkedList checkList = new LinkedList();
 	CompInfo info = makeList();
+        
 	    
 	instrumentPanel = new ButtonPanel(abbrevTable, widgetBag, info);
 	gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -233,11 +234,17 @@ public class WidgetPanel extends JPanel
 	gbc.weightx = 100;
 	gbc.weighty = 100;
 	gbc.insets.left = 10;
-	add(instrumentPanel, gbc, 0, 20, 2, 1);
+        if ( info.getTitle().equalsIgnoreCase("Instruments") ) {
+            add(instrumentPanel, gbc, 0, 20, 2, 1);
+        }
+        else {
+            add(instrumentPanel, gbc, 0, 21, 2, 1);
+        }
       }
 
-      else if(!widget.equals("[Section]"))
+      else if(!widget.equals("[Section]")) {
 	break;
+      }
 
     }//end while
 
