@@ -260,6 +260,7 @@ final public class ProgramTree extends JPanel implements
 	if (selectedItem == null) {
 	    isDeferred =  true;
 	    item = DeferredProgramList.currentItem;
+	    System.out.println(item.toXML());
 	}
 	run.setEnabled(false);
 	if (System.getProperty("telescope").equalsIgnoreCase("ukirt")) {
@@ -277,8 +278,14 @@ final public class ProgramTree extends JPanel implements
 	    catch (Exception e) {logger.error("Failed to execute");}
 	}
 	else if (System.getProperty("telescope").equalsIgnoreCase("jcmt")) {
+	    ExecuteJCMT execute;
 	    try {
-		ExecuteJCMT execute = new ExecuteJCMT(_spItem);
+		if (isDeferred) {
+		    execute = new ExecuteJCMT(item);
+		}
+		else {
+		    execute = new ExecuteJCMT(_spItem);
+		}
 		Thread t = new Thread(execute);
 		t.start();
 		t.join();
