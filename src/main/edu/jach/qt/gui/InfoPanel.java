@@ -13,6 +13,7 @@ import edu.jach.qt.utils.*;
 
 import java.io.FileNotFoundException;
 import java.io.File;
+import java.util.Vector;
 /**
  * InfoPanel.java
  *
@@ -27,9 +28,7 @@ public class InfoPanel extends JPanel
    implements ActionListener {
 
    //reconsider icons dir 'An absolute path!'
-   private static final String LOGO_IMAGE
-      //= "/home/mrippa/ompLogos/ompNewlogo2.png";
-      = System.getProperty("qtLogo");
+   private static final String LOGO_IMAGE = System.getProperty("qtLogo");
 
    private MSBQueryTableModel msb_qtm;
    private TimePanel timePanel ;
@@ -40,9 +39,7 @@ public class InfoPanel extends JPanel
    JButton xmlPrintButton = new JButton();
    JButton exitButton = new JButton();
    JButton fetchMSB   = new JButton();
-   TestBlink blinker;
    QtFrame qtf;
-   //ImagePanel imagePanel;
    JLabel logoImage;
 
    /**
@@ -51,7 +48,7 @@ public class InfoPanel extends JPanel
     * @param parent a <code>JFrame</code> value
     * @param mqtm a <code>MSBQueryTableModel</code> value
     */
-   public InfoPanel (MSBQueryTableModel msbQTM, Querytool qt, QtFrame qtf){
+   public InfoPanel (MSBQueryTableModel msbQTM, Querytool qt, QtFrame qtf) {
       msb_qtm = msbQTM;
       localQuerytool = qt;
       this.qtf=qtf;
@@ -68,22 +65,10 @@ public class InfoPanel extends JPanel
 
       try {
 	 setImage();
-	 /* Set the OMP logo*/
-	 //Image image1 = setLogo();
-	 //imagePanel = new ImagePanel(image1);
       } catch(Exception fnfe) {
 	 System.out.println("ERROR: "+fnfe.getMessage());
       }
       compInit();
-   }
-
-   public Image setLogo() throws FileNotFoundException {
-      Image theImage;
-      Toolkit toolkit = Toolkit.getDefaultToolkit();
-      if(new File(LOGO_IMAGE).exists() )
-	 theImage = toolkit.getImage(LOGO_IMAGE);
-      else throw new FileNotFoundException("File: "+LOGO_IMAGE+" was not found");
-      return theImage;
    }
 
    public void setImage() throws Exception {
@@ -107,39 +92,35 @@ public class InfoPanel extends JPanel
       TelescopeDataPanel telescopeInfoPanel = new TelescopeDataPanel();
       telescopeInfoPanel.config();
 
-      blinker = new TestBlink();
-
-      final Blocker blocker = Blocker.Instance();
+      final Led blinker = new Led();
 
       searchButton.setText("Search");
       searchButton.setName("Search");
       searchButton.setBackground(java.awt.Color.gray);
-      blocker.setRestrictedComponents( new Component[] {
-	 searchButton, timePanel } );
-
       searchButton.addActionListener(new ActionListener() {
-	    public void actionPerformed(ActionEvent e) {
-	       /*localQuerytool.queryMSB();*/
-	       Thread t = new Thread(localQuerytool);
-	       t.setName("qtMain");
+	  public void actionPerformed(ActionEvent e) {
+	    final SwingWorker worker = new SwingWorker() {
+		Boolean isStatusOK;
 
-	       Thread blinkThread = new Thread(blinker);
-	       blinkThread.setName("blinker");
+		public Object construct() {
+		  isStatusOK = new Boolean(localQuerytool.queryMSB());
+		  return isStatusOK;  //not used yet
+		}
 
-	       try {
-		  blinkThread.start();
-		  t.start();
-		  blocker.setBlockingEnabled(true);
-		  t.join();
-		  blinker.setDone();
-	       }catch (InterruptedException ie) {ie.printStackTrace();}
-	       Thread tableFill = new Thread(msb_qtm);
-	       tableFill.start();
-	       //blocker.setBlockingEnabled(false);
-	    }
-	 } );
-				
+		//Runs on the event-dispatching thread.
+		public void finished() { 
+		  blinker.blinkLed(false);
+		  Thread tableFill = new Thread(msb_qtm);
+		  tableFill.start();
+		}
+	      };
 
+	    blinker.blinkLed(true);
+	    //blinkThread.start();
+	    worker.start();  //required for SwingWorker 3
+	  }
+	} );
+      
       fetchMSB.setText("Just get MSB 1");
       searchButton.setBackground(java.awt.Color.gray);
       fetchMSB.addActionListener(new ActionListener() {
@@ -278,18 +259,3 @@ public class InfoPanel extends JPanel
 
 
 }// InfoPanel
-
-class ImagePanel extends JPanel {
-    Image image;
-
-    public ImagePanel(Image image) {
-        this.image = image;
-    }
-
-    public void paintComponent(Graphics g) {
-        super.paintComponent(g); //paint background
-
-        //Now draw the image scaled.
-        g.drawImage(image, 0, 0, this);
-    }
-}
