@@ -1,3 +1,4 @@
+
 package edu.jach.qt.gui;
 
 // Imports for picking up mouse events from the JTable. 
@@ -241,11 +242,11 @@ public class TableSorter extends TableMap {
       checkModel();
 
       compares = 0;
-      qsort();
-      //n2sort();
-      // qsort(0, indexes.length-1);
-      shuttlesort((int[])indexes.clone(), indexes, 0, indexes.length);
-      logger.debug("Compares: "+compares);
+//       qsort();
+      n2sort();
+//       qsort(0, indexes.length-1);
+//       shuttlesort((int[])indexes.clone(), indexes, 0, indexes.length);
+//       logger.debug("Compares: "+compares);
    }
 
     /**
@@ -260,7 +261,7 @@ public class TableSorter extends TableMap {
    public void n2sort() {
       for (int i = 0; i < getRowCount(); i++) {
 	 for (int j = i+1; j < getRowCount(); j++) {
-	    if (compare(indexes[i], indexes[j]) == -1) {
+	    if (compare(indexes[i], indexes[j]) != -1) {
 	       swap(i, j);
 	    }
 	 }
