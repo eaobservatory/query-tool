@@ -12,6 +12,7 @@ set qtConfig		= /home/mrippa/netroot/install/omp/QT/config/qt.conf
 
 set usage		= "Usage: $0 <telescope> [-h] [-options] \n\nwhere telescope is:\n\tukirt\t\tspecifies the UKIRT widget set\n\tjcmt\t\tspecifies the jcmt widget set\n\nand options include:\n\t-jac\t\tspecifies JAC global configs instead of local user configs\n\t-config file\tspecies the absolute path to the \042file\042 used for this session\n\n\n"
 
+set debug               = "false"
 set classic		= ""
 set xdebug		= ""
 set xnoagent		= ""
@@ -23,6 +24,10 @@ while ($#argv != 0)
       case -h:
         printf "${usage}" 
         exit 
+      case -debug:
+	set debug = "true"
+	shift
+	breaksw
       case -jdebug:
         set xdebug = "-Xdebug"
         set xnoagent = "-Xnoagent"
@@ -39,13 +44,14 @@ while ($#argv != 0)
       case ukirt:
 	set widgetFile	  = /home/mrippa/netroot/install/omp/QT/config/qtUkirtWidget.conf
 	set instConfigDir = ${baseOTConfigDir}/ukirt
-	set telescope	  = ukirt
+	set telescope	  = Ukirt
         echo Telescope set to use ukirt widget set
         shift
         breaksw
       case jcmt:
 	set widgetFile   = /home/mrippa/netroot/install/omp/QT/config/qtJcmtWidget.conf
 	set instConfigDir = ${baseOTConfigDir}/jcmt
+	set telescope	  = Jcmt
         echo Telescope set to use jcmt widget set
         shift
         breaksw
@@ -75,6 +81,6 @@ endif
 
 #cleanup
 
-set CLASSPATH = /home/mrippa/netroot/install/omp/QT/lib/qt.jar:/home/mrippa/local/cc/lib/xerces.jar:/home/mrippa/netroot/install/omp/QT/lib/mail.jar:/home/mrippa/netroot/install/omp/QT/lib/activation.jar:/home/mrippa/netroot/install/omp/QT/lib/soap.jar:/home/mrippa/netroot/src/orac3/OT/install/classes:/home/mrippa/netroot/src/orac3/GEMINI/install/classes:/home/mrippa/netroot/src/orac3/OM/install/classes:/home/mrippa/netroot/src/orac3/ORAC/install/classes:/home/mrippa/netroot/src/orac3/ODB/install/classes:/home/mrippa/netroot/install/omp/QT/lib/jsky.jar:/home/mrippa/netroot/install/omp/QT/lib/diva.jar:/home/mrippa/netroot/install/omp/QT/lib/junit.jar:/local/java/jdk/lib/tools.jar:/home/mrippa/netroot/install/javaClasses/dcHub/lib/dcHub.jar:/home/mrippa/netroot/src/drama-v1.3b6/drama_source/djava
+set CLASSPATH = /home/mrippa/netroot/install/omp/QT/lib/qt.jar:/home/mrippa/local/cc/lib/xerces.jar:/home/mrippa/netroot/install/omp/QT/lib/mail.jar:/home/mrippa/netroot/install/omp/QT/lib/activation.jar:/home/mrippa/netroot/install/omp/QT/lib/soap.jar:/home/mrippa/netroot/src/orac3/OT/install/classes:/home/mrippa/netroot/src/orac3/GEMINI/install/classes:/home/mrippa/netroot/src/ompSM/install/classes:/home/mrippa/netroot/src/orac3/ORAC/install/classes:/home/mrippa/netroot/src/orac3/ODB/install/classes:/home/mrippa/netroot/install/omp/QT/lib/jsky.jar:/home/mrippa/netroot/install/omp/QT/lib/diva.jar:/home/mrippa/netroot/install/omp/QT/lib/junit.jar:/local/java/jdk/lib/tools.jar:/home/mrippa/netroot/install/javaClasses/dcHub/lib/dcHub.jar:/local/progs/drama/drama_source/djava
 
-${JAVA} ${xdebug} ${xnoagent} ${xrunjdwptrans} ${xbootclasspath} -Dtelescope=${telescope} -DqtConfig=${qtConfig} -DwidgetFile=${widgetFile} -DOMP -Dot.cfgdir=${instConfigDir}/ -cp ${CLASSPATH} edu.jach.qt.app.Main &
+${JAVA} ${xdebug} ${xnoagent} ${xrunjdwptrans} ${xbootclasspath} -Ddebug=${debug} -Dtelescope=${telescope} -DqtConfig=${qtConfig} -DwidgetFile=${widgetFile} -DOMP -Dot.cfgdir=${instConfigDir}/ -cp ${CLASSPATH} edu.jach.qt.app.Main &

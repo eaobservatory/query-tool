@@ -193,7 +193,7 @@
       <classpath>
 	<pathelement location="/home/mrippa/netroot/src/orac3/OT/install/classes" />
 	<pathelement location="/home/mrippa/netroot/src/orac3/GEMINI/install/classes" />
-	<pathelement location="/home/mrippa/netroot/src/orac3/OM/install/classes" />
+	<pathelement location="/home/mrippa/netroot/src/ompSM/install/classes" />
 	<pathelement location="/home/mrippa/netroot/src/orac3/ORAC/install/classes" />
 	<fileset dir="${lib.dir}">
 	  <include name="*.jar"/>
@@ -265,7 +265,7 @@
 
     <copy todir="${dist.config}">
       <fileset dir="${config.dir}">
-        <include name="**/*" />
+        <include name="*" />
       </fileset>
     </copy>
 
