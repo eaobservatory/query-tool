@@ -18,7 +18,19 @@ function domozilla {
     else
 	mozilla -remote "openFILE($1)"
     fi
-    sleep 2
+    count=1
+    maxCount=10
+    mozilla -remote "ping()"
+    while [[  $? != 0 ]]; do
+	if [[ $count == $maxCount ]]; then
+	    break
+	else 
+	    sleep 1;
+	    ((count++));
+	    echo Waiting for mozilla...
+	    mozilla -remote "ping()"
+	fi
+    done;
     mozilla -remote "ping()"
 #    exit $?
 }
