@@ -8,6 +8,7 @@ import javax.swing.border.*;
 import javax.swing.event.*;
 import ocs.utils.*;
 import org.apache.log4j.Logger;
+import edu.jach.qt.utils.LockFile;
 
 
 /**
@@ -23,7 +24,7 @@ public class TelescopeDataPanel extends JPanel implements ActionListener {
 
   static Logger logger = Logger.getLogger(TelescopeDataPanel.class);
    
-  public final static boolean	DRAMA_ENABLED = "true".equals(System.getProperty("DRAMA_ENABLED"));
+  public static boolean	DRAMA_ENABLED = "true".equals(System.getProperty("DRAMA_ENABLED"));
   public static String	tauString = "-----";
 
   private static JLabel csoTauValue;
@@ -43,13 +44,36 @@ public class TelescopeDataPanel extends JPanel implements ActionListener {
     seeingValue		= new JLabel(tauString, JLabel.LEADING);
     airmassValue	= new JLabel(tauString, JLabel.LEADING);
     updateButton	= new JButton("Set Current");
+    boolean locked=false;
+
+    /*
+     * Check if a lock file exists.  If it doesn't create one, if is does,
+     * tell the user who owns the lock and try to start up in scenario mode.
+     * If we are already in scenario mode - don't bother
+     */
+    if (DRAMA_ENABLED) {
+	if (LockFile.exists()) {
+	    System.out.println("Lock File detected");
+	    if (LockFile.owner() != System.getProperty("user.name")) {
+		// The current lock belongs to someone else
+		System.out.println("Lock file owned by user "+LockFile.owner());
+		String message = "QT locked by user "+LockFile.owner();
+		JOptionPane.showMessageDialog(null, "Starting is scenario mode", message, JOptionPane.WARNING_MESSAGE);
+		TelescopeDataPanel.DRAMA_ENABLED = false;
+		locked = true;
+	    }
+	}
+	else {
+	    LockFile.createLock();
+	}
+    }
 
     if (TelescopeDataPanel.DRAMA_ENABLED) {
       hub = DcHub.getHandle();
       hub.register("CSOMON");
     }
 
-    else {
+    else if (!locked) {
       Object[] options = { "CONTINUE", "CANCEL" };
       int n = JOptionPane.
 	showOptionDialog(null, 
