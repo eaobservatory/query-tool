@@ -26,7 +26,7 @@ import org.w3c.dom.Document;
 
  * This Observer Subject relationship allows instantaneous updates of the 
  * state of the GUI.  The state data is represented in XML and a new  
- * xmlString is written upon a gui state change.  As this seems inefficient,
+ * _xmlString is written upon a gui state change.  As this seems inefficient,
  * I see it as the only way to get instantaneous results.
  *
  * @author <a href="mailto:mrippa@jach.hawaii.edu">Mathew Rippa</a>
@@ -34,7 +34,7 @@ import org.w3c.dom.Document;
  */
 public class Querytool implements Runnable, Observer {
 
-   private String xmlString;
+   private String _xmlString;
    private WidgetDataBag bag;
 
    /**
@@ -64,7 +64,7 @@ public class Querytool implements Runnable, Observer {
    /**
     * The <code>buildXML</code> method is triggerd by any 
     * Subject update.  If the gui state changes, this method
-    * rebuilds the xmlString.
+    * rebuilds the _xmlString.
     *
     * @param ht a <code>Hashtable</code> value
     */
@@ -135,27 +135,27 @@ public class Querytool implements Runnable, Observer {
 	 serial.asDOMSerializer();                            // As a DOM Serializer
 	 serial.serialize( doc.getDocumentElement() );
 	 
-	 xmlString = stringOut.toString();
+	 _xmlString = stringOut.toString();
       } catch ( Exception ex ) {
 	 ex.printStackTrace();
       }
    }
 
    /**
-    * The <code>getXML</code> method returns the xmlString.
+    * The <code>getXML</code> method returns the _xmlString.
     *
     * @return a <code>String</code> value
     */
    public String getXML() {
-      return xmlString;
+      return _xmlString;
    }
 
    /**
     * The <code>printXML</code> method is a utility to the current
-    * xmlString.
+    * _xmlString.
     */
    public void printXML() {
-      System.out.println( xmlString ); //Spit out DOM as a String
+      System.out.println( _xmlString ); //Spit out DOM as a String
    }
 
    /**
@@ -164,7 +164,16 @@ public class Querytool implements Runnable, Observer {
     */
    public void run() {
       //QuerytoolClient qtc = new QuerytoolClient();
-      MsbClient.queryMSB(xmlString);
+      MsbClient.queryMSB(_xmlString);
+   }
+
+   /**
+    * The <code>queryMSB</code> method starts the SOAP client.
+    * A successful query will write all MSB Summaries to file and 
+    * return true.
+    */
+   public boolean queryMSB() {
+     return MsbClient.queryMSB(_xmlString);
    }
 
    /**
@@ -174,17 +183,16 @@ public class Querytool implements Runnable, Observer {
     * @param i an <code>Integer</code> value
     */
    public void fetchMSB(Integer i) {
-      //QuerytoolClient qtc = new QuerytoolClient();
       MsbClient.fetchMSB(i);
    }
 
    /**
-    * <code>XMLisNull</code> is a test for a null xmlString.
+    * <code>XMLisNull</code> is a test for a null _xmlString.
     *
     * @return a <code>boolean</code> value
     */
    public boolean XMLisNull() {
-      return (xmlString == null);
+      return (_xmlString == null);
    }
 
 }// Querytool
