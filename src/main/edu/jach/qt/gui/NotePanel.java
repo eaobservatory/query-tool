@@ -80,15 +80,20 @@ final public class NotePanel extends JPanel {
 	if (sp == null) {
 	    return;
 	}
+
+	StringBuffer notes = new StringBuffer();
+
 	Vector noteVector = SpTreeMan.findAllItems(sp, "gemini.sp.SpNote");
 	Enumeration e = noteVector.elements();
 	while (e.hasMoreElements()) {
 	    SpNote thisNote = (SpNote)e.nextElement();
 	    if ( thisNote.isObserveInstruction() ) {
-		textPanel.setText ( thisNote.getNote() );
-		break;
+		notes.append( thisNote.getNote() );
+		notes.append( "\n-------------------\n");
 	    }
 	}
+	textPanel.setText(notes.toString());
+	textPanel.setCaretPosition(0);
     }
 
 
