@@ -41,7 +41,7 @@ install: buildsys $(FRC)
 	@ echo "Installing jar files..."
 	@ $(CP) -r lib/*.jar $(INSTALLDIR)/lib
 
-local:
+local: buildlocal
 	for dir in $(SUBDIRS); do \
 		cd $$dir; $(MAKE) FRC=force_rebuild; cd $(LOCALDIR); \
 	done
@@ -62,6 +62,13 @@ buildsys:
 		mkdir -p $(INSTALLDIR)/lib; \
 	fi
 
+buildlocal:
+	 if [[ ! -d $(LOCALDIR)/install ]]; then \
+		mkdir -p $(LOCALDIR)/install/classes/edu/jach/qt/utils; \
+		mkdir -p $(LOCALDIR)/install/classes/edu/jach/qt/gui; \
+		mkdir -p $(LOCALDIR)/install/classes/edu/jach/qt/djava; \
+		mkdir -p $(LOCALDIR)/install/classes/edu/jach/qt/app; \
+	fi
 clean:
 	$(RM) qt.jar
 	for dir in $(SUBDIRS); do \
