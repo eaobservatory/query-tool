@@ -195,86 +195,85 @@ public class TelescopeDataPanel extends JPanel implements ActionListener {
    *
    * @param param1 <description>
    */
-  public void actionPerformed(ActionEvent param1) {
-    logger.debug("New tau: "+ TelescopeDataPanel.csoTauValue.getText());
+    public void actionPerformed(ActionEvent param1) {
+	logger.debug("New tau: "+ TelescopeDataPanel.csoTauValue.getText());
         
-    // Ignore case where the tau value is set to the default
-    if (!TelescopeDataPanel.csoTauValue.getText().equals(tauString))
-	{
-	    WidgetPanel.getAtmospherePanel().setTextField("tau:",
-						  TelescopeDataPanel.csoTauValue.getText());
-	    //WidgetPanel.getAtmospherePanel().setTau(TelescopeDataPanel.csoTauValue.getText());
-	}
-    //WidgetPanel.getAtmospherePanel().setSeeing(TelescopeDataPanel.seeingValue.getText());
-    //WidgetPanel.getAtmospherePanel().setAirmass(TelescopeDataPanel.airmassValue.getText());
+	// Ignore case where the tau value is set to the default
+	if (!TelescopeDataPanel.csoTauValue.getText().equals(tauString))
+	    {
+		WidgetPanel.getAtmospherePanel().setTextField("tau:",
+							      TelescopeDataPanel.csoTauValue.getText());
+		//WidgetPanel.getAtmospherePanel().setTau(TelescopeDataPanel.csoTauValue.getText());
+	    }
+	//WidgetPanel.getAtmospherePanel().setSeeing(TelescopeDataPanel.seeingValue.getText());
+	//WidgetPanel.getAtmospherePanel().setAirmass(TelescopeDataPanel.airmassValue.getText());
 
 
-      SimpleMoon moon = new SimpleMoon();
-      boolean dark = false;
-      boolean grey = false;
-      boolean bright = false;
+	SimpleMoon moon = new SimpleMoon();
+	boolean dark = false;
+	boolean grey = false;
+	boolean bright = false;
 	
-      if (moon.isUp() == false ) {
-	  dark = true;
-      }
-      else if (moon.getIllumination() < 0.25) {
-	  grey = true;
-      }
-      else {
-	  bright = true;
-      }
-      RadioPanel moonPanel = WidgetPanel.getMoonPanel();
-      ListIterator iter = moonPanel.radioElems.listIterator(0);
-      while (iter.hasNext()) {
-	  JToggleButton abstractButton = (JRadioButton)iter.next();
-	  if (abstractButton.getText().equalsIgnoreCase("dark") && dark == true) {
-	      abstractButton.setSelected(true);
-	      abstractButton.doClick();
-	  }
-	  else if (abstractButton.getText().equalsIgnoreCase("Grey") && grey == true) {
-	      abstractButton.setSelected(true);
-	      abstractButton.doClick();
-	  }
-	  else if (abstractButton.getText().equalsIgnoreCase("Bright") && bright == true) {
-	      abstractButton.setSelected(true);
-	      abstractButton.doClick();
-	  }
-	  //WidgetPanel.getAtmospherePanel().setSeeing(TelescopeDataPanel.seeingValue.getText());
-	  //WidgetPanel.getAtmospherePanel().setAirmass(TelescopeDataPanel.airmassValue.getText());
-      }
+	if (moon.isUp() == false ) {
+	    dark = true;
+	}
+	else if (moon.getIllumination() < 0.25) {
+	    grey = true;
+	}
+	else {
+	    bright = true;
+	}
+	RadioPanel moonPanel = WidgetPanel.getMoonPanel();
+	ListIterator iter = moonPanel.radioElems.listIterator(0);
+	while (iter.hasNext()) {
+	    JToggleButton abstractButton = (JRadioButton)iter.next();
+	    if (abstractButton.getText().equalsIgnoreCase("dark") && dark == true) {
+		abstractButton.setSelected(true);
+		abstractButton.doClick();
+	    }
+	    else if (abstractButton.getText().equalsIgnoreCase("Grey") && grey == true) {
+		abstractButton.setSelected(true);
+		abstractButton.doClick();
+	    }
+	    else if (abstractButton.getText().equalsIgnoreCase("Bright") && bright == true) {
+		abstractButton.setSelected(true);
+		abstractButton.doClick();
+	    }
+	}
 
-      if (!TelescopeDataPanel.airmassValue.getText().equals(tauString)) {
-	  String zCurrentAirmass = TelescopeDataPanel.airmassValue.getText();
-	  Double currentAirmass;
-	  try {
-	      currentAirmass = new Double(zCurrentAirmass);
 
-	      WidgetPanel bag = infoPanel.getFrame().getWidgets();
-	      // Loop through the element in the bag until we find the airmass.
-	      Component [] components = bag.getComponents();
-	      for (int component=0; component<bag.getComponentCount(); component++) {
- 		  if ( components[component] instanceof LabeledRangeTextField ) {
-		      LabeledRangeTextField lrtf = (LabeledRangeTextField) components[component];
-		      if ( components[component].getName().equalsIgnoreCase("airmass") ) {
-			  double upperLimit = currentAirmass.doubleValue();
-			  upperLimit = upperLimit - 20.*upperLimit/100.;
-			  if (upperLimit < 1.0 ) upperLimit = 1.0;
+	WidgetPanel widgetPanel = infoPanel.getFrame().getWidgets();
+	Component [] components = widgetPanel.getComponents();
+	for (int i=0; i<widgetPanel.getComponentCount(); i++ ) {
+	    if ( components[i] instanceof LabeledRangeTextField ) {
+		LabeledRangeTextField lrtf = (LabeledRangeTextField) components[i];
+		if ( components[i].getName().equalsIgnoreCase("airmass") ) {
+		    if (!TelescopeDataPanel.airmassValue.getText().equals(tauString)) {
+			String zCurrentAirmass = TelescopeDataPanel.airmassValue.getText();
+			Double currentAirmass;
+			try {
+			    currentAirmass = new Double(zCurrentAirmass);
+			    double upperLimit = currentAirmass.doubleValue();
+			    upperLimit = upperLimit - 20.*upperLimit/100.;
+			    if (upperLimit < 1.0 ) upperLimit = 1.0;
 
-			  double lowerLimit = currentAirmass.doubleValue();
-			  lowerLimit = lowerLimit + 20.*lowerLimit/100.;
-			  if (lowerLimit > 3.0) lowerLimit = 3.0;
+			    double lowerLimit = currentAirmass.doubleValue();
+			    lowerLimit = lowerLimit + 20.*lowerLimit/100.;
+			    if (lowerLimit > 3.0) lowerLimit = 3.0;
 
-			  lrtf.setLowerText (new Double(upperLimit));
-			  lrtf.setUpperText (new Double(lowerLimit));
-		      }
-		      
- 		  }
-	      }
-	  }
-	  catch ( NumberFormatException nfe ) {
-	  }
-      }
-    
-  }
-   
+			    lrtf.setLowerText (new Double(upperLimit));
+			    lrtf.setUpperText (new Double(lowerLimit));
+			}
+			catch ( NumberFormatException nfe ) {
+			}
+		    }
+		}
+		else if (  components[i].getName().equalsIgnoreCase("observation") ) {
+		    TimeUtils tu = new TimeUtils();
+		    lrtf.setLowerText(tu.getLocalDate());
+		    lrtf.setUpperText(tu.getLocalTime());
+		}
+	    }
+	}
+    }
 }
