@@ -59,6 +59,9 @@ public class OmpOM extends JPanel{
     spItem = new SpInstMichelle();
     spItem = new SpDRRecipe();
 
+    /*OMP Specific*/
+    spItem = new SpIterChop();
+
     /* Init UKIRT SpTypes */
     spItem = new SpIterBiasObs();
     spItem = new SpIterBiasObs();
