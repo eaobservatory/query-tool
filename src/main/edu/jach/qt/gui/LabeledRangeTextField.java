@@ -33,10 +33,10 @@ public class LabeledRangeTextField extends WidgetPanel
   private JLabel     upperLabel;
   private JLabel     lowerLabel;
 
-    private Timer      timer;
+  private static Timer      timer;
 
   private String name;
-    private final String obsFieldName = "Observation Date";
+  private final String obsFieldName = "Observation Date";
 
     /**
      * Contructor.
@@ -67,11 +67,12 @@ public class LabeledRangeTextField extends WidgetPanel
 	TimeUtils time = new TimeUtils();
 	setLowerText (time.getLocalDate());
 	setUpperText (time.getLocalTime());
-	upperBound.addActionListener(this);
-	lowerBound.addActionListener(this);
+// 	upperBound.addActionListener(this);
+// 	lowerBound.addActionListener(this);
 	upperBound.addKeyListener(this);
 	lowerBound.addKeyListener(this);
 	timer = new Timer(1000, this);
+	timer.addActionListener(this);
 	startTimer();
     }
     setup();
@@ -272,6 +273,14 @@ public class LabeledRangeTextField extends WidgetPanel
      */
     public void stopTimer() {
 	timer.stop();
+    }
+
+    /**
+     * Restarts the timer running.
+     * The timer keeps the Date/Time fields updating.
+     */
+    public void restartTimer() {
+	timer.restart();
     }
 
     /**
