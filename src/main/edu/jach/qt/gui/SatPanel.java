@@ -26,7 +26,7 @@ import javax.swing.border.TitledBorder;
 public class SatPanel extends JLabel implements TimerListener {
 
   private TitledBorder satBorder;
-  private static String currentWebPage = System.getProperty("satelliteIRPage");
+  private static String currentWebPage;
   private static final String IMG_PREFIX = System.getProperty("imagePrefix");
     /**
      * Constructor.
@@ -41,6 +41,13 @@ public class SatPanel extends JLabel implements TimerListener {
        TitledBorder.CENTER, TitledBorder.DEFAULT_POSITION);
 
     setBorder(satBorder);
+
+    if (System.getProperty("telescope").equalsIgnoreCase("jcmt")) {
+	currentWebPage = System.getProperty("satelliteWVPage");
+    }
+    else {
+	currentWebPage = System.getProperty("satelliteIRPage");
+    }
     refreshIcon();
 
     Timer timer = new Timer(600000); //refresh every 10 minutes
@@ -55,7 +62,7 @@ public class SatPanel extends JLabel implements TimerListener {
    * @param param1 A <code>TimerEvent</code>
    */
   public void timeElapsed(TimerEvent param1) {
-	      refreshIcon();
+      refreshIcon();
   }
 
     /**
