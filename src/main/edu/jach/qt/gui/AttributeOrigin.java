@@ -64,7 +64,11 @@ public class AttributeOrigin {
 
   /** Set the value of the originating attribute */
   public void setValue(String value) {
-    item().getTable().set(name(), value, index());    // Yukk
+    item().getTable().set(name(), value, index());    // Yukk    
+    // Set an override flag on the attribute so it does not get
+    // over-ridden by calls to updateDAConf
+    String overide = "override_"+name();
+    item().getTable().set( overide, true, index() );
   }
 
   /** Convert to a string */

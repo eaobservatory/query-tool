@@ -479,11 +479,9 @@ public class AttributeEditor extends JDialog
       AVPair pair = (AVPair) pairs.nextElement();
       if (model.isChangedAt(row)) {
 	if (!doneSome) {
-	  System.out.println ("Updating attributes");
 	  logger.info("Updating attributes");
 	  doneSome = true;
 	}
-	System.out.println(model.getValueAt(row, 0) + " = '" + model.getValueAt(row, 1) + "'");
 	logger.info(model.getValueAt(row, 0) + " = '" + model.getValueAt(row, 1) + "'");
 	pair.origin().setValue((String)model.getValueAt(row, 1));
       }
@@ -493,11 +491,9 @@ public class AttributeEditor extends JDialog
       AIVTriplet triplet = (AIVTriplet) triplets.nextElement();
       if (model.isChangedAt(row)) {
 	if (!doneSome) {
-	  System.out.println ("Updating attributes");
 	  logger.info("Updating attributes");
 	  doneSome = true;
 	}
-	System.out.println(model.getValueAt(row, 0) + " = '" + model.getValueAt(row, 1) + "'");
 	logger.info(model.getValueAt(row, 0) + " = '" + model.getValueAt(row, 1) + "'");
 	triplet.origin().setValue((String)model.getValueAt(row, 1));
       }
