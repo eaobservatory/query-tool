@@ -37,20 +37,20 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
     };*/
    
   public static final String[] colNames ={
-    "projectid",
-    "title",
-    "instrument",
-    "waveband",
-    "target",
-    "ra",
-    "coordstype",
-    "ha",
-    "timeest",
-    "priority",
-    "remaining",
-    "obscount",
-    "checksum",
-    "msbid",
+      "projectid",  //0
+      "title",      //1
+      "instrument", //2
+      "waveband",   //3
+      "target",     //4
+      "ra",         //5
+      "coordstype",  //6
+      "ha",         //7
+      "timeest",    //8
+      "priority",   //9
+      "remaining",  //10
+      "obscount",   //11
+      "checksum",   //12
+      "msbid",      //13
   };
    
   public static final Class[] colClasses = {
