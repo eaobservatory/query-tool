@@ -7,11 +7,8 @@ import gemini.sp.obsComp.*;
 import jsky.app.ot.*;
 
 import java.io.*;
-import java.util.*;
-
-import om.dramaSocket.ExecDtask;
-import om.util.*;
-
+import java.util.Properties;
+import om.util.ExecDtask;
 import orac.ukirt.util.SpTranslator;
 import org.apache.log4j.Logger;
 
@@ -89,11 +86,11 @@ public class QtTools {
    */
   public static int execute(String[] someExec) {
     ExecDtask task = new ExecDtask(someExec);
-    task.setWaitFor(true);
+    task.setWaitFor(false);
 
     // Set the output depending on whether it is requested in the cfg file.
-    boolean debug = System.getProperty("SCR_MESS","OFF").equalsIgnoreCase("ON");
-    task.setOutput(debug);
+    //boolean debug = System.getProperty("SCR_MESS","OFF").equalsIgnoreCase("ON");
+    task.setOutput(true);
     task.run();
 
     // Check for errors from the script
@@ -132,16 +129,24 @@ public class QtTools {
     Properties temp = System.getProperties();
     String tname = null;
     String fileProperty = new String(inst+"ExecFilename");
+
     try {
+
+      FileWriter fw = new FileWriter("/tmp/transFile");
+
       tname=spt.translate();
       logger.debug("Translated file set to: "+System.getProperty("EXEC_PATH")+"/"+tname);
 
       temp.put(fileProperty,tname);
+      fw.write(tname);
+      fw.close();
       logger.debug("System property "+fileProperty+" now set to "+
 		   System.getProperty("EXEC_PATH")+"/"+tname);
       
-    }catch (NullPointerException e) {
+    } catch (NullPointerException e) {
       logger.fatal("Translation failed!, exception was "+e);
+    } catch ( IOException ioe) {
+      logger.fatal("Writting translated file name to transFile failed ", ioe);
     } catch (Exception e) {
       logger.fatal("Translation failed!, Missing value "+e);
     }
