@@ -29,132 +29,132 @@ set solHost = "UNDEF"
 set timeout = "20000"
 
 while ($#argv != 0)
-   switch ($argv[1])
-      case -h:
-        printf "${usage}" 
-        exit 0
-        breaksw
-      case -timeout:
-	shift
-	set timeout = $argv[1]
-	shift
-	breaksw
-      case -jswat:
-       shift
-	set port = $argv[1]
-	set xdebug = "-Xdebug"
-        set xnoagent = "-Xnoagent"
-	set jCompiler = "-Djava.compiler=NONE"
-	set xrunjdwptrans = "-Xrunjdwp:transport=dt_socket,address=${port},server=n,suspend=y"
-	echo SM Will be controled by JSWAT!
-	set JAVA = /local/java/jdk1.4/bin/java
-        shift
-        breaksw
-      case -jswatr:
-        shift
-	set port = $argv[1]
-	set xdebug = "-Xdebug"
-        set xnoagent = "-Xnoagent"
-	set jCompiler = "-Djava.compiler=NONE"
-	set xrunjdwptrans = "-Xrunjdwp:transport=dt_socket,server=y,suspend=n"
-	echo SM Will be controled by JSWAT!
-        shift
-        breaksw
-      case -jdebug:
-        set xdebug = "-Xdebug"
-        set xnoagent = "-Xnoagent"
-        set xrunjdwptrans = "-Xrunjdwp:transport=dt_socket,address=2112,server=n,suspend=y"
-        set xbootclasspath = "-Xbootclasspath:/local/java/jdk/jre/lib/rt.jar:/local/java/jdk/lib/tools.jar"
-	echo QT Will be controled by JDEBUG!
-        shift
-        breaksw
-      case -noql: 
-        set toql = "noql" 
-        echo No quick look specified 
-        shift 
-        breaksw 
-      case -ql: 
-        set toql = "ql" 
-        echo Quick look specified 
-        shift 
-        breaksw 
-      case -nosim: 
-        set tosim = "nosim" 
-        echo No simulation specified 
-        shift 
-        breaksw 
-      case -sim: 
-        set tosim = "sim" 
-        echo Full Simulation specified  
-        shift 
-        breaksw 
-      case -simInst: 
-        set tosim = "simInst" 
-        echo Instrument Simulation specified  
-        shift 
-        breaksw 
-      case -simTel: 
-        set tosim = "simTel" 
-        echo Telescope Simulation specified  
-        shift 
-        breaksw 
-      case -eng 
-        set toeng = "eng" 
-        echo "Data to be saved in engingeering directories"
-        shift 
-        breaksw 
-      case -noeng 
-        set toeng = "noeng" 
-        echo Science observing specified 
-        shift 
-        breaksw 
-      case -hilo:
-        shift
-	set solHost = $argv[1]
-        echo Global configs to be used
-	echo Solaris host is ${solHost}
-        shift
-        breaksw
-      case -logdir
-        shift
-	set LOGPATH = $argv[1]
-	shift
-	breaksw
-      case -scenario
-        set scenario = 1
-	set solHost = ""
-        shift
-        breaksw
-      case -config
-        shift
-	set qtConfig = $argv[1]
-        shift
-        breaksw
-      case -debug
-	set debug = true
-	echo debug on
-        shift
-        breaksw
-      case ukirt:
-        set widgetFile   = ..//config/qtUkirtWidget.conf
-	set instConfigDir = ${baseOTConfigDir}/ukirt
-	set telescope	  = Ukirt
-        echo Telescope set to use ukirt widget set
-        shift
-        breaksw
-      case jcmt:
-        set widgetFile   = ../config/qtJcmtWidget.conf
-	set instConfigDir = ${baseOTConfigDir}/jcmt
-	set telescope	  = Jcmt
-        echo Telescope set to use jcmt widget set
-        shift
-        breaksw
-      default:
-        echo "No such option "$argv[1]
-	printf "${usage}" 
-        exit 1
-        breaksw
-   endsw
+        switch ($argv[1])
+             case -h:
+                printf "${usage}" 
+                exit 0
+                breaksw
+             case -timeout:
+                shift
+                set timeout = $argv[1]
+                shift
+                breaksw
+             case -jswat:
+                shift
+                set port = $argv[1]
+                set xdebug = "-Xdebug"
+                set xnoagent = "-Xnoagent"
+                set jCompiler = "-Djava.compiler=NONE"
+                set xrunjdwptrans = "-Xrunjdwp:transport=dt_socket,address=${port},server=n,suspend=y"
+                echo SM Will be controled by JSWAT!
+                set JAVA = /local/java/jdk1.4/bin/java
+                shift
+                breaksw
+            case -jswatr:
+                shift
+                set port = $argv[1]
+                set xdebug = "-Xdebug"
+                set xnoagent = "-Xnoagent"
+                set jCompiler = "-Djava.compiler=NONE"
+                set xrunjdwptrans = "-Xrunjdwp:transport=dt_socket,server=y,suspend=n"
+                echo SM Will be controled by JSWAT!
+                shift
+                breaksw
+            case -jdebug:
+                set xdebug = "-Xdebug"
+                set xnoagent = "-Xnoagent"
+                set xrunjdwptrans = "-Xrunjdwp:transport=dt_socket,address=2112,server=n,suspend=y"
+                set xbootclasspath = "-Xbootclasspath:/local/java/jdk/jre/lib/rt.jar:/local/java/jdk/lib/tools.jar"
+                echo QT Will be controled by JDEBUG!
+                shift
+                breaksw
+            case -noql: 
+                set toql = "noql" 
+                echo No quick look specified 
+                shift 
+                breaksw 
+            case -ql: 
+                set toql = "ql" 
+                echo Quick look specified 
+                shift 
+                breaksw 
+            case -nosim: 
+                set tosim = "nosim" 
+                echo No simulation specified 
+                shift 
+                breaksw 
+            case -sim: 
+                set tosim = "sim" 
+                echo Full Simulation specified  
+                shift 
+                breaksw 
+            case -simInst: 
+                set tosim = "simInst" 
+                echo Instrument Simulation specified  
+                shift 
+                breaksw 
+            case -simTel: 
+                set tosim = "simTel" 
+                echo Telescope Simulation specified  
+                shift 
+                breaksw 
+            case -eng 
+                set toeng = "eng" 
+                echo "Data to be saved in engingeering directories"
+                shift 
+                breaksw 
+            case -noeng 
+                set toeng = "noeng" 
+                echo Science observing specified 
+                shift 
+                breaksw 
+            case -hilo:
+                shift
+                set solHost = $argv[1]
+                echo Global configs to be used
+                echo Host is ${solHost}
+                shift
+                breaksw
+            case -logdir
+                shift
+                set LOGPATH = $argv[1]
+                shift
+                breaksw
+            case -scenario
+                set scenario = 1
+                set solHost = ""
+                shift
+                breaksw
+            case -config
+                shift
+                set qtConfig = $argv[1]
+                shift
+                breaksw
+            case -debug
+                set debug = true
+                echo debug on
+                shift
+                breaksw
+            case ukirt:
+                set widgetFile   = ..//config/qtUkirtWidget.conf
+                set instConfigDir = ${baseOTConfigDir}/ukirt
+                set telescope	  = Ukirt
+                echo Telescope set to use ukirt widget set
+                shift
+                breaksw
+            case jcmt:
+                set widgetFile   = ../config/qtJcmtWidget.conf
+                set instConfigDir = ${baseOTConfigDir}/jcmt
+                set telescope	  = Jcmt
+                echo Telescope set to use jcmt widget set
+                shift
+                breaksw
+            default:
+                echo "No such option "$argv[1]
+                printf "${usage}" 
+                exit 1
+                breaksw
+        endsw
 end
 
 set utdate = `date -u +%Y%m%d`
@@ -163,23 +163,23 @@ set hsttime = `date +%H%M%S`
 
 set domain = `domainname`
 if (`domainname` == "JAC.ukirt") then
-   set solHost = "kiki"
-   set taskname = UKIRT_QT_${hsttime}
+    set solHost = "kiki"
+    set taskname = UKIRT_QT_${hsttime}
 else if (`domainname` == "JAC.jcmt") then
-   set solHost = "localhost"
-   set taskname = JCMT_QT_${hsttime}
+    set solHost = "localhost"
+    set taskname = JCMT_QT_${hsttime}
 else if (`domainname` == "JAC.Hilo") then
-   set solHost = ${solHost}
-   if ( ${telescope} == "jcmt" ) then
-      set taskname="JCMT_QT"
-   else
-      set taskname="UKIRT_QT"
-   endif
-   if (${solHost} == "UNDEF") then
-      echo "\n\nIn Hilo you must specify -hilo <solaris_host> || -scenario"
-      printf "${usage}"
-      exit 1
-   endif
+    set solHost = ${solHost}
+    if ( ${telescope} == "jcmt" ) then
+        set taskname="JCMT_QT"
+    else
+        set taskname="UKIRT_QT"
+    endif
+    if (${solHost} == "UNDEF") then
+        echo "\n\nIn Hilo you must specify -hilo <solaris_host> || -scenario"
+        printf "${usage}"
+        exit 1
+    endif
 endif
 
 if !($?widgetFile) then
@@ -193,58 +193,59 @@ endif
 
 
 if ( ${LOGPATH} == "" ) then
-  if ( ${domain} ==  "JAC.ukirt" || ${domain} == "JAC.jcmt" ) then
-    set LOGPATH = "/jac_logs/${utdate}/OCSqt_${hstdate}"
-  else
-    set LOGPATH = "/home/${user}/qtLogs/${utdate}"
-    if (! -e ${LOGPATH} ) then
-      mkdir ${LOGPATH}
+    if ( ${domain} ==  "JAC.ukirt" || ${domain} == "JAC.jcmt" ) then
+        set LOGPATH = "/jac_logs/${utdate}/OCSqt_${hstdate}"
+    else
+        set LOGPATH = "/home/${user}/qtLogs/${utdate}"
+        if (! -e ${LOGPATH} ) then
+            mkdir ${LOGPATH}
+        endif
     endif
-  endif
 endif
 
 mkdir -p ${LOGPATH}
 
 #Make the log directory
 if (-dwx ${LOGPATH} ) then
-   setenv QT_LOG_DIR "${LOGPATH}"
-   mkdir -p ${QT_LOG_DIR}
-   echo "This QT and (S)equence (M)anager session will be logged in ${QT_LOG_DIR}."
+    setenv QT_LOG_DIR "${LOGPATH}"
+    mkdir -p ${QT_LOG_DIR}
+    echo "This QT and (S)equence (M)anager session will be logged in ${QT_LOG_DIR}."
 else
-   echo ${LOGPATH} does not exist - no log files will be written for this session. 
-   setenv QT_LOG_DIR
+    echo ${LOGPATH} does not exist - no log files will be written for this session. 
+    setenv QT_LOG_DIR
 endif
 
 #Test for scenario mode
 if (! ${?IMP_STARTUP} || ${scenario}) then
-   set dramaEnabled = "false"
+    set dramaEnabled = "false"
 else if (! ${?IMP_SCRATCH} ) then
-      setenv IMP_SCRATCH /tmp
-      echo "IMP_SCRATCH set to ${IMP_SCRATCH}"
+    setenv IMP_SCRATCH /tmp
+    echo "IMP_SCRATCH set to ${IMP_SCRATCH}"
 else if (${IMP_SCRATCH} != "/tmp") then	
-      echo "*******************************************************"
-      echo "IMP_SCRATCH NOT SET TO /tmp"
-      echo "Hope you know what you are doing."
-      echo "This will probably only work for the simulation system"
-      echo "*******************************************************"
+    echo "*******************************************************"
+    echo "IMP_SCRATCH NOT SET TO /tmp"
+    echo "Hope you know what you are doing."
+    echo "This will probably only work for the simulation system"
+    echo "*******************************************************"
 endif
 
 
-   # We want ample IMP_transmitter buffer space
-   setenv IMP_NET_KBYTES 10000
+if (! ${scenario}) then
+    # We want ample IMP_transmitter buffer space
+    setenv IMP_NET_KBYTES 10000
 
-   # check whether the CSO task is running
-   ditsgetinfo -running CSOMON
-   set run = $status
+    # check whether the CSO task is running
+    ditsgetinfo -running CSOMON
+    set run = $status
 
-   #If csomon is not running && we're on solaris, start it.
-   if ($run != 0 ) then
-      echo "Starting CSOMON"
-      /jac_sw/itsroot/src/oracda/scripts/getcso.pl &
+    #If csomon is not running && we're on solaris, start it.
+    if ($run != 0 ) then
+        echo "Starting CSOMON"
+        /jac_sw/itsroot/src/oracda/scripts/getcso.pl &
 #      /home/dewitt/bin/telmon.pl &
-   else
-      echo "CSOMON already running - will not start"
-   endif
+    else
+        echo "CSOMON already running - will not start"
+    endif
 endif
 
 setenv DUL_DIR /jac_sw/drama/CurrentRelease/include/
@@ -255,5 +256,5 @@ set CLASSPATH = ../lib/qt.jar:../lib/calpahtml.jar:../lib/xercesImpl.jar:../lib/
 
 ${JAVA} ${classic} ${xdebug} ${xnoagent} ${xrunjdwptrans} ${xbootclasspath} -Ddebug=${debug} -DDRAMA_ENABLED=${dramaEnabled} -DSIMULATE=${tosim} -DENGINEERING=${toeng} -DQUICKLOOK=${toql} -Dtelescope=${telescope} -DSOLARIS_HOST=${solHost} -DDOMAIN=`domainname` -DqtConfig=${qtConfig} -Dot.cfgdir=${instConfigDir}/ -Dot.resource.cfgdir=./ -DwidgetFile=${widgetFile} -DQT_LOG_DIR=${QT_LOG_DIR} -DDOMAIN=${domain} -DOMP -DDCHUB_TIMEOUT=${timeout} -DTASKNAME=${taskname} -cp ${CLASSPATH}:${instConfigDir} edu.jach.qt.app.QT
 
-tidy: 
-onintr - 
+    tidy: 
+    onintr - 
