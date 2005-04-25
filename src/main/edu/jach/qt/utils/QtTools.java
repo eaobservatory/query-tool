@@ -212,13 +212,14 @@ public class QtTools {
 	tel = "/jcmtdata";
       } 
       
-      FileWriter fw = new FileWriter(tel+"/epics_data/smLogs/transFile");
       //FileWriter fw = new FileWriter("/home/dewitt/sequences/transFile");
 
       tname=spt.translate();
       logger.debug("Translated file set to: "+System.getProperty("EXEC_PATH")+"/"+tname);
 
       temp.put(fileProperty,tname);
+
+      FileWriter fw = new FileWriter(tel+"/epics_data/smLogs/transFile");
       fw.write(tname);
       fw.close();
       logger.debug("System property "+fileProperty+" now set to "+
