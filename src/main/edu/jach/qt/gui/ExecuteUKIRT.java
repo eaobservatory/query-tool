@@ -42,7 +42,9 @@ public class ExecuteUKIRT extends Execute implements Runnable {
 	    failure.createNewFile();
 	}
 	catch (IOException ioe) {
-	    logger.error("Unable to create success/fail file", ioe);
+            if (TelescopeDataPanel.DRAMA_ENABLED) {
+                logger.error("Unable to create success/fail file", ioe);
+            }
 	    //return;
 	}
 

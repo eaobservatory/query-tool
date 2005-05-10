@@ -138,6 +138,9 @@ public class QtTools {
       // File will go into exec path and be called
       // ukirt_yyyymmddThhmmss.xml
       String opDir = System.getProperty("EXEC_PATH");
+      if ( "false".equalsIgnoreCase(System.getProperty("DRAMA_ENABLED"))) {
+          opDir = System.getProperty("user.home");
+      }
       Calendar cal = new GregorianCalendar(TimeZone.getTimeZone("UTC"));
       SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd'T'HHmmss");
       StringBuffer fileName = new StringBuffer (sdf.format(cal.getTime()));
@@ -197,8 +200,15 @@ public class QtTools {
   */
   public static String translate(SpItem observation, String inst) {
     SpTranslator spt = new SpTranslator((SpObs)observation);
-    spt.setSequenceDirectory(System.getProperty("EXEC_PATH"));
-    spt.setConfigDirectory(System.getProperty("CONF_PATH"));
+    if ( "true".equalsIgnoreCase(System.getProperty("DRAMA_ENABLED"))) {
+        spt.setSequenceDirectory(System.getProperty("EXEC_PATH"));
+        spt.setConfigDirectory(System.getProperty("CONF_PATH"));
+    }
+    else {
+        spt.setSequenceDirectory(System.getProperty("user.home"));
+        spt.setConfigDirectory(System.getProperty("user.home"));
+    }
+        
       
     Properties temp = System.getProperties();
     String tname = null;

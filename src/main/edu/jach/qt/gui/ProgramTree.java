@@ -141,7 +141,7 @@ final public class ProgramTree extends JPanel implements
       
 	engButton = new JButton("Send to Queue");
 	engButton.setMargin(new Insets(5,10,5,10));
-	engButton.setEnabled(TelescopeDataPanel.DRAMA_ENABLED);
+	engButton.setEnabled(true);
 	engButton.addActionListener(this);
 
 	xpand = new JButton("Expand Observation");
@@ -238,7 +238,7 @@ final public class ProgramTree extends JPanel implements
      * @param  flag  <code>true</code> to enable execution.
      */
     public static void setExecutable (boolean flag) {
-	if (TelescopeDataPanel.DRAMA_ENABLED) {
+// 	if (TelescopeDataPanel.DRAMA_ENABLED) {
 	    logger.debug ( "In ProgramTree.setExecutable(); setting run.enabled to "+flag);
 	    engButton.setEnabled(flag);
 	    if ( flag == false ) {
@@ -248,7 +248,7 @@ final public class ProgramTree extends JPanel implements
 	    else {
 		engButton.setToolTipText ( null );
 	    }
-	}
+// 	}
     }
 
     /**
@@ -1058,7 +1058,7 @@ final public class ProgramTree extends JPanel implements
 
 	    if (selectedItem == null && 
 		( System.getProperty("telescope").equalsIgnoreCase("ukirt") || instrumentContext instanceof SpInstHeterodyne) &&
-																TelescopeDataPanel.DRAMA_ENABLED) {
+			TelescopeDataPanel.DRAMA_ENABLED) {
 		msbDone = showMSBDoneDialog();
 	    }
 	    // If this is an observation then show the popup
