@@ -509,35 +509,35 @@ public class Querytool implements Runnable, Observer {
                 item.appendChild (doc.createTextNode(tmpStr.trim()));
                 root.appendChild (item); 
             }
-            // Recalculate the moon if the user has not overridden the default,
-            // otherwise leave it as it is
-            if ( WidgetPanel.getMoonPanel() != null && WidgetPanel.getMoonPanel().getBackground() != Color.darkGray ) {
-                SimpleMoon moon;
-                if ( lrtf.timerRunning() ) {
-                    moon = new SimpleMoon();
-                }
-                else {
-                    moon = new SimpleMoon(tmpStr);
-                }
-                double moonValue = 0;
-                if ( moon.isUp() ) {
-                    moonValue = moon.getIllumination()*100;
-                }
-                else {
-                    //                    System.out.println("Moon is down");
-                }
-                // Delete any existing value and repalce with the new
-                NodeList list = root.getElementsByTagName("moon");
-                if (list.getLength() != 0) {
-                    root.removeChild(list.item(0));
-                }
-                item = doc.createElement("moon");
-                item.appendChild( doc.createTextNode(""+moonValue) );
-                root.appendChild (item);
+        }
+        else {
+            // We will use the current date, so set execution to true
+        }
+        // Recalculate the moon if the user has not overridden the default,
+        // otherwise leave it as it is
+        if ( WidgetPanel.getMoonPanel() != null && WidgetPanel.getMoonPanel().getBackground() != Color.darkGray ) {
+            SimpleMoon moon;
+            if ( lrtf.timerRunning() ) {
+                moon = new SimpleMoon();
             }
             else {
-                // We will use the current date, so set execution to true
+                moon = new SimpleMoon(tmpStr);
             }
+            double moonValue = 0;
+            if ( moon.isUp() ) {
+                moonValue = moon.getIllumination()*100;
+            }
+            else {
+                //                    System.out.println("Moon is down");
+            }
+            // Delete any existing value and repalce with the new
+            NodeList list = root.getElementsByTagName("moon");
+            if (list.getLength() != 0) {
+                root.removeChild(list.item(0));
+            }
+            item = doc.createElement("moon");
+            item.appendChild( doc.createTextNode(""+moonValue) );
+            root.appendChild (item);
         }
     return root;
     }
