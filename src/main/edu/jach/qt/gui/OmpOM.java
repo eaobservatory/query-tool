@@ -160,8 +160,8 @@ public class OmpOM extends JPanel{
 	    /* Init GEMINI Miscellaneous */
 	    spItem = new SpIterRepeat();
 	    spItem = new SpIterOffset();
-	    spItem = new SpIterObserve();
-	    spItem = new SpIterSky();
+	    spItem = new orac.ukirt.iter.SpIterObserve();
+	    spItem = new orac.ukirt.iter.SpIterSky();
 	    spItem = new SpSchedConstObsComp();
 	    spItem = new SpSiteQualityObsComp();
 	}
