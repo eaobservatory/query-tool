@@ -120,6 +120,12 @@ public class InfoPanel extends JPanel implements ActionListener {
 	/*Setup the SEARCH button*/
 	InfoPanel.searchButton.setText("Search");
 	InfoPanel.searchButton.setName("Search");
+        java.net.URL url = ClassLoader.getSystemResource("green_light1.gif");
+        ImageIcon icon = new ImageIcon(url);
+        InfoPanel.searchButton.setIcon( icon );
+        blinkIcon();
+        InfoPanel.searchButton.setHorizontalTextPosition( SwingConstants.LEADING );
+        InfoPanel.searchButton.setToolTipText("Red icon - all constraints disabled");
 	InfoPanel.searchButton.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 		    qtf.getWidgets().setButtons();
@@ -349,6 +355,47 @@ public class InfoPanel extends JPanel implements ActionListener {
 	    qtf.setQueryExpired(true);
 	    cancel();
 	}
+    }
+
+    private void blinkIcon() {
+        javax.swing.Timer t = new javax.swing.Timer(2000, new ActionListener() {
+                public void actionPerformed (ActionEvent e) {
+                    ImageIcon imageIcon = (ImageIcon) InfoPanel.searchButton.getIcon();
+                    if ( imageIcon == null ) return;
+                    String iconName = imageIcon.toString();
+                    if ( iconName == null || iconName.indexOf("green_light") != -1 ) {
+                        return;
+                    }
+                    else {
+                        if ( iconName.indexOf("_light1") != -1 ) {
+                            // Set light to light 2
+                            try {
+                                java.net.URL url = new java.net.URL ( iconName.replaceAll ("light1", "light2") );
+                                ImageIcon icon = new ImageIcon(url);
+                                InfoPanel.searchButton.setIcon( icon );
+                            }
+                            catch (Exception x) {
+                              //Ignore
+                            }
+                        }
+                        else if ( iconName.indexOf("_light2") != -1 ) {
+                            // Set light to light 1
+                            try {
+                                java.net.URL url = new java.net.URL ( iconName.replaceAll ("light2", "light1") );
+                                ImageIcon icon = new ImageIcon(url);
+                                InfoPanel.searchButton.setIcon( icon );
+                            }
+                            catch (Exception x) {
+                              //Ignore
+                            }
+                        }
+                        else {
+                            // Bo nothing
+                        }
+                    }
+                }
+        });
+        t.start();
     }
 }// InfoPanel
 
