@@ -252,6 +252,72 @@ public class LabeledRangeTextField extends WidgetPanel
      * @param e  An <code>ActionEvent</code> object.
      */
     public void keyReleased( KeyEvent evt) {
+        String date = lowerBound.getText();
+        String time = upperBound.getText();
+        // If either date or time is invalid, son't do anything
+        String datePattern = "\\d{4}-\\d{2}-\\d{2}";
+        String timePattern = "\\d{1,2}(:\\d{1,2})?(:\\d{1,2})?";
+        if ( !date.matches(datePattern) ) {
+            return;
+        }
+        if ( !time.matches(timePattern) ) {
+            return;
+        }
+
+        // See if we need to add anything to the time string
+        String [] hms = time.split(":");
+        switch (hms.length) {
+            case 1:
+                time = time + ":00:00";
+                break;
+            case 2:
+                time = time + ":00";
+                break;
+            default:
+                // nothing to do
+        }
+
+
+        String dateTime = date + "T" + time;
+        TimeUtils tu = new TimeUtils();
+        dateTime = tu.convertLocalISODatetoUTC(dateTime);
+
+        // Recalculate moon
+        // Try to update the moon Panel
+        RadioPanel moonPanel = WidgetPanel.getMoonPanel();
+        if ( moonPanel == null || moonPanel.getBackground() == Color.darkGray ) {
+            // We dont do anything
+            return;
+        }
+        double moonValue = 0;
+        SimpleMoon moon = new SimpleMoon(dateTime);
+        if ( moon.isUp() ) {
+            moonValue = moon.getIllumination()*100;
+        }
+        
+        Hashtable ht = widgetBag.getHash();
+        for ( ListIterator iter = ((LinkedList)ht.get("moon")).listIterator(0); iter.hasNext(); iter.nextIndex()) {
+            JRadioButton b = (JRadioButton)iter.next();
+            if ( b.getText().equalsIgnoreCase("dark") && moonValue == 0 ) {
+                if ( !b.isSelected() ) {
+                    b.setSelected(true);
+                    break;
+                }
+            }
+            else if (  b.getText().equalsIgnoreCase("grey") && moonValue <= 25 ) {
+                if ( !b.isSelected() ) {
+                    b.setSelected(true);
+                    break;
+                }
+            }
+            else if ( b.getText().equalsIgnoreCase("bright") && moonValue > 25 ){
+                if ( !b.isSelected() ) {
+                    b.setSelected(true);
+                    break;
+                }
+            }
+        }
+        
     }
 
     /**
