@@ -358,7 +358,7 @@ public class InfoPanel extends JPanel implements ActionListener {
     }
 
     private void blinkIcon() {
-        javax.swing.Timer t = new javax.swing.Timer(2000, new ActionListener() {
+        javax.swing.Timer t = new javax.swing.Timer(500, new ActionListener() {
                 public void actionPerformed (ActionEvent e) {
                     ImageIcon imageIcon = (ImageIcon) InfoPanel.searchButton.getIcon();
                     if ( imageIcon == null ) return;
