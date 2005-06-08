@@ -818,18 +818,21 @@ public class QtFrame
           java.net.URL url = ClassLoader.getSystemResource("green_light1.gif");
           ImageIcon icon = new ImageIcon(url);
           InfoPanel.searchButton.setIcon( icon );
+          table.setBackground (Color.WHITE);
       }
       else if ( !allocation.isSelected() && !remaining.isSelected() && !observability.isSelected() ) {
           // No constraints disabled - set to red
           java.net.URL url = ClassLoader.getSystemResource("red_light1.gif");
           ImageIcon icon = new ImageIcon(url);
           InfoPanel.searchButton.setIcon( icon );
+          table.setBackground (Color.RED.darker());
       }
       else {
           // Some constraints diabled - set to amber
           java.net.URL url = ClassLoader.getSystemResource("amber_light1.gif");
           ImageIcon icon = new ImageIcon(url);
           InfoPanel.searchButton.setIcon( icon );
+          table.setBackground (Color.YELLOW.darker());
       }
     } 
     
