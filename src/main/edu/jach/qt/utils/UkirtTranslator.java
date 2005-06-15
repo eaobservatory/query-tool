@@ -26,6 +26,8 @@ public class UkirtTranslator {
     static String  _outDir     = null;
 
     public UkirtTranslator () throws Exception {
+        System.setProperty("EXEC_PATH", _outDir);
+        System.setProperty("CONF_PATH", _outDir);
         OtCfg.init();
         BufferedReader rdr = new BufferedReader( new FileReader(_inputFile) );
         try {
