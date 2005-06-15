@@ -1,0 +1,139 @@
+package edu.jach.qt.utils;
+
+import gemini.sp.*;
+import gemini.sp.iter.*;
+import gemini.sp.obsComp.*;
+
+import orac.ukirt.iter.*;
+import orac.ukirt.inst.*;
+import orac.ukirt.util.*;
+import orac.util.*;
+
+import jsky.app.ot.OtFileIO;
+import jsky.app.ot.OtCfg;
+
+import java.io.*;
+
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.Vector;
+
+public class UkirtTranslator {
+
+    SpRootItem _root;
+    static boolean _useClassic = false;
+    static File    _inputFile  = null;
+    static String  _outDir     = null;
+
+    public UkirtTranslator () throws Exception {
+        OtCfg.init();
+        BufferedReader rdr = new BufferedReader( new FileReader(_inputFile) );
+        try {
+            _root = OtFileIO.fetchSp(rdr);
+        }
+        catch (Exception e) {
+            System.out.println("Can not access file " + _inputFile.getName());
+            System.exit(1);
+        }
+
+        getObservations(_root);
+    }
+
+    private SpRootItem fetchSp(Reader rdr) throws Exception {
+        return (SpRootItem)(new SpInputXML()).xmlToSpItem(rdr);
+    }
+
+    private void getObservations(SpItem root) {
+        Enumeration children = root.children();
+        String rootTitle = root.getTitleAttr();
+        if ( rootTitle == null || rootTitle.equals("") ) {
+            rootTitle = root.typeStr();
+        }
+        while ( children.hasMoreElements() ) {
+            SpItem child = (SpItem)children.nextElement();
+            if ( child.getClass().getName().endsWith("SpObs") ) {
+                doTranslate(rootTitle, (SpObs)child);
+            }
+            else if ( child.getClass().getName().endsWith("SpMSB") ) {
+                getObservations(child);
+            }
+        }
+    }
+
+    private void doTranslate( String parentName, SpObs obs ) {
+        String obsName = obs.getTitleAttr();
+        if ( obsName == null || obsName.equals("") ) {
+            obsName = obs.typeStr();
+        }
+        String tname;
+        SpTranslator spt = new SpTranslator(obs);
+
+        try {
+            if ( !_useClassic ) {
+                tname = spt.translate();
+            }
+            else {
+                tname = spt.old_translate();
+            }
+        }
+        catch (Exception e) {
+            System.out.println("Error translating " + parentName + ":" + obsName );
+            return;
+        }
+        System.out.println( "Translation for \"" + parentName + ":" + obsName + "\" stored in " + tname);
+    }
+
+    public static void main (String [] args) {
+        // Should take one argument - the name of the input XML file
+        try {
+            for ( int i=0; i< args.length; i++ ) {
+                if ( args[i].equals("-classic") ) {
+                    _useClassic = true;
+                }
+                else if ( args[i].equals("-i") || args[i].equals("--inputFile") ) {
+                    _inputFile = new File(args[++i]);
+                }
+                else if ( args[i].equals("-o") ||  args[i].equals("--outDir") ) {
+                    _outDir = args[++i];
+                }
+                else {
+                    System.out.println("Unknown option " + args[i] + " ignored");
+                }
+            }
+        }
+        catch (Exception e) {
+            System.out.println("Incorrect usage; ukirtTranslator (-classic) (-i inputFile) (-o outputDir)");
+            System.exit(1);
+        }
+
+        if ( _inputFile == null ) {
+            File tmpDir = new File(System.getProperty("java.io.tmpdir"));
+            File [] files = tmpDir.listFiles();
+            for ( int i=0; i<files.length; i++ ) {
+                if ( files[i].getName().startsWith("msb.xml") ) {
+                    if ( _inputFile == null ) {
+                        _inputFile = files[i];
+                    }
+                    else {
+                        if ( _inputFile.lastModified() < files[i].lastModified() ) {
+                            _inputFile = files[i];
+                        }
+                    }
+                }
+            }
+        }
+
+        if ( _outDir == null ) {
+            _outDir = System.getProperty("user.dir");
+        }
+
+        OtFileIO.setXML(System.getProperty("OMP") != null);
+
+        try {
+            UkirtTranslator r = new UkirtTranslator();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
