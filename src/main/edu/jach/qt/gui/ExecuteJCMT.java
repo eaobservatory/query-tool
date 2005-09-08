@@ -209,7 +209,7 @@ public class ExecuteJCMT extends Execute {
 			command = "/jac_sw/omp/QT/bin/insertOCSQUEUE.ksh "+ new String(odfFile).trim();
 		    }
 		    else {
-			command = "/jac_sw/omp/QT/bin/loadOCSQUEUE.ksh "+ new String(odfFile).trim();
+			command = "/jac_sw/omp/QT/bin/loadUKIRT.ksh "+ new String(odfFile).trim();
 		    }
 		    logger.debug ("Running command "+command);
 		    Process p = rt.exec(command);
