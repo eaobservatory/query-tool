@@ -30,8 +30,8 @@ import calpa.html.CalHTMLPane;
 
 /**
  * Implements the executable method for JCMT.  It simply sends either a 
- * single deferred observation, or an entire science project to the SCUQUEUE.
- * This is currently only usable for SCUBA observations.
+ * single deferred observation, or an entire science project to the OCSQUEUE.
+ * This is currently only usable for all OCSQUEUE CONFIG based observations.
  * @see edu.jach.qt.gui.Execute
  * Implements <code>Runnable</code>
  * @author $Author$
@@ -48,7 +48,7 @@ public class ExecuteJCMT extends Execute {
     
     /**
      * Constructor.
-     * @param  item      The item to send to SCUQUEUE
+     * @param  item      The item to send to OCSQUEUE
      * @throws Exception From the base class.
      */
     private ExecuteJCMT() throws Exception {
@@ -206,10 +206,10 @@ public class ExecuteJCMT extends Execute {
 		    rt = Runtime.getRuntime();
 		    String command;
 		    if (super.isDeferred) {
-			command = "/jac_sw/omp/QT/bin/insertSCUQUEUE.ksh "+ new String(odfFile).trim();
+			command = "/jac_sw/omp/QT/bin/insertOCSQUEUE.ksh "+ new String(odfFile).trim();
 		    }
 		    else {
-			command = "/jac_sw/omp/QT/bin/loadSCUQUEUE.ksh "+ new String(odfFile).trim();
+			command = "/jac_sw/omp/QT/bin/loadOCSQUEUE.ksh "+ new String(odfFile).trim();
 		    }
 		    logger.debug ("Running command "+command);
 		    Process p = rt.exec(command);
@@ -219,9 +219,9 @@ public class ExecuteJCMT extends Execute {
 		    estream.read(errorMessage);
 		    p.waitFor();
 		    int rtn = p.exitValue();
-		    logger.info("LoadSCUQUEUE returned with exit status "+rtn);
-		    logger.debug("Output from LoadSCUQUEUE: "+new String(odfFile).trim());
-		    logger.debug("Error from LoadSCUQUEUE: "+new String(errorMessage).trim());
+		    logger.info("LoadOCSQUEUE returned with exit status "+rtn);
+		    logger.debug("Output from LoadOCSQUEUE: "+new String(odfFile).trim());
+		    logger.debug("Error from LoadOCSQUEUE: "+new String(errorMessage).trim());
 		    if (rtn != 0) {
 			logger.error("Error loading queue");
 			if ( errorWriter != null) {
