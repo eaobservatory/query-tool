@@ -4,6 +4,10 @@ else
 DEV_ROOT = .
 endif
 
+# This is where the OT classes are found
+OTROOT = /jac_sw/hlsroot/acsis_support/acsisot
+OTROOT = /jac_sw/orac3
+
 JAVAPACKAGES = \
 	edu/jach/qt/utils \
 	edu/jach/qt/gui \
@@ -30,10 +34,10 @@ JAVALIBRARIES = \
 
 EXTERNALCLASSES = \
 	/local/java/jdk/jre/lib/ext/log4j-1.2rc1.jar \
-	/jac_sw/orac3/GEMINI/install/classes \
-	/jac_sw/orac3/ORAC/install/classes \
+	$(OTROOT)/GEMINI/install/classes \
+	$(OTROOT)/ORAC/install/classes \
 	/jac_sw/drama/CurrentRelease/javalib \
-	/jac_sw/orac3/OT/install/classes \
+	$(OTROOT)/OT/install/classes \
 	/jac_sw/itsroot/install/dcHub/javalib/dcHub.jar
 
 ifdef SOURCES
