@@ -164,13 +164,13 @@ set hstdate = `date +%Y%m%d-%H%M%S`
 set hsttime = `date +%H%M%S`
 
 set domain = ${SITE}
-if (${SITE} == "ukirt") then
+if (${domain} == "ukirt") then
     set solHost = "kiki"
     set taskname = UKIRT_QT_${hsttime}
-else if (${SITE} == "jcmt") then
+else if (${domain} == "jcmt") then
     set solHost = "localhost"
     set taskname = JCMT_QT_${hsttime}
-else if (${SITE} == "hilo") then
+else if (${domain} == "hilo") then
     set solHost = ${solHost}
     if ( ${telescope} == "jcmt" ) then
         set taskname="JCMT_QT"
@@ -195,7 +195,7 @@ endif
 
 
 if ( ${LOGPATH} == "" ) then
-    if ( ${domain} ==  "JAC.ukirt" || ${domain} == "JAC.jcmt" ) then
+    if ( ${domain} ==  "ukirt" || ${domain} == "jcmt" ) then
         set LOGPATH = "/jac_logs/${utdate}/OCSqt_${hstdate}"
     else
         set LOGPATH = "/home/${user}/qtLogs/${utdate}"
@@ -256,7 +256,7 @@ setenv DTCL_DIR /jac_sw/drama/CurrentRelease/include/
 
 set CLASSPATH = ../lib/qt.jar:../lib/calpahtml.jar:../lib/xercesImpl.jar:../lib/xmlParserAPIs.jar:../lib/mail.jar:../lib/activation.jar:../lib/soap.jar:${OTROOT}/OT/install/classes:${OTROOT}/GEMINI/install/classes:/jac_sw/itsroot/install/ompSM/javlib/ompSM.jar:${OTROOT}/ORAC/install/classes:${OTROOT}/OMP/install/classes:${OTROOT}/ODB/install/classes:../lib/jsky.jar:../lib/diva.jar:../lib/junit.jar:../icons:/local/java/jdk/lib/tools.jar:/jac_sw/itsroot/install/dcHub/javalib/dcHub.jar:/jac_sw/drama/CurrentRelease/javalib
 
-${JAVA} ${classic} ${xdebug} ${xnoagent} ${xrunjdwptrans} ${xbootclasspath} -Ddebug=${debug} -DDRAMA_ENABLED=${dramaEnabled} -DSIMULATE=${tosim} -DENGINEERING=${toeng} -DQUICKLOOK=${toql} -Dtelescope=${telescope} -DSOLARIS_HOST=${solHost} -DDOMAIN=${SITE} -DqtConfig=${qtConfig} -Dot.cfgdir=${instConfigDir}/ -Dot.resource.cfgdir=./ -DwidgetFile=${widgetFile} -DQT_LOG_DIR=${QT_LOG_DIR} -DDOMAIN=${domain} -DOMP -DDCHUB_TIMEOUT=${timeout} -DTASKNAME=${taskname} -cp ${CLASSPATH}:${instConfigDir} edu.jach.qt.app.QT
+${JAVA} ${classic} ${xdebug} ${xnoagent} ${xrunjdwptrans} ${xbootclasspath} -Ddebug=${debug} -DDRAMA_ENABLED=${dramaEnabled} -DSIMULATE=${tosim} -DENGINEERING=${toeng} -DQUICKLOOK=${toql} -Dtelescope=${telescope} -DSOLARIS_HOST=${solHost} -DqtConfig=${qtConfig} -Dot.cfgdir=${instConfigDir}/ -Dot.resource.cfgdir=./ -DwidgetFile=${widgetFile} -DQT_LOG_DIR=${QT_LOG_DIR} -DDOMAIN=${domain} -DOMP -DDCHUB_TIMEOUT=${timeout} -DTASKNAME=${taskname} -cp ${CLASSPATH}:${instConfigDir} edu.jach.qt.app.QT
 
     tidy: 
     onintr - 
