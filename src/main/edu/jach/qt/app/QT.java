@@ -60,7 +60,6 @@ final public class QT {
        }
 
      logger.info("-------WELCOME TO THE QT----------");
-     OtFileIO.setXML(System.getProperty("OMP") != null);
 
      try {
 // 	 if (System.getProperty("telescope").equalsIgnoreCase("ukirt")) {
@@ -142,6 +141,9 @@ final public class QT {
 
 /*
  * $Log$
+ * Revision 1.29  2006/01/23 20:37:04  shart
+ * Remove all references to OtFileIO.setXML as it has been removed in the OT -> SH
+ *
  * Revision 1.28  2005/02/24 20:30:23  dewitt
  * Merge fro JAC_WFCAM branch and fix for fault [20050224.002]
  *

@@ -129,8 +129,6 @@ public class UkirtTranslator {
             _outDir = System.getProperty("user.dir");
         }
 
-        OtFileIO.setXML(System.getProperty("OMP") != null);
-
         try {
             UkirtTranslator r = new UkirtTranslator();
         }

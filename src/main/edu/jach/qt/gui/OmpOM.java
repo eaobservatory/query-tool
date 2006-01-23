@@ -61,7 +61,6 @@ public class OmpOM extends JPanel{
     ptreeHashtable = new Hashtable();
 
     //Load OM specific configs
-    OtFileIO.setXML(System.getProperty("OMP") != null);
     //QtTools.loadConfig(new String(System.getProperty("omCfg")));
 
     /* Need to construct UKIRT-specific items so that their SpTypes are
