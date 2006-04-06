@@ -72,7 +72,6 @@ import edu.jach.qt.utils.ObsListCellRenderer ;
 import edu.jach.qt.utils.ErrorBox ;
 
 /* Miscellaneous imports */
-// import ocs.utils.*;
 
 /**
  * Implements the Deferred List functionality.
