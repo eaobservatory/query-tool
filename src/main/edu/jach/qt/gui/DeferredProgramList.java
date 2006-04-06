@@ -1,36 +1,75 @@
 package edu.jach.qt.gui;
 
 /* System imports */
-import javax.swing.*;
-import javax.swing.border.*;
-import java.awt.*;
-import java.awt.dnd.*;
-import java.awt.datatransfer.*;
-import java.awt.event.*;
-import java.util.*;
-import java.io.*;
-import java.text.*;
+import javax.swing.JList ;
+import javax.swing.JScrollPane ;
+import javax.swing.JPopupMenu ;
+import javax.swing.JMenuItem ;
+import javax.swing.DefaultListModel ;
+import javax.swing.BorderFactory ;
+import javax.swing.JPanel ;
+import javax.swing.JOptionPane ;
+import javax.swing.border.TitledBorder ;
+import javax.swing.border.Border ;
+import java.awt.GridBagConstraints ;
+import java.awt.GridBagLayout ;
+import java.awt.Font ;
+import java.awt.Color ;
+import java.awt.BorderLayout ;
+import java.awt.Component ;
+import java.awt.dnd.DropTargetListener ;
+import java.awt.dnd.DragSourceListener ;
+import java.awt.dnd.DragGestureListener ;
+import java.awt.dnd.DropTarget ;
+import java.awt.dnd.DragSource ;
+import java.awt.dnd.DnDConstants ;
+import java.awt.dnd.DropTargetDragEvent ;
+import java.awt.dnd.DropTargetDropEvent ;
+import java.awt.dnd.DragGestureEvent ;
+import java.awt.dnd.DragSourceDragEvent ;
+import java.awt.dnd.DragSourceDropEvent ;
+import java.awt.dnd.DropTargetEvent ;
+import java.awt.dnd.DragSourceEvent ;
+import java.awt.datatransfer.Transferable ;
+import java.awt.datatransfer.StringSelection ;
+import java.awt.event.ActionListener ;
+import java.awt.event.ActionEvent ;
+import java.awt.event.MouseListener ;
+import java.awt.event.MouseEvent ;
+import java.awt.event.MouseAdapter ;
+import java.util.Vector ;
+import java.util.HashMap ;
+import java.util.TooManyListenersException ;
+import java.util.Date ;
+import java.util.Calendar ;
+import java.util.TimeZone ;
+import java.util.StringTokenizer ;
+import java.io.File ;
+import java.io.FileWriter ;
+import java.io.IOException ;
+import java.io.FileNotFoundException ;
+import java.io.FileReader ;
+import java.text.SimpleDateFormat ;
 
 import org.apache.log4j.Logger;
 
 /* Gemini imports */
-import gemini.sp.*;
-import gemini.sp.obsComp.*;
+import gemini.sp.SpItem ;
+import gemini.sp.SpTreeMan ;
+import gemini.sp.SpObs ;
+import gemini.sp.SpInsertData ;
+import gemini.sp.SpProg ;
+import gemini.sp.SpFactory ;
+import gemini.sp.SpType ;
 
 /* ORAC imports */
-import orac.jcmt.inst.*;
-import orac.jcmt.iter.*;
-import orac.jcmt.obsComp.*;
-import orac.ukirt.inst.*;
-import orac.ukirt.iter.*;
-import orac.util.*;
+import orac.util.SpInputXML ;
 
 /* ORAC-OM imports */
-//import om.console.*;
-//import om.util.*;
 
 /* QT imports */
-import edu.jach.qt.utils.*;
+import edu.jach.qt.utils.ObsListCellRenderer ;
+import edu.jach.qt.utils.ErrorBox ;
 
 /* Miscellaneous imports */
 // import ocs.utils.*;
@@ -419,46 +458,54 @@ final public class DeferredProgramList extends JPanel implements
 	add(c, gbc);      
     }
 
-    private static void makePersistent(SpItem item)
-    {
-	// Stores this observation in it own unique file in the deferred directory
-	// First make the filename
-	String fName = 
-	    File.separator +
-	    System.getProperty("telescope") + "data" +
-	    File.separator +
-	    System.getProperty("deferredDir") +
-	    File.separator +
-	    makeFilenameForThisItem(item);
-
-	fName = fName.toLowerCase();
-	
-
-	// Now create a new file write to write to this file
-	try {
-	    FileWriter fw = new FileWriter(fName);
-	    fw.write(item.toXML());
-	    fw.flush();
-	    fw.close();
+    private static String getDeferredDirectoryName()
+	{
+		String deferredDirName = File.separator + System.getProperty( "telescope" ) + "data" + File.separator + System.getProperty( "deferredDir" ) ;
+		deferredDirName = deferredDirName.toLowerCase() ;
+		return deferredDirName ;
 	}
-	catch (IOException ioe) {
-	    logger.error("Error writing file " + fName, ioe);
-	}
-	fileToObjectMap.put(item, fName);
-    }
+    
+    private static void makePersistent( SpItem item )
+	{
+		// Stores this observation in it own unique file in the deferred directory
+		// First make the filename
+		String dirName = getDeferredDirectoryName() ;
 
-    private static String makeFilenameForThisItem(SpItem item)
-    {
-	String fName = new String();
-	Date now = new Date();
-// 	String title = item.getTitle();
-// 	StringTokenizer st = new StringTokenizer(title, " /\());
-// 	while (st.hasMoreTokens()) {
-// 	    fName = fName+st.nextToken();
-// 	}
-	fName = now.getTime() + ".xml";
-	return fName;
-    }
+		File deferredDir = new File( dirName ) ;
+		if( !deferredDir.exists() )
+		{
+			logger.error( "Error writing file, directory " + dirName + " does not exist"  , new Exception() ) ;
+		}
+		else if( !deferredDir.canWrite() )
+		{
+			logger.error( "Unable to write to directory " + dirName , new Exception() ) ;						
+		}
+		
+		String fName = dirName + File.separator + makeFilenameForThisItem( item ) ;
+			
+		// Now create a new file write to write to this file
+		try
+		{
+			FileWriter fw = new FileWriter( fName );
+			fw.write( item.toXML() );
+			fw.flush();
+			fw.close();
+		}
+		catch( IOException ioe )
+		{
+			logger.error( "Error writing file " + fName , ioe );
+		}
+		fileToObjectMap.put( item , fName );
+	}
+
+    private static String makeFilenameForThisItem( SpItem item )
+	{
+		String fName = new String();
+		Date now = new Date();
+		fName = now.getTime() + ".xml";
+		fName = fName.toLowerCase() ; // unnecessary 
+		return fName;
+	}
 
     /**
      * Check to see whether any deferre observations exist.
@@ -510,32 +557,31 @@ final public class DeferredProgramList extends JPanel implements
     }
 
     private static String[] getFileList()
-    {
-	// Assume we save deferred obs in <diferred file dir>/<telescope>
-	String deferredFiles [] = {};
-	String deferredDirName = 
-	    File.separator +
-	    System.getProperty("telescope") + "data" +
-	    File.separator +
-	    System.getProperty("deferredDir");
-	deferredDirName = deferredDirName.toLowerCase();
-	
-	File deferredDir = new File (deferredDirName);
-	if (! deferredDir.exists() ) {
-	    // Try to create the directory
-	    logger.info ("Creating deferred directory " + deferredDirName);
-	    deferredDir.mkdir();
-	    return deferredFiles;
-	}
-	else if (deferredDir.canRead() && deferredDir.isDirectory() ) {
-	    deferredFiles = deferredDir.list();
-	}
-	for (int i=0;i<deferredFiles.length; i++) {
-	    deferredFiles[i] = deferredDirName+File.separator+deferredFiles[i];
-	}
-	return deferredFiles;
+	{
+		// Assume we save deferred obs in <diferred file dir>/<telescope>
+		String deferredFiles[] = {};
+		String deferredDirName = getDeferredDirectoryName();
 
-    }
+		File deferredDir = new File( deferredDirName );
+		if( !deferredDir.exists() )
+		{
+			// Try to create the directory
+			logger.info( "Creating deferred directory " + deferredDirName );
+			if( !deferredDir.mkdirs() )
+				logger.info( "Could not create directory " + deferredDirName );
+			return deferredFiles;
+		}
+		else if( deferredDir.canRead() && deferredDir.isDirectory() )
+		{
+			deferredFiles = deferredDir.list();
+		}
+		for( int i = 0 ; i < deferredFiles.length ; i++ )
+		{
+			deferredFiles[ i ] = deferredDirName + File.separator + deferredFiles[ i ];
+		}
+		return deferredFiles;
+
+	}
 
     /**
      * Delete all deferred observation files and clear the contents of the

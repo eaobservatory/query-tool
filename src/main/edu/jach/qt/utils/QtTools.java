@@ -1,24 +1,27 @@
 package edu.jach.qt.utils;
 
+import gemini.sp.SpTreeMan ;
+import gemini.sp.SpObs ;
+import gemini.sp.SpItem ;
 
-import gemini.sp.*;
-import gemini.sp.obsComp.*;
+import java.io.FileInputStream ;
+import java.io.BufferedReader ;
+import java.io.IOException ;
+import java.io.FileWriter ;
+import java.io.InputStreamReader ;
 
-import jsky.app.ot.*;
+import java.util.Properties ;
+import java.util.Calendar ;
+import java.util.GregorianCalendar ;
+import java.util.Vector ;
+import java.util.Enumeration ;
+import java.util.TimeZone ;
 
-import java.io.*;
-import java.util.Properties;
-import java.util.*;
-import java.text.*;
+import java.text.SimpleDateFormat ;
 
-import orac.ukirt.util.SpTranslator;
-import org.apache.log4j.Logger;
+import org.apache.log4j.Logger ;
 
-import orac.jcmt.inst.*;
-import orac.jcmt.iter.*;
-import orac.ukirt.inst.*;
-import orac.ukirt.iter.*;
-import orac.util.*;
+import gemini.util.ConfigWriter ;
 
 
 /***
@@ -189,68 +192,83 @@ public class QtTools {
 
 
   /**
-     String trans (SpItem observation) is a private method
-     to translate an observation java object into an exec string
-     and write it into a ascii file where is located in "EXEC_PATH"
-     directory and has a name stored in "execFilename"
-     
-     @param SpItem observation
-     @return  String a filename
-     
-  */
-  public static String translate(SpItem observation, String inst) {
-    SpTranslator spt = new SpTranslator((SpObs)observation);
-    if ( "true".equalsIgnoreCase(System.getProperty("DRAMA_ENABLED"))) {
-        spt.setSequenceDirectory(System.getProperty("EXEC_PATH"));
-        spt.setConfigDirectory(System.getProperty("CONF_PATH"));
-    }
-    else {
-        spt.setSequenceDirectory(System.getProperty("user.home"));
-        spt.setConfigDirectory(System.getProperty("user.home"));
-    }
-        
-      
-    Properties temp = System.getProperties();
-    String tname = null;
-    String fileProperty = new String(inst+"ExecFilename");
+	 * String trans (SpItem observation) is a private method to translate an observation java object into an exec string and write it into a ascii file where is located in "EXEC_PATH" directory and has a name stored in "execFilename"
+	 * 
+	 * @param SpItem
+	 *            observation
+	 * @return String a filename
+	 * 
+	 */
+	public static String translate( SpItem observation , String inst )
+	{		
+		String tname = null ;
+		try
+		{			
+			if( observation == null )
+				throw new NullPointerException( "Observation passed to translate() is null" ) ;
 
-    try {
-      String tel = null;
-      if ( System.getProperties().get("telescope") . equals("Ukirt")) {
-	tel = "/ukirtdata";
-      } else {
-	tel = "/jcmtdata";
-      } 
-      
-      //FileWriter fw = new FileWriter("/home/dewitt/sequences/transFile");
+			SpObs spObs = null ;
+			if( observation instanceof SpObs )
+			{
+				spObs = ( SpObs )observation ;
+			}
+			else
+			{
+				while( observation != null )
+				{
+					observation = observation.parent() ;
+					if( ( observation != null ) && ( observation instanceof SpObs ) )
+					{
+						spObs = ( SpObs )observation ;
+						break ;
+					}
+				}
+			}
+			if( spObs == null )
+				throw new NullPointerException( "Observation passed to translate() not translatable" ) ;
+			
+			spObs.translate( new Vector() ) ;
+			tname = ConfigWriter.getCurrentInstance().getExecName() ;
+			logger.debug( "Translated file set to: " + tname );
 
-      tname=spt.translate();
-      logger.debug("Translated file set to: "+System.getProperty("EXEC_PATH")+"/"+tname);
+			String fileProperty = new String( inst + "ExecFilename" ) ;
 
-      temp.put(fileProperty,tname);
+			Properties properties = System.getProperties() ;
+			properties.put( fileProperty , tname ) ;
+			logger.debug( "System property " + fileProperty + " now set to " + tname ) ;
+			String tel = null ;
+			if( properties.get( "telescope" ).equals( "Ukirt" ) )
+				tel = "/ukirtdata" ;
+			else
+				tel = "/jcmtdata" ;
+			
+			FileWriter fw = new FileWriter( tel + "/epics_data/smLogs/transFile" );
+			fw.write( tname );
+			fw.close();
 
-      FileWriter fw = new FileWriter(tel+"/epics_data/smLogs/transFile");
-      fw.write(tname);
-      fw.close();
-      logger.debug("System property "+fileProperty+" now set to "+
-		   System.getProperty("EXEC_PATH")+"/"+tname);
-      
-    } catch (NullPointerException e) {
-      logger.fatal("Translation failed!, exception was "+e, e);
-    } catch ( IOException ioe) {
-      logger.fatal("Writting translated file name to transFile failed ", ioe);
-    } catch (Exception e) {
-      logger.fatal("Translation failed!, Missing value "+e);
-    }
-    return tname;
-  }
+		}
+		catch( NullPointerException e )
+		{
+			logger.fatal( "Translation failed!, exception was " + e , e );
+		}
+		catch( IOException ioe )
+		{
+			logger.fatal( "Writting translated file name to transFile failed " , ioe );
+		}
+		catch( Exception e )
+		{
+			logger.fatal( "Translation failed!, Missing value " + e );
+		}
+		return tname;
+	}
 
 
   /**
-   * Loads a DRAMA task
-   *
-   * @param name a <code>String</code> value
-   */
+	 * Loads a DRAMA task
+	 * 
+	 * @param name
+	 *            a <code>String</code> value
+	 */
   public static int loadDramaTasks(String name) {
     //starting the drama tasks
     String[] script = new String[6];

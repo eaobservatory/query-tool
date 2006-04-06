@@ -1,22 +1,23 @@
 package edu.jach.qt.utils;
 
-import gemini.sp.*;
-import gemini.sp.iter.*;
-import gemini.sp.obsComp.*;
+import gemini.sp.SpRootItem ;
+import gemini.sp.SpItem ;
+import gemini.sp.SpObs ;
+import gemini.sp.SpTreeMan ;
 
-import orac.ukirt.iter.*;
-import orac.ukirt.inst.*;
-import orac.ukirt.util.*;
-import orac.util.*;
+import gemini.sp.obsComp.SpInstObsComp ;
+
+import orac.util.SpInputXML ;
 
 import jsky.app.ot.OtFileIO;
 import jsky.app.ot.OtCfg;
 
-import java.io.*;
+import java.util.Enumeration ;
 
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.Vector;
+import java.io.File ;
+import java.io.BufferedReader ;
+import java.io.FileReader ;
+import java.io.Reader ;
 
 public class UkirtTranslator {
 
@@ -62,28 +63,30 @@ public class UkirtTranslator {
         }
     }
 
-    private void doTranslate( String parentName, SpObs obs ) {
-        String obsName = obs.getTitleAttr();
-        if ( obsName == null || obsName.equals("") ) {
-            obsName = obs.typeStr();
-        }
-        String tname;
-        SpTranslator spt = new SpTranslator(obs);
+    private void doTranslate( String parentName , SpObs obs )
+	{
+		String obsName = obs.getTitleAttr();
+		if( obsName == null || obsName.equals( "" ) )
+		{
+			obsName = obs.typeStr();
+		}
+		String tname ;
 
-        try {
-            if ( !_useClassic ) {
-                tname = spt.translate();
-            }
-            else {
-                tname = spt.old_translate();
-            }
-        }
-        catch (Exception e) {
-            System.out.println("Error translating " + parentName + ":" + obsName );
-            return;
-        }
-        System.out.println( "Translation for \"" + parentName + ":" + obsName + "\" stored in " + tname);
-    }
+		try
+		{
+			SpInstObsComp inst = SpTreeMan.findInstrument( obs );
+			if( inst == null )
+				throw new Exception( "No instrument selected" ) ;
+			String instName = inst.type().getReadable() ;
+			tname = QtTools.translate( obs , instName ) ;
+		}
+		catch( Exception e )
+		{
+			System.out.println( "Error translating " + parentName + ":" + obsName );
+			return;
+		}
+		System.out.println( "Translation for \"" + parentName + ":" + obsName + "\" stored in " + tname );
+	}
 
     public static void main (String [] args) {
         // Should take one argument - the name of the input XML file
