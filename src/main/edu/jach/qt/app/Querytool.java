@@ -4,23 +4,36 @@ package edu.jach.qt.app;
 import gemini.sp.SpItem;
 
 /* QT imports */
-import edu.jach.qt.gui.*;
-import edu.jach.qt.utils.*;
+import edu.jach.qt.gui.WidgetDataBag ;
+import edu.jach.qt.gui.LabeledTextField ;
+import edu.jach.qt.gui.LabeledRangeTextField ;
+import edu.jach.qt.gui.WidgetPanel ;
+import edu.jach.qt.utils.NoSuchParameterException ;
+import edu.jach.qt.utils.MsbClient ;
+import edu.jach.qt.utils.SimpleMoon ;
+import edu.jach.qt.utils.TimeUtils ;
 
 /* Standard imports */
 import java.awt.Color;
-import java.io.*;
-import java.util.*;
-import javax.swing.*;
-import java.util.TimeZone;
-import java.text.SimpleDateFormat;
+import java.io.StringWriter ;
+import java.util.Hashtable ;
+import java.util.ListIterator ;
+import java.util.LinkedList ;
+import java.util.Enumeration ;
+import javax.swing.JToggleButton ;
+import javax.swing.JCheckBox ;
+import javax.swing.JRadioButton ;
+import javax.swing.JComboBox ;
 import java.util.StringTokenizer;
 
 /* Miscellaneous imports */
 import org.apache.log4j.Logger;
-import org.apache.xerces.dom.*;
-import org.apache.xml.serialize.*;
-import org.w3c.dom.*;
+import org.apache.xerces.dom.DocumentImpl ;
+import org.apache.xml.serialize.XMLSerializer ;
+import org.apache.xml.serialize.OutputFormat ;
+import org.w3c.dom.Document ;
+import org.w3c.dom.Element ;
+import org.w3c.dom.NodeList ;
 
 /**
  * The <code>Querytool</code> is main driver for the application side
@@ -49,9 +62,9 @@ public class Querytool implements Runnable, Observer {
     private final String OBSERVABILITY_DISABLED = "observability";
     private final String REMAINING_DISABLED     = "remaining";
     private final String ALLOCATION_DISABLED    = "allocation";
-    private final String QUEUE                  = "semester";
+    private final String ZONE_OF_AVOIDANCE_DISABLED		= "zoa" ;
 
-    private boolean remaining, observability, allocation,_q;
+    private boolean remaining, observability, allocation,_q,zoneofavoidance;
     private String _queue;
 
     /**
@@ -97,6 +110,17 @@ public class Querytool implements Runnable, Observer {
         buildXML(bag.getHash());
     }
 
+    /**
+     * Describe <code>setZoneOfAvoidanceConstraint</code> method here.
+     *
+     * @param flag a <code>boolean</code> value that sets the state of
+     * the zone of avoidance constraint.
+     */
+    public void setZoneOfAvoidanceConstraint(boolean flag) {
+        zoneofavoidance = flag;
+        buildXML(bag.getHash());
+    }
+    
     public void setQueue(String q) {
         if (q != null && q != "") {
             _q = true;
@@ -169,6 +193,12 @@ public class Querytool implements Runnable, Observer {
                 root.appendChild(item);
             }
 
+            if (zoneofavoidance) {
+                item = doc.createElement("disableconstraint");
+                item.appendChild( doc.createTextNode(ZONE_OF_AVOIDANCE_DISABLED) );
+                root.appendChild(item);
+            }
+            
             for(Enumeration e = ht.keys(); e.hasMoreElements() ; ) {
                 next = ((String)e.nextElement());
 
@@ -325,11 +355,6 @@ public class Querytool implements Runnable, Observer {
                         {
                             item = doc.createElement("airmass");
                         }
-
-//                         else if ( next.equalsIgnoreCase("semester") )
-//                         {
-//                             item = doc.createElement("semester");
-//                         }
                         else if ( next.equalsIgnoreCase("brightness") ) {
                             item = doc.createElement("sky");
                         }
@@ -383,19 +408,6 @@ public class Querytool implements Runnable, Observer {
 
                     root.appendChild( item );
                 }
-
-                //  	else if (next.equalsIgnoreCase("photometric")) {
-                //  	  item = doc.createElement("cloud");
-                //  	  String tmp = (String)ht.get(next);
-
-                //  	  if (tmp.equals("true") ) {
-                //  	    item.appendChild( doc.createTextNode("0"));
-                //  	  }else {
-                //  	    item.appendChild( doc.createTextNode("1"));
-                //  	  }
-                //  	}
-
-
                 else {
                     item = null;
                     throw (new NullPointerException("A widget in the InputPanel has data, but has not been set!"));
@@ -443,7 +455,6 @@ public class Querytool implements Runnable, Observer {
      * A successful query will write all MSB Summaries to file.
      */
     public void run() {
-        //QuerytoolClient qtc = new QuerytoolClient();
         MsbClient.queryMSB(_xmlString);
     }
 
@@ -485,7 +496,7 @@ public class Querytool implements Runnable, Observer {
     private Element processDate (LabeledRangeTextField lrtf,
             Document doc,
             Element root) {
-        Element item, sub;
+        Element item;
         String tmpStr;
 
         // Make sure the specified time is in a valid format and 
@@ -526,9 +537,6 @@ public class Querytool implements Runnable, Observer {
             double moonValue = 0;
             if ( moon.isUp() ) {
                 moonValue = moon.getIllumination()*100;
-            }
-            else {
-                //                    System.out.println("Moon is down");
             }
             // Delete any existing value and repalce with the new
             NodeList list = root.getElementsByTagName("moon");

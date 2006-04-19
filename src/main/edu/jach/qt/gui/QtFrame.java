@@ -1,24 +1,64 @@
 package edu.jach.qt.gui;
 
 /* QT imports */
-import gemini.sp.*;
+import gemini.sp.SpItem ;
 
 
 /* Miscellaneous imports */
 /* Standard imports */
-import edu.jach.qt.app.*;
-import edu.jach.qt.gui.*;
-import edu.jach.qt.utils.*;
-import java.awt.*;
-import java.awt.event.*;
-import java.io.IOException;
-import java.io.File;
-import java.util.*;
-import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.table.*;
+import edu.jach.qt.app.Querytool ;
+import edu.jach.qt.utils.CalibrationList ;
+import edu.jach.qt.utils.MsbClient ;
+import java.awt.GridBagConstraints ;
+import java.awt.GridBagLayout ;
+import java.awt.AWTEvent ;
+import java.awt.Dimension ;
+import java.awt.BorderLayout ;
+import java.awt.Component ;
+import java.awt.Color ;
+import java.awt.event.ActionListener ;
+import java.awt.event.ActionEvent ;
+import java.awt.event.WindowAdapter ;
+import java.awt.event.WindowEvent ;
+import java.awt.event.MouseMotionAdapter ;
+import java.awt.event.MouseAdapter ;
+import java.awt.event.MouseEvent ;
+import java.io.IOException ;
+import java.io.File ;
+import java.util.Hashtable ;
+import java.util.Vector ;
+import java.util.Iterator ;
+import java.util.Set ;
+import java.util.TreeMap ;
+import javax.swing.JFrame ;
+import javax.swing.JTable ;
+import javax.swing.JMenuItem ;
+import javax.swing.JCheckBoxMenuItem ;
+import javax.swing.JTabbedPane ;
+import javax.swing.JMenu ;
+import javax.swing.JPopupMenu ;
+import javax.swing.JOptionPane ;
+import javax.swing.JScrollPane ;
+import javax.swing.JDialog ;
+import javax.swing.JViewport ;
+import javax.swing.JSplitPane ;
+import javax.swing.ToolTipManager ;
+import javax.swing.ListSelectionModel ;
+import javax.swing.SwingUtilities ;
+import javax.swing.SwingConstants ;
+import javax.swing.ImageIcon ;
+import javax.swing.JMenuBar ;
+import javax.swing.JButton ;
+import javax.swing.event.PopupMenuListener ; 
+import javax.swing.event.MenuListener ; 
+import javax.swing.event.ListSelectionListener ;
+import javax.swing.event.MenuEvent ;
+import javax.swing.event.PopupMenuEvent ;
+import javax.swing.event.ListSelectionEvent ;
+import javax.swing.table.TableColumnModel ;
 import org.apache.log4j.Logger;
-import sun.misc.*;
+import sun.misc.Signal ;
+import sun.misc.SignalHandler ;
 
 /**
  * The <code>QtFrame</code> is responsible for how the main JFrame
@@ -38,8 +78,6 @@ public class QtFrame
 
   private static final String 
     WIDGET_CONFIG_FILE = System.getProperty("widgetFile");
-  private final static String
-    DUMMY_TABLE_DATA = System.getProperty("dummyTable");;
 
   static Logger logger = Logger.getLogger(QtFrame.class);
 
@@ -54,9 +92,9 @@ public class QtFrame
   private JCheckBoxMenuItem	observability;
   private JCheckBoxMenuItem	remaining;
   private JCheckBoxMenuItem	allocation;
-//   private JSplitPane		splitPane;
-  private GridBagConstraints	gbc;
+  private JCheckBoxMenuItem	zoneOfAvoidance ;
   private JTabbedPane		tabbedPane;
+  private GridBagConstraints gbc ;
   private OmpOM			om;
   private WidgetDataBag		widgetBag;
   private Querytool		localQuerytool;
@@ -82,7 +120,6 @@ public class QtFrame
     localQuerytool = qt;
 
     enableEvents(AWTEvent.WINDOW_EVENT_MASK);
-    //enableEvents(AWTEvent.MOUSE_EVENT_MASK);
     GridBagLayout layout = new GridBagLayout();
     getContentPane().setLayout(layout);
     this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -104,9 +141,6 @@ public class QtFrame
 
 
     try {
-//       compInit();
-//       splitPane.validate();
-//       validateTree();
 
       om = new OmpOM();
       om.addNewTree(null);
@@ -240,10 +274,7 @@ public class QtFrame
     tablePanel.validate();
 
 
-//     infoPanel.setMinimumSize(new Dimension(175, 450));
-//     tabbedPane.setMinimumSize(new Dimension(-1, 450));
     tablePanel.setMinimumSize(new Dimension (-1, 100));
-//     tablePanel.setPreferredSize(new Dimension (-1, 300));
 
     JSplitPane topPanel = new JSplitPane (JSplitPane.HORIZONTAL_SPLIT,
 					  infoPanel,
@@ -259,30 +290,6 @@ public class QtFrame
     getContentPane().setLayout(new BorderLayout());
     getContentPane().add(topPanel, BorderLayout.NORTH);
     getContentPane().add(tablePanel, BorderLayout.CENTER);
-
-//     gbc.fill = GridBagConstraints.HORIZONTAL;
-//     gbc.anchor = GridBagConstraints.NORTH;
-//     gbc.weightx = 1.0;
-//     gbc.weighty = 0.0;
-//     add(topPanel, gbc, 0, 0, 2, 2);
-
-//     gbc.fill = GridBagConstraints.NONE;
-// //     gbc.anchor = GridBagConstraints.NORTHWEST;
-//     gbc.weightx = 0;
-//     gbc.weighty = 0.0;
-//     add(infoPanel, gbc, 0, 0, 1, 1);
-
-//     gbc.fill = GridBagConstraints.BOTH;
-// //     gbc.anchor = GridBagConstraints.NORTH;
-//     gbc.weightx = 0.1;
-//     gbc.weighty = 0;
-//     add(tabbedPane, gbc, GridBagConstraints.RELATIVE, 0, GridBagConstraints.REMAINDER, 1);
-
-//     gbc.fill = GridBagConstraints.BOTH;
-//     gbc.anchor = GridBagConstraints.CENTER;
-// //     gbc.weightx = 0;
-// //     gbc.weighty =0.0 ;
-//     add(tablePanel, gbc, 0, 2, 2, 1);
 
     //Read the config to determine the widgets
     try{
@@ -409,16 +416,8 @@ public class QtFrame
 	  }
 	}
 
-	public void mousePressed(MouseEvent e) {
-	  if (e.isPopupTrigger()) {
-	    //popup.show((Component)e.getSource(), e.getX(), e.getY());
-	  }
-	}
-	public void mouseReleased(MouseEvent e) {
-	  if (e.isPopupTrigger()) {
-	    //popup.show((Component)e.getSource(),e.getX(), e.getY());
-	  }
-	}
+	public void mousePressed( MouseEvent e ){}
+	public void mouseReleased( MouseEvent e ){}
 
 
       } );
@@ -551,10 +550,8 @@ public class QtFrame
 
     if (tabbedPane == null) {
       tabbedPane = new JTabbedPane(SwingConstants.TOP);
-//       remove(splitPane);
       tabbedPane.addTab("Query", _widgetPanel);
       tabbedPane.addTab(om.getProgramName(), om.getTreePanel());
-//       add(tabbedPane, gbc, 1, 0, 1, 2);
       validate();
       tabbedPane.setVisible(true);
     }
@@ -584,6 +581,9 @@ public class QtFrame
 	if ( !(allocation.isSelected()) ) {
 	    allocation.doClick();
 	}
+	if ( !(zoneOfAvoidance.isSelected()) ) {
+		zoneOfAvoidance.doClick();
+	}
     }
 
     public void setQueryExpired (boolean flag) {
@@ -602,22 +602,6 @@ public class QtFrame
     if (!e.getValueIsAdjusting()) {        
       selRow = table.getSelectedRow();
     }
-  }
-   
-  private void printDebugData(JTable table) {
-    int numRows = table.getRowCount();
-    int numCols = table.getColumnCount();
-    javax.swing.table.TableModel model = table.getModel();
- 
-    System.out.println("Value of data: ");
-    for (int i=0; i < numRows; i++) {
-      System.out.print("    row " + i + ":");
-      for (int j=0; j < numCols; j++) {
-	System.out.print("  " + model.getValueAt(i, j));
-      }
-      System.out.println();
-    }
-    System.out.println("--------------------------");
   }
 
   /**
@@ -650,9 +634,6 @@ public class QtFrame
       
     JMenu fileMenu = new JMenu("File");
     fileMenu.addMenuListener(this);
-
-    //JMenu constraints = 
-      
 
     JMenuItem openItem = new JMenuItem("Open");
     openItem.setEnabled(false);
@@ -692,6 +673,7 @@ public class QtFrame
     observability = new JCheckBoxMenuItem("Observability",true);
     remaining     = new JCheckBoxMenuItem("Remaining",true);
     allocation    = new JCheckBoxMenuItem("Allocation",true);
+    zoneOfAvoidance    = new JCheckBoxMenuItem("Zone of Avoidance",true);
     disableAll    = new JCheckBoxMenuItem("Disable All", false);
     JMenuItem cutItem = new JMenuItem("Cut", new ImageIcon("icons/cut.gif"));
     cutItem.setEnabled(false);
@@ -706,6 +688,7 @@ public class QtFrame
 		observability,
 		    remaining,
 		    allocation,
+		    zoneOfAvoidance,
 		    null,
 		    disableAll
 		    }, this) 
@@ -743,7 +726,6 @@ public class QtFrame
       JMenu source = (JMenu)evt.getSource();
       if (source.getText().equals("Calibrations")) {
 	  Component [] cals = calibrationMenu.getMenuComponents();
-//       	  if (tabbedPane != null && tabbedPane.getSelectedIndex() > 0) {
       	  if ( tabbedPane != null ) {
 	      for (int iloop=0;iloop<cals.length; iloop++) {
 		  cals[iloop].setEnabled(true);
@@ -769,9 +751,7 @@ public class QtFrame
    *
    * @param evt a <code>MenuEvent</code> value
    */
-  public void menuDeselected(MenuEvent evt) {
-
-  }
+  public void menuDeselected( MenuEvent evt ){}
 
   /**
    * The <code>menuCanceled</code> method is an action triggered when a 
@@ -779,9 +759,7 @@ public class QtFrame
    *
    * @param evt a <code>MenuEvent</code> value
    */
-  public void menuCanceled(MenuEvent evt) {
-
-  }
+  public void menuCanceled( MenuEvent evt ){}
 
   /**
    * Implementation of the ActionListener interface.
@@ -800,11 +778,13 @@ public class QtFrame
 		allocation.setSelected(false);
 		remaining.setSelected(false);
 		observability.setSelected(false);
+		zoneOfAvoidance.setSelected(false);
 	    }
 	    else {
 		allocation.setSelected(true);
 		remaining.setSelected(true);
 		observability.setSelected(true);
+		zoneOfAvoidance.setSelected(true);
 	    }
 	}
 	else {
@@ -813,14 +793,17 @@ public class QtFrame
       localQuerytool.setAllocationConstraint(!allocation.isSelected());
       localQuerytool.setRemainingConstraint(!remaining.isSelected());
       localQuerytool.setObservabilityConstraint(!observability.isSelected());
-      if ( allocation.isSelected() && remaining.isSelected() && observability.isSelected() ) {
+      localQuerytool.setZoneOfAvoidanceConstraint(!zoneOfAvoidance.isSelected());
+      if ( allocation.isSelected() && remaining.isSelected() 
+      && observability.isSelected() && zoneOfAvoidance.isSelected() ) {
           // If all selected - set to green light
           java.net.URL url = ClassLoader.getSystemResource("green_light1.gif");
           ImageIcon icon = new ImageIcon(url);
           InfoPanel.searchButton.setIcon( icon );
           table.setBackground (Color.WHITE);
       }
-      else if ( !allocation.isSelected() && !remaining.isSelected() && !observability.isSelected() ) {
+      else if ( !allocation.isSelected() && !remaining.isSelected() 
+      && !observability.isSelected() && !zoneOfAvoidance.isSelected() ) {
           // No constraints disabled - set to red
           java.net.URL url = ClassLoader.getSystemResource("red_light1.gif");
           ImageIcon icon = new ImageIcon(url);
@@ -934,28 +917,6 @@ public class QtFrame
       r.addActionListener((ActionListener)target);
     return r;
   }
-
-  /**
-   * Overridden so we can exit when window is closed
-   * @param e a <code>WindowEvent</code> value
-   */
-//   protected void processWindowEvent(WindowEvent e) {
-//     super.processWindowEvent(e);
-//     if (e.getID() == WindowEvent.WINDOW_CLOSING) {
-// 	// Delete the user cache file
-// 	File cacheDir = new File ("/tmp/last_user");
-// 	if (cacheDir.exists() && cacheDir.isDirectory() ) {
-// 	    File [] files = cacheDir.listFiles();
-// 	    for (int i=0; i<files.length; i++) {
-// 		if (files[i].isFile()) {
-// 		    files[i].delete();
-// 		}
-// 	    }
-// 	}
-// 	exitQT();
-//     }
-//   }
-
     /**
      * Return the (code>WidgetPanel</code> from this frame.
      */
