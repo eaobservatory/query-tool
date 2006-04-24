@@ -202,6 +202,7 @@ public class QtTools {
 	public static String translate( SpItem observation , String inst )
 	{		
 		String tname = null ;
+		FileWriter fw = null ;
 		try
 		{			
 			if( observation == null )
@@ -242,10 +243,9 @@ public class QtTools {
 			else
 				tel = "/jcmtdata" ;
 			
-			FileWriter fw = new FileWriter( tel + "/epics_data/smLogs/transFile" );
+			fw = new FileWriter( tel + "/epics_data/smLogs/transFile" );
 			fw.write( tname );
-			fw.close();
-
+			fw.flush() ;
 		}
 		catch( NullPointerException e )
 		{
@@ -253,11 +253,27 @@ public class QtTools {
 		}
 		catch( IOException ioe )
 		{
-			logger.fatal( "Writting translated file name to transFile failed " , ioe );
+			logger.fatal( "Writing translated file name to transFile failed " , ioe );
 		}
 		catch( Exception e )
 		{
 			logger.fatal( "Translation failed!, Missing value " + e );
+		}
+		finally
+		{
+			if( fw != null )
+			{
+				try
+				{
+					fw.close() ;
+				}
+				catch( IOException ioe )
+				{
+					logger.fatal( "Error closing file writer " , ioe );
+				}
+			}
+			else
+				System.out.println( "File handle was null" ) ;
 		}
 		return tname;
 	}
