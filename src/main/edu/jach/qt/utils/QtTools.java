@@ -249,7 +249,7 @@ public class QtTools {
 		}
 		catch( NullPointerException e )
 		{
-			logger.fatal( "Translation failed!, exception was " + e , e );
+			logger.fatal( "Translation failed!, Missing value " + e );
 		}
 		catch( IOException ioe )
 		{
@@ -257,7 +257,7 @@ public class QtTools {
 		}
 		catch( Exception e )
 		{
-			logger.fatal( "Translation failed!, Missing value " + e );
+			logger.fatal( "Translation failed!, exception was " + e , e );
 		}
 		finally
 		{
@@ -273,7 +273,9 @@ public class QtTools {
 				}
 			}
 			else
+			{
 				System.out.println( "File handle was null" ) ;
+			}
 		}
 		return tname;
 	}
