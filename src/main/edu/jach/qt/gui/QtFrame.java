@@ -60,6 +60,8 @@ import org.apache.log4j.Logger;
 import sun.misc.Signal ;
 import sun.misc.SignalHandler ;
 
+import java.util.EventListener ;
+
 /**
  * The <code>QtFrame</code> is responsible for how the main JFrame
  * is to look.  It starts 2 panel classes InfoPanel and InputPanel
@@ -625,103 +627,82 @@ public class QtFrame
   }
    
   /**
-   * The <code>buildMenu</code> method builds the menu system.
-   *
-   */
-  public void buildMenu() {
-    JMenuBar mbar = new JMenuBar();
-    setJMenuBar(mbar);
-      
-    JMenu fileMenu = new JMenu("File");
-    fileMenu.addMenuListener(this);
+	 * The <code>buildMenu</code> method builds the menu system.
+	 * 
+	 */
+	public void buildMenu()
+	{
+		JMenuBar mbar = new JMenuBar();
+		setJMenuBar( mbar );
 
-    JMenuItem openItem = new JMenuItem("Open");
-    openItem.setEnabled(false);
-    JMenuItem newItem = new JMenuItem("New");
-    newItem.setEnabled(false);    
-    saveItem   = new JMenuItem("Save");
-    saveItem.setEnabled(false);
-    saveAsItem = new JMenuItem("Save As");
-    saveAsItem.setEnabled(false);
-    exitItem   = new JMenuItem("Exit");
-      
-    mbar.add(makeMenu (fileMenu, new Object[] {
-      newItem, openItem, null, saveItem, saveAsItem,
-      null, exitItem }, this)
-	     );
+		JMenu fileMenu = new JMenu( "File" );
+		fileMenu.addMenuListener( this );
 
+		JMenuItem openItem = new JMenuItem( "Open" );
+		openItem.setEnabled( false );
+		JMenuItem newItem = new JMenuItem( "New" );
+		newItem.setEnabled( false );
+		saveItem = new JMenuItem( "Save" );
+		saveItem.setEnabled( false );
+		saveAsItem = new JMenuItem( "Save As" );
+		saveAsItem.setEnabled( false );
+		exitItem = new JMenuItem( "Exit" );
 
-    JMenu viewMenu = new JMenu ("View");
-    mbar.add(viewMenu);
-    JMenuItem columnItem = new JMenuItem("Columns...");
-    columnItem.addActionListener(this);
-    JMenuItem logItem = new JMenuItem("Log...");
-    logItem.addActionListener(this);
-    JMenu satMenu = new JMenu("Satellite Image");
-    JMenuItem irItem = new JMenuItem("Infra Red");
-    irItem.addActionListener(this);
-    JMenuItem wvItem = new JMenuItem("Water Vapour");
-    wvItem.addActionListener(this);
-    satMenu.add(irItem);
-    satMenu.add(wvItem);
-    viewMenu.add(columnItem);
-    viewMenu.add(logItem);
-    viewMenu.add(satMenu);
+		mbar.add( makeMenu( fileMenu , new Object[]
+		{ newItem , openItem , null , saveItem , saveAsItem , null , exitItem } , this ) );
 
+		JMenu viewMenu = new JMenu( "View" );
+		mbar.add( viewMenu );
+		JMenuItem columnItem = new JMenuItem( "Columns..." );
+		columnItem.addActionListener( this );
+		JMenuItem logItem = new JMenuItem( "Log..." );
+		logItem.addActionListener( this );
+		JMenu satMenu = new JMenu( "Satellite Image" );
+		JMenuItem irItem = new JMenuItem( "Infra Red" );
+		irItem.addActionListener( this );
+		JMenuItem wvItem = new JMenuItem( "Water Vapour" );
+		wvItem.addActionListener( this );
+		satMenu.add( irItem );
+		satMenu.add( wvItem );
+		viewMenu.add( columnItem );
+		viewMenu.add( logItem );
+		viewMenu.add( satMenu );
 
-      
-    observability = new JCheckBoxMenuItem("Observability",true);
-    remaining     = new JCheckBoxMenuItem("Remaining",true);
-    allocation    = new JCheckBoxMenuItem("Allocation",true);
-    zoneOfAvoidance    = new JCheckBoxMenuItem("Zone of Avoidance",true);
-    disableAll    = new JCheckBoxMenuItem("Disable All", false);
-    JMenuItem cutItem = new JMenuItem("Cut", new ImageIcon("icons/cut.gif"));
-    cutItem.setEnabled(false);
-    JMenuItem copyItem = new JMenuItem("Copy", new ImageIcon("icons/copy.gif"));
-    copyItem.setEnabled(false);
-    JMenuItem pasteItem = new JMenuItem("Paste", new ImageIcon("icons/paste.gif"));
-    pasteItem.setEnabled(false);
+		observability = new JCheckBoxMenuItem( "Observability" , true );
+		remaining = new JCheckBoxMenuItem( "Remaining" , true );
+		allocation = new JCheckBoxMenuItem( "Allocation" , true );
+		zoneOfAvoidance = new JCheckBoxMenuItem( "Zone of Avoidance" , true );
+		disableAll = new JCheckBoxMenuItem( "Disable All" , false );
+		JMenuItem cutItem = new JMenuItem( "Cut" , new ImageIcon( "icons/cut.gif" ) );
+		cutItem.setEnabled( false );
+		JMenuItem copyItem = new JMenuItem( "Copy" , new ImageIcon( "icons/copy.gif" ) );
+		copyItem.setEnabled( false );
+		JMenuItem pasteItem = new JMenuItem( "Paste" , new ImageIcon( "icons/paste.gif" ) );
+		pasteItem.setEnabled( false );
 
-    mbar.add( makeMenu("Edit", new Object[] {
-	cutItem, copyItem, pasteItem,
-	    null, makeMenu("Constraints", new Object[] { 
-		observability,
-		    remaining,
-		    allocation,
-		    zoneOfAvoidance,
-		    null,
-		    disableAll
-		    }, this) 
-	    }, this));
-    
-    JMenu helpMenu = new JMenu("Help");
-    helpMenu.setMnemonic('H');
+		mbar.add( makeMenu( "Edit" , new Object[]
+		{ cutItem , copyItem , pasteItem , null , makeMenu( "Constraints" , new Object[]
+		{ observability , remaining , allocation , zoneOfAvoidance , null , disableAll } , this ) } , this ) );
 
-    mbar.add(makeMenu ( helpMenu, 
-			new Object[] { new JMenuItem("Index", 'I'), 
-				       new JMenuItem("About", 'A') },
-			this
-			));
+		JMenu helpMenu = new JMenu( "Help" );
+		helpMenu.setMnemonic( 'H' );
 
-    calibrationList = CalibrationList.getCalibrations(System.getProperty("telescope"));
-    // Get the set of keys:
-    Set keys = calibrationList.keySet();
-    Iterator keyIter = keys.iterator();
-    while ( keyIter.hasNext()  ) {
-	JMenuItem item = new JMenuItem((String)keyIter.next());
-	item.addActionListener(this);
-	calibrationMenu.add(item);
-    }
-    calibrationMenu.addMenuListener(this);
-    mbar.add(calibrationMenu);
-  }
+		mbar.add( makeMenu( helpMenu , new Object[]
+		{ new JMenuItem( "Index" , 'I' ) , new JMenuItem( "About" , 'A' ) } , this ) );
+
+		calibrationMenu.setEnabled( false );
+		mbar.add( calibrationMenu );
+		CalibrationThread calibrationThread = new CalibrationThread( this );
+		calibrationThread.start();
+
+	}
 
   /**
-   * <code>menuSelected</code> method is an action triggered when a 
-   * menu is selected.
-   *
-   * @param evt a <code>MenuEvent</code> value
-   */
+	 * <code>menuSelected</code> method is an action triggered when a menu is selected.
+	 * 
+	 * @param evt
+	 *            a <code>MenuEvent</code> value
+	 */
   public void menuSelected(MenuEvent evt) {  
       JMenu source = (JMenu)evt.getSource();
       if (source.getText().equals("Calibrations")) {
@@ -960,4 +941,29 @@ public class QtFrame
 	}
     }
 
+    public class CalibrationThread extends Thread
+    {
+    	EventListener listener = null ;
+    	public CalibrationThread( EventListener listener )
+    	{
+    		this.listener = listener ;
+    	}
+    	
+    	public void run()
+		{
+			calibrationList = CalibrationList.getCalibrations( System.getProperty( "telescope" ) );
+			// Get the set of keys:
+			Set keys = calibrationList.keySet();
+			Iterator keyIter = keys.iterator();
+			while( keyIter.hasNext() )
+			{
+				JMenuItem item = new JMenuItem( ( String ) keyIter.next() );
+				item.addActionListener( ( ActionListener )listener );
+				calibrationMenu.add( item );
+			}
+			calibrationMenu.addMenuListener( ( MenuListener )listener );
+			calibrationMenu.setEnabled( true );
+		}
+    }
+    
 }//QtFrame
