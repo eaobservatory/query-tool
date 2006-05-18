@@ -131,7 +131,7 @@ final public class ProgramTree extends JPanel implements
 	selectedItem = null;
 
 	Border border=BorderFactory.createMatteBorder(2, 2, 2, 2, Color.white);
-	setBorder(new TitledBorder(border, "Fetched Science Program (SP)", 
+	setBorder(new TitledBorder(border, "Retrieved MSBs", 
 				   0, 0, new Font("Roman",Font.BOLD,12),Color.black));
 	setLayout(new BorderLayout() );
 

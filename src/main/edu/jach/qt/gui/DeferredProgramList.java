@@ -108,7 +108,7 @@ final public class DeferredProgramList extends JPanel implements
     {
 	Border border=BorderFactory.createMatteBorder(2, 2, 2, 2, Color.white);
 	setBorder(new TitledBorder(border, 
-				   "Deferred Science Program (SP)", 
+				   "Deferred MSBs", 
 				   0, 0, 
 				   new Font("Roman",Font.BOLD,12),
 				   Color.black));
