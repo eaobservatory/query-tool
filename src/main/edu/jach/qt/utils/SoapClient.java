@@ -56,92 +56,75 @@ public class SoapClient {
   }
     
   /**
-   * <code>doCall</code> Send the Call with various configurations.
-   *
-   * @param url an <code>URL</code> val indicating the soap server to
-   * connect to.
-   * @param soapAction a <code>String</code>. The URN like
-   * "urn:OMP::MSBServer"
-   * @param methodName a <code>String</code> The name of the method to
-   * call in the server.
-   * @return an <code>Object</code> returned by the method called in
-   * the server .
-   */
-  protected static Object doCall(URL url, String soapAction, String methodName) throws Exception {
-    //String result = "";
-    Object obj = new Object();
+	 * <code>doCall</code> Send the Call with various configurations.
+	 *
+	 * @param url an <code>URL</code> val indicating the soap server to
+	 * connect to.
+	 * @param soapAction a <code>String</code>. The URN like
+	 * "urn:OMP::MSBServer"
+	 * @param methodName a <code>String</code> The name of the method to
+	 * call in the server.
+	 * @return an <code>Object</code> returned by the method called in
+	 * the server .
+	 */
+	protected static Object doCall( URL url , String soapAction , String methodName ) throws Exception
+	{
+		Object obj = new Object();
 
-    //Next 3 statements for getting a struct?
-    //SOAPMappingRegistry smr = new SOAPMappingRegistry();
-    //XMLParameterSerializer xmlSer = new XMLParameterSerializer();
-    //smr.mapTypes(Constants.NS_URI_SOAP_ENC,new
-    //	  QName("http://www.w3.org/1999/XMLSchema", "Struct"),
-    //	    org.w3c.dom.Element.class, xmlSer, xmlSer);
-       
-    try {
-      Call call = new Call();
+		try
+		{
+			Call call = new Call();
 
-      //The next line with the above code to get a struct
-      //call.setSOAPMappingRegistry(smr);
+			call.setTargetObjectURI( soapAction );
+			call.setEncodingStyleURI( Constants.NS_URI_SOAP_ENC );
+			call.setMethodName( methodName );
+			call.setParams( params );
+			if( header != null )
+				call.setHeader( header );
+			soapAction += "#" + methodName;
 
-      call.setTargetObjectURI(soapAction);
-      call.setEncodingStyleURI(Constants.NS_URI_SOAP_ENC);
-      call.setMethodName(methodName);
-      call.setParams(params);
-      if (header != null)
-	call.setHeader(header);
-      soapAction +="#" + methodName;
+			Response resp = call.invoke( url , soapAction );
 
-      //Let's dump the envelope
-      //Envelope env = call.buildEnvelope();
-      //System.out.println(env.toString());
-	    
-      Response resp = call.invoke(url, soapAction);
+			// check response 
+			if( !resp.generatedFault() )
+			{
+				Parameter ret = resp.getReturnValue();
+				if( ret == null )
+					obj = null;
+				else
+					obj = ret.getValue();
 
-      // check response 
-      if (!resp.generatedFault()) {
+				//Reset the params vector.
+				params.clear();
 
-	Parameter ret = resp.getReturnValue();
-	//result = (String) ret.getValue();
-	if (ret == null) {
-	    obj = null;
+				//return result;
+				return obj;
+			}
+			else
+			{
+				Fault fault = resp.getFault();
+
+				if( fault.getFaultCode().equals( FAULT_CODE_INVALID_USER ) )
+				{
+					throw new InvalidUserException( fault.getFaultString() );
+				}
+				JOptionPane.showMessageDialog( null , "Code:    " + fault.getFaultCode() + "\n" + "Problem: " + fault.getFaultString() , "Error Message" , JOptionPane.ERROR_MESSAGE );
+			}
+
+		}
+		catch( InvalidUserException e )
+		{
+			throw e;
+		}
+		catch( SOAPException se )
+		{
+			JOptionPane.showMessageDialog( null , se.getMessage() , "SOAP Exception" , JOptionPane.ERROR_MESSAGE ) ;
+		}
+		catch( Exception e )
+		{
+			e.printStackTrace();
+		}
+		return null;
 	}
-	else {
-	    obj = ret.getValue();
-	}
-
-	//Reset the params vector.
-	params.clear();
-	
-	//return result;
-	return obj;
-
-      }
-      else {
-	Fault fault = resp.getFault ();
-
-	if (fault.getFaultCode().equals(FAULT_CODE_INVALID_USER)) {
-	    throw new InvalidUserException(fault.getFaultString());
-	}
-	JOptionPane.showMessageDialog(null,
-				      "Code:    "+fault.getFaultCode()+"\n" + 
-				      "Problem: "+fault.getFaultString(), 
-				      "Error Message",
-				      JOptionPane.ERROR_MESSAGE);
-
-	//System.out.println ("  Fault Code   = " + fault.getFaultCode());  
-	//System.out.println ("  Fault String = " + fault.getFaultString());
-      }
-	    
-    }
-    catch (InvalidUserException e) {
-	throw e;
-    }
-    catch (Exception e) {
-      e.printStackTrace();
-    }
-	
-    return null;
-  }
 }
 
