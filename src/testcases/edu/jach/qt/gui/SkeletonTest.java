@@ -27,6 +27,5 @@ public class SkeletonTest extends TestCase {
     }
 
     public void testAssert() {
-    	assert(true);
     }
 }

@@ -36,7 +36,7 @@ public class GuiTest extends JFCTestCase{
       Component button;
 
       //Run the code we are testing
-      edu.jach.qt.app.Main.main(new String[0]);
+      edu.jach.qt.app.QT.main(new String[0]);
 
       //Let the AWT Thread show the window
       awtSleep();
