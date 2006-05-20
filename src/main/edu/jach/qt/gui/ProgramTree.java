@@ -3,22 +3,13 @@ package edu.jach.qt.gui;
 
 /* Gemini imports */
 import gemini.sp.*;
-import gemini.sp.obsComp.*;
 
 /* JSKY imports */
-import jsky.app.ot.*;
 
 /* ORAC imports */
 import orac.jcmt.inst.*;
-import orac.jcmt.iter.*;
-import orac.jcmt.obsComp.*;
-import orac.ukirt.inst.*;
-import orac.ukirt.iter.*;
-import orac.util.*;
 
 /* ORAC-OM imports */
-// import om.console.*;
-// import om.util.*;
 
 /* QT imports */
 import edu.jach.qt.utils.*;
@@ -26,9 +17,7 @@ import edu.jach.qt.utils.*;
 /* Standard imports */
 import java.awt.*;
 import java.awt.dnd.*;
-import java.awt.datatransfer.*;
 import java.awt.datatransfer.StringSelection;
-import java.awt.dnd.DragSourceContext;
 import java.awt.event.*;
 import java.io.*;
 import java.net.*;
@@ -36,11 +25,9 @@ import java.util.*;
 import javax.swing.*;
 import javax.swing.border.*;
 import javax.swing.event.*;
-import javax.swing.plaf.*;
 import javax.swing.tree.*;
 
 /* Miscellaneous imports */
-//import ocs.utils.*;
 import org.apache.log4j.Logger;
 import edu.jach.qt.utils.MSBDoneDialog;
 
@@ -351,113 +338,134 @@ final public class ProgramTree extends JPanel implements
 	}
     }
 
-    public void doExecute() {
-	SpItem item = null;
-	boolean isDeferred = false;
-	boolean failed = false;
+    public void doExecute()
+	{
+		SpItem item = null;
+		boolean isDeferred = false;
+		boolean failed = false;
 
-	Thread t = null;
+		Thread t = null;
 
-	if ( selectedItem == null && DeferredProgramList.currentItem == null ) {
-	    JOptionPane.showMessageDialog(null,
-		    "You have not selected an observation!",
-		    "Please select an observation.",
-		    JOptionPane.ERROR_MESSAGE);
-	    return;
-	}
-	else if (selectedItem == null) {
-	    isDeferred =  true;
-	    item = DeferredProgramList.currentItem;
-	}
-	setExecutable(false);
-	engButton.setToolTipText("Run button disabled during execution");
-	if (System.getProperty("telescope").equalsIgnoreCase("ukirt")) {
-	    try {
-		ExecuteUKIRT execute = new ExecuteUKIRT(_useQueue);
-		t = new Thread(execute);
-		t.start();
-		t.join();
-		File failFile = new File ("/ukirtdata/orac_data/deferred/.failure");
-		if (failFile.exists()) {
-		    failed = true;
-		    if ( failFile.length() > 0 ) {
-			StringBuffer error = new StringBuffer();
-			try {
-			    // Read the information from the filure file
-			    BufferedReader rdr = new BufferedReader( new FileReader(failFile) );
-			    String line;
-			    while ( ( line = rdr.readLine() ) != null ) {
-				error.append(line);
-				error.append('\n');
-			    }
-			    new ErrorBox( this, "Failed to Execute. Error was \n" + error.toString() );
+		if( selectedItem == null && DeferredProgramList.currentItem == null )
+		{
+			JOptionPane.showMessageDialog( null , "You have not selected an observation!" , "Please select an observation." , JOptionPane.ERROR_MESSAGE );
+			return;
+		}
+		else if( selectedItem == null )
+		{
+			isDeferred = true;
+			item = DeferredProgramList.currentItem;
+		}
+		setExecutable( false );
+		engButton.setToolTipText( "Run button disabled during execution" );
+		
+		if( System.getProperty( "telescope" ).equalsIgnoreCase( "ukirt" ) )
+		{
+			try
+			{
+				ExecuteUKIRT execute = new ExecuteUKIRT( _useQueue );
+				t = new Thread( execute );
+				t.start();
+				t.join();
+				File failFile = new File( "/ukirtdata/orac_data/deferred/.failure" );
+				if( failFile.exists() )
+				{
+					failed = true;
+					if( failFile.length() > 0 )
+					{
+						StringBuffer error = new StringBuffer();
+						try
+						{
+							// Read the information from the filure file
+							BufferedReader rdr = new BufferedReader( new FileReader( failFile ) );
+							String line;
+							while( ( line = rdr.readLine() ) != null )
+							{
+								error.append( line );
+								error.append( '\n' );
+							}
+							new ErrorBox( this , "Failed to Execute. Error was \n" + error.toString() );
+						}
+						catch( IOException ioe )
+						{
+							// If we failed, output a default error message and reset the error buffer
+							new ErrorBox( this , "Failed to Execute. Check log using View>Log menu button." );
+						}
+					}
+					else
+					{
+						new ErrorBox( this , "Failed to Execute. Check log using View>Log menu button." );
+					}
+				}
+				if( !_useQueue )
+				{
+					if( !isDeferred && !failed )
+					{
+						msbPendingFile = new File( msbPendingDir + projectID + "_" + checkSum + ".pending" );
+						anObservationHasBeenDone = true;
+						markAsDone( obsList.getSelectedIndex() );
+					}
+					else if( !failed )
+					{
+						DeferredProgramList.markThisObservationAsDone( item );
+					}
+
+					if( !isDeferred && IsModelEmpty() && TelescopeDataPanel.DRAMA_ENABLED )
+					{
+						msbDone = showMSBDoneDialog();
+					} // end of if ()
+				}
+				else if( !( failed ) )
+				{
+					// We are using the queue, so assime the observation is done
+					msbDone = true;
+				}
+
+				setExecutable( true );
 			}
-			catch ( IOException ioe ) {
-			    // If we failed, output a default error message and reset the error buffer
-			    new ErrorBox(this, "Failed to Execute. Check log using View>Log menu button.");
-			}		    
-		    }
-		    else {
-			new ErrorBox(this, "Failed to Execute. Check log using View>Log menu button.");
-		    }
+			catch( Exception e )
+			{
+				logger.error( "Failed to execute" , e );
+				if( t != null && t.isAlive() )
+				{
+					logger.info( "Last execution still running" );
+				}
+				setExecutable( true );
+				return;
+			}
+			setExecutable( true );
 		}
-		if ( ! _useQueue ) {
-		    if (!isDeferred && !failed) {
-		        msbPendingFile = new File (msbPendingDir+projectID+"_"+checkSum+".pending");
- 		        anObservationHasBeenDone = true;
-		        markAsDone(obsList.getSelectedIndex());
-		    }
-		    else if (!failed) {
-		        DeferredProgramList.markThisObservationAsDone(item);
-		    }
-	
-		    if ( !isDeferred && 
-		         IsModelEmpty() && 
-		         TelescopeDataPanel.DRAMA_ENABLED) {
-		         msbDone = showMSBDoneDialog();
-		    } // end of if ()
+		else if( System.getProperty( "telescope" ).equalsIgnoreCase( "jcmt" ) )
+		{
+			if( ExecuteJCMT.isRunning() )
+			{
+				setExecutable( false );
+				logger.debug( "Disabling run button since ExecuteJCMT is still running" );
+				engButton.setToolTipText( "Button disabled during execution" );
+				return;
+			}
+			else
+			{
+				try
+				{
+					if( isDeferred )
+					{
+						new ExecuteInThread( item , isDeferred ).start();
+					}
+					else
+					{
+						new ExecuteInThread( _spItem , isDeferred ).start();
+					}
+				}
+				catch( Exception e )
+				{
+					logger.error( "Error running task" , e );
+					setExecutable( true );
+				}
+			}
+			setExecutable( true );
 		}
-		else if ( !(failed) ) {
-		    // We are using the queue, so assime the observation is done
-		    msbDone = true;
-		}
-
-		setExecutable(true);
-	    }
-	    catch (Exception e) {
-		logger.error("Failed to execute",e);
-		if ( t!=null && t.isAlive() ) {
-		    logger.info("Last execution still running");
-		}
-		setExecutable(true);
-		return;
-	    }
-	    setExecutable(true);
 	}
-	else if (System.getProperty("telescope").equalsIgnoreCase("jcmt")) {
-	    if ( ExecuteJCMT.isRunning() ) {
-		setExecutable (false);
-		logger.debug ( "Disabling run button since ExecuteJCMT is still running" );
-		engButton.setToolTipText("Button disabled during execution");
-		return;
-	    }
-	    else {
-		try {
-		    if (isDeferred) {
-			new ExecuteInThread (item, isDeferred).start();
-		    }
-		    else {
-			new ExecuteInThread (_spItem, isDeferred).start();
-		    }
-		}
-		catch (Exception e) {
-		    logger.error("Error running task", e);
-		    setExecutable(true);
-		}
-	    }
-	    setExecutable(true);
-	}
-   }
 
     private void markAsDone(int index) {
 	SpObs obs = (SpObs)model.getElementAt(index);
@@ -561,130 +569,142 @@ final public class ProgramTree extends JPanel implements
     }
 
     /**
-     * Set up the List GUI and populate it with the results of a query.
-     * @param sp  The list of obervations in the MSB.
-     */
-     public void addList(SpItem sp) {
+	 * Set up the List GUI and populate it with the results of a query.
+	 * 
+	 * @param sp
+	 *            The list of obervations in the MSB.
+	 */
+	public void addList( SpItem sp )
+	{
 
-	// Check if there is already an existing model and whether it still has
-	// observations to perform
-	 if ( instrumentContext instanceof SpInstHeterodyne && HTMLViewer.visible() ) {
-	     return;
-	 }
-
-	if ( model != null   && 
-	     msbDone == false &&
-	     ( System.getProperty("telescope").equalsIgnoreCase("ukirt") || instrumentContext instanceof SpInstHeterodyne) && 
-	     anObservationHasBeenDone == true &&
-	     TelescopeDataPanel.DRAMA_ENABLED ) {
-	    if (sp != null) {
-		msbDone = showMSBDoneDialog();
-		// Now check whether we can proceed
-		if (!msbDone) {
-		    logger.info("Cancelled loading of new MSB");
-		    return;
-		}
-	    }
-	    else {
-		// If the input is null we are trying to empty the list.  This
-		// should only happen at startup (in which case model should be
-		// null and we should never get here), or when the user has clicked
-		// on the "Set Default" button, in which case they were probably
-		// searching for programs to do later in the night.
-		return;
-	    }
-	}
-
-	// If we get here we should reinitialise with the new argument
-	anObservationHasBeenDone = false;
-	msbDone = false;
-	_spItem = sp;
-
-	getContext(sp);
-	model = new DefaultListModel();
-
-	if ( _spItem != null ) {
-	    Vector obsVector =  SpTreeMan.findAllItems(sp, "gemini.sp.SpObs");
-	    
-	    Enumeration e = obsVector.elements();
-	    while (e.hasMoreElements() ) {
-		model.addElement(e.nextElement());
-	    } // end of while ()
-	}
-	else {
-	    model.clear();
-	}
-
-	obsList = new JList(model);
-// 	obsList.addFocusListener ( new FocusAdapter() {} );
- 	ToolTipManager.sharedInstance().registerComponent(obsList);
-	ToolTipManager.sharedInstance().setDismissDelay(3000);
-	obsList.setCellRenderer(new ObsListCellRenderer());
-	obsList.setToolTipText( "<html>Optional observations are shown in GREEN<br>Calibrations which have been done are shown in BLUE<br>Suspended MSBs are shown in RED</html>");
-	MouseListener ml = new MouseAdapter()
-	    {
-		public void mouseClicked(MouseEvent e)
+		// Check if there is already an existing model and whether it still has
+		// observations to perform
+		if( instrumentContext instanceof SpInstHeterodyne && HTMLViewer.visible() )
 		{
-		    if (e.getClickCount() == 2) {
-			_useQueue = true;
-			doExecute();
-		    }
-		    else if (e.getClickCount() == 1 && 
-			     (e.getModifiers() & InputEvent.BUTTON1_MASK) == InputEvent.BUTTON1_MASK ) {
-			if (selectedItem != obsList.getSelectedValue() ) {
-			    // Select the new item
-			    selectedItem = (SpItem) obsList.getSelectedValue();
-			    DeferredProgramList.clearSelection();
+			return;
+		}
+
+		if( model != null && msbDone == false && ( System.getProperty( "telescope" ).equalsIgnoreCase( "ukirt" ) || instrumentContext instanceof SpInstHeterodyne ) && anObservationHasBeenDone == true && TelescopeDataPanel.DRAMA_ENABLED )
+		{
+			if( sp != null )
+			{
+				msbDone = showMSBDoneDialog();
+				// Now check whether we can proceed
+				if( !msbDone )
+				{
+					logger.info( "Cancelled loading of new MSB" );
+					return;
+				}
 			}
-			else if (e.getClickCount() == 1)
-			    {
-				if (selectedItem != obsList.getSelectedValue() ) {
-				    // Select the new item
-				    selectedItem = (SpItem) obsList.getSelectedValue();
-				    DeferredProgramList.clearSelection();
-				}
-				else {
-				    obsList.clearSelection();
-				    selectedItem = null;
-				}
-			    }
-		    }
+			else
+			{
+				/* 
+				* If the input is null we are trying to empty the list. This
+				* should only happen at startup (in which case model should be
+				* null and we should never get here), or when the user has clicked
+				* on the "Set Default" button, in which case they were probably
+				* searching for programs to do later in the night.
+				*/
+				return;
+			}
 		}
 
-		public void mousePressed(MouseEvent e) {
-		    DeferredProgramList.clearSelection();
-		    enableList(false);
+		// If we get here we should reinitialise with the new argument
+		anObservationHasBeenDone = false;
+		msbDone = false;
+		_spItem = sp;
+
+		getContext( sp );
+		model = new DefaultListModel();
+
+		if( _spItem != null )
+		{
+			Vector obsVector = SpTreeMan.findAllItems( sp , "gemini.sp.SpObs" );
+
+			Enumeration e = obsVector.elements();
+			while( e.hasMoreElements() )
+			{
+				model.addElement( e.nextElement() );
+			} // end of while ()
 		}
-		public void mouseReleased(MouseEvent e) {
-		    enableList(true);
+		else
+		{
+			model.clear();
 		}
-	    };
-	obsList.addMouseListener(ml);
-	MouseListener popupListener = new PopupListener();
-	obsList.addMouseListener(popupListener);
-	if (model.size() > 0) {
-	    obsList.setSelectedIndex(0);
-	    selectedItem = (SpItem) obsList.getSelectedValue();
+
+		obsList = new JList( model );
+		ToolTipManager.sharedInstance().registerComponent( obsList );
+		ToolTipManager.sharedInstance().setDismissDelay( 3000 );
+		obsList.setCellRenderer( new ObsListCellRenderer() );
+		obsList.setToolTipText( "<html>Optional observations are shown in GREEN<br>Calibrations which have been done are shown in BLUE<br>Suspended MSBs are shown in RED<br>Observations sent to the queue are shown in ORANGE</html>" );
+		MouseListener ml = new MouseAdapter()
+		{
+			public void mouseClicked( MouseEvent e )
+			{
+				if( e.getClickCount() == 2 )
+				{
+					_useQueue = true;
+					doExecute();
+				}
+				else if( e.getClickCount() == 1 && ( e.getModifiers() & InputEvent.BUTTON1_MASK ) == InputEvent.BUTTON1_MASK )
+				{
+					if( selectedItem != obsList.getSelectedValue() )
+					{
+						// Select the new item
+						selectedItem = ( SpItem ) obsList.getSelectedValue();
+						DeferredProgramList.clearSelection();
+					}
+					else if( e.getClickCount() == 1 )
+					{
+						if( selectedItem != obsList.getSelectedValue() )
+						{
+							// Select the new item
+							selectedItem = ( SpItem ) obsList.getSelectedValue();
+							DeferredProgramList.clearSelection();
+						}
+						else
+						{
+							obsList.clearSelection();
+							selectedItem = null;
+						}
+					}
+				}
+			}
+
+			public void mousePressed( MouseEvent e )
+			{
+				DeferredProgramList.clearSelection();
+				enableList( false );
+			}
+
+			public void mouseReleased( MouseEvent e )
+			{
+				enableList( true );
+			}
+		};
+		obsList.addMouseListener( ml );
+		MouseListener popupListener = new PopupListener();
+		obsList.addMouseListener( popupListener );
+		if( model.size() > 0 )
+		{
+			obsList.setSelectedIndex( 0 );
+			selectedItem = ( SpItem ) obsList.getSelectedValue();
+		}
+
+		dragSource.createDefaultDragGestureRecognizer( obsList , DnDConstants.ACTION_MOVE , this );
+		// Add the listbox to a scrolling pane
+		scrollPane.getViewport().removeAll();
+		scrollPane.getViewport().add( obsList );
+		scrollPane.getViewport().setOpaque( false );
+
+		gbc.fill = GridBagConstraints.BOTH;
+		gbc.insets.bottom = 5;
+		gbc.insets.left = 10;
+		gbc.insets.right = 5;
+		gbc.weightx = 100;
+		gbc.weighty = 100;
+		add( scrollPane , gbc , 0 , 0 , 2 , 1 );
 	}
-
-	dragSource.createDefaultDragGestureRecognizer(obsList,
-						      DnDConstants.ACTION_MOVE,
-						      this);
-	// Add the listbox to a scrolling pane
-	scrollPane.getViewport().removeAll();
-	scrollPane.getViewport().add(obsList);
-	scrollPane.getViewport().setOpaque(false);
-
-	gbc.fill = GridBagConstraints.BOTH;
-	//gbc.anchor = GridBagConstraints.EAST;
-	gbc.insets.bottom = 5;
-	gbc.insets.left = 10;
-	gbc.insets.right = 5;
-	gbc.weightx = 100;
-	gbc.weighty = 100;
-	add(scrollPane, gbc, 0, 0, 2, 1);
-    
-    }
 
     /**
      * Clear the selection from the Prgram Tree List.
@@ -1317,142 +1337,167 @@ final public class ProgramTree extends JPanel implements
 
     public JButton getRunButton () {return engButton;}
 
-    public class ExecuteInThread extends Thread {
-	SpItem _item;
-        SpItem _deferredItem;
-	boolean _isDeferred;
+    public class ExecuteInThread extends Thread
+	{
+		SpItem _item;
 
-	public ExecuteInThread ( SpItem item, boolean deferred ) {
-	    // if this is a deferred observation, then we need to
-	    // convert the supplied item, which is an SpObs into
-	    // an SpProg
-	    if ( deferred ) {
-		SpProg root = (SpProg) SpFactory.create(SpType.SCIENCE_PROGRAM);
-		root.setPI("observer");
-		root.setCountry("JAC");
-		root.setProjectID("CAL");
-		SpInsertData spID = SpTreeMan.evalInsertInside(item, root);
-		if ( spID != null ) {
-		    SpTreeMan.insert(spID);
-		}
-                _deferredItem = item;
-		_item = (SpItem)root;
-	    }
-	    else {
-	        _item = item;
-	    }
-	    _isDeferred = deferred;
-	}
+		SpItem _deferredItem;
 
-	public void run () {
-	    ExecuteJCMT execute;
-	    boolean failed = false;
-	    msbDone = false;
+		boolean _isDeferred;
 
-	    File failFile = new File ("/jcmtdata/orac_data/deferred/.failure");
-	    execute = ExecuteJCMT.getInstance(_item);
-	    if ( execute == null ) return;
-	    try {
-		failed = execute.run();
-	    }
-	    catch (Exception e) {
-		if (!failFile.exists()) {
-		    try { 
-			failFile.createNewFile();
-		    }
-		    catch (IOException ioe) {
-			logger.error( "Execution failed and could not return normally" );
-			setExecutable (true);
-			return;
-		    }
-		}
-	    }
-
-	    if (failFile.exists()) {
-		logger.info("Execution failed - Check log messages");
-		if ( failFile.length() > 0 ) {
-		    StringBuffer error = new StringBuffer();
-		    try {
-			// Read the information from the filure file
-			BufferedReader rdr = new BufferedReader( new FileReader(failFile) );
-			String line;
-			while ( ( line = rdr.readLine() ) != null ) {
-			    error.append(line);
-			    error.append('\n');
-			}		    
-			new PopUp ("JCMT Execution Failed",
-				   "Failed to send project for execution; Error was \n" + error.toString(),
-				   JOptionPane.ERROR_MESSAGE).start();
-		    }
-		    catch ( IOException ioe ) {
-			// If we failed, output a default error message and reset the error buffer
-			new PopUp ("JCMT Execution Failed",
-				   "Failed to send project for execution; check log entries using the View>Log button",
-				   JOptionPane.ERROR_MESSAGE).start();
-		    }
-		}
-		else {
-		    new PopUp ("JCMT Execution Failed",
-			       "Failed to send project for execution; check log entries using the View>Log button",
-			       JOptionPane.ERROR_MESSAGE).start();
-		}
-		failed = true;
-	    }
-	    if (!_isDeferred && !failed) {
-		if (instrumentContext instanceof SpInstSCUBA) {
-		    model.clear();
-		    _spItem = null;
-		    selectedItem = null;
-		}
-		else {
-		    // See if the HTMLViewer is still visible.  If it is, put
-		    // this thread to sleep for a while.
-		    while ( HTMLViewer.visible() ) {
-			try {
-			    Thread.sleep(500);
+		public ExecuteInThread( SpItem item , boolean deferred )
+		{
+			// if this is a deferred observation, then we need to
+			// convert the supplied item, which is an SpObs into
+			// an SpProg
+			if( deferred )
+			{
+				SpProg root = ( SpProg ) SpFactory.create( SpType.SCIENCE_PROGRAM );
+				root.setPI( "observer" );
+				root.setCountry( "JAC" );
+				root.setProjectID( "CAL" );
+				SpInsertData spID = SpTreeMan.evalInsertInside( item , root );
+				if( spID != null )
+				{
+					SpTreeMan.insert( spID );
+				}
+				_deferredItem = item;
+				_item = ( SpItem ) root;
 			}
-			catch ( Exception x) {}
-			continue;
-		    }
-		    // For heterodyne, mark all the observation as done and bring up the popup
-		    for (int i=0; i<obsList.getModel().getSize(); i++) {
-			markAsDone(i);
-			if (TelescopeDataPanel.DRAMA_ENABLED &&
-		            System.getProperty("DOMAIN").equals("jcmt") ) {
-			    anObservationHasBeenDone = true;
-			    msbPendingFile = new File (msbPendingDir+projectID+"_"+checkSum+".pending");
-			    msbDone = showMSBDoneDialog();
+			else
+			{
+				_item = item;
 			}
-		    }
+			_isDeferred = deferred;
 		}
-	    }
-	    else if (!failed) {
-		DeferredProgramList.markThisObservationAsDone(_deferredItem);
-	    }
-            _deferredItem = null;
-	    setExecutable (true);
-	    logger.debug ( "Enabling run button since the ExecuteJCMT task has completed" );
-	}
 
-	public class PopUp extends Thread{
-	    String _message;
-	    String _title;
-	    int    _errLevel;
-	    
-	    public PopUp (String title, String message, int errorLevel) {
-		_message=message;
-		_title = title;
-		_errLevel=errorLevel;
-	    }
+		public void run()
+		{
+			ExecuteJCMT execute;
+			boolean failed = false;
+			msbDone = false;
 
-	    public void run() {
-		JOptionPane.showMessageDialog(null,
-					      _message,
-					      _title,
-					      _errLevel);
-	    }
+			File failFile = new File( "/jcmtdata/orac_data/deferred/.failure" );
+			execute = ExecuteJCMT.getInstance( _item );
+			if( execute == null )
+				return;
+			try
+			{
+				failed = execute.run();
+			}
+			catch( Exception e )
+			{
+				if( !failFile.exists() )
+				{
+					try
+					{
+						failFile.createNewFile();
+					}
+					catch( IOException ioe )
+					{
+						logger.error( "Execution failed and could not return normally" );
+						setExecutable( true );
+						return;
+					}
+				}
+			}
+
+			if( failFile.exists() )
+			{
+				logger.info( "Execution failed - Check log messages" );
+				if( failFile.length() > 0 )
+				{
+					StringBuffer error = new StringBuffer();
+					try
+					{
+						// Read the information from the filure file
+						BufferedReader rdr = new BufferedReader( new FileReader( failFile ) );
+						String line;
+						while( ( line = rdr.readLine() ) != null )
+						{
+							error.append( line );
+							error.append( '\n' );
+						}
+						new PopUp( "JCMT Execution Failed" , "Failed to send project for execution; Error was \n" + error.toString() , JOptionPane.ERROR_MESSAGE ).start();
+					}
+					catch( IOException ioe )
+					{
+						// If we failed, output a default error message and reset the error buffer
+						new PopUp( "JCMT Execution Failed" , "Failed to send project for execution; check log entries using the View>Log button" , JOptionPane.ERROR_MESSAGE ).start();
+					}
+				}
+				else
+				{
+					new PopUp( "JCMT Execution Failed" , "Failed to send project for execution; check log entries using the View>Log button" , JOptionPane.ERROR_MESSAGE ).start();
+				}
+				failed = true;
+			}
+			if( !_isDeferred && !failed )
+			{
+				if( instrumentContext instanceof SpInstSCUBA )
+				{
+					model.clear();
+					_spItem = null;
+					selectedItem = null;
+				}
+				else
+				{
+					// See if the HTMLViewer is still visible. If it is, put
+					// this thread to sleep for a while.
+					while( HTMLViewer.visible() )
+					{
+						try
+						{
+							Thread.sleep( 500 );
+						}
+						catch( Exception x )
+						{
+						}
+						continue;
+					}
+					// For heterodyne, mark all the observation as done and bring up the popup
+					for( int i = 0 ; i < obsList.getModel().getSize() ; i++ )
+					{
+						markAsDone( i );
+						if( TelescopeDataPanel.DRAMA_ENABLED && System.getProperty( "DOMAIN" ).equals( "jcmt" ) )
+						{
+							anObservationHasBeenDone = true;
+							msbPendingFile = new File( msbPendingDir + projectID + "_" + checkSum + ".pending" );
+							msbDone = showMSBDoneDialog();
+						}
+					}
+				}
+			}
+			else if( !failed )
+			{
+				DeferredProgramList.markThisObservationAsDone( _deferredItem );
+			}
+			_deferredItem = null;
+			setExecutable( true );
+			logger.debug( "Enabling run button since the ExecuteJCMT task has completed" );
+		}
+
+		public class PopUp extends Thread
+		{
+			String _message;
+
+			String _title;
+
+			int _errLevel;
+
+			public PopUp( String title , String message , int errorLevel )
+			{
+				_message = message;
+				_title = title;
+				_errLevel = errorLevel;
+			}
+
+			public void run()
+			{
+				JOptionPane.showMessageDialog( null , _message , _title , _errLevel );
+			}
+		}
+
 	}
-	    
-    }
 
 }
