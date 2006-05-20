@@ -611,7 +611,7 @@ final public class ProgramTree extends JPanel implements
 
 		// If we get here we should reinitialise with the new argument
 		anObservationHasBeenDone = false;
-		msbDone = false;
+		msbDone = false; 
 		_spItem = sp;
 
 		getContext( sp );

@@ -70,7 +70,7 @@ public class ExecuteUKIRT extends Execute implements Runnable {
 		}
 		
 		if( itemToExecute != null )
-		{
+		{ 
 			SpItem obs = itemToExecute ;
 			SpItem child = itemToExecute.child() ;
 			if( child instanceof SpMSB )

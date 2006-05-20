@@ -7,7 +7,7 @@ import java.util.zip.CRC32 ;
 import java.security.MessageDigest ;
 import java.security.NoSuchAlgorithmException ;
 
-public class QueuedMap
+public class QueuedMap 
 {
 
 	protected TreeMap treeMap = null ;

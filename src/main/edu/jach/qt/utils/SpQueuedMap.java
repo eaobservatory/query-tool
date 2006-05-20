@@ -8,7 +8,7 @@ public class SpQueuedMap extends QueuedMap
 
 	private static SpQueuedMap queuedMap = null ;
 	
-	private SpQueuedMap()
+	private SpQueuedMap() 
 	{
 		super() ;
 	}
