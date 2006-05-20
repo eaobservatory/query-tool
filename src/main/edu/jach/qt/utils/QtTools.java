@@ -3,6 +3,7 @@ package edu.jach.qt.utils;
 import gemini.sp.SpTreeMan ;
 import gemini.sp.SpObs ;
 import gemini.sp.SpItem ;
+import gemini.sp.SpTranslationNotSupportedException ;
 
 import java.io.FileInputStream ;
 import java.io.BufferedReader ;
@@ -202,7 +203,6 @@ public class QtTools {
 	public static String translate( SpItem observation , String inst )
 	{		
 		String tname = null ;
-		FileWriter fw = null ;
 		try
 		{			
 			if( observation == null )
@@ -229,11 +229,21 @@ public class QtTools {
 				throw new NullPointerException( "Observation passed to translate() not translatable" ) ;
 			
 			spObs.translate( new Vector() ) ;
+		}
+		catch( NullPointerException e )
+		{
+			logger.fatal( "Translation failed!, Missing value " + e );
+		}
+		catch( SpTranslationNotSupportedException sptnse )
+		{
+			logger.fatal( "Translation failed! " + sptnse );
+		}
+		FileWriter fw = null ;
+		try
+		{
 			tname = ConfigWriter.getCurrentInstance().getExecName() ;
 			logger.debug( "Translated file set to: " + tname );
-
 			String fileProperty = new String( inst + "ExecFilename" ) ;
-
 			Properties properties = System.getProperties() ;
 			properties.put( fileProperty , tname ) ;
 			logger.debug( "System property " + fileProperty + " now set to " + tname ) ;
@@ -242,14 +252,9 @@ public class QtTools {
 				tel = "/ukirtdata" ;
 			else
 				tel = "/jcmtdata" ;
-			
 			fw = new FileWriter( tel + "/epics_data/smLogs/transFile" );
 			fw.write( tname );
 			fw.flush() ;
-		}
-		catch( NullPointerException e )
-		{
-			logger.fatal( "Translation failed!, Missing value " + e );
 		}
 		catch( IOException ioe )
 		{
