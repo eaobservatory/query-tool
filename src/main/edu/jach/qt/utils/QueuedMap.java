@@ -29,6 +29,8 @@ public class QueuedMap
 
 	public boolean put( String key , Object value )
 	{
+		if( key == null )
+			return false ;
 		String hashed = hash( key ) ;
 		boolean replacement = treeMap.containsKey( hashed ) ;
 		treeMap.put( hashed , value ) ;
@@ -37,12 +39,16 @@ public class QueuedMap
 	
 	public boolean contains( String key )
 	{
+		if( key == null )
+			return false ;
 		String hashed = hash( key ) ;
 		return treeMap.containsKey( hashed ) ;
 	}
 	
 	protected String hash( String input )
 	{
+		if( input == null )
+			return "" ;
 		String hashed = input ;
 		byte[] bytes = input.getBytes() ; 
 		if( tryDigest )

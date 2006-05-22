@@ -22,6 +22,8 @@ public class SpQueuedMap extends QueuedMap
 	
 	public boolean putSpItem( SpItem item )
 	{
+		if( item == null )
+			return false ;
 		String checksum = msbChecksum( item ) ;
 		if( !checksum.equals( "" ) )
 		{
@@ -34,6 +36,8 @@ public class SpQueuedMap extends QueuedMap
 	
 	public boolean containsSpItem( SpItem item )
 	{
+		if( item == null )
+			return false ;
 		String checksum = msbChecksum( item ) ;
 		if( checksum.equals( "" ) )
 			checksum = hash( item.toXML() ) ;

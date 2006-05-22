@@ -356,6 +356,22 @@ final public class ProgramTree extends JPanel implements
 			isDeferred = true;
 			item = DeferredProgramList.currentItem;
 		}
+		
+		if( SpQueuedMap.getSpQueuedMap().containsSpItem( selectedItem ) || SpQueuedMap.getSpQueuedMap().containsSpItem( item ) )
+		{
+			int result = JOptionPane.showConfirmDialog
+			( 
+				null ,
+				"This observation has previously been sent to the queue.\n\nSend again ?",
+				"Previously queued observation" , 
+				JOptionPane.YES_NO_OPTION 
+			) ;
+			if( result != 0 )
+			{
+				return ;
+			}	
+		}
+		
 		setExecutable( false );
 		engButton.setToolTipText( "Run button disabled during execution" );
 		

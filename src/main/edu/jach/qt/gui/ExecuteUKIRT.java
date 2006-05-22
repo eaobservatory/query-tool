@@ -1,18 +1,17 @@
 package edu.jach.qt.gui;
 
-import edu.jach.qt.utils.*;
-import gemini.sp.*;
-import gemini.sp.obsComp.*;
-import java.io.*;
-import java.util.*;
-import javax.swing.*;
-import ocs.utils.*;
-import orac.jcmt.inst.*;
-import orac.jcmt.iter.*;
-import orac.jcmt.obsComp.*;
-import orac.ukirt.inst.*;
-import orac.ukirt.iter.*;
-import orac.util.*;
+import edu.jach.qt.utils.QtTools ;
+import edu.jach.qt.utils.SpQueuedMap ;
+import gemini.sp.SpItem ;
+import gemini.sp.SpMSB ;
+import gemini.sp.SpTreeMan ;
+import java.io.File ;
+import java.io.IOException ;
+import java.io.InputStream ;
+import java.io.FileWriter ;
+import java.io.BufferedWriter ;
+import java.io.Serializable ;
+import javax.swing.JOptionPane ;
 import org.apache.log4j.Logger;
 
 
@@ -20,7 +19,6 @@ public class ExecuteUKIRT extends Execute implements Runnable {
 
     static Logger logger = Logger.getLogger(ExecuteUKIRT.class);
 
-    private String myInst;
     private boolean _useQueue;
 
     
@@ -100,7 +98,6 @@ public class ExecuteUKIRT extends Execute implements Runnable {
 		// failed:
 		if( tname == null )
 		{
-			// new ErrorBox ("Translation failed. Please report this!");
 			logger.error( "Translation failed. Please report this!" );
 			success.delete();
 			return;
