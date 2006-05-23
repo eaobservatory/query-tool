@@ -45,9 +45,12 @@ public class Splash
 
 	public void done()
 	{
-		window.hide() ;
-		window.dispose() ;
-		window = null ;
+		if( window != null )
+		{
+			window.hide() ;
+			window.dispose() ;
+			window = null ;
+		}
 	}
 
 }
