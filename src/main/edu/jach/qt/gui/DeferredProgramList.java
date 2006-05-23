@@ -492,26 +492,36 @@ final public class DeferredProgramList extends JPanel implements
 		File deferredDir = new File( dirName ) ;
 		if( !deferredDir.exists() )
 		{
-			logger.error( "Error writing file, directory " + dirName + " does not exist"  , new Exception() ) ;
+			logger.error( "Error writing file, directory " + dirName + " does not exist"  , new FileNotFoundException() ) ;
 		}
 		else if( !deferredDir.canWrite() )
 		{
-			logger.error( "Unable to write to directory " + dirName , new Exception() ) ;						
+			logger.error( "Unable to write to directory " + dirName , new FileNotFoundException() ) ;						
 		}
 		
 		String fName = dirName + File.separator + makeFilenameForThisItem( item ) ;
-			
+		FileWriter fw = null ;
 		// Now create a new file write to write to this file
 		try
 		{
-			FileWriter fw = new FileWriter( fName );
+			fw = new FileWriter( fName );
 			fw.write( item.toXML() );
 			fw.flush();
-			fw.close();
 		}
 		catch( IOException ioe )
 		{
 			logger.error( "Error writing file " + fName , ioe );
+		}
+		finally
+		{
+			if( fw != null )
+			{
+				try
+				{
+					fw.close() ;
+				}
+				catch( IOException ioe ){}
+			}
 		}
 		fileToObjectMap.put( item , fName );
 	}
