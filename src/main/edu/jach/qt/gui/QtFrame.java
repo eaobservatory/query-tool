@@ -62,6 +62,8 @@ import sun.misc.SignalHandler ;
 
 import java.util.EventListener ;
 
+import edu.jach.qt.utils.Splash ;
+
 /**
  * The <code>QtFrame</code> is responsible for how the main JFrame
  * is to look.  It starts 2 panel classes InfoPanel and InputPanel
@@ -209,99 +211,104 @@ public class QtFrame
   }
 
   /**
-   * Component initialization.
-   * Initialises all of the components on the frame.
-   * @exception Exception on error.
-   */
-  private void compInit() throws Exception  {
-    gbc = new GridBagConstraints();
+	 * Component initialization. Initialises all of the components on the frame.
+	 * 
+	 * @exception Exception
+	 *                on error.
+	 */
+	private void compInit() throws Exception
+	{	
+		Splash splash = new Splash( this , "Waiting for database ..." ) ;
+		
+		gbc = new GridBagConstraints();
 
-    // Check whether deferred Observations currently exist and ask the user if he wants to
-    // use these.  If they don't then delete the current files
-    if (DeferredProgramList.obsExist()) {
-	JOptionPane pane = new JOptionPane ( "Use current deferred Observations?",
-		                             JOptionPane.QUESTION_MESSAGE,
-					     JOptionPane.YES_NO_OPTION);
+		// Check whether deferred Observations currently exist and ask the user if he wants to
+		// use these. If they don't then delete the current files
+		if( DeferredProgramList.obsExist() )
+		{
+			JOptionPane pane = new JOptionPane( "Use current deferred Observations?" , JOptionPane.QUESTION_MESSAGE , JOptionPane.YES_NO_OPTION );
 
-	final JDialog dialog = pane.createDialog (this, "Deferred Observations Exist");
-	dialog.addWindowListener( new WindowAdapter () {
-		 public void windowDeactivated(WindowEvent we) {
-		     dialog.toFront();
-		 }
-        });
-	dialog.show();
-	int selection;
-	Object selectedValue = pane.getValue();
-	if ( selectedValue == null ) {
-	    // User didn't make a choice so take the safe option and assume
-	    // they didn't want to delete
-	    selection = JOptionPane.YES_OPTION;
+			final JDialog dialog = pane.createDialog( this , "Deferred Observations Exist" );
+			dialog.addWindowListener( new WindowAdapter()
+			{
+				public void windowDeactivated( WindowEvent we )
+				{
+					dialog.toFront();
+				}
+			} );
+			dialog.show();
+			int selection;
+			Object selectedValue = pane.getValue();
+			if( selectedValue == null )
+			{
+				// User didn't make a choice so take the safe option and assume
+				// they didn't want to delete
+				selection = JOptionPane.YES_OPTION;
+			}
+			else
+			{
+				selection = ( ( Integer ) selectedValue ).intValue();
+			}
+
+			if( selection == JOptionPane.NO_OPTION )
+			{
+				DeferredProgramList.deleteAllFiles();
+			}
+		}
+
+		// Input Panel Setup
+		WidgetPanel inputPanel = new WidgetPanel( new Hashtable() , widgetBag );
+		_widgetPanel = inputPanel;
+		buildStagingPanel();
+		// Table setup
+		try
+		{
+			msbQTM = new MSBQueryTableModel();
+		}
+		catch( Exception e )
+		{
+			logger.error( "Unable to create table model" , e );
+			exitQT();
+		}
+		infoPanel = new InfoPanel( msbQTM , localQuerytool , this );
+
+		ProjectTableModel ptm = new ProjectTableModel();
+		projectTableSetup( ptm );
+		tableSetup();
+		JScrollPane resultsPanel = new JScrollPane( table );
+		resultsPanel.getViewport().setScrollMode( JViewport.BLIT_SCROLL_MODE );
+		JScrollPane projectPane = new JScrollPane( projectTable );
+		projectPane.getViewport().setScrollMode( JViewport.BLIT_SCROLL_MODE );
+
+		JSplitPane tablePanel = new JSplitPane( JSplitPane.HORIZONTAL_SPLIT , projectPane , resultsPanel );
+		tablePanel.setDividerSize( 0 );
+		tablePanel.validate();
+
+		tablePanel.setMinimumSize( new Dimension( -1 , 100 ) );
+
+		JSplitPane topPanel = new JSplitPane( JSplitPane.HORIZONTAL_SPLIT , infoPanel , tabbedPane );
+		topPanel.setMinimumSize( new Dimension( -1 , 450 ) );
+		topPanel.setDividerSize( 0 );
+		topPanel.validate();
+
+		// Build Menu
+		buildMenu();
+
+		getContentPane().setLayout( new BorderLayout() );
+		getContentPane().add( topPanel , BorderLayout.NORTH );
+		getContentPane().add( tablePanel , BorderLayout.CENTER );
+
+		// Read the config to determine the widgets
+		try
+		{
+			inputPanel.parseConfig( WIDGET_CONFIG_FILE );
+		}
+		catch( IOException e )
+		{
+			logger.fatal( "Widget Panel Parse Failed" , e );
+		}
+		splash.done() ;
 	}
-	else {
-	    selection = ( (Integer)selectedValue).intValue();
-	}
-	
-	if (selection == JOptionPane.NO_OPTION) {
-	    DeferredProgramList.deleteAllFiles();
-	}
-    }
-
-    //Input Panel Setup
-    WidgetPanel inputPanel = new WidgetPanel(new Hashtable(), widgetBag);
-    _widgetPanel = inputPanel;
-    buildStagingPanel();
-    //Table setup
-    try {
-	msbQTM = new MSBQueryTableModel();
-    }
-    catch (Exception e) {
-	logger.error("Unable to create table model", e);
-	exitQT();
-    }
-    infoPanel = new InfoPanel (msbQTM, localQuerytool, this);
-
-
-    ProjectTableModel ptm = new ProjectTableModel();
-    projectTableSetup(ptm);
-    tableSetup();
-    JScrollPane resultsPanel = new JScrollPane(table);
-    resultsPanel.getViewport().setScrollMode(JViewport.BLIT_SCROLL_MODE); 
-    JScrollPane projectPane = new JScrollPane(projectTable);
-    projectPane.getViewport().setScrollMode(JViewport.BLIT_SCROLL_MODE);
-
-    JSplitPane tablePanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
-					   projectPane,
-					   resultsPanel);
-    tablePanel.setDividerSize(0);
-    tablePanel.validate();
-
-
-    tablePanel.setMinimumSize(new Dimension (-1, 100));
-
-    JSplitPane topPanel = new JSplitPane (JSplitPane.HORIZONTAL_SPLIT,
-					  infoPanel,
-					  tabbedPane);
-    topPanel.setMinimumSize(new Dimension(-1, 450));
-    topPanel.setDividerSize(0);
-    topPanel.validate();
-
-
-    //Build Menu
-    buildMenu();
-
-    getContentPane().setLayout(new BorderLayout());
-    getContentPane().add(topPanel, BorderLayout.NORTH);
-    getContentPane().add(tablePanel, BorderLayout.CENTER);
-
-    //Read the config to determine the widgets
-    try{
-      inputPanel.parseConfig(WIDGET_CONFIG_FILE);
-    }
-    catch(IOException e){ 
-      logger.fatal("Widget Panel Parse Failed", e);
-    }
-
-  }
 
     private void projectTableSetup(ProjectTableModel ptm) {
 	Vector columnNames = new Vector();
@@ -694,7 +701,6 @@ public class QtFrame
 		mbar.add( calibrationMenu );
 		CalibrationThread calibrationThread = new CalibrationThread( this );
 		calibrationThread.start();
-
 	}
 
   /**
@@ -963,22 +969,24 @@ public class QtFrame
     	public CalibrationThread( EventListener listener )
     	{
     		this.listener = listener ;
+    		calibrationMenu.setToolTipText( "Waiting for database ..." ) ;
     	}
     	
     	public void run()
 		{
 			calibrationList = CalibrationList.getCalibrations( System.getProperty( "telescope" ) );
 			// Get the set of keys:
-			Set keys = calibrationList.keySet();
-			Iterator keyIter = keys.iterator();
+			Set keys = calibrationList.keySet() ;
+			Iterator keyIter = keys.iterator() ;
 			while( keyIter.hasNext() )
 			{
-				JMenuItem item = new JMenuItem( ( String ) keyIter.next() );
-				item.addActionListener( ( ActionListener )listener );
-				calibrationMenu.add( item );
+				JMenuItem item = new JMenuItem( ( String ) keyIter.next() ) ;
+				item.addActionListener( ( ActionListener )listener ) ;
+				calibrationMenu.add( item ) ;
 			}
-			calibrationMenu.addMenuListener( ( MenuListener )listener );
-			calibrationMenu.setEnabled( true );
+			calibrationMenu.addMenuListener( ( MenuListener )listener ) ;
+			calibrationMenu.setEnabled( true ) ;
+			calibrationMenu.setToolTipText( null ) ;
 		}
     }
     

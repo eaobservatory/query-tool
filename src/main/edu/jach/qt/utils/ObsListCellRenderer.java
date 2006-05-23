@@ -141,6 +141,7 @@ public class ObsListCellRenderer extends DefaultListCellRenderer {
 
 		setEnabled( list.isEnabled() );
 		setFont( list.getFont() );
+		repaint() ;
 		return this;
 	}
 
