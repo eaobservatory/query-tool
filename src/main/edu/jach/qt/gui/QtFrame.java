@@ -218,8 +218,6 @@ public class QtFrame
 	 */
 	private void compInit() throws Exception
 	{	
-		Splash splash = new Splash( this , "Waiting for database ..." ) ;
-		
 		gbc = new GridBagConstraints();
 
 		// Check whether deferred Observations currently exist and ask the user if he wants to
@@ -255,7 +253,7 @@ public class QtFrame
 				DeferredProgramList.deleteAllFiles();
 			}
 		}
-
+		Splash splash = new Splash( this , "Waiting for database ..." ) ;
 		// Input Panel Setup
 		WidgetPanel inputPanel = new WidgetPanel( new Hashtable() , widgetBag );
 		_widgetPanel = inputPanel;
