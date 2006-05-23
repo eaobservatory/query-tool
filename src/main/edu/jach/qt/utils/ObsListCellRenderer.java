@@ -91,11 +91,7 @@ public class ObsListCellRenderer extends DefaultListCellRenderer {
 
 		if( value instanceof SpObs )
 		{
-			SpItem spitem = ( SpItem )value ;
-			SpItem parent = spitem.parent() ;
-			if( parent instanceof SpMSB )
-				spitem = parent ;
-			if( SpQueuedMap.getSpQueuedMap().containsSpItem( spitem ) )
+			if( SpQueuedMap.getSpQueuedMap().containsSpItem( ( SpObs )value ) )
 				setForeground( Color.orange );
 		}
 		

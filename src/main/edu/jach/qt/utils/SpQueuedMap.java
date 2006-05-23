@@ -2,6 +2,7 @@ package edu.jach.qt.utils ;
 
 import gemini.sp.SpItem;
 import gemini.sp.SpMSB;
+import gemini.sp.SpObs ;
 
 public class SpQueuedMap extends QueuedMap
 {
@@ -38,6 +39,7 @@ public class SpQueuedMap extends QueuedMap
 	{
 		if( item == null )
 			return false ;
+		item = getCorrectItem( item ) ;
 		String checksum = msbChecksum( item ) ;
 		if( checksum.equals( "" ) )
 			checksum = hash( item.toXML() ) ;
@@ -52,6 +54,18 @@ public class SpQueuedMap extends QueuedMap
 			return msb.getChecksum() ;
 		}		
 		return "" ;
+	}
+
+	private SpItem getCorrectItem( SpItem item )
+	{
+		SpItem spitem = ( SpItem )item ;
+		if( item instanceof SpObs )
+		{
+			SpItem parent = spitem.parent() ;
+			if( parent instanceof SpMSB )
+				spitem = parent ;
+		}		
+		return spitem ;
 	}
 	
 }
