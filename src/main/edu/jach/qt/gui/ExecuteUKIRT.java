@@ -63,7 +63,7 @@ public class ExecuteUKIRT extends Execute implements Runnable {
 		}
 		else
 		{
-			itemToExecute = DeferredProgramList.currentItem;
+			itemToExecute = DeferredProgramList.getCurrentItem() ;
 			logger.info( "Executing observation from deferred list" );
 		}
 		

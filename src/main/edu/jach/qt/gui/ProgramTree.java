@@ -286,11 +286,11 @@ final public class ProgramTree extends JPanel implements
 	Object source = evt.getSource();
 	if (source == xpand) {
 	    SpItem itemToXpand;
-	    if (selectedItem == null && DeferredProgramList.currentItem == null) {
+	    if (selectedItem == null && DeferredProgramList.getCurrentItem() == null) {
 		return;
 	    }
 	    else if (selectedItem == null) {
-		itemToXpand = DeferredProgramList.currentItem;
+		itemToXpand = DeferredProgramList.getCurrentItem() ;
 	    }
 	    else {
 		itemToXpand = selectedItem;
@@ -346,7 +346,7 @@ final public class ProgramTree extends JPanel implements
 
 		Thread t = null;
 
-		if( selectedItem == null && DeferredProgramList.currentItem == null )
+		if( selectedItem == null && DeferredProgramList.getCurrentItem() == null )
 		{
 			JOptionPane.showMessageDialog( null , "You have not selected an observation!" , "Please select an observation." , JOptionPane.ERROR_MESSAGE );
 			return;
@@ -354,7 +354,7 @@ final public class ProgramTree extends JPanel implements
 		else if( selectedItem == null )
 		{
 			isDeferred = true;
-			item = DeferredProgramList.currentItem;
+			item = DeferredProgramList.getCurrentItem() ;
 		}
 		
 		if( SpQueuedMap.getSpQueuedMap().containsSpItem( selectedItem ) || SpQueuedMap.getSpQueuedMap().containsSpItem( item ) )
@@ -669,6 +669,7 @@ final public class ProgramTree extends JPanel implements
 						// Select the new item
 						selectedItem = ( SpItem ) obsList.getSelectedValue();
 						DeferredProgramList.clearSelection();
+						NotePanel.setNote( ProgramTree.getCurrentItem() ) ;
 					}
 					else if( e.getClickCount() == 1 )
 					{
@@ -677,6 +678,7 @@ final public class ProgramTree extends JPanel implements
 							// Select the new item
 							selectedItem = ( SpItem ) obsList.getSelectedValue();
 							DeferredProgramList.clearSelection();
+							NotePanel.setNote( ProgramTree.getCurrentItem() ) ;
 						}
 						else
 						{
@@ -1136,7 +1138,7 @@ final public class ProgramTree extends JPanel implements
 	    itemForDrop = (SpObs)selectedItem;
 	}
 	else {
-	    itemForDrop = (SpObs)DeferredProgramList.currentItem;
+	    itemForDrop = (SpObs)DeferredProgramList.getCurrentItem();
 	}
 
 	if (itemForDrop != null && !itemForDrop.isOptional()) {

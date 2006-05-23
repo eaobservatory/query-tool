@@ -743,112 +743,128 @@ public class QtFrame
   public void menuCanceled( MenuEvent evt ){}
 
   /**
-   * Implementation of the ActionListener interface.
-   * Called on changing a Check Box, Selecting a Menu Item,or
-   * pressing a button.
-   *
-   * @param evt an <code>ActionEvent</code> value
-   */
-  public void actionPerformed(ActionEvent evt) {
+	 * Implementation of the ActionListener interface. Called on changing a Check Box, Selecting a Menu Item,or pressing a button.
+	 * 
+	 * @param evt
+	 *            an <code>ActionEvent</code> value
+	 */
+	public void actionPerformed( ActionEvent evt )
+	{
 
-    Object source = evt.getSource();
+		Object source = evt.getSource();
 
-    if ( source instanceof JCheckBoxMenuItem) {
-	if ((JCheckBoxMenuItem)source == disableAll) {
-	    if (disableAll.isSelected()) {
-		allocation.setSelected(false);
-		remaining.setSelected(false);
-		observability.setSelected(false);
-		zoneOfAvoidance.setSelected(false);
-	    }
-	    else {
-		allocation.setSelected(true);
-		remaining.setSelected(true);
-		observability.setSelected(true);
-		zoneOfAvoidance.setSelected(true);
-	    }
-	}
-	else {
-	    disableAll.setSelected(false);
-        }
-      localQuerytool.setAllocationConstraint(!allocation.isSelected());
-      localQuerytool.setRemainingConstraint(!remaining.isSelected());
-      localQuerytool.setObservabilityConstraint(!observability.isSelected());
-      localQuerytool.setZoneOfAvoidanceConstraint(!zoneOfAvoidance.isSelected());
-      if ( allocation.isSelected() && remaining.isSelected() 
-      && observability.isSelected() && zoneOfAvoidance.isSelected() ) {
-          // If all selected - set to green light
-          java.net.URL url = ClassLoader.getSystemResource("green_light1.gif");
-          ImageIcon icon = new ImageIcon(url);
-          InfoPanel.searchButton.setIcon( icon );
-          table.setBackground (Color.WHITE);
-      }
-      else if ( !allocation.isSelected() && !remaining.isSelected() 
-      && !observability.isSelected() && !zoneOfAvoidance.isSelected() ) {
-          // No constraints disabled - set to red
-          java.net.URL url = ClassLoader.getSystemResource("red_light1.gif");
-          ImageIcon icon = new ImageIcon(url);
-          InfoPanel.searchButton.setIcon( icon );
-          table.setBackground (Color.RED.darker());
-      }
-      else {
-          // Some constraints diabled - set to amber
-          java.net.URL url = ClassLoader.getSystemResource("amber_light1.gif");
-          ImageIcon icon = new ImageIcon(url);
-          InfoPanel.searchButton.setIcon( icon );
-          table.setBackground (Color.YELLOW.darker());
-      }
-    } 
-    
-    else if ( source instanceof JMenuItem) {
-	JMenuItem thisItem = (JMenuItem)source;
-	// Check to see if this came from the calibration list
-	if (calibrationList.containsKey(thisItem.getText())) {
-	    // Get the "MSB" that this represents
-	    SpItem item = MsbClient.fetchMSB((Integer) calibrationList.get(thisItem.getText()));
-	    // Add it to the deferred queue
-	    DeferredProgramList.addCalibration(item);
-	    // Set the tabbed pane to show the Staging Area
-	    if (tabbedPane.getTabCount() > 1) {
-		tabbedPane.setSelectedIndex(tabbedPane.getTabCount()-1);
-	    }
-	}
-	else if ( thisItem.getText().equalsIgnoreCase("Index") ) {
-	    HelpPage helpPage = new HelpPage();
-	}
-	else if (thisItem.getText().equalsIgnoreCase("Exit") ) {
-	    exitQT();
-	}
-	else if (thisItem.getText().equalsIgnoreCase("Columns...") ) {
-	    ColumnSelector colSelector = new ColumnSelector(this);
-	    return;
-	}
-	else if (thisItem.getText().equalsIgnoreCase("Log...") ) {
-	    LogViewer viewer = new LogViewer();
-	    viewer.showLog( System.getProperty("QT_LOG_DIR")+"/QT.log" );
-	    return;
-	}
-	else if (thisItem.getText().equalsIgnoreCase("Infra Red") ) {
-	    infoPanel.getSatPanel().setDisplay(thisItem.getText());
-	}
-	else if (thisItem.getText().equalsIgnoreCase("Water Vapour")) {
-	    infoPanel.getSatPanel().setDisplay(thisItem.getText());
-	}
-    }
-    else if (source instanceof JButton) {
-	JButton thisButton = (JButton) source;
+		if( source instanceof JCheckBoxMenuItem )
+		{
+			if( ( JCheckBoxMenuItem ) source == disableAll )
+			{
+				if( disableAll.isSelected() )
+				{
+					allocation.setSelected( false );
+					remaining.setSelected( false );
+					observability.setSelected( false );
+					zoneOfAvoidance.setSelected( false );
+				}
+				else
+				{
+					allocation.setSelected( true );
+					remaining.setSelected( true );
+					observability.setSelected( true );
+					zoneOfAvoidance.setSelected( true );
+				}
+			}
+			else
+			{
+				disableAll.setSelected( false );
+			}
+			localQuerytool.setAllocationConstraint( !allocation.isSelected() );
+			localQuerytool.setRemainingConstraint( !remaining.isSelected() );
+			localQuerytool.setObservabilityConstraint( !observability.isSelected() );
+			localQuerytool.setZoneOfAvoidanceConstraint( !zoneOfAvoidance.isSelected() );
+			if( allocation.isSelected() && remaining.isSelected() && observability.isSelected() && zoneOfAvoidance.isSelected() )
+			{
+				// If all selected - set to green light
+				java.net.URL url = ClassLoader.getSystemResource( "green_light1.gif" );
+				ImageIcon icon = new ImageIcon( url );
+				InfoPanel.searchButton.setIcon( icon );
+				table.setBackground( Color.WHITE );
+			}
+			else if( !allocation.isSelected() && !remaining.isSelected() && !observability.isSelected() && !zoneOfAvoidance.isSelected() )
+			{
+				// No constraints disabled - set to red
+				java.net.URL url = ClassLoader.getSystemResource( "red_light1.gif" );
+				ImageIcon icon = new ImageIcon( url );
+				InfoPanel.searchButton.setIcon( icon );
+				table.setBackground( Color.RED.darker() );
+			}
+			else
+			{
+				// Some constraints diabled - set to amber
+				java.net.URL url = ClassLoader.getSystemResource( "amber_light1.gif" );
+				ImageIcon icon = new ImageIcon( url );
+				InfoPanel.searchButton.setIcon( icon );
+				table.setBackground( Color.YELLOW.darker() );
+			}
+		}
 
-	if (thisButton.getText().equals("Exit"))
-	    {
-		exitQT();
-	    }
-	else
-	    {
-		logger.debug("Popup send MSB");
-		msbWorker.start();
-	    }
-    }
-  }
+		else if( source instanceof JMenuItem )
+		{
+			JMenuItem thisItem = ( JMenuItem ) source;
+			// Check to see if this came from the calibration list
+			if( calibrationList.containsKey( thisItem.getText() ) )
+			{
+				// Get the "MSB" that this represents
+				SpItem item = MsbClient.fetchMSB( ( Integer ) calibrationList.get( thisItem.getText() ) );
+				// Add it to the deferred queue
+				DeferredProgramList.addCalibration( item );
+				// Set the tabbed pane to show the Staging Area
+				if( tabbedPane.getTabCount() > 1 )
+				{
+					tabbedPane.setSelectedIndex( tabbedPane.getTabCount() - 1 );
+				}
+			}
+			else if( thisItem.getText().equalsIgnoreCase( "Index" ) )
+			{
+				HelpPage helpPage = new HelpPage();
+			}
+			else if( thisItem.getText().equalsIgnoreCase( "Exit" ) )
+			{
+				exitQT();
+			}
+			else if( thisItem.getText().equalsIgnoreCase( "Columns..." ) )
+			{
+				ColumnSelector colSelector = new ColumnSelector( this );
+				return;
+			}
+			else if( thisItem.getText().equalsIgnoreCase( "Log..." ) )
+			{
+				LogViewer viewer = new LogViewer();
+				viewer.showLog( System.getProperty( "QT_LOG_DIR" ) + "/QT.log" );
+				return;
+			}
+			else if( thisItem.getText().equalsIgnoreCase( "Infra Red" ) )
+			{
+				infoPanel.getSatPanel().setDisplay( thisItem.getText() );
+			}
+			else if( thisItem.getText().equalsIgnoreCase( "Water Vapour" ) )
+			{
+				infoPanel.getSatPanel().setDisplay( thisItem.getText() );
+			}
+		}
+		else if( source instanceof JButton )
+		{
+			JButton thisButton = ( JButton ) source;
+
+			if( thisButton.getText().equals( "Exit" ) )
+			{
+				exitQT();
+			}
+			else
+			{
+				logger.debug( "Popup send MSB" );
+				msbWorker.start();
+			}
+		}
+	}
 
   /**
    * The <code>makeMenu</code> method is a blackbox to make a 

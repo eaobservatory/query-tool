@@ -52,6 +52,7 @@ public class OmpOM extends JPanel{
   private SpItem	      spItem;
   private Hashtable	      ptreeHashtable;
   private DeferredProgramList deferredList;
+  public NotePanel notes ;
 
   /**
    * Creates a new <code>OmpOM</code> instance.
@@ -319,32 +320,38 @@ public class OmpOM extends JPanel{
 
 
     /**
-     * Construct the Staging Panel.
-     * Builds the deferred list and Observer Notes panel and displaays as a tabbed pane.
-     * @return The <code>JSplitPanel</code> staging area.
-     */
-  public JSplitPane getTreePanel() {
-      
-      deferredList = new DeferredProgramList();
-      NotePanel notes = new NotePanel();
-//       notes.setNote(spItem);
-      JSplitPane dsp = new JSplitPane(JSplitPane.VERTICAL_SPLIT, deferredList, notes);
-      dsp.setDividerLocation(150);
-      JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, ptree, dsp);
-      if (ptree.getCurrentItem() != null) {
-	  notes.setNote(ptree.getCurrentItem());
-      }
-      else {
-	  notes.setNote(spItem);
-      }
-      return splitPane;
-  }
+	 * Construct the Staging Panel. Builds the deferred list and Observer Notes panel and displaays as a tabbed pane.
+	 * 
+	 * @return The <code>JSplitPanel</code> staging area.
+	 */
+	public JSplitPane getTreePanel()
+	{
+		deferredList = new DeferredProgramList();
+		notes = new NotePanel() ;
+		JSplitPane dsp = new JSplitPane( JSplitPane.VERTICAL_SPLIT , deferredList , notes );
+		dsp.setDividerLocation( 150 );
+		JSplitPane splitPane = new JSplitPane( JSplitPane.HORIZONTAL_SPLIT , ptree , dsp );
+		if( ProgramTree.getCurrentItem() != null )
+		{
+			NotePanel.setNote( ProgramTree.getCurrentItem() );
+		}
+		else if( DeferredProgramList.getCurrentItem() != null )
+		{
+			NotePanel.setNote( DeferredProgramList.getCurrentItem() ) ;
+		}
+		else
+		{
+			NotePanel.setNote( spItem );
+		}
+		return splitPane;
+	}
 
     /**
-     * Constructs a drag tree panel.
-     * @return The <code>JSplitPanel</code> staging area.
-     * @deprected Not Replaced.
-     */
+	 * Constructs a drag tree panel.
+	 * 
+	 * @return The <code>JSplitPanel</code> staging area.
+	 * @deprected Not Replaced.
+	 */
   public JSplitPane getDragTreePanel() {
       
     DragDropObject ddo = new DragDropObject(spItem);

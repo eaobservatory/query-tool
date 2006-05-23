@@ -38,25 +38,21 @@ public class Execute {
      * Default constructor.
      * @throws Exception   When no or multiple items selected.
      */
-    protected Execute () throws Exception {
-	if (ProgramTree.selectedItem == null &&
-	    DeferredProgramList.currentItem == null) {
-	    JOptionPane.showMessageDialog(null,
-					  "You have not selected an observation!",
-					  "Please select an observation.",
-					  JOptionPane.ERROR_MESSAGE);
-	    throw new Exception("No Item Selected");	    
+    protected Execute() throws Exception
+	{
+		if( ProgramTree.selectedItem == null && DeferredProgramList.getCurrentItem() == null )
+		{
+			JOptionPane.showMessageDialog( null , "You have not selected an observation!" , "Please select an observation." , JOptionPane.ERROR_MESSAGE );
+			throw new Exception( "No Item Selected" );
+		}
+		else if( ProgramTree.selectedItem != null && DeferredProgramList.getCurrentItem() != null )
+		{
+			JOptionPane.showMessageDialog( null , "You may only select one observation!" , "Please deselect an observation." , JOptionPane.ERROR_MESSAGE );
+			throw new Exception( "Multiple Items Selected" );
+		}
+		else if( DeferredProgramList.getCurrentItem() != null )
+		{
+			isDeferred = true;
+		}
 	}
-	else if (ProgramTree.selectedItem != null &&
-		 DeferredProgramList.currentItem != null) {
-	    JOptionPane.showMessageDialog(null,
-					  "You may only select one observation!",
-					  "Please deselect an observation.",
-					  JOptionPane.ERROR_MESSAGE);
-	    throw new Exception("Multiple Items Selected");	    
-	}
-	else if (DeferredProgramList.currentItem  != null) {
-	    isDeferred = true;
-	}
-    }
 }

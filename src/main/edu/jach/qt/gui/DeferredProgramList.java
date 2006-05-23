@@ -91,7 +91,7 @@ final public class DeferredProgramList extends JPanel implements
     private String                      deferredFileName;
     private JScrollPane			scrollPane = new JScrollPane();
     private DefaultListModel		model;
-    public  static SpItem               currentItem;
+    private static SpItem               currentItem;
     private static HashMap              fileToObjectMap = new HashMap();
     private JPopupMenu                  engMenu = new JPopupMenu();
     private JMenuItem                   engItem = new JMenuItem ("Send for Engineering");
@@ -141,6 +141,11 @@ final public class DeferredProgramList extends JPanel implements
 	displayList();
     }
 
+    public static SpItem getCurrentItem()
+    {
+    	return currentItem ;
+    }
+    
     /**
      * Updates the display of the deferred observations.
      */
@@ -152,51 +157,56 @@ final public class DeferredProgramList extends JPanel implements
     }
 
     /**
-     * Gets the current set of deferred observations.
-     * These observations are stored on disk, and the directory is read looking for
-     * suitable observations.
-     */
-    public void getCurrentList()
-    {
-	
+	 * Gets the current set of deferred observations. These observations are stored on disk, and the directory is read looking for suitable observations.
+	 */
+	public void getCurrentList()
+	{
 
-	// Assume we save deferred obs in <diferred file dir>/<telescope>
-	String [] deferredFiles = getFileList();
+		// Assume we save deferred obs in <diferred file dir>/<telescope>
+		String[] deferredFiles = getFileList();
 
-	// parse through the xml files and add each one to the current list
-	for (int fileCounter=0;fileCounter<deferredFiles.length; fileCounter++) {
-	    // Only look for files which are readable and have a .xml suffix
-	    String currentFileName = deferredFiles[fileCounter];
-	    File currentFile = new File(currentFileName);
-	    if (currentFile.canRead()     &&  // Make sure we can read it
-		currentFile.isFile()      &&  // Dont bother with subdirs
-		currentFile.length() > 0  &&  // Make sure its worth bothering with
-		!(currentFile.isHidden()) &&  // Make sure it is not a hidden file
-		currentFileName.endsWith(".xml") ) { // Make sure it is an XML file
-		    
-		try {
-		    FileReader reader = new FileReader(currentFile);
-		    char [] buffer    = new char [(int)currentFile.length()];
-		    reader.read(buffer);
-		    SpItem currentItem = (new SpInputXML()).xmlToSpItem(String.valueOf(buffer));
-		    if (currentItem != null) {
-			fileToObjectMap.put( currentItem, currentFileName );
-			addElement(currentItem);
-		    }
+		// parse through the xml files and add each one to the current list
+		for( int fileCounter = 0 ; fileCounter < deferredFiles.length ; fileCounter++ )
+		{
+			// Only look for files which are readable and have a .xml suffix
+			String currentFileName = deferredFiles[ fileCounter ];
+			File currentFile = new File( currentFileName );
+			if( currentFile.canRead() && // Make sure we can read it
+			currentFile.isFile() && // Dont bother with subdirs
+			currentFile.length() > 0 && // Make sure its worth bothering with
+			!( currentFile.isHidden() ) && // Make sure it is not a hidden file
+			currentFileName.endsWith( ".xml" ) )
+			{ // Make sure it is an XML file
+
+				try
+				{
+					FileReader reader = new FileReader( currentFile );
+					char[] buffer = new char[ ( int ) currentFile.length() ];
+					reader.read( buffer );
+					SpItem currentItem = ( new SpInputXML() ).xmlToSpItem( String.valueOf( buffer ) );
+					if( currentItem != null )
+					{
+						fileToObjectMap.put( currentItem , currentFileName );
+						addElement( currentItem );
+						NotePanel.setNote( currentItem ) ;
+					}
+				}
+				catch( FileNotFoundException fnf )
+				{
+					logger.error( "File not found!" , fnf );
+				}
+				catch( IOException ioe )
+				{
+					logger.error( "File read error!" , ioe );
+				}
+				catch( Exception x )
+				{
+					logger.error( "Can not convert file!" , x );
+				}
+			}
 		}
-		catch (FileNotFoundException fnf) {
-		    logger.error("File not found!", fnf);
-		}
-		catch (IOException ioe) {
-		    logger.error("File read error!", ioe);
-		}
-		catch (Exception x) {
-		    logger.error("Can not convert file!", x);
-		}
-	    }
+		return;
 	}
-	return;
-    }
     
     /**
      * Add a new observation to the deferred list.
@@ -209,32 +219,37 @@ final public class DeferredProgramList extends JPanel implements
     }
 
     /**
-     * Add a calibration observation from the Calibrations Menu to the list.
-     * @param cal  The calibration observation to add.
-     */
-    public static void addCalibration (SpItem cal) {
-	cal.getTable().set("project", "CAL");
-	cal.getTable().set("msbid", "CAL");
-	cal.getTable().set(":msb", "true");
-	// A calibration observation is an SpProg - need to convert to an SpObs
-	Vector theseObs = SpTreeMan.findAllItems(cal, "gemini.sp.SpObs");
-	SpItem thisObs = (SpItem)theseObs.firstElement();
-	thisObs.getTable().set("project", "CAL");
-	thisObs.getTable().set("msbid", "CAL");
-	thisObs.getTable().set(":msb", "true");
-	((SpObs)thisObs).setOptional(true);
-	if (!isDuplicate(thisObs)) {
-	    makePersistent(thisObs);
-	    ((DefaultListModel)obsList.getModel()).addElement(thisObs);
+	 * Add a calibration observation from the Calibrations Menu to the list.
+	 * 
+	 * @param cal
+	 *            The calibration observation to add.
+	 */
+	public static void addCalibration( SpItem cal )
+	{
+		cal.getTable().set( "project" , "CAL" );
+		cal.getTable().set( "msbid" , "CAL" );
+		cal.getTable().set( ":msb" , "true" );
+		// A calibration observation is an SpProg - need to convert to an SpObs
+		Vector theseObs = SpTreeMan.findAllItems( cal , "gemini.sp.SpObs" );
+		SpItem thisObs = ( SpItem ) theseObs.firstElement();
+		thisObs.getTable().set( "project" , "CAL" );
+		thisObs.getTable().set( "msbid" , "CAL" );
+		thisObs.getTable().set( ":msb" , "true" );
+		( ( SpObs ) thisObs ).setOptional( true );
+		if( !isDuplicate( thisObs ) )
+		{
+			makePersistent( thisObs );
+			( ( DefaultListModel ) obsList.getModel() ).addElement( thisObs );
+		}
+		// This is a hack to fix fault [20021030.002]. It shouldn't happen but hopefully
+		// this will make sure...
+		obsList.setEnabled( true );
+		obsList.setSelectedIndex( obsList.getModel().getSize() - 1 );
+		currentItem = ( SpItem ) obsList.getSelectedValue();
+		NotePanel.setNote( currentItem );
+		ProgramTree.clearSelection();
+
 	}
-	// This is a hack to fix fault [20021030.002].  It shouldn't happen but hopefully
-	// this will make sure...
-	obsList.setEnabled(true);
-	obsList.setSelectedIndex(obsList.getModel().getSize()-1);
-	currentItem = (SpItem) obsList.getSelectedValue();
-	ProgramTree.clearSelection();
-	
-    }
 
     /**
      * Deselects the currently selected deferred observation.
@@ -261,24 +276,28 @@ final public class DeferredProgramList extends JPanel implements
 
 	MouseListener ml = new MouseAdapter()
 	    {
-		public void mouseClicked(MouseEvent e)
+		public void mouseClicked( MouseEvent e )
 		{
-		    if (e.getClickCount() == 2)
+			if( e.getClickCount() == 2 )
 			{
-			    execute();
+				execute();
 			}
-		    else {
-			if (currentItem != obsList.getSelectedValue() ) {
-			    // Select the new item
-			    currentItem = (SpItem) obsList.getSelectedValue();
-			    ProgramTree.clearSelection();
-			}
-			else {
-			    obsList.clearSelection();
-			    currentItem = null;
-			}
-		    }
-		}
+			else
+			{
+				if( currentItem != obsList.getSelectedValue() )
+				{
+					// Select the new item
+					currentItem = ( SpItem ) obsList.getSelectedValue();
+					NotePanel.setNote( currentItem );
+					ProgramTree.clearSelection();
+				}
+				else
+				{
+					obsList.clearSelection();
+					currentItem = null;
+				}
+	    }
+	}
 
 		public void mousePressed(MouseEvent e) {
 		    if ( e.isPopupTrigger() && currentItem != null ) {

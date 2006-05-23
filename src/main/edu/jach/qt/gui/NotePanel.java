@@ -74,51 +74,60 @@ final public class NotePanel extends JPanel {
     }
 
     /**
-     * Sets the text in the panel.
-     * Uses <code>SpNote.isObserveInstruction() </code> to locate Observer Note.
-     * @param sp  the SpItem tree which may contain an Observer Note.
-     */
-    public static void setNote(SpItem sp) {
-	if (sp == null) {
-	    return;
-	}
-
-// 	StringBuffer notes = new StringBuffer();
-	ArrayList notes  = new ArrayList();
-	ArrayList styles = new ArrayList();
-
-	Vector noteVector = SpTreeMan.findAllItems(sp, "gemini.sp.SpNote");
-	Enumeration e = noteVector.elements();
-	while (e.hasMoreElements()) {
-	    SpNote thisNote = (SpNote)e.nextElement();
-	    if ( thisNote.isObserveInstruction() ) {
-		String [] instructions = thisNote.getInstructions();
-		if ( instructions != null ) {
-		    for (int i=0; i<instructions.length; i++) {
-			notes.add(instructions[i]+"\n");
-			styles.add("bold");
-		    }
+	 * Sets the text in the panel. Uses <code>SpNote.isObserveInstruction() </code> to locate Observer Note.
+	 * 
+	 * @param sp
+	 *            the SpItem tree which may contain an Observer Note.
+	 */
+	public static void setNote( SpItem sp )
+	{
+		if( sp == null )
+		{
+			return;
 		}
-		notes.add( "\n"+thisNote.getNote()+"\n" );
-		styles.add("regular");
-	    }
+
+		// StringBuffer notes = new StringBuffer();
+		ArrayList notes = new ArrayList();
+		ArrayList styles = new ArrayList();
+
+		Vector noteVector = SpTreeMan.findAllItems( sp , "gemini.sp.SpNote" );
+		Enumeration e = noteVector.elements();
+		while( e.hasMoreElements() )
+		{
+			SpNote thisNote = ( SpNote ) e.nextElement();
+			if( thisNote.isObserveInstruction() )
+			{
+				String[] instructions = thisNote.getInstructions();
+				if( instructions != null )
+				{
+					for( int i = 0 ; i < instructions.length ; i++ )
+					{
+						notes.add( instructions[ i ] + "\n" );
+						styles.add( "bold" );
+					}
+				}
+				notes.add( "\n" + thisNote.getNote() + "\n" );
+				styles.add( "regular" );
+			}
+		}
+		initStyles();
+
+		Document doc = textPanel.getDocument();
+		try
+		{
+			doc.remove( 0 , doc.getLength() ) ;
+			for( int i = 0 ; i < notes.size() ; i++ )
+			{
+				doc.insertString( doc.getLength() , ( String ) notes.get( i ) , textPanel.getStyle( ( String ) styles.get( i ) ) );
+			}
+		}
+		catch( Exception ex )
+		{
+			System.out.println( "Could not insert observer notes" );
+		}
+		textPanel.setCaretPosition( 0 );
+		textPanel.repaint() ;
 	}
-	initStyles();
-	
-	Document doc = textPanel.getDocument();
-	try {
-	    for ( int i=0; i<notes.size(); i++ ) {
-		doc.insertString(doc.getLength(),
-				 (String)notes.get(i),
-				 textPanel.getStyle((String)styles.get(i)));
-	    }
-	}
-	catch (Exception ex) {
-	    System.out.println("Could not insert observer notes");
-	}
-	textPanel.setCaretPosition(0);
-	
-    }
 
     private static void initStyles() {
 	Style def = StyleContext.getDefaultStyleContext().
