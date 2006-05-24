@@ -6,6 +6,7 @@ import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.border.*;
 import java.text.SimpleDateFormat;
+
 /**
  * Class associateing local time with a label for display on an interface.
  *
@@ -16,44 +17,61 @@ import java.text.SimpleDateFormat;
  * @version $Id$
  */
 
-public class TimePanel extends JLabel
-   implements TimerListener {
-   
-    /**
-     * Constructor.
-     * Sets a timer running and adds a listener.
-     */
-   public TimePanel () {
-      setHorizontalAlignment(SwingConstants.CENTER);
+public class TimePanel extends JPanel implements TimerListener
+{
 
-      //MatteBorder matte = new MatteBorder(1,1,1,1,Color.white);
+	JLabel local ;
+	JLabel universal ;
+	SimpleDateFormat localDateFormatter ;
+	SimpleDateFormat universalDateFormatter ;
+	/**
+	 * Constructor.
+	 * Sets a timer running and adds a listener.
+	 */
+	public TimePanel()
+	{
+		setBackground( Color.black ) ;
+		
+		local = new JLabel() ;
+		universal = new JLabel() ;
+		
+		local.setHorizontalAlignment( SwingConstants.CENTER );
+		universal.setHorizontalAlignment( SwingConstants.CENTER );
+		
+		local.setBackground( Color.black );
+		universal.setBackground( Color.black );
+		local.setForeground( Color.green );
+		universal.setForeground( Color.green );
+		
+		local.setOpaque( true );
+		universal.setOpaque( true );
+		
+		setLayout( new GridLayout( 2 , 1 ) ) ;
+		
+		add( local ) ;
+		add( universal ) ;
+		
+		localDateFormatter = new SimpleDateFormat( "kk.mm.ss z" );
+		universalDateFormatter = new SimpleDateFormat( "kk.mm.ss z" );
+		universalDateFormatter.setTimeZone( TimeZone.getTimeZone( "UTC" ) ) ;
 
-//       TitledBorder border = BorderFactory.createTitledBorder
-// 	(BorderFactory.createLineBorder(new Color(51, 134, 206)), 
-// 	"Local Time",
-// 	 TitledBorder.CENTER, TitledBorder.DEFAULT_POSITION);
-//       setBorder(border);
-      
-      this.setOpaque(true);
-      Timer t = new Timer(1000);
-      t.addTimerListener(this);
-   }
-   
-    /**
-     * Implenetation of the <code>timeElapsed</code> interface.
-     * Updates the associated label.
-     * @param evt   the <code>TimerEvent</code> to consume.
-     */
-   public void timeElapsed(TimerEvent evt) {
-      setBackground(Color.black);
-      setForeground(Color.green);
-      //Graphics g = getGraphics();
-      //g.setFont( g.getFont().deriveFont((float)16.0));
-      Calendar cal = Calendar.getInstance();
-      Date date = cal.getTime();
-      SimpleDateFormat dateFormatter = new SimpleDateFormat("kk.mm.ss z");
-//       DateFormat dateFormatter = DateFormat.getTimeInstance(DateFormat.MEDIUM);
-      setText("" + dateFormatter.format(date));
-   }
-   
+		Timer t = new Timer( 1000 );
+		t.addTimerListener( this );
+	}
+
+	/**
+	 * Implenetation of the <code>timeElapsed</code> interface.
+	 * Updates the associated label.
+	 * @param evt   the <code>TimerEvent</code> to consume.
+	 */
+	public void timeElapsed( TimerEvent evt )
+	{
+		Calendar cal = Calendar.getInstance();
+		Date date = cal.getTime();
+		String localTime = localDateFormatter.format( date ) ;
+		String universalTime = universalDateFormatter.format( date ) ;
+		local.setText( localTime ) ;
+		universal.setText( universalTime );
+	}
+
 }// TimePanel

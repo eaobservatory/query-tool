@@ -2,21 +2,21 @@ package edu.jach.qt.gui;
 
 /* QT imports */
 import edu.jach.qt.app.Querytool;
-import edu.jach.qt.utils.*;
 
 /* Standard imports */
-import java.awt.*;
-import java.awt.event.*;
-import java.io.*;
+
+import java.awt.* ; 
+import java.awt.event.ActionListener ;
+import java.awt.event.ActionEvent ;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.lang.Boolean;
-import javax.swing.*;
-import javax.swing.border.*;
-import javax.swing.event.*;
+import javax.swing.JPanel ;
+import javax.swing.JButton ;
+import javax.swing.ImageIcon ;
+import javax.swing.SwingConstants ;
+import javax.swing.border.MatteBorder ;
 
-import ocs.utils.DcHub;
-import ocs.utils.ObeyNotRegisteredException;
 import org.apache.log4j.Logger;
 
 /**
@@ -70,11 +70,9 @@ public class InfoPanel extends JPanel implements ActionListener {
     private TelescopeDataPanel telescopeInfoPanel;
     private MSBQueryTableModel msb_qtm;
     private TimePanel timePanel;
-    private UTPanel   utPanel;
     private SatPanel satPanel;
     private Querytool localQuerytool;
     private QtFrame qtf;
-    //private JButton xmlPrintButton;
     private JButton exitButton;
     private JButton fetchMSB;
     private Timer   queryExpiredTimer;
@@ -106,155 +104,159 @@ public class InfoPanel extends JPanel implements ActionListener {
 
     }
 
-    private void compInit() {
-	GridBagConstraints gbc = new GridBagConstraints();
+    private void compInit()
+	{
+		GridBagConstraints gbc = new GridBagConstraints();
 
-	//xmlPrintButton	= new JButton();
-	exitButton		= new JButton();
-	fetchMSB		= new JButton();
-	timePanel		= new TimePanel();
-	utPanel		= new UTPanel();
-	satPanel		= new SatPanel();
-	telescopeInfoPanel	= new TelescopeDataPanel(this);
+		// xmlPrintButton = new JButton();
+		exitButton = new JButton();
+		fetchMSB = new JButton();
+		timePanel = new TimePanel();
+		satPanel = new SatPanel();
+		telescopeInfoPanel = new TelescopeDataPanel( this );
 
-	/*Setup the SEARCH button*/
-	InfoPanel.searchButton.setText("Search");
-	InfoPanel.searchButton.setName("Search");
-        java.net.URL url = ClassLoader.getSystemResource("green_light1.gif");
-        ImageIcon icon = new ImageIcon(url);
-        InfoPanel.searchButton.setIcon( icon );
-        blinkIcon();
-        InfoPanel.searchButton.setHorizontalTextPosition( SwingConstants.LEADING );
-        InfoPanel.searchButton.setToolTipText("Red icon - all constraints disabled");
-	InfoPanel.searchButton.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-		    qtf.getWidgets().setButtons();
-		    qtf.updateColumnSizes();
-		    qtf.getModel().clear();
-		    qtf.getProjectModel().clear();
-		    qtf.repaint(0);
-		    searchButton.setEnabled(false);
+		/* Setup the SEARCH button */
+		InfoPanel.searchButton.setText( "Search" );
+		InfoPanel.searchButton.setName( "Search" );
+		java.net.URL url = ClassLoader.getSystemResource( "green_light1.gif" );
+		ImageIcon icon = new ImageIcon( url );
+		InfoPanel.searchButton.setIcon( icon );
+		blinkIcon();
+		InfoPanel.searchButton.setHorizontalTextPosition( SwingConstants.LEADING );
+		InfoPanel.searchButton.setToolTipText( "Red icon - all constraints disabled" );
+		InfoPanel.searchButton.addActionListener( new ActionListener()
+		{
+			public void actionPerformed( ActionEvent e )
+			{
+				qtf.getWidgets().setButtons();
+				qtf.updateColumnSizes();
+				qtf.getModel().clear();
+				qtf.getProjectModel().clear();
+				qtf.repaint( 0 );
+				searchButton.setEnabled( false );
 
-		    final SwingWorker worker = new SwingWorker() {
-			    Boolean isStatusOK;
+				final SwingWorker worker = new SwingWorker()
+				{
+					Boolean isStatusOK;
 
-			    public Object construct() {
-				isStatusOK = new Boolean(localQuerytool.queryMSB());
-				return isStatusOK;  //not used yet
-			    }
-
-			    //Runs on the event-dispatching thread.
-			    public void finished() { 
-				if ( isStatusOK.booleanValue()) {
-				    // 		  qtf.updateColumnSizes();
-
-				    Thread tableFill = new Thread(msb_qtm);
-				    tableFill.start();
-				    try {
-					tableFill.join();
-				    }
-				    catch (InterruptedException iex) {
-					logger.warn("Problem joining tablefill thread");
-				    };
-
-				    synchronized (this) {
-					Thread projectFill = new Thread (qtf.getProjectModel());
-					projectFill.start();
-					try {
-					    projectFill.join();
+					public Object construct()
+					{
+						isStatusOK = new Boolean( localQuerytool.queryMSB() );
+						return isStatusOK; // not used yet
 					}
-					catch (InterruptedException iex) {
-					    logger.warn("Problem joining projectfill thread");
-					};
 
-					qtf.initProjectTable();
-				    }
-				    msb_qtm.setProjectId("All");
-				    qtf.setColumnSizes();
-				    logoPanel.stop();
-				    qtf.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-				    if (queryExpiredTimer != null) {
-					queryExpiredTimer.cancel();
-				    }
-				    queryExpiredTimer = new Timer();
-				    qtf.setQueryExpired (false);
-				    System.out.println("Query expiration: "+System.getProperty("queryTimeout"));
-				    Integer timeout = new Integer(System.getProperty("queryTimeout"));
-				    if (timeout.intValue() != 0) {
-					int delay = timeout.intValue() * 60 * 1000; // Conversion from minutes of milliseconds
-					queryExpiredTimer.schedule(new QueryExpiredTask(), delay);
-				    }
-				}
-				searchButton.setEnabled(true);
-			    }
-			};
-		    logger.info("Query Sent");
+					// Runs on the event-dispatching thread.
+					public void finished()
+					{
+						if( isStatusOK.booleanValue() )
+						{
+							// qtf.updateColumnSizes();
 
-		    localQuerytool.printXML();
-		    qtf.setCursor(new Cursor(Cursor.WAIT_CURSOR));
-		    logoPanel.start();
-		    worker.start();  //required for SwingWorker 3
-		}
-	    } );
+							Thread tableFill = new Thread( msb_qtm );
+							tableFill.start();
+							try
+							{
+								tableFill.join();
+							}
+							catch( InterruptedException iex )
+							{
+								logger.warn( "Problem joining tablefill thread" );
+							}
+							;
 
-	InfoPanel.searchButton.setBackground(java.awt.Color.gray);
+							synchronized( this )
+							{
+								Thread projectFill = new Thread( qtf.getProjectModel() );
+								projectFill.start();
+								try
+								{
+									projectFill.join();
+								}
+								catch( InterruptedException iex )
+								{
+									logger.warn( "Problem joining projectfill thread" );
+								}
+								;
 
-	/*
-	  xmlPrintButton.setText("Fetch MSB");
-	  xmlPrintButton.setName("Fetch MSB");
-	  xmlPrintButton.setBackground(java.awt.Color.gray);
-	  xmlPrintButton.addActionListener(this);
-	*/
-	fetchMSB.setText("Fetch MSB");
-	fetchMSB.setName("Fetch MSB");
-	fetchMSB.setBackground(java.awt.Color.gray);
-	fetchMSB.addActionListener(this);
+								qtf.initProjectTable();
+							}
+							msb_qtm.setProjectId( "All" );
+							qtf.setColumnSizes();
+							logoPanel.stop();
+							qtf.setCursor( new Cursor( Cursor.DEFAULT_CURSOR ) );
+							if( queryExpiredTimer != null )
+							{
+								queryExpiredTimer.cancel();
+							}
+							queryExpiredTimer = new Timer();
+							qtf.setQueryExpired( false );
+							System.out.println( "Query expiration: " + System.getProperty( "queryTimeout" ) );
+							Integer timeout = new Integer( System.getProperty( "queryTimeout" ) );
+							if( timeout.intValue() != 0 )
+							{
+								int delay = timeout.intValue() * 60 * 1000; // Conversion from minutes of milliseconds
+								queryExpiredTimer.schedule( new QueryExpiredTask() , delay );
+							}
+						}
+						searchButton.setEnabled( true );
+					}
+				};
+				logger.info( "Query Sent" );
 
-	/*Setup the EXIT button*/
-	exitButton.setText("Exit");
-	exitButton.setName("Exit");
-	exitButton.setBackground(java.awt.Color.gray);
-	exitButton.addActionListener(this);
+				localQuerytool.printXML();
+				qtf.setCursor( new Cursor( Cursor.WAIT_CURSOR ) );
+				logoPanel.start();
+				worker.start(); // required for SwingWorker 3
+			}
+		} );
 
-	gbc.fill = GridBagConstraints.BOTH;
-	gbc.anchor = GridBagConstraints.NORTH;
-	gbc.weighty = 0.0;
-	add(logoPanel, gbc, 0, 0, 1, 1);
+		InfoPanel.searchButton.setBackground( java.awt.Color.gray );
 
-	gbc.fill = GridBagConstraints.HORIZONTAL;
-	gbc.anchor = GridBagConstraints.CENTER;
-	gbc.insets = new Insets(2,15,2,15);
-	gbc.weighty = 0.0;
-        
-	/*Add all the buttons*/
-	add(InfoPanel.searchButton, gbc, 0, 5, 1, 1);
-	add(fetchMSB, gbc, 0, 10, 1, 1);
-	add(exitButton, gbc, 0, 15, 1, 1);
+		/*
+		 * xmlPrintButton.setText("Fetch MSB"); xmlPrintButton.setName("Fetch MSB"); xmlPrintButton.setBackground(java.awt.Color.gray); xmlPrintButton.addActionListener(this);
+		 */
+		fetchMSB.setText( "Fetch MSB" );
+		fetchMSB.setName( "Fetch MSB" );
+		fetchMSB.setBackground( java.awt.Color.gray );
+		fetchMSB.addActionListener( this );
 
-	gbc.fill = GridBagConstraints.HORIZONTAL;
-	gbc.anchor = GridBagConstraints.CENTER;
-	gbc.weightx = 100;
-	gbc.insets = new Insets(0,2,0,2);
-	gbc.weighty = 0;
-	add(telescopeInfoPanel, gbc, 0, 20, 1, 1);
+		/* Setup the EXIT button */
+		exitButton.setText( "Exit" );
+		exitButton.setName( "Exit" );
+		exitButton.setBackground( java.awt.Color.gray );
+		exitButton.addActionListener( this );
 
-	add(satPanel, gbc, 0, 30, 1, 1);
+		gbc.fill = GridBagConstraints.BOTH;
+		gbc.anchor = GridBagConstraints.NORTH;
+		gbc.weighty = 0.0;
+		add( logoPanel , gbc , 0 , 0 , 1 , 1 );
 
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.anchor = GridBagConstraints.CENTER;
+		gbc.insets = new Insets( 2 , 15 , 2 , 15 );
+		gbc.weighty = 0.0;
 
-	gbc.fill = GridBagConstraints.HORIZONTAL;
-	gbc.weightx = 100;
-	gbc.weighty = 0;
-	gbc.insets.left = 0;
-	gbc.insets.right = 0;
-	add(timePanel, gbc, 0, 40, 1, 1);
+		/* Add all the buttons */
+		add( InfoPanel.searchButton , gbc , 0 , 5 , 1 , 1 );
+		add( fetchMSB , gbc , 0 , 10 , 1 , 1 );
+		add( exitButton , gbc , 0 , 15 , 1 , 1 );
 
-	gbc.fill = GridBagConstraints.HORIZONTAL;
-	gbc.weightx = 100;
-	gbc.weighty = 0;
-	gbc.insets.left = 0;
-	gbc.insets.right = 0;
-	add(utPanel, gbc, 0, 60, 1, 1);
-    }
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.anchor = GridBagConstraints.CENTER;
+		gbc.weightx = 100;
+		gbc.insets = new Insets( 0 , 2 , 0 , 2 );
+		gbc.weighty = 0;
+		add( telescopeInfoPanel , gbc , 0 , 20 , 1 , 1 );
+
+		add( satPanel , gbc , 0 , 30 , 1 , 1 );
+
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.weightx = 100;
+		gbc.weighty = 0;
+		gbc.insets.left = 0;
+		gbc.insets.right = 0;
+		add( timePanel , gbc , 0 , 40 , 1 , 1 );
+	}
 
     /**
      * Get the parent frame.
