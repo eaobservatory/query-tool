@@ -132,8 +132,6 @@ public class InfoPanel extends JPanel implements ActionListener {
 				qtf.setCursor( new Cursor( Cursor.WAIT_CURSOR ) );
 				qtf.getWidgets().setButtons();
 				qtf.updateColumnSizes();
-				qtf.getModel().clear();
-				qtf.getProjectModel().clear();
 				qtf.repaint( 0 );
 
 				final SwingWorker worker = new SwingWorker()
@@ -161,7 +159,6 @@ public class InfoPanel extends JPanel implements ActionListener {
 							{
 								logger.warn( "Problem joining tablefill thread" );
 							}
-							;
 
 							synchronized( this )
 							{
