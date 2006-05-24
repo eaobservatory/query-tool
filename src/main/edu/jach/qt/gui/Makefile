@@ -47,7 +47,6 @@ SOURCES = \
 	TimerListener.java \
 	TrashCan.java \
 	TreeViewer.java \
-	UTPanel.java \
 	WidgetDataBag.java \
 	WidgetPanel.java \
 	XmlUtils.java \
