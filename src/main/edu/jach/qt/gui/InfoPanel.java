@@ -128,12 +128,13 @@ public class InfoPanel extends JPanel implements ActionListener {
 		{
 			public void actionPerformed( ActionEvent e )
 			{
+				searchButton.setEnabled( false ) ;
+				qtf.setCursor( new Cursor( Cursor.WAIT_CURSOR ) );
 				qtf.getWidgets().setButtons();
 				qtf.updateColumnSizes();
 				qtf.getModel().clear();
 				qtf.getProjectModel().clear();
 				qtf.repaint( 0 );
-				searchButton.setEnabled( false );
 
 				final SwingWorker worker = new SwingWorker()
 				{
@@ -150,8 +151,6 @@ public class InfoPanel extends JPanel implements ActionListener {
 					{
 						if( isStatusOK.booleanValue() )
 						{
-							// qtf.updateColumnSizes();
-
 							Thread tableFill = new Thread( msb_qtm );
 							tableFill.start();
 							try
@@ -204,7 +203,6 @@ public class InfoPanel extends JPanel implements ActionListener {
 				logger.info( "Query Sent" );
 
 				localQuerytool.printXML();
-				qtf.setCursor( new Cursor( Cursor.WAIT_CURSOR ) );
 				logoPanel.start();
 				worker.start(); // required for SwingWorker 3
 			}
