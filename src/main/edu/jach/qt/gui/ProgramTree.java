@@ -356,20 +356,9 @@ final public class ProgramTree extends JPanel implements
 			isDeferred = true;
 			item = DeferredProgramList.getCurrentItem() ;
 		}
-		
-		if( SpQueuedMap.getSpQueuedMap().containsSpItem( selectedItem ) || SpQueuedMap.getSpQueuedMap().containsSpItem( item ) )
+		else
 		{
-			int result = JOptionPane.showConfirmDialog
-			( 
-				null ,
-				"This observation has previously been sent to the queue.\n\nSend again ?",
-				"Previously queued observation" , 
-				JOptionPane.YES_NO_OPTION 
-			) ;
-			if( result != 0 )
-			{
-				return ;
-			}	
+			obsList.setListData( new Vector() ) ;
 		}
 		
 		setExecutable( false );
@@ -652,7 +641,7 @@ final public class ProgramTree extends JPanel implements
 		ToolTipManager.sharedInstance().registerComponent( obsList );
 		ToolTipManager.sharedInstance().setDismissDelay( 3000 );
 		obsList.setCellRenderer( new ObsListCellRenderer() );
-		obsList.setToolTipText( "<html>Optional observations are shown in GREEN<br>Calibrations which have been done are shown in BLUE<br>Suspended MSBs are shown in RED<br>Observations sent to the queue are shown in ORANGE</html>" );
+		obsList.setToolTipText( "<html>Optional observations are shown in GREEN<br>Calibrations which have been done are shown in BLUE<br>Suspended MSBs are shown in RED</html>" );
 		MouseListener ml = new MouseAdapter()
 		{
 			public void mouseClicked( MouseEvent e )

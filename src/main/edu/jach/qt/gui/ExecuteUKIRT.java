@@ -67,15 +67,6 @@ public class ExecuteUKIRT extends Execute implements Runnable {
 			logger.info( "Executing observation from deferred list" );
 		}
 		
-		if( itemToExecute != null )
-		{ 
-			SpItem obs = itemToExecute ;
-			SpItem child = itemToExecute.child() ;
-			if( child instanceof SpMSB )
-				obs = child ;
-			SpQueuedMap.getSpQueuedMap().putSpItem( obs ) ;
-		}
-		
 		String tname;
 		if( !_useQueue )
 		{

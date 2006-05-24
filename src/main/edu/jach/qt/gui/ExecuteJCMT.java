@@ -290,16 +290,7 @@ public class ExecuteJCMT extends Execute {
 			}
 		}
 		isRunning = false;
-		failure.delete();
-		
-		if( _itemToExecute != null )
-		{ 
-			SpItem obs = _itemToExecute ;
-			SpItem child = _itemToExecute.child() ;
-			if( child instanceof SpMSB )
-				obs = child ;
-			SpQueuedMap.getSpQueuedMap().putSpItem( obs ) ;
-		}		
+		failure.delete();		
 		
 		return false;
 	}

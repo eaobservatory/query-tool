@@ -25,6 +25,8 @@ public class SpQueuedMap extends QueuedMap
 	{
 		if( item == null )
 			return false ;
+		if( (( SpMSB )item).getNumberRemaining() != 1 )
+			return false ;
 		String checksum = msbChecksum( item ) ;
 		if( !checksum.equals( "" ) )
 		{

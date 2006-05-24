@@ -88,12 +88,6 @@ public class ObsListCellRenderer extends DefaultListCellRenderer {
 		{
 			setForeground( Color.green );
 		}
-
-		if( value instanceof SpObs )
-		{
-			if( SpQueuedMap.getSpQueuedMap().containsSpItem( ( SpObs )value ) )
-				setForeground( Color.orange );
-		}
 		
 		if( ( ( SpObs ) value ).isMSB() && ( ( SpObs ) value ).isSuspended() )
 		{
