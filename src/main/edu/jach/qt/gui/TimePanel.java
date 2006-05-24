@@ -1,10 +1,13 @@
 package edu.jach.qt.gui;
 
-import java.awt.*;
-import java.util.*;
-import java.awt.event.*;
-import javax.swing.*;
-import javax.swing.border.*;
+import java.awt.GridLayout ;
+import java.awt.Color ;
+import java.util.TimeZone ;
+import java.util.Calendar ;
+import java.util.Date ;
+import javax.swing.JPanel ;
+import javax.swing.JLabel ;
+import javax.swing.SwingConstants ;
 import java.text.SimpleDateFormat;
 
 /**
