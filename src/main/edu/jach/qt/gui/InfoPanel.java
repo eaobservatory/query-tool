@@ -77,6 +77,8 @@ public class InfoPanel extends JPanel implements ActionListener {
     private JButton fetchMSB;
     private Timer   queryExpiredTimer;
 
+    private Cursor busyCursor = new Cursor( Cursor.WAIT_CURSOR ) ;
+    private Cursor normalCursor = new Cursor( Cursor.DEFAULT_CURSOR ) ;
 
     /**
      * Creates a new <code>InfoPanel</code> instance.
@@ -129,7 +131,7 @@ public class InfoPanel extends JPanel implements ActionListener {
 			public void actionPerformed( ActionEvent e )
 			{
 				searchButton.setEnabled( false ) ;
-				qtf.setCursor( new Cursor( Cursor.WAIT_CURSOR ) );
+				qtf.setCursor( busyCursor );
 				qtf.getWidgets().setButtons();
 				qtf.updateColumnSizes();
 				qtf.repaint( 0 );
@@ -179,7 +181,7 @@ public class InfoPanel extends JPanel implements ActionListener {
 							msb_qtm.setProjectId( "All" );
 							qtf.setColumnSizes();
 							logoPanel.stop();
-							qtf.setCursor( new Cursor( Cursor.DEFAULT_CURSOR ) );
+							qtf.setCursor( normalCursor );
 							if( queryExpiredTimer != null )
 							{
 								queryExpiredTimer.cancel();
