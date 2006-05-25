@@ -13,7 +13,6 @@ SOURCES = \
 	ExecDtask.java \
 	InvalidUserException.java \
 	HTMLViewer.java \
-	LockFile.java \
 	MSBDoneDialog.java \
 	MsbClient.java \
 	MyTreeCellRenderer.java \
