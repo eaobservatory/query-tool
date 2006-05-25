@@ -216,7 +216,7 @@ public class ExecuteJCMT extends Execute {
 			{
 				String fName = new String( odfFile );
 				fName = fName.trim();
-				if( fName.substring( fName.lastIndexOf( '.' ) + 1 ).equals( "html" ) )
+				if( fName.toLowerCase().endsWith( "html" ) )
 				{
 					HTMLViewer viewer = new HTMLViewer( null , fName );
 					failure.delete();
