@@ -104,7 +104,7 @@ public class QtFrame
   private Querytool		localQuerytool;
   private InfoPanel		infoPanel;
   private JPopupMenu		popup;
-  private TreeMap               calibrationList;
+  private TreeMap calibrationList = new TreeMap() ;
   private JMenu                 calibrationMenu = new JMenu("Calibrations");
   private WidgetPanel           _widgetPanel;
   private int []                tableColumnSizes;
@@ -972,7 +972,7 @@ public class QtFrame
     	
     	public void run()
 		{
-			calibrationList = CalibrationList.getCalibrations( System.getProperty( "telescope" ) );
+			calibrationList.putAll( CalibrationList.getCalibrations( System.getProperty( "telescope" ) ) );
 			// Get the set of keys:
 			Set keys = calibrationList.keySet() ;
 			Iterator keyIter = keys.iterator() ;
