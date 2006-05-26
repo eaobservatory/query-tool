@@ -51,6 +51,5 @@ public class Splash
 			window.dispose() ;
 			window = null ;
 		}
-	}
-
+	}	
 }
