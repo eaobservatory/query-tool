@@ -273,6 +273,7 @@ public class QtFrame
 		ProjectTableModel ptm = new ProjectTableModel();
 		projectTableSetup( ptm );
 		tableSetup();
+		splash.done() ;
 		JScrollPane resultsPanel = new JScrollPane( table );
 		resultsPanel.getViewport().setScrollMode( JViewport.BLIT_SCROLL_MODE );
 		JScrollPane projectPane = new JScrollPane( projectTable );
@@ -305,7 +306,6 @@ public class QtFrame
 		{
 			logger.fatal( "Widget Panel Parse Failed" , e );
 		}
-		splash.done() ;
 	}
 
     private void projectTableSetup(ProjectTableModel ptm) {
