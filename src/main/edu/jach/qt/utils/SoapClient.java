@@ -1,16 +1,17 @@
 package edu.jach.qt.utils;
 
-import java.io.*;
-import java.lang.reflect.*;
 import java.net.URL;
 import java.util.Vector;
 import javax.swing.JOptionPane;
-import org.apache.soap.*;
-import org.apache.soap.encoding.SOAPMappingRegistry;
-import org.apache.soap.encoding.literalxml.XMLParameterSerializer;
-import org.apache.soap.rpc.*;
-import org.apache.soap.util.xml.QName;
 
+import org.apache.log4j.Logger;
+import org.apache.soap.Header ;
+import org.apache.soap.Constants ;
+import org.apache.soap.Fault ;
+import org.apache.soap.SOAPException ;
+import org.apache.soap.rpc.Parameter ;
+import org.apache.soap.rpc.Call ;
+import org.apache.soap.rpc.Response ;
 
 /**
  * <code>SoapClient.java</code>
@@ -118,6 +119,7 @@ public class SoapClient {
 		}
 		catch( SOAPException se )
 		{
+			Logger.getLogger( SoapClient.class ).error( se.getMessage() ) ;
 			JOptionPane.showMessageDialog( null , se.getMessage() , "SOAP Exception" , JOptionPane.ERROR_MESSAGE ) ;
 		}
 		catch( Exception e )
