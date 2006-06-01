@@ -253,12 +253,13 @@ public class QtFrame
 				DeferredProgramList.deleteAllFiles();
 			}
 		}
-		Splash splash = new Splash( this , "Waiting for database ..." ) ;
+
 		// Input Panel Setup
 		WidgetPanel inputPanel = new WidgetPanel( new Hashtable() , widgetBag );
 		_widgetPanel = inputPanel;
 		buildStagingPanel();
 		// Table setup
+		Splash splash = new Splash( this , "Waiting for database ..." ) ;
 		try
 		{
 			msbQTM = new MSBQueryTableModel();

@@ -98,7 +98,7 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
 	    currentBitSet.clear(i);
 	}
     }
-    updateColumns(currentBitSet);
+
     adjustColumnData(currentBitSet);
 
     docIsNull = true;
