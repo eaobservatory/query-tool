@@ -42,6 +42,8 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
     private Vector         model;
     private Vector         modelIndex = new Vector();
     private XmlUtils.MSBTableModel currentModel;
+    
+    public static String [] colClassNames ;
       
   //DATA
   //DOM object to hold XML document contents
@@ -71,7 +73,7 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
     colCount = colNames.length - 2;
 
     // Do the query to get the classes for each column
-    String [] colClassNames = MsbClient.getColumnClasses();
+    colClassNames = MsbClient.getColumnClasses();
     colClasses = new Class [ colNames.length ];
     Vector vectorOfNames = new Vector();
     currentBitSet = new BitSet(colNames.length);
@@ -325,10 +327,11 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
 	// Initialsise the vector
 	if( colNames == null )
 		colNames = MsbClient.getColumnNames();
-	String [] colClassName = MsbClient.getColumnClasses();
+	if( colClassNames == null )
+		colClassNames = MsbClient.getColumnClasses();
 	for (int i=0; i< colNames.length; i++) {
 	    colVector.add((Object)colNames[i]);
-	    classVector.add((Object)colClassName[i]);
+	    classVector.add((Object)colClassNames[i]);
 	}
 	// Now manipulate the vector
 	for (int i=colNames.length-1; i >= 0; i--) {
