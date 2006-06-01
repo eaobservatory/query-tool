@@ -311,62 +311,68 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
 
 
     /**
-     * Method to select a subset of columns in the model to display
-     * on the associated table.  The <code>BitSet</code> input must
-     * be in the same order as that returned from a 
-     * <code>getColumnNames</code> query.  If a bit is set, it is assumed
-     * that column should be displayed.
-     * @see edu.jach.qt.utils.MsbClient#getColumnNames()
-     * @param  colSet  The set of columns to display.
-     */
-    public void updateColumns(BitSet colSet) {
-	int nHidden = 0;
-	currentBitSet = colSet;
-	Vector colVector = new Vector();
-	Vector classVector = new Vector();
-	// Initialsise the vector
-	colNames = MsbClient.getColumnNames();
-	if( colClassNames == null )
-		colClassNames = MsbClient.getColumnClasses();
-	for (int i=0; i< colNames.length; i++) {
-	    colVector.add((Object)colNames[i]);
-	    classVector.add((Object)colClassNames[i]);
-	}
-	// Now manipulate the vector
-	for (int i=colNames.length-1; i >= 0; i--) {
-	    if (!colSet.get(i)) {
-		nHidden++;
-		// Get the contents and move them to the end...
-		Object o = colVector.remove(i);
-		colVector.add(o);
-		// Make sure the classes stay linked to the names
-		o = classVector.remove(i);
-		classVector.add(o);
-		// And make sure that the model vector is maintained...
-	    }		
-	}
-	// Set the column count
-	colCount = colNames.length - nHidden;
-	for (int i=0; i< colNames.length; i++) {
-	    colNames[i] = (String)colVector.get(i);
-	    if (((String)classVector.get(i)).equalsIgnoreCase("Integer")) {
-		colClasses[i] = Integer.class;
-	    }
-	    else if (((String)classVector.get(i)).equalsIgnoreCase("Float")) {
-		colClasses[i] = Number.class;
-	    }
-	    else {
-		colClasses[i] = String.class;
-	    }
-	}
+	 * Method to select a subset of columns in the model to display on the associated table. The <code>BitSet</code> input must be in the same order as that returned from a <code>getColumnNames</code> query. If a bit is set, it is assumed that column should be displayed.
+	 * 
+	 * @see edu.jach.qt.utils.MsbClient#getColumnNames()
+	 * @param colSet
+	 *            The set of columns to display.
+	 */
+	public void updateColumns( BitSet colSet )
+	{
+		int nHidden = 0;
+		currentBitSet = colSet;
+		Vector colVector = new Vector();
+		Vector classVector = new Vector();
+		// Initialsise the vector
+		colNames = MsbClient.getColumnNames();
+		if( colClassNames == null )
+			colClassNames = MsbClient.getColumnClasses();
+		for( int i = 0 ; i < colNames.length ; i++ )
+		{
+			colVector.add( ( Object ) colNames[ i ] );
+			classVector.add( ( Object ) colClassNames[ i ] );
+		}
+		// Now manipulate the vector
+		for( int i = colNames.length - 1 ; i >= 0 ; i-- )
+		{
+			if( !colSet.get( i ) )
+			{
+				nHidden++;
+				// Get the contents and move them to the end...
+				Object o = colVector.remove( i );
+				colVector.add( o );
+				// Make sure the classes stay linked to the names
+				o = classVector.remove( i );
+				classVector.add( o );
+				// And make sure that the model vector is maintained...
+			}
+		}
+		// Set the column count
+		colCount = colNames.length - nHidden;
+		for( int i = 0 ; i < colNames.length ; i++ )
+		{
+			colNames[ i ] = ( String ) colVector.get( i );
+			if( ( ( String ) classVector.get( i ) ).equalsIgnoreCase( "Integer" ) )
+			{
+				colClasses[ i ] = Number.class;
+			}
+			else if( ( ( String ) classVector.get( i ) ).equalsIgnoreCase( "Float" ) )
+			{
+				colClasses[ i ] = Number.class;
+			}
+			else
+			{
+				colClasses[ i ] = String.class;
+			}
+		}
 
-	// reset the identifiers
-	MSBQueryTableModel.MSBID     = colVector.indexOf("msbid");
-	MSBQueryTableModel.CHECKSUM  = colVector.indexOf("checksum");
-	MSBQueryTableModel.PROJECTID = colVector.indexOf("projectid");
+		// reset the identifiers
+		MSBID = colVector.indexOf( "msbid" );
+		CHECKSUM = colVector.indexOf( "checksum" );
+		PROJECTID = colVector.indexOf( "projectid" );
 
-	fireTableChanged(null);
-    }
+		fireTableChanged( null );
+	}
 
     public BitSet getBitSet() {
 	return currentBitSet;
