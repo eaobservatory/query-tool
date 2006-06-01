@@ -99,6 +99,7 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
 	}
     }
 
+    updateColumns(currentBitSet) ;
     adjustColumnData(currentBitSet);
 
     docIsNull = true;
@@ -322,7 +323,8 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
 	Vector colVector = new Vector();
 	Vector classVector = new Vector();
 	// Initialsise the vector
-	colNames = MsbClient.getColumnNames();
+	if( colNames == null )
+		colNames = MsbClient.getColumnNames();
 	String [] colClassName = MsbClient.getColumnClasses();
 	for (int i=0; i< colNames.length; i++) {
 	    colVector.add((Object)colNames[i]);
