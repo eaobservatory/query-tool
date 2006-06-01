@@ -325,8 +325,7 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
 	Vector colVector = new Vector();
 	Vector classVector = new Vector();
 	// Initialsise the vector
-	if( colNames == null )
-		colNames = MsbClient.getColumnNames();
+	colNames = MsbClient.getColumnNames();
 	if( colClassNames == null )
 		colClassNames = MsbClient.getColumnClasses();
 	for (int i=0; i< colNames.length; i++) {
@@ -362,9 +361,9 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
 	}
 
 	// reset the identifiers
-	this.MSBID     = colVector.indexOf("msbid");
-	this.CHECKSUM  = colVector.indexOf("checksum");
-	this.PROJECTID = colVector.indexOf("projectid");
+	MSBQueryTableModel.MSBID     = colVector.indexOf("msbid");
+	MSBQueryTableModel.CHECKSUM  = colVector.indexOf("checksum");
+	MSBQueryTableModel.PROJECTID = colVector.indexOf("projectid");
 
 	fireTableChanged(null);
     }
