@@ -5,14 +5,16 @@ package edu.jach.qt.utils;
 import gemini.sp.SpItem;
 
 // /* ORAC imports */
-import orac.util.*;
+import orac.util.SpInputXML ;
 
 /* OMP imports */
 import omp.SoapClient ; 
 
 // /* Standard imports */
-import java.io.*;
-import java.net.*;
+import java.io.ByteArrayInputStream ;
+import java.io.FileWriter ;
+import java.io.StringReader ;
+import java.net.URL ;
 import java.util.zip.GZIPInputStream;
 
 // /* Miscellaneous imports */
