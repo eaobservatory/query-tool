@@ -38,6 +38,7 @@ EXTERNALCLASSES = \
 	$(OTROOT)/ORAC/install/classes \
 	/jac_sw/drama/CurrentRelease/javalib \
 	$(OTROOT)/OT/install/classes \
+	$(OTROOT)/OMP/install/classes \
 	/jac_sw/itsroot/install/dcHub/javalib/dcHub.jar
 
 ifdef SOURCES

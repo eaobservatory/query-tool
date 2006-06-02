@@ -7,12 +7,13 @@ import gemini.sp.SpItem;
 // /* ORAC imports */
 import orac.util.*;
 
+/* OMP imports */
+import omp.SoapClient ; 
+
 // /* Standard imports */
 import java.io.*;
-import java.lang.reflect.*;
 import java.net.*;
 import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
 
 // /* Miscellaneous imports */
 import org.apache.log4j.Logger;
