@@ -21,7 +21,6 @@ SOURCES = \
 	OracColor.java \
 	QtTools.java \
 	SimpleMoon.java \
-	SpClient.java \
 	TelescopeInformation.java \
 	TextReader.java \
 	TimeUtils.java \
