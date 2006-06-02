@@ -83,7 +83,7 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
 		{
 			if( colClassNames[ i ].equalsIgnoreCase( "Integer" ) )
 			{
-				colClasses[ i ] = Integer.class;
+				colClasses[ i ] = Number.class;
 			}
 			else if( colClassNames[ i ].equalsIgnoreCase( "Float" ) )
 			{
