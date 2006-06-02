@@ -57,56 +57,63 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
     new ArrayList();        
 
     /**
-     * Constructor.
-     * Constructs a tabe model with 200 possible entries.
-     */
-  public MSBQueryTableModel() throws Exception{
+	 * Constructor. Constructs a tabe model with 200 possible entries.
+	 */
+	public MSBQueryTableModel() throws Exception
+	{
 
-    // Do a query to get the names of the columns
-    colNames = MsbClient.getColumnNames();
-    if (colNames == null) {
-	throw new Exception("No results returned");
-    }
-    // Set the column count to the total number -2 since we will
-    // by default hide the MSB id and checksum, since these mean
-    // nothing to the observer and are for internal use only.
-    colCount = colNames.length - 2;
+		// Do a query to get the names of the columns
+		colNames = MsbClient.getColumnNames();
+		if( colNames == null )
+		{
+			throw new Exception( "No results returned" );
+		}
+		// Set the column count to the total number -2 since we will
+		// by default hide the MSB id and checksum, since these mean
+		// nothing to the observer and are for internal use only.
+		colCount = colNames.length - 2;
 
-    // Do the query to get the classes for each column
-    colClassNames = MsbClient.getColumnClasses();
-    colClasses = new Class [ colNames.length ];
-    Vector vectorOfNames = new Vector();
-    currentBitSet = new BitSet(colNames.length);
-    // Loop over each column
-    for (int i=0; i< colNames.length; i++) {
-	if (colClassNames[i].equalsIgnoreCase("Integer")) {
-	    colClasses[i] = Integer.class;
-	}
-	else if (colClassNames[i].equalsIgnoreCase("Float")) {
-	    colClasses[i] = Number.class; // Does not seem to like Float.class - don't know why
-	}
-	else {
-	    colClasses[i] = String.class;
-	}
-	vectorOfNames.add((Object)colNames[i]);
-	// TJs code guarantees that the msbid and checksum are the
-	// last two columns returned in a query, so we don't need
-	// to do any explicit checking.  This will need to be modified
-	// in the event that this changes.
-	if (i<colCount) {
-	    currentBitSet.set(i);
-	}
-	else {
-	    currentBitSet.clear(i);
-	}
-    }
+		// Do the query to get the classes for each column
+		colClassNames = MsbClient.getColumnClasses();
+		colClasses = new Class[ colNames.length ];
+		Vector vectorOfNames = new Vector();
+		currentBitSet = new BitSet( colNames.length );
+		// Loop over each column
+		for( int i = 0 ; i < colNames.length ; i++ )
+		{
+			if( colClassNames[ i ].equalsIgnoreCase( "Integer" ) )
+			{
+				colClasses[ i ] = Integer.class;
+			}
+			else if( colClassNames[ i ].equalsIgnoreCase( "Float" ) )
+			{
+				colClasses[ i ] = Number.class; // Does not seem to like Float.class - don't know why
+			}
+			else
+			{
+				colClasses[ i ] = String.class;
+			}
+			vectorOfNames.add( ( Object ) colNames[ i ] );
+			// TJs code guarantees that the msbid and checksum are the
+			// last two columns returned in a query, so we don't need
+			// to do any explicit checking. This will need to be modified
+			// in the event that this changes.
+			if( i < colCount )
+			{
+				currentBitSet.set( i );
+			}
+			else
+			{
+				currentBitSet.clear( i );
+			}
+		}
 
-    updateColumns(currentBitSet) ;
-    adjustColumnData(currentBitSet);
+		updateColumns( currentBitSet , true );
+		adjustColumnData( currentBitSet );
 
-    docIsNull = true;
-    projectIds = new Integer[200];
-  }
+		docIsNull = true;
+		projectIds = new Integer[ 200 ];
+	}
 
 
     /**
@@ -319,12 +326,18 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
 	 */
 	public void updateColumns( BitSet colSet )
 	{
+		updateColumns( colSet , false ) ;		
+	}
+	
+	public void updateColumns( BitSet colSet , boolean justCalled )
+	{
 		int nHidden = 0;
 		currentBitSet = colSet;
 		Vector colVector = new Vector();
 		Vector classVector = new Vector();
 		// Initialsise the vector
-		colNames = MsbClient.getColumnNames();
+		if( !justCalled )
+			colNames = MsbClient.getColumnNames();
 		if( colClassNames == null )
 			colClassNames = MsbClient.getColumnClasses();
 		for( int i = 0 ; i < colNames.length ; i++ )
