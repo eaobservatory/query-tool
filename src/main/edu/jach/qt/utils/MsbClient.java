@@ -162,54 +162,66 @@ public class MsbClient extends SoapClient {
 
 
     /**
-     * Method to get the list of columns in an MSB Summary.  Requires the
-     * <code>telescope</code> system parameter to be set.
-     * @return      A string array of column names.
-     */
-    public static String [] getColumnNames () {
-	String [] columns;
-	try {
-	    URL url = new URL(System.getProperty("msbServer"));
-	    flushParameter();
-	    addParameter("telescope", String.class, System.getProperty("telescope"));
-	    Object o = doCall(url, "urn:OMP::MSBServer", "getResultColumns");
-	    columns = (String [])o;
+	 * Method to get the list of columns in an MSB Summary. Requires the <code>telescope</code> system parameter to be set.
+	 * 
+	 * @return A string array of column names.
+	 */
+    static String[] columnNames ;
+	public static String[] getColumnNames()
+	{
+		if( columnNames != null )
+			return columnNames ;
+		try
+		{
+			URL url = new URL( System.getProperty( "msbServer" ) );
+			flushParameter();
+			addParameter( "telescope" , String.class , System.getProperty( "telescope" ) );
+			Object o = doCall( url , "urn:OMP::MSBServer" , "getResultColumns" );
+			columnNames = ( String[] ) o;
+		}
+		catch( Exception e )
+		{
+			logger.error( "getColumnNames threw exception" , e );
+			columnNames = null;
+		}
+		return columnNames ;
 	}
-	catch (Exception e) {
-	    logger.error("getColumnNames threw exception", e);
-	    columns = null;
-	}
-	return columns;
-    }
 
-    /**
-     * Method to get the list of column types in an MSB Summary.  Requires the
-     * <code>telescope</code> system parameter to be set.
-     * @return      A string array of column types (eg Integer, String, etc).
-     */
-    public static String [] getColumnClasses () {
-	String [] columns;
-	try {
-	    URL url = new URL(System.getProperty("msbServer"));
-	    flushParameter();
-	    addParameter("telescope", String.class, System.getProperty("telescope"));
-	    Object o = doCall(url, "urn:OMP::MSBServer", "getTypeColumns");
-	    columns = (String [])o;
+	/**
+	 * Method to get the list of column types in an MSB Summary. Requires the <code>telescope</code> system parameter to be set.
+	 * 
+	 * @return A string array of column types (eg Integer, String, etc).
+	 */
+	static String[] columnClasses ;
+	public static String[] getColumnClasses()
+	{
+		if( columnClasses != null )
+			return columnClasses ;
+		try
+		{
+			URL url = new URL( System.getProperty( "msbServer" ) );
+			flushParameter();
+			addParameter( "telescope" , String.class , System.getProperty( "telescope" ) );
+			Object o = doCall( url , "urn:OMP::MSBServer" , "getTypeColumns" );
+			columnClasses = ( String[] ) o;
+		}
+		catch( Exception e )
+		{
+			logger.error( "getColumnNames threw exception" , e );
+			columnClasses = null;
+		}
+		return columnClasses ;
 	}
-	catch (Exception e) {
-	    logger.error("getColumnNames threw exception", e);
-	    columns = null;
-	}
-	return columns;
-    }
 
 
   /**
-   * <code>doneMSB</code> Mark the given project ID as done in the database.
-   *
-   * @param projID a <code>String</code> the project ID.
-   * @param checksum a <code>String</code> the checksum for this project.
-   */
+	 * <code>doneMSB</code> Mark the given project ID as done in the database.
+	 * 
+	 * @param projID
+	 *            a <code>String</code> the project ID.
+	 * @param checksum
+	 *            a <code>String</code> the checksum for this project.
+	 */
   public static void doneMSB(String projID, String checksum) {
     try {
 

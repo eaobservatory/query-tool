@@ -5,6 +5,7 @@ import java.io.IOException ;
 import java.util.Vector ;
 import java.util.BitSet ;
 import java.util.ArrayList ;
+import java.util.List ;
 import javax.swing.table.AbstractTableModel ;
 import javax.xml.parsers.DocumentBuilderFactory ;
 import javax.xml.parsers.DocumentBuilder ;
@@ -44,7 +45,6 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
     private BitSet         currentBitSet;      // Bit mask showing which columns to display
     private Vector         model;
     private Vector         modelIndex = new Vector();
-    private XmlUtils.MSBTableModel currentModel;
     
     public static String [] colClassNames ;
       
@@ -56,15 +56,13 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
   boolean docIsNull;
 
   //used to hold a list of TableModelListeners
-  protected java.util.List tableModelListeners = 
-    new ArrayList();        
+  protected List tableModelListeners = new ArrayList();        
 
     /**
 	 * Constructor. Constructs a tabe model with 200 possible entries.
 	 */
 	public MSBQueryTableModel() throws Exception
 	{
-
 		// Do a query to get the names of the columns
 		colNames = MsbClient.getColumnNames();
 		if( colNames == null )
@@ -111,7 +109,7 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
 			}
 		}
 
-		updateColumns( currentBitSet , true );
+		updateColumns( currentBitSet );
 		adjustColumnData( currentBitSet );
 
 		docIsNull = true;
@@ -329,20 +327,13 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
 	 */
 	public void updateColumns( BitSet colSet )
 	{
-		updateColumns( colSet , false ) ;		
-	}
-	
-	public void updateColumns( BitSet colSet , boolean justCalled )
-	{
 		int nHidden = 0;
 		currentBitSet = colSet;
 		Vector colVector = new Vector();
 		Vector classVector = new Vector();
 		// Initialsise the vector
-		if( !justCalled )
-			colNames = MsbClient.getColumnNames();
-		if( colClassNames == null )
-			colClassNames = MsbClient.getColumnClasses();
+		colNames = MsbClient.getColumnNames();	
+		colClassNames = MsbClient.getColumnClasses();
 		for( int i = 0 ; i < colNames.length ; i++ )
 		{
 			colVector.add( ( Object ) colNames[ i ] );
@@ -367,7 +358,6 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
 		colCount = colNames.length - nHidden;
 		for( int i = 0 ; i < colNames.length ; i++ )
 		{
-			colNames[ i ] = ( String ) colVector.get( i );
 			if( ( ( String ) classVector.get( i ) ).equalsIgnoreCase( "Integer" ) )
 			{
 				colClasses[ i ] = Number.class;
@@ -383,7 +373,7 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
 		}
 
 		// reset the identifiers
-		MSBID = colVector.indexOf( "msbid" );
+		MSBID = colVector.indexOf( "msbid" ) ;
 		CHECKSUM = colVector.indexOf( "checksum" );
 		PROJECTID = colVector.indexOf( "projectid" );
 
@@ -394,21 +384,26 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
 	return currentBitSet;
     }
 
-    public void adjustColumnData(BitSet colSet) {
-	// Get the raw model in case we have previously manipulated it.
-	model = XmlUtils.getNewModel(doc, ROOT_ELEMENT_TAG);
-	if (model == null) return;
-	// Loop through each submodel
-	for (int i=0; i< model.size(); i++) {
-	    XmlUtils.MSBTableModel current = (XmlUtils.MSBTableModel) model.elementAt(i);
-	    for (int j = colNames.length-1; j>=0; j--) {
-		if (!colSet.get(j)) {
-		    // Move the column to the end to hide it.
-		    current.moveColumnToEnd(j);
+    public void adjustColumnData( BitSet colSet )
+	{
+		// Get the raw model in case we have previously manipulated it.
+		model = XmlUtils.getNewModel( doc , ROOT_ELEMENT_TAG );
+		if( model == null )
+			return;
+		// Loop through each submodel
+		for( int i = 0 ; i < model.size() ; i++ )
+		{
+			XmlUtils.MSBTableModel current = ( XmlUtils.MSBTableModel ) model.elementAt( i );
+			for( int j = colNames.length - 1 ; j >= 0 ; j-- )
+			{
+				if( !colSet.get( j ) )
+				{
+					// Move the column to the end to hide it.
+					current.moveColumnToEnd( j );
+				}
+			}
 		}
-	    }
 	}
-    }
 
     public void clear() {
 	if (model != null) {
