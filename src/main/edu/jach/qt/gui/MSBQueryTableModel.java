@@ -78,6 +78,7 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
 		colClassNames = MsbClient.getColumnClasses();
 		colClasses = new Class[ colNames.length ];
 		Vector vectorOfNames = new Vector();
+		vectorOfNames.copyInto( colNames ) ;
 		currentBitSet = new BitSet( colNames.length );
 		// Loop over each column
 		for( int i = 0 ; i < colNames.length ; i++ )
@@ -94,7 +95,6 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
 			{
 				colClasses[ i ] = String.class;
 			}
-			vectorOfNames.add( ( Object ) colNames[ i ] );
 			// TJs code guarantees that the msbid and checksum are the
 			// last two columns returned in a query, so we don't need
 			// to do any explicit checking. This will need to be modified
