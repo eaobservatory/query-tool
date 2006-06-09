@@ -174,7 +174,6 @@ public class InfoPanel extends JPanel implements ActionListener {
 								{
 									logger.warn( "Problem joining projectfill thread" );
 								}
-								;
 
 								qtf.initProjectTable();
 							}
@@ -196,6 +195,8 @@ public class InfoPanel extends JPanel implements ActionListener {
 								queryExpiredTimer.schedule( new QueryExpiredTask() , delay );
 							}
 						}
+						logoPanel.stop();
+						qtf.setCursor( normalCursor );
 						searchButton.setEnabled( true );
 					}
 				};
