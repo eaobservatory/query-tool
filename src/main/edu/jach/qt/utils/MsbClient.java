@@ -166,11 +166,16 @@ public class MsbClient extends SoapClient {
 	 * 
 	 * @return A string array of column names.
 	 */
+/*
     static String[] columnNames ;
+*/
 	public static String[] getColumnNames()
 	{
+/*
 		if( columnNames != null )
 			return columnNames ;
+*/
+		String[] columnNames ;
 		try
 		{
 			URL url = new URL( System.getProperty( "msbServer" ) );
@@ -192,11 +197,16 @@ public class MsbClient extends SoapClient {
 	 * 
 	 * @return A string array of column types (eg Integer, String, etc).
 	 */
+/*
 	static String[] columnClasses ;
+*/
 	public static String[] getColumnClasses()
 	{
+/*
 		if( columnClasses != null )
 			return columnClasses ;
+*/
+		String[] columnClasses ;
 		try
 		{
 			URL url = new URL( System.getProperty( "msbServer" ) );

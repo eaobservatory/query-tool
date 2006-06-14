@@ -358,6 +358,12 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
 		colCount = colNames.length - nHidden;
 		for( int i = 0 ; i < colNames.length ; i++ )
 		{
+			/*
+			* the following line was the problematic one
+			* however it has been put back while I work on 
+			* replacing this code
+			*/
+			colNames[ i ] = ( String ) colVector.get( i );
 			if( ( ( String ) classVector.get( i ) ).equalsIgnoreCase( "Integer" ) )
 			{
 				colClasses[ i ] = Number.class;
