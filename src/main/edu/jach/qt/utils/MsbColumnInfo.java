@@ -5,14 +5,20 @@ import java.util.Vector ;
 public class MsbColumnInfo
 {
 
-	String name , klass ;
+	String name ; 
+	Class klass ;
 	boolean visible = true ;
 	Vector vector ;
 
-	public MsbColumnInfo( String name , String klass )
+	public MsbColumnInfo( String name , String klassType )
 	{
 		this.name = name ;
-		this.klass = klass ;
+		if( klassType.equalsIgnoreCase( "Integer" ) )
+			klass = Integer.class ;
+		else if( klassType.equalsIgnoreCase( "Float" ) ) 
+			klass = Number.class ;
+		else 
+			klass = String.class ;
 		vector = new Vector() ;
 	}
 
@@ -23,9 +29,7 @@ public class MsbColumnInfo
 
 	public Class getClassType()
 	{
-		if( klass.equalsIgnoreCase( "Integer" ) || klass.equalsIgnoreCase( "Integer" ) )
-			return Number.class ;
-		return String.class ;
+		return klass ;
 	}
 
 	public void setVisible( boolean visible )

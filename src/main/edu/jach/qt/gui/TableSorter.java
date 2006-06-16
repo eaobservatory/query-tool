@@ -2,13 +2,17 @@
 package edu.jach.qt.gui;
 
 // Imports for picking up mouse events from the JTable. 
-import java.awt.event.*;
-import java.awt.Cursor;
-import java.util.*;
+import java.awt.event.MouseAdapter ;
+import java.awt.event.MouseEvent ;
+import java.awt.event.InputEvent ;
+import java.util.Date ;
+import java.util.Vector ;
 import javax.swing.JTable;
 import javax.swing.event.TableModelEvent;
-import javax.swing.table.*;
-import javax.swing.*;
+import javax.swing.table.TableModel ;
+import javax.swing.table.TableColumnModel ;
+import javax.swing.table.JTableHeader ;
+import javax.swing.ToolTipManager ;
 
 import org.apache.log4j.Logger;
 
@@ -66,123 +70,160 @@ public class TableSorter extends TableMap {
    }
 
     /**
-     * Compare the values is a specfic table column in two rows.
-     * Works independently of the type of data in the column.
-     * @param row1   The first row to use.
-     * @param row2   The second row to use.
-     * @param column The column of data we are comparing.
-     * @return       -1 if value in row1 < value in row2, 
-     *               1 if the value in row 1 > value in row2
-     *               0 if the values are identical.
-     */
-   public int compareRowsByColumn(int row1, int row2, int column) {
-      Class type = model.getColumnClass(column);
-      TableModel data = model;
+	 * Compare the values is a specfic table column in two rows. Works independently of the type of data in the column.
+	 * 
+	 * @param row1
+	 *            The first row to use.
+	 * @param row2
+	 *            The second row to use.
+	 * @param column
+	 *            The column of data we are comparing.
+	 * @return -1 if value in row1 < value in row2, 1 if the value in row 1 > value in row2 0 if the values are identical.
+	 */
+	public int compareRowsByColumn( int row1 , int row2 , int column )
+	{
+		Class type = model.getColumnClass( column );
+		TableModel data = model;
 
-      // Check for nulls.
+		// Check for nulls.
 
-      Object o1 = data.getValueAt(row1, column);
-      Object o2 = data.getValueAt(row2, column);
+		Object o1 = data.getValueAt( row1 , column );
+		Object o2 = data.getValueAt( row2 , column );
 
-      // If both values are null, return 0.
-      if (o1 == null && o2 == null) {
-	 return 0; 
-      } else if (o1 == null) { // Define null less than everything. 
-	 return -1; 
-      } else if (o2 == null) { 
-	 return 1; 
-      }
+		// If both values are null, return 0.
+		if( o1 == null && o2 == null )
+		{
+			return 0;
+		}
+		else if( o1 == null )
+		{ // Define null less than everything.
+			return -1;
+		}
+		else if( o2 == null )
+		{
+			return 1;
+		}
 
-      if (o1.toString().equals("??") || o1.toString().equals("??"))
-	  {
-	      return -1;
-	  }
+		if( o1.toString().equals( "??" ) || o1.toString().equals( "??" ) )
+		{
+			return -1;
+		}
 
-      /*
-       * We copy all returned values from the getValue call in case
-       * an optimised model is reusing one object to return many
-       * values.  The Number subclasses in the JDK are immutable and
-       * so will not be used in this way but other subclasses of
-       * Number might want to do this to save space and avoid
-       * unnecessary heap allocation.
-       */
+		/*
+		 * We copy all returned values from the getValue call in case an optimised model is reusing one object to return many values. The Number subclasses in the JDK are immutable and so will not be used in this way but other subclasses of Number might want to do this to save space and avoid unnecessary heap allocation.
+		 */
 
-      if (type.getSuperclass() == java.lang.Number.class ||
-	  type == java.lang.Number.class) {
-	 Number n1 = new Double (data.getValueAt(row1, column).toString());
-	 Number n2 = new Double (data.getValueAt(row2, column).toString());
-	 double d1;
-	 double d2;
-	 if ( type == java.lang.Integer.class ) {
-	     d1 = n1.intValue();
-	     d2 = n2.intValue();
-	 }
-	 else {
-	     d1 = n1.doubleValue();
-	     d2 = n2.doubleValue();
-	 }
-	   
-	 if (d1 < d2) {
-	    return -1;
-	 } else if (d1 > d2) {
-	    return 1;
-	 } else {
-	    return 0;
-	 }
-      } else if (type == java.util.Date.class) {
-	 Date d1 = (Date)data.getValueAt(row1, column);
-	 long n1 = d1.getTime();
-	 Date d2 = (Date)data.getValueAt(row2, column);
-	 long n2 = d2.getTime();
+		if( type.getSuperclass() == Number.class || type == Number.class )
+		{
+			Number n1 = new Double( data.getValueAt( row1 , column ).toString() );
+			Number n2 = new Double( data.getValueAt( row2 , column ).toString() );
+			double d1;
+			double d2;
+			if( type == Integer.class )
+			{
+				d1 = n1.intValue();
+				d2 = n2.intValue();
+			}
+			else
+			{
+				d1 = n1.doubleValue();
+				d2 = n2.doubleValue();
+			}
 
-	 if (n1 < n2) {
-	    return -1;
-	 } else if (n1 > n2) {
-	    return 1;
-	 } else {
-	    return 0;
-	 }
-      } else if (type == String.class) {
-	 String s1 = (String)data.getValueAt(row1, column);
-	 String s2    = (String)data.getValueAt(row2, column);
-	 int result = s1.compareTo(s2);
+			if( d1 < d2 )
+			{
+				return -1;
+			}
+			else if( d1 > d2 )
+			{
+				return 1;
+			}
+			else
+			{
+				return 0;
+			}
+		}
+		else if( type == java.util.Date.class )
+		{
+			Date d1 = ( Date ) data.getValueAt( row1 , column );
+			long n1 = d1.getTime();
+			Date d2 = ( Date ) data.getValueAt( row2 , column );
+			long n2 = d2.getTime();
 
-	 if (result < 0) {
-	    return -1;
-	 } else if (result > 0) {
-	    return 1;
-	 } else {
-	    return 0;
-	 }
-      } else if (type == Boolean.class) {
-	 Boolean bool1 = (Boolean)data.getValueAt(row1, column);
-	 boolean b1 = bool1.booleanValue();
-	 Boolean bool2 = (Boolean)data.getValueAt(row2, column);
-	 boolean b2 = bool2.booleanValue();
+			if( n1 < n2 )
+			{
+				return -1;
+			}
+			else if( n1 > n2 )
+			{
+				return 1;
+			}
+			else
+			{
+				return 0;
+			}
+		}
+		else if( type == String.class )
+		{
+			String s1 = ( String ) data.getValueAt( row1 , column );
+			String s2 = ( String ) data.getValueAt( row2 , column );
+			int result = s1.compareTo( s2 );
 
-	 if (b1 == b2) {
-	    return 0;
-	 } else if (b1) { // Define false < true
-	    return 1;
-	 } else {
-	    return -1;
-	 }
-      } else {
-	 Object v1 = data.getValueAt(row1, column);
-	 String s1 = v1.toString();
-	 Object v2 = data.getValueAt(row2, column);
-	 String s2 = v2.toString();
-	 int result = s1.compareTo(s2);
+			if( result < 0 )
+			{
+				return -1;
+			}
+			else if( result > 0 )
+			{
+				return 1;
+			}
+			else
+			{
+				return 0;
+			}
+		}
+		else if( type == Boolean.class )
+		{
+			Boolean bool1 = ( Boolean ) data.getValueAt( row1 , column );
+			boolean b1 = bool1.booleanValue();
+			Boolean bool2 = ( Boolean ) data.getValueAt( row2 , column );
+			boolean b2 = bool2.booleanValue();
 
-	 if (result < 0) {
-	    return -1;
-	 } else if (result > 0) {
-	    return 1;
-	 } else {
-	    return 0;
-	 }
-      }
-   }
+			if( b1 == b2 )
+			{
+				return 0;
+			}
+			else if( b1 )
+			{ // Define false < true
+				return 1;
+			}
+			else
+			{
+				return -1;
+			}
+		}
+		else
+		{
+			Object v1 = data.getValueAt( row1 , column );
+			String s1 = v1.toString();
+			Object v2 = data.getValueAt( row2 , column );
+			String s2 = v2.toString();
+			int result = s1.compareTo( s2 );
+
+			if( result < 0 )
+			{
+				return -1;
+			}
+			else if( result > 0 )
+			{
+				return 1;
+			}
+			else
+			{
+				return 0;
+			}
+		}
+	}
 
     /**
 	 * Compare values in two rows from a <code>sortingColumns</code>.
