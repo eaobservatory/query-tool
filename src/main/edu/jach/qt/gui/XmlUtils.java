@@ -357,30 +357,14 @@ public class XmlUtils {
     public static OrderedMap getNewModel( Document doc , String tag )
 	{
 		if( doc == null )
-		{
 			return null;
-		}
 
 		// Get all of the summary nodes
 		NodeList rows = doc.getDocumentElement().getElementsByTagName( tag );
 		if( rows.getLength() == 0 )
-		{
 			return null;
-		}
 
-		// Get the number of children in the summary - representing the number
-		// of columns to display
-		NodeList children = rows.item( 0 ).getChildNodes();
-		int nColumns = 0;
-		for( int i = 0 ; i < children.getLength() ; i++ )
-		{
-			if( children.item( i ).getNodeName().startsWith( "#" ) )
-			{
-				continue;
-			}
-			nColumns++;
-		}
-
+		NodeList children ;
 		// Create a vector containing the data for each project
 		OrderedMap projectData = new OrderedMap() ;
 
@@ -409,19 +393,13 @@ public class XmlUtils {
 			{
 				String name = children.item( j ).getNodeName().trim();
 				if( name.startsWith( "#" ) )
-				{
 					continue;
-				}
 				String value = ( String ) getValue( e , name );
 				if( "timeest".equals( name ) )
-				{
-					// Convert the string to use a standard format
 					value = convertStringToTime( value );
-				}
 				currentModel.insertData( name , value );
 			}
 		}
-
 		return projectData;
 	}
 
