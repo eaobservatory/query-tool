@@ -267,6 +267,7 @@ public class QtFrame
 		catch( Exception e )
 		{
 			logger.error( "Unable to create table model" , e );
+			e.printStackTrace() ;
 			exitQT();
 		}
 		infoPanel = new InfoPanel( msbQTM , localQuerytool , this );

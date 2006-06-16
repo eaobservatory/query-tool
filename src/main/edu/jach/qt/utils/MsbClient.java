@@ -161,21 +161,40 @@ public class MsbClient extends SoapClient {
     }
 
 
+    static MsbColumns columns ;
+    public static MsbColumns getColumnInfo()
+    {
+    	if( columns != null )
+    		return columns ;
+    	else
+    		columns = new MsbColumns() ;
+    	String[] names = getColumnNames() ;
+    	String[] types = getColumnClasses() ;
+    	
+    	if( names.length == types.length )
+    	{
+    		for( int index = 0 ; index < names.length ; index++ )
+    		{
+    			String name = names[ index ] ;
+    			String type = types[ index ] ;
+    			MsbColumnInfo columnInfo = new MsbColumnInfo( name , type ) ;
+    			columns.add( columnInfo ) ;
+    		}
+    	}    	
+    	return columns ;
+    }
+    
     /**
 	 * Method to get the list of columns in an MSB Summary. Requires the <code>telescope</code> system parameter to be set.
 	 * 
 	 * @return A string array of column names.
 	 */
-/*
-    static String[] columnNames ;
-*/
-	public static String[] getColumnNames()
+    private static String[] columnNames ;
+    private static String[] getColumnNames()
 	{
-/*
+		//String[] columnNames = null ;
 		if( columnNames != null )
 			return columnNames ;
-*/
-		String[] columnNames ;
 		try
 		{
 			URL url = new URL( System.getProperty( "msbServer" ) );
@@ -197,16 +216,11 @@ public class MsbClient extends SoapClient {
 	 * 
 	 * @return A string array of column types (eg Integer, String, etc).
 	 */
-/*
 	static String[] columnClasses ;
-*/
-	public static String[] getColumnClasses()
+	private static String[] getColumnClasses()
 	{
-/*
 		if( columnClasses != null )
 			return columnClasses ;
-*/
-		String[] columnClasses ;
 		try
 		{
 			URL url = new URL( System.getProperty( "msbServer" ) );

@@ -1,20 +1,29 @@
 package edu.jach.qt.gui;
 
-import java.io.*;
-import java.util.*;
-import javax.swing.*;
-import javax.xml.parsers.*;
+import java.io.StringReader ;
+import java.io.File ;
+import java.io.IOException ;
+import java.util.StringTokenizer ;
+import java.util.Vector ;
+import javax.swing.JOptionPane ;
+import javax.xml.parsers.DocumentBuilderFactory ;
+import javax.xml.parsers.DocumentBuilder ;
 
-import org.xml.sax.*;
+import org.xml.sax.InputSource ;
+import org.xml.sax.Attributes ;
 import org.xml.sax.helpers.DefaultHandler;
-import javax.xml.parsers.SAXParserFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
 import org.apache.xerces.parsers.DOMParser;
 
 import org.apache.log4j.Logger;
-import org.w3c.dom.*;
-import org.xml.sax.SAXException;  
+import org.w3c.dom.Element ;
+import org.w3c.dom.Document ;
+import org.w3c.dom.NodeList ;
+import org.w3c.dom.Node ;
+import org.xml.sax.SAXException; 
+
+import edu.jach.qt.utils.OrderedMap ;
+import edu.jach.qt.utils.MSBTableModel ;
 
 /**
  * <B>XmlUtils</B> is a utility method to get information about a 
@@ -345,149 +354,81 @@ public class XmlUtils {
 
     }
 
-    public static Vector getNewModel (Document doc, String tag) {
-	if (doc == null ) {
-	    return null;
-	}
-
-	boolean usingNewModel = false;
-
-	// Get all of the summary nodes
-	NodeList rows = doc.getDocumentElement().getElementsByTagName(tag);
-	if (rows.getLength() == 0) {
-	    return null;
-	}
-
-	// Get the number of children in the summary - representing the number
-	// of columns to display
-	NodeList children = rows.item(0).getChildNodes();
-	int nColumns = 0;
-	for (int i=0; i<children.getLength(); i++) {
-	    if (children.item(i).getNodeName().startsWith("#")) {
-		continue;
-	    }
-	    nColumns++;
-	}
-
-	// Create a vector containing the data for each project
-	Vector projectData = new Vector();
-
-	// Loop thru all the elements in the document and start populating
-	// the new model.
-	for (int i=0; i<rows.getLength(); i++) {
-	    Element e = getElement(doc, tag, i);
-	    String currentProject = (String)getValue(e, "projectid");
-	    // Loop thru all the models to see if there is one we can use
-	    int index;
-	    MSBTableModel currentModel;
-	    for (index=0; index<projectData.size(); index++) {
-		if ( ((MSBTableModel)projectData.elementAt(index)).getProjectId().equals(currentProject) ) {
-		    break;
+    public static OrderedMap getNewModel( Document doc , String tag )
+	{
+		if( doc == null )
+		{
+			return null;
 		}
-	    }
-	    if (index == projectData.size()) {
-		// Need a new model
-		currentModel = new MSBTableModel (currentProject, nColumns);
-		usingNewModel = true;
-	    }
-	    else {
-		// We are adding to an existing model
-		currentModel = (MSBTableModel) projectData.elementAt(index);
-	    }
 
-	    // Now we have the model, loop thru the elements and add these to the model
-	    children = rows.item(i).getChildNodes();
-	    int addHere = 0;
-	    for (int j=0; j<children.getLength(); j++) {
-		String name = children.item(j).getNodeName().trim();
-		if (name.startsWith("#")) {
-		    continue;
+		// Get all of the summary nodes
+		NodeList rows = doc.getDocumentElement().getElementsByTagName( tag );
+		if( rows.getLength() == 0 )
+		{
+			return null;
 		}
-		String value = (String)getValue(e, name);
-		if ( "timeest".equals(name)) {
-		    // Convert the string to use a standard format
-		    value = convertStringToTime(value);
+
+		// Get the number of children in the summary - representing the number
+		// of columns to display
+		NodeList children = rows.item( 0 ).getChildNodes();
+		int nColumns = 0;
+		for( int i = 0 ; i < children.getLength() ; i++ )
+		{
+			if( children.item( i ).getNodeName().startsWith( "#" ) )
+			{
+				continue;
+			}
+			nColumns++;
 		}
-		currentModel.insertData(addHere, value);
-		addHere++;
-	    }
 
-	    if (usingNewModel) {
-		projectData.add(currentModel);
-		usingNewModel = false;
-	    }
-	}
+		// Create a vector containing the data for each project
+		OrderedMap projectData = new OrderedMap() ;
 
-	return projectData;
-    }
+		// Loop thru all the elements in the document and start populating
+		// the new model.
+		int rowsLength = rows.getLength() ;
+		for( int i = 0 ; i < rowsLength ; i++ )
+		{
+			Element e = getElement( doc , tag , i );
+			String currentProject = ( String )getValue( e , "projectid" );
+			// Loop thru all the models to see if there is one we can use
+			MSBTableModel currentModel;
+			if( projectData.find( currentProject ) != null )
+			{
+				currentModel = ( MSBTableModel )projectData.find( currentProject ) ;
+			}
+			else
+			{
+				currentModel = new MSBTableModel( currentProject ) ;
+				projectData.add( currentProject , currentModel ) ;
+			}
 
-
-
-    public static Vector [] fillColumnDataVectors(Document doc, String project, String tag) {
-	NodeList rows = doc.getDocumentElement().getElementsByTagName(tag);
-	int nColumns=0;
-	NodeList children = rows.item(0).getChildNodes();
-	for (int i=0; i<children.getLength(); i++) {
-	    if (children.item(i).getNodeName().startsWith("#")) {
-		continue;
-	    }
-	    nColumns++;
-	}
-	
-	// Initialise each vector and add it to a linked list.
-	Vector [] vArray = new Vector [nColumns];
-	for (int i=0; i<vArray.length; i++) {
-	    vArray[i] = new Vector();
-	}
-
-	// Loop thru all the nodes looking for ones with the required project id
-	for (int i=0; i<rows.getLength(); i++) {
-	    Element e = getElement(doc, tag, i);
-	    if (((String)getValue(e, "projectid")).trim().equals(project)) {
-		// Get all of the cildren for this element
-		children = e.getChildNodes();
-		int vCount = 0;
-		for (int j=0; j<children.getLength(); j++) {
-		    String name = children.item(j).getNodeName().trim();
-		    if (name.startsWith("#")) {
-			continue;
-		    }
-		    String value = (String)getValue(e, name);
-		    vArray[vCount].add(value);
-		    vCount++;
+			// Now we have the model, loop thru the elements and add these to the model
+			children = rows.item( i ).getChildNodes();
+			for( int j = 0 ; j < children.getLength() ; j++ )
+			{
+				String name = children.item( j ).getNodeName().trim();
+				if( name.startsWith( "#" ) )
+				{
+					continue;
+				}
+				String value = ( String ) getValue( e , name );
+				if( "timeest".equals( name ) )
+				{
+					// Convert the string to use a standard format
+					value = convertStringToTime( value );
+				}
+				currentModel.insertData( name , value );
+			}
 		}
-	    }
+
+		return projectData;
 	}
-	return vArray;
-    }
 
-    public static Vector [] getProjectData () {
-
-	return getProjectData(System.getProperty("msbSummary")+"."+System.getProperty("user.name"));
-
-// 	SAXHandler saxHandler = new SAXHandler();
-
-// 	SAXParserFactory factory = SAXParserFactory.newInstance();
-// 	try {
-// 	    SAXParser parser = factory.newSAXParser();
-// 	    parser.parse( new File(System.getProperty("msbSummary")+"."+System.getProperty("user.name")), saxHandler);
-// 	}
-// 	catch (Exception t) {
-// 	    t.printStackTrace();
-// 	}
-
-// 	Vector projectIds = saxHandler.getProjectIds();
-// 	Vector priorities = saxHandler.getPriorities();
-
-// 	// Add a special project "All" to be used for displaying
-// 	// all of the returned MSBs
-// 	projectIds.add(0, "All");
-// 	priorities.add(0, new Integer(0));
-
-// 	Vector [] data = {projectIds, priorities};
-
-// 	return data;
-    }
+    public static Vector[] getProjectData()
+	{
+		return getProjectData( System.getProperty( "msbSummary" ) + "." + System.getProperty( "user.name" ) );
+	}
 
     public static Vector [] getProjectData(String xmlFileName) {
 	Document  projectDoc = null;
@@ -608,54 +549,6 @@ public class XmlUtils {
 	}
 	
     }
-
-    public static class MSBTableModel {
-	private String _projectId;
-	private Vector [] _columnData;
-
-	public MSBTableModel (String project, int nColumns) {
-	    _projectId = project;
-	    _columnData = new Vector [nColumns];
-	    for (int i=0; i< nColumns; i++) {
-		_columnData[i] = new Vector();
-	    }
-	}
-
-	public void clear() {
-	    for (int i=0; i<_columnData.length; i++) {
-		_columnData[i].clear();
-	    }
-	}
-
-	public  String getProjectId () {
-	    return _projectId;
-	}
-
-	public  void insertData (int column, Object data) {
-	    if (column < 0 || column >= _columnData.length) {
-		logger.warn("Error inserting column data into column "+column);
-		return;
-	    }
-	    _columnData[column].add(data);
-	}
-
-	public  Vector getColumn(int index) {
-	    return _columnData[index];
-	}
-
-	public void moveColumnToEnd(int index) {
-	    Vector tmp = _columnData[index];
-	    for (int i=index+1; i<_columnData.length; i++) {
-		_columnData[i-1] = _columnData[i];
-	    }
-	    _columnData[_columnData.length-1] = tmp;
-	}
-
-	public  Object getData(int row, int column) {
-	    return _columnData[column].elementAt(row);
-	}
-    }
-
 
 }//end class
 

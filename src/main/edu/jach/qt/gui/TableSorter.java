@@ -185,30 +185,33 @@ public class TableSorter extends TableMap {
    }
 
     /**
-     * Compare values in two rows from a <code>sortingColumns</code>.
-     * @param row1  The first row to use in the comparison.
-     * @param row2  The second row to use in the comparison.
-     * @returns     (-1, 0, 1) depending on the values in the two
-     *              rows and whether the table is being sorted in
-     *              ascending or descending order.
-     * @see #compareRowsByColumn(int, int, int)
-     */
-   public int compare(int row1, int row2) {
-      compares++;
-      for (int level = 0; level < sortingColumns.size(); level++) {
-	 Integer column = (Integer)sortingColumns.elementAt(level);
-	 int result = compareRowsByColumn(row1, row2, column.intValue());
-	 if (result != 0) {
-	    return ascending ? result : -result;
-	 }
-      }
-      return 0;
-   }
+	 * Compare values in two rows from a <code>sortingColumns</code>.
+	 * 
+	 * @param row1
+	 *            The first row to use in the comparison.
+	 * @param row2
+	 *            The second row to use in the comparison.
+	 * @returns (-1, 0, 1) depending on the values in the two rows and whether the table is being sorted in ascending or descending order.
+	 * @see #compareRowsByColumn(int, int, int)
+	 */
+	public int compare( int row1 , int row2 )
+	{
+		compares++;
+		for( int level = 0 ; level < sortingColumns.size() ; level++ )
+		{
+			Integer column = ( Integer ) sortingColumns.elementAt( level );
+			int result = compareRowsByColumn( row1 , row2 , column.intValue() );
+			if( result != 0 )
+			{
+				return ascending ? result : -result;
+			}
+		}
+		return 0;
+	}
 
     /**
-     * Sets up a new array of indexes with the right number of elements for the 
-     * current <code>model</code>.
-     */
+	 * Sets up a new array of indexes with the right number of elements for the current <code>model</code>.
+	 */
    public void reallocateIndexes() {
       int rowCount = model.getRowCount();
 
@@ -264,17 +267,22 @@ public class TableSorter extends TableMap {
     }
 
     /**
-     * Perform an N-squared sort on a table.
-     */
-   public void n2sort() {
-      for (int i = 0; i < getRowCount(); i++) {
-	 for (int j = i+1; j < getRowCount(); j++) {
-	    if (compare(indexes[i], indexes[j]) == 1) {
-	       swap(i, j);
-	    }
-	 }
-      }
-   }
+	 * Perform an N-squared sort on a table.
+	 */
+	public void n2sort()
+	{
+		int rowCount = getRowCount() ;
+		for( int i = 0 ; i < rowCount ; i++ )
+		{
+			for( int j = i + 1 ; j < rowCount ; j++ )
+			{
+				if( compare( indexes[ i ] , indexes[ j ] ) == 1 )
+				{
+					swap( i , j );
+				}
+			}
+		}
+	}
 
     /**
      *  This is a home-grown implementation which we have not had time
@@ -380,46 +388,51 @@ public class TableSorter extends TableMap {
    }
 
     /**
-     * Sort the table by the specified column in either ascending or
-     * descending order.
-     * @param column     The index of the column to sort by.
-     * @param ascending  <code>true</code> to sort in ascending order.
-     */
-   public void sortByColumn(int column, boolean ascending) {
-      this.ascending = ascending;
-      sortingColumns.removeAllElements();
-      sortingColumns.addElement(new Integer(column));
-      sort(this);
-      super.tableChanged(new TableModelEvent(this)); 
-   }
+	 * Sort the table by the specified column in either ascending or
+	 * descending order.
+	 * @param column     The index of the column to sort by.
+	 * @param ascending  <code>true</code> to sort in ascending order.
+	 */
+	public void sortByColumn( int column , boolean ascending )
+	{
+		this.ascending = ascending;
+		sortingColumns.removeAllElements();
+		sortingColumns.addElement( new Integer( column ) );
+		sort( this );
+		super.tableChanged( new TableModelEvent( this ) );
+	}
 
-   // There is no-where else to put this. 
-   // Add a mouse listener to the Table to trigger a table sort 
-   // when a column heading is clicked in the JTable. 
-    /**
-     * Add a mouse listener to the column headers.
-     * @param table   The table to add the listener to.
-     */
-   public void addMouseListenerToHeaderInTable(final JTable table) { 
-      final TableSorter sorter = this; 
-      final JTable tableView = table; 
-      ToolTipManager.sharedInstance().unregisterComponent(table);
-      ToolTipManager.sharedInstance().unregisterComponent(table.getTableHeader());
-      tableView.setColumnSelectionAllowed(false); 
-      MouseAdapter listMouseListener = new MouseAdapter() {
-            public void mouseClicked(MouseEvent e) {
-	       TableColumnModel columnModel = tableView.getColumnModel();
-	       int viewColumn = columnModel.getColumnIndexAtX(e.getX()); 
-	       int column = tableView.convertColumnIndexToModel(viewColumn); 
-	       if (e.getClickCount() == 1 && column != -1) {
-		  logger.debug("Sorting table..."); 
-		  int shiftPressed = e.getModifiers()&InputEvent.SHIFT_MASK; 
-		  boolean ascending = (shiftPressed == 0); 
-		  sorter.sortByColumn(column, ascending); 
-	       }
-            }
-	 };
-      JTableHeader th = tableView.getTableHeader(); 
-      th.addMouseListener(listMouseListener); 
-   }
+	// There is no-where else to put this. 
+	// Add a mouse listener to the Table to trigger a table sort 
+	// when a column heading is clicked in the JTable. 
+	/**
+	 * Add a mouse listener to the column headers.
+	 * @param table   The table to add the listener to.
+	 */
+	public void addMouseListenerToHeaderInTable( final JTable table )
+	{
+		final TableSorter sorter = this;
+		final JTable tableView = table;
+		ToolTipManager.sharedInstance().unregisterComponent( table );
+		ToolTipManager.sharedInstance().unregisterComponent( table.getTableHeader() );
+		tableView.setColumnSelectionAllowed( false );
+		MouseAdapter listMouseListener = new MouseAdapter()
+		{
+			public void mouseClicked( MouseEvent e )
+			{
+				TableColumnModel columnModel = tableView.getColumnModel();
+				int viewColumn = columnModel.getColumnIndexAtX( e.getX() );
+				int column = tableView.convertColumnIndexToModel( viewColumn );
+				if( e.getClickCount() == 1 && column != -1 )
+				{
+					logger.debug( "Sorting table..." );
+					int shiftPressed = e.getModifiers() & InputEvent.SHIFT_MASK;
+					boolean ascending = ( shiftPressed == 0 );
+					sorter.sortByColumn( column , ascending );
+				}
+			}
+		};
+		JTableHeader th = tableView.getTableHeader();
+		th.addMouseListener( listMouseListener );
+	}
 }

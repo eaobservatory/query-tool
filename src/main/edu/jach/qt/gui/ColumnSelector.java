@@ -1,14 +1,18 @@
 package edu.jach.qt.gui;
 
-import java.awt.event.*;
-import java.awt.Component;
+import java.awt.event.ActionListener ;
+import java.awt.event.ActionEvent ;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
-import java.lang.*;
-import java.util.*;
-import javax.swing.*;
+import javax.swing.JFrame ;
+import javax.swing.JPanel ;
+import javax.swing.JCheckBox ;
+import javax.swing.JButton ;
 
 import edu.jach.qt.utils.MsbClient;
+
+import edu.jach.qt.utils.MsbColumnInfo ;
+import edu.jach.qt.utils.MsbColumns ;
 
 
 /**
@@ -62,19 +66,20 @@ public class ColumnSelector
 	this.setVisible(true);
     }
 
-    private void addCheckBoxes( ) {
-	columnPanel = new JPanel(new GridLayout(0,1));
-	String [] colNames = MsbClient.getColumnNames();
-	BitSet bits = _msbqtm.getBitSet();
-	for (int i=0; i<colNames.length; i++) {
-	    JCheckBox cb = new JCheckBox(colNames[i]);
-	    if (bits.get(i)) {
-		cb.setSelected(true);
-	    }
-	    columnPanel.add(cb);
+    private void addCheckBoxes()
+	{
+		columnPanel = new JPanel( new GridLayout( 0 , 1 ) );
+		MsbColumns columns = MsbClient.getColumnInfo();
+		for( int i = 0 ; i < columns.size() ; i++ )
+		{
+			MsbColumnInfo columnInfo = ( MsbColumnInfo )columns.find( i ) ;
+			JCheckBox cb = new JCheckBox( columnInfo.getName() );
+			if( columnInfo.getVisible() )
+				cb.setSelected( true ) ;
+			columnPanel.add( cb );
+		}
+		this.getContentPane().add( columnPanel , BorderLayout.CENTER );
 	}
-	this.getContentPane().add(columnPanel, BorderLayout.CENTER);
-    }
 
     private void addCloseButton() {
 	JButton closeButton = new JButton ("Accept");
@@ -84,31 +89,35 @@ public class ColumnSelector
     }
 
     /**
-     * <code>ActionEvent</code> handler.
-     * This is run when the "Accept" button is selected.  It tells the model
-     * to update its columns.  The selected columns are passed as a 
-     * <code>BitSet</code>.  The window is then dismissed.
-     * @param  evt  The default <code>ActionEvent</code>
-     */
-    public void actionPerformed(ActionEvent evt) {
-	BitSet selected = new BitSet(_msbqtm.getRealColumnCount());
-	for (int i=0; i<columnPanel.getComponentCount(); i++) {
-	    if (columnPanel.getComponent(i) instanceof JCheckBox) {
-		JCheckBox cb = (JCheckBox)columnPanel.getComponent(i);
-		if (cb.isSelected()) {
-		    selected.set(i);
+	 * <code>ActionEvent</code> handler.
+	 * This is run when the "Accept" button is selected.  It tells the model
+	 * to update its columns.  The selected columns are passed as a 
+	 * <code>BitSet</code>.  The window is then dismissed.
+	 * @param  evt  The default <code>ActionEvent</code>
+	 */
+	public void actionPerformed( ActionEvent evt )
+	{
+		MsbColumns columns = MsbClient.getColumnInfo() ; 
+		for( int i = 0 ; i < columnPanel.getComponentCount() ; i++ )
+		{
+			if( columnPanel.getComponent( i ) instanceof JCheckBox )
+			{
+				JCheckBox cb = ( JCheckBox )columnPanel.getComponent( i );
+				String name = cb.getText() ;
+				MsbColumnInfo columnInfo = columns.findName( name ) ;
+				if( columnInfo != null )
+				{
+					columnInfo.setVisible( cb.isSelected() ) ;
+				}
+			}
 		}
-		else {
-		    selected.clear(i);
-		}
-	    }
-	}
 
-	_msbqtm.updateColumns(selected);
-	_msbqtm.adjustColumnData(selected);
-	if (parent != null) {
-	    parent.setTableToDefault();
+		_msbqtm.updateColumns();
+		_msbqtm.adjustColumnData();
+		if( parent != null )
+		{
+			parent.setTableToDefault();
+		}
+		this.dispose();
 	}
-	this.dispose();
-    }
 }
