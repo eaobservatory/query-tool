@@ -56,6 +56,7 @@ import javax.swing.event.MenuEvent ;
 import javax.swing.event.PopupMenuEvent ;
 import javax.swing.event.ListSelectionEvent ;
 import javax.swing.table.TableColumnModel ;
+import javax.swing.table.TableColumn ;
 import org.apache.log4j.Logger;
 import sun.misc.Signal ;
 import sun.misc.SignalHandler ;
@@ -450,16 +451,22 @@ public class QtFrame
     }
 
     /**
-     * Method to set the column sizes following a query.
-     */
-    public void setColumnSizes() {
-	TableColumnModel tcm = table.getColumnModel();
-	for (int i=0; i<tableColumnSizes.length; i++) {
-	    tcm.getColumn(i).setPreferredWidth(tableColumnSizes[i]);
+	 * Method to set the column sizes following a query.
+	 */
+	public void setColumnSizes()
+	{
+		TableColumnModel tcm = table.getColumnModel();
+		if( tcm == null )
+			return ;
+		for( int i = 0 ; i < tableColumnSizes.length ; i++ )
+		{
+			TableColumn column = tcm.getColumn( i ) ;
+			if( column != null )
+				column.setPreferredWidth( tableColumnSizes[ i ] );
+		}
+		table.setColumnModel( tcm );
+		table.updateUI();
 	}
-	table.setColumnModel(tcm);
-	table.updateUI();
-    }
 
     /**
      * Method to redistribute the column widths to the default values.

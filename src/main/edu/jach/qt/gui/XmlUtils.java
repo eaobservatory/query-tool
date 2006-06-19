@@ -365,7 +365,7 @@ public class XmlUtils {
 			return null;
 
 		NodeList children ;
-		// Create a vector containing the data for each project
+		// Create an OrderedMap containing the data for each project
 		OrderedMap projectData = new OrderedMap() ;
 
 		// Loop thru all the elements in the document and start populating
