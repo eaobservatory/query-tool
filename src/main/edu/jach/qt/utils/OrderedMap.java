@@ -29,8 +29,10 @@ public class OrderedMap
 		Object object = treeMap.remove( name ) ;
 		if( object != null )
 			size-- ;
+/*
 		if( vector.size() != treeMap.size() )
 			System.out.print( "Columns : Error in removing by index" ) ;
+*/
 		return object ;
 	}
 
@@ -40,8 +42,10 @@ public class OrderedMap
         vector.remove( name ) ;
 		if( object != null )
 			size-- ;
+/*
 		if( vector.size() != treeMap.size() )
 			System.out.print( "Columns : Error in removing by name" ) ;
+*/
         return object ;
 	}
 
@@ -58,15 +62,26 @@ public class OrderedMap
 		return object ;
     }
 	
-	public int findIndex( String name )
+	public String getNameForIndex( int index )
+	{
+		String returnValue = "" ;
+		Object temp = vector.elementAt( index ) ;
+		if( temp instanceof String )
+			returnValue = ( String )temp ;
+		return returnValue ;
+	}
+	
+	public int getIndexForName( String name )
 	{
 		return vector.indexOf( name ) ;
 	}
 	
 	public int size()
 	{
+/*
 		if( vector.size() != treeMap.size() || size != vector.size() || size != treeMap.size() )
 			System.out.print( "Columns : Size does not represent internal dimensions" ) ;
+*/
 		return size ;
 	}
 
@@ -74,5 +89,6 @@ public class OrderedMap
 	{
 		vector.clear() ;
 		treeMap.clear() ;
+		size = 0 ;
 	}
 }

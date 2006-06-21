@@ -458,8 +458,11 @@ public class QtFrame
 		TableColumnModel tcm = table.getColumnModel();
 		if( tcm == null )
 			return ;
+		int columnCount = tcm.getColumnCount() ;
 		for( int i = 0 ; i < tableColumnSizes.length ; i++ )
 		{
+			if( i >= columnCount )
+				break ;
 			TableColumn column = tcm.getColumn( i ) ;
 			if( column != null )
 				column.setPreferredWidth( tableColumnSizes[ i ] );

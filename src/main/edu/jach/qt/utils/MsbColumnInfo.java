@@ -1,14 +1,11 @@
 package edu.jach.qt.utils ;
 
-import java.util.Vector ;
-
 public class MsbColumnInfo
 {
 
 	String name ; 
 	Class klass ;
 	boolean visible = true ;
-	Vector vector ;
 
 	public MsbColumnInfo( String name , String klassType )
 	{
@@ -19,7 +16,6 @@ public class MsbColumnInfo
 			klass = Number.class ;
 		else 
 			klass = String.class ;
-		vector = new Vector() ;
 	}
 
 	public String getName()
@@ -40,20 +36,5 @@ public class MsbColumnInfo
 	public boolean getVisible()
 	{
 		return visible ;
-	}
-
-	public Vector getVector()
-	{
-		return vector ;
-	}
-	
-	public void clearVector()
-	{
-		vector.clear() ;
-	}
-	
-	public void addToVector( Object object )
-	{
-		vector.add( object ) ;
 	}
 }

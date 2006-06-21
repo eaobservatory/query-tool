@@ -110,7 +110,12 @@ public class TableSorter extends TableMap {
 		}
 
 		/*
-		 * We copy all returned values from the getValue call in case an optimised model is reusing one object to return many values. The Number subclasses in the JDK are immutable and so will not be used in this way but other subclasses of Number might want to do this to save space and avoid unnecessary heap allocation.
+		 * We copy all returned values from the getValue call 
+		 * in case an optimised model is reusing one object to return many values. 
+		 * 
+		 * The Number subclasses in the JDK are immutable and so 
+		 * will not be used in this way but other subclasses of Number might want to 
+		 * do this to save space and avoid unnecessary heap allocation.
 		 */
 
 		if( type.getSuperclass() == Number.class || type == Number.class )

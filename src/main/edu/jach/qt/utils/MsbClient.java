@@ -160,7 +160,6 @@ public class MsbClient extends SoapClient {
         return spItem;
     }
 
-
     static MsbColumns columns ;
     public static MsbColumns getColumnInfo()
     {
@@ -168,6 +167,7 @@ public class MsbClient extends SoapClient {
     		return columns ;
     	else
     		columns = new MsbColumns() ;
+
     	String[] names = getColumnNames() ;
     	String[] types = getColumnClasses() ;
     	
@@ -192,7 +192,6 @@ public class MsbClient extends SoapClient {
     private static String[] columnNames ;
     private static String[] getColumnNames()
 	{
-		//String[] columnNames = null ;
 		if( columnNames != null )
 			return columnNames ;
 		try

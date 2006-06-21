@@ -5,21 +5,35 @@
 package edu.jach.qt.utils ;
 
 import java.util.Vector ;
+import java.util.TreeMap ;
 
 public class MSBTableModel
 {
 	private String _projectId;
-	private MsbColumns _columnData ;		
+	private MsbColumns _columnData ;
+	private TreeMap treeMap ;
+	
+	int rowCount ;
+	boolean rowCountCached = false ;
+	
+	int widthCount ;
+	boolean widthCached = false ;
 	
 	public MSBTableModel( String project )
 	{
 		_projectId = project;
 		_columnData = MsbClient.getColumnInfo() ;
+		treeMap = new TreeMap() ; 
 	}
 
 	public void clear()
 	{
-			_columnData.clear() ;
+		while( treeMap.size() != 0 )
+		{
+			Vector vector = ( Vector )treeMap.remove( treeMap.firstKey() ) ;
+			vector.clear() ;
+		}
+		rowCountCached = false ;
 	}
 
 	public String getProjectId()
@@ -29,15 +43,27 @@ public class MSBTableModel
 
 	public void insertData( String column , Object data )
 	{
-		MsbColumnInfo msbColumnInfo = _columnData.findName( column ) ;
-		msbColumnInfo.addToVector( data ) ;
+		Vector vector = null ; 
+		vector = ( Vector )treeMap.get( column ) ;
+		if( vector == null )
+		{
+			vector = new Vector() ;
+			treeMap.put( column , vector ) ;
+		}
+		vector.add( data ) ;
 	}
 
-	public Vector getColumn( int index )
+	public int getRowCount()
 	{
-		return _columnData.findIndex( index ).getVector() ;
+		if( !rowCountCached )
+		{
+			Vector vector = ( Vector )treeMap.get( treeMap.firstKey() ) ;
+			rowCount = vector.size() ;
+			rowCountCached = true ;
+		}
+		return rowCount ;
 	}
-
+	
 	public void moveColumnToEnd( int index )
 	{
 		if( index >= _columnData.size() )
@@ -48,8 +74,14 @@ public class MSBTableModel
 
 	public Object getData( int row , int column )
 	{
-		Vector temp = ( Vector )_columnData.findIndex( column ).getVector() ;
-		return temp.elementAt( row ) ;
+		String name = _columnData.getNameForIndex( column ) ;
+		Vector vector = null ; 
+		vector = ( Vector )treeMap.get( name ) ;
+		if( vector == null )
+			return null ;
+		if( row > vector.size() )
+			return null ;
+		return vector.elementAt( row ) ;
 	}
 	
 	public boolean isVisible( int index )
@@ -59,6 +91,8 @@ public class MSBTableModel
 	
 	public int getWidth()
 	{
-		return _columnData.size() ;
+		if( !widthCached )
+			widthCount = _columnData.size() ;
+		return widthCount ;
 	}
 }

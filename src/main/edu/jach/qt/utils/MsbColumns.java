@@ -1,7 +1,7 @@
 package edu.jach.qt.utils ;
 
 public class MsbColumns extends OrderedMap
-{
+{	
 	public MsbColumns()
 	{
 		super() ;
@@ -77,13 +77,4 @@ public class MsbColumns extends OrderedMap
 			return msbColumnInfo.getVisible() ;
 		return false ;
 	}	
-	
-	public void clear()
-	{
-		for( int index = 0 ; index < size() ; index++ )
-		{
-			MsbColumnInfo msbColumnInfo = findIndex( index ) ;
-			msbColumnInfo.clearVector() ;
-		}
-	}
 }

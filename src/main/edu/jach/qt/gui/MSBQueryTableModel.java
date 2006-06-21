@@ -58,7 +58,10 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
   boolean docIsNull;
 
   //used to hold a list of TableModelListeners
-  protected List tableModelListeners = new ArrayList();        
+  protected List tableModelListeners = new ArrayList();   
+  
+  boolean rowCountCached = false ;
+  int cachedRowCount ;
 
     /**
 	 * Constructor. Constructs a tabe model with 200 possible entries.
@@ -74,13 +77,17 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
 
 
     /**
-     * Set the current project id.
-     * @param project   The name of the current project
-     */
-    public void setProjectId(String project) {
-	_projectId = project;
-	fireTableChanged(null);
-    }
+	 * Set the current project id.
+	 * 
+	 * @param project
+	 *            The name of the current project
+	 */
+	public void setProjectId( String project )
+	{
+		_projectId = project;
+		rowCountCached = false ;
+		fireTableChanged( null );
+	}
 
     /**
 	 * Impelmentation of <code>Runnable</code> interface. Creates a DOM document for populating the table.
@@ -100,6 +107,7 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
 				}
 			}
 			model.clear();
+			rowCountCached = false ;
 		}
 		modelIndex.clear();
 
@@ -186,15 +194,41 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
 	 * Return the number of persons in an XML document
 	 * 
 	 * @return the number or rows in the model
-	 */
+	 */	
 	public int getRowCount()
 	{
 		int rowCount = 0;
-		if( model == null || model.size() == 0 || _projectId == null )
+		if( model == null || _projectId == null )
+		{
 			return rowCount;
-		rowCount = ( ( MSBTableModel )model.find( 0 ) ).getColumn( 0 ).size();
-		return rowCount;
-	}
+		}
+		int modelSize = model.size() ;
+		if( modelSize == 0 )
+			return 0 ;
+		if( !rowCountCached )
+		{
+			if( _projectId.equalsIgnoreCase( "all" ) )
+			{
+				// Get the total number of rows returned
+				for( int index = 0 ; index < modelSize ; index++ )
+				{
+					rowCount += ( ( MSBTableModel )model.find( index ) ).getRowCount();
+				}
+			}
+			else
+			{
+				// Get the total number of rows for the specified project
+				int index = modelIndex.indexOf( _projectId );
+				if( index != -1 )
+				{
+					rowCount = ( ( MSBTableModel )model.find( index ) ).getRowCount();
+				}
+			}
+			cachedRowCount = rowCount ;
+			rowCountCached = true ;
+		}
+		return cachedRowCount ;
+	}	
 
   /**
 	 * Return an XML data given its location
@@ -214,7 +248,7 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
 			for( int index = 0 ; index < model.size() ; index++ )
 			{
 				// Get the number of rows in the current model
-				rowCount = ( ( MSBTableModel )model.find( index ) ).getColumn( 0 ).size();
+				rowCount = ( ( MSBTableModel )model.find( index ) ).getRowCount();
 				if( rowCount <= r )
 				{
 					// We have the right model, so get the data
@@ -253,7 +287,7 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
 	 */
 	public String getColumnName( int c )
 	{
-		MsbColumnInfo columnInfo = ( MsbColumnInfo )MsbClient.getColumnInfo().find( c ) ;
+		MsbColumnInfo columnInfo = ( MsbColumnInfo )MsbClient.getColumnInfo().findIndex( c ) ;
 		return columnInfo.getName() ;
 	}
 
@@ -319,9 +353,9 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
 		colCount = columns.size() - nHidden;
 		
 		// these really should be replaced
-		MSBID = columns.findIndex( "msbid" ) ;
-		PROJECTID = columns.findIndex( "projectid" ) ;
-		CHECKSUM = columns.findIndex( "checksum" ) ;
+		MSBID = columns.getIndexForName( "msbid" ) ;
+		PROJECTID = columns.getIndexForName( "projectid" ) ;
+		CHECKSUM = columns.getIndexForName( "checksum" ) ;
 		
 		fireTableChanged( null );
 	}
