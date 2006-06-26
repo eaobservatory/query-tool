@@ -33,12 +33,11 @@ public class MSBTableModel
 
 	public void clear()
 	{
-		int vectorSize = 0 ;
+		int vectorSize = getRowCount() ;
 		Vector vector ;
 		while( treeMap.size() != 0 )
 		{
 			vector = ( Vector )treeMap.remove( treeMap.firstKey() ) ;
-			vectorSize = vector.size() ;
 			vector.clear() ;
 		}
 		rowCountCached = false ;

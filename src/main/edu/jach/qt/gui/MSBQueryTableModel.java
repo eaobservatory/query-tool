@@ -289,7 +289,7 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
 	 */
 	public String getColumnName( int c )
 	{
-		MsbColumnInfo columnInfo = ( MsbColumnInfo )MsbClient.getColumnInfo().findIndex( c ) ;
+		MsbColumnInfo columnInfo = MsbClient.getColumnInfo().findIndex( c ) ;
 		return columnInfo.getName() ;
 	}
 
@@ -301,7 +301,7 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
 	 */
 	public Class getColumnClass( int c )
 	{
-		MsbColumnInfo columnInfo = ( MsbColumnInfo )MsbClient.getColumnInfo().find( c ) ;
+		MsbColumnInfo columnInfo = MsbClient.getColumnInfo().findIndex( c ) ;
 		return columnInfo.getClassType() ;
 	}
 
@@ -393,7 +393,6 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
 
     public int[] getIndexes()
     {
-    	Vector total = new Vector() ;
     	if( model == null )
     		return new int[ 0 ] ;
 		int indexSize = getRowCount() ;
@@ -406,13 +405,14 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
 	    	Vector vector ;
 	    	Integer integer ;
 	    	int intValue ;
+	    	int size ;
 	    	int currentPosition = 0 ;
 			for( index = 0 ; index < modelSize ; index++ )
 			{
 				// Get the number of rows in the current model
 				msbTableModel = ( MSBTableModel )model.find( index ) ;
 				vector = msbTableModel.getIndices() ;
-				int size = vector.size() ;
+				size = vector.size() ;
 				for( int step = 0 ; step < size ; step++ )
 				{
 					integer = ( Integer )vector.elementAt( step ) ;
