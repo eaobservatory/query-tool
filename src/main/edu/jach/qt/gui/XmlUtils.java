@@ -371,12 +371,14 @@ public class XmlUtils {
 		// Loop thru all the elements in the document and start populating
 		// the new model.
 		int rowsLength = rows.getLength() ;
+		Element e ;
+		String currentProject ;
+		MSBTableModel currentModel;
 		for( int i = 0 ; i < rowsLength ; i++ )
 		{
-			Element e = getElement( doc , tag , i );
-			String currentProject = ( String )getValue( e , "projectid" );
+			e = getElement( doc , tag , i );
+			currentProject = ( String )getValue( e , "projectid" );
 			// Loop thru all the models to see if there is one we can use
-			MSBTableModel currentModel;
 			if( projectData.find( currentProject ) != null )
 			{
 				currentModel = ( MSBTableModel )projectData.find( currentProject ) ;
@@ -387,14 +389,19 @@ public class XmlUtils {
 				projectData.add( currentProject , currentModel ) ;
 			}
 
+			currentModel.bumpIndex() ;
+			
 			// Now we have the model, loop thru the elements and add these to the model
 			children = rows.item( i ).getChildNodes();
-			for( int j = 0 ; j < children.getLength() ; j++ )
+			int numberOfChildren = children.getLength() ;
+			String name ;
+			String value ;
+			for( int j = 0 ; j < numberOfChildren ; j++ )
 			{
-				String name = children.item( j ).getNodeName().trim();
+				name = children.item( j ).getNodeName().trim();
 				if( name.startsWith( "#" ) )
 					continue;
-				String value = ( String ) getValue( e , name );
+				value = ( String ) getValue( e , name );
 				if( "timeest".equals( name ) )
 					value = convertStringToTime( value );
 				currentModel.insertData( name , value );

@@ -97,9 +97,9 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
 		// Clear the current model
 		if( model != null )
 		{
-			for( int i = 0 ; i < model.size() ; i++ )
+			while( model.size() != 0 )
 			{
-				Object temp =  model.remove( i ) ;
+				Object temp =  model.remove( 0 ) ;
 				if( temp instanceof MSBTableModel )
 				{
 					MSBTableModel msbTableModel = ( MSBTableModel )temp ;
@@ -149,7 +149,8 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
 			if( model != null )
 			{
 				// Create an internal map of projects to MSBs
-				for( int i = 0 ; i < model.size() ; i++ )
+				int modelSize = model.size() ;
+				for( int i = 0 ; i < modelSize ; i++ )
 				{
 					modelIndex.add( ( ( MSBTableModel )model.find( i ) ).getProjectId() );
 				}
@@ -245,7 +246,8 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
 		{
 			// Need to get data for all the MSBs returned...
 			int rowCount = 0;
-			for( int index = 0 ; index < model.size() ; index++ )
+			int modelSize = model.size() ;
+			for( int index = 0 ; index < modelSize ; index++ )
 			{
 				// Get the number of rows in the current model
 				rowCount = ( ( MSBTableModel )model.find( index ) ).getRowCount();
@@ -389,4 +391,42 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
 		updateColumns();
 	}
 
+    public int[] getIndexes()
+    {
+    	Vector total = new Vector() ;
+    	if( model == null )
+    		return new int[ 0 ] ;
+		int indexSize = getRowCount() ;
+    	int[] totalIndexes = new int[ indexSize ] ;
+    	int index ;
+    	if( _projectId.equalsIgnoreCase( "all" ) )
+    	{
+	    	int modelSize = model.size() ;
+	    	MSBTableModel msbTableModel ;
+	    	Vector vector ;
+	    	Integer integer ;
+	    	int intValue ;
+	    	int currentPosition = 0 ;
+			for( index = 0 ; index < modelSize ; index++ )
+			{
+				// Get the number of rows in the current model
+				msbTableModel = ( MSBTableModel )model.find( index ) ;
+				vector = msbTableModel.getIndices() ;
+				int size = vector.size() ;
+				for( int step = 0 ; step < size ; step++ )
+				{
+					integer = ( Integer )vector.elementAt( step ) ;
+					intValue = integer.intValue() ;
+					totalIndexes[ intValue ] = currentPosition++ ;
+				}
+			}
+    	}
+    	else
+    	{
+    		for( index = 0 ; index < indexSize ; index++ )
+    			totalIndexes[ index ] = index ;    		
+    	}
+    	return totalIndexes ;
+    }
+    
 }// MSBQueryTableModel

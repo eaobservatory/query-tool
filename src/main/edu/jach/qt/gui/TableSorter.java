@@ -258,22 +258,14 @@ public class TableSorter extends TableMap {
     /**
 	 * Sets up a new array of indexes with the right number of elements for the current <code>model</code>.
 	 */
-   public void reallocateIndexes() {
-      int rowCount = model.getRowCount();
-
-      // Set up a new array of indexes with the right number of elements
-      // for the new data model.
-      indexes = new int[rowCount];
-
-      // Initialise with the identity mapping.
-      for (int row = 0; row < rowCount; row++) {
-	 indexes[row] = row;
-      }
-   }
+	public void reallocateIndexes()
+	{
+		indexes = (( edu.jach.qt.gui.MSBQueryTableModel )model).getIndexes() ;	
+	}
 
     /**
-     * Implementation of the <code>TableModelListener</code> interface.
-     */
+	 * Implementation of the <code>TableModelListener</code> interface.
+	 */
    public void tableChanged(TableModelEvent e) {
       logger.debug("Sorter: tableChanged"); 
       reallocateIndexes();

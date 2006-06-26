@@ -19,21 +19,32 @@ public class MSBTableModel
 	int widthCount ;
 	boolean widthCached = false ;
 	
+	Vector indexes ;
+	static int currentIndices ;
+	
 	public MSBTableModel( String project )
 	{
 		_projectId = project;
 		_columnData = MsbClient.getColumnInfo() ;
 		treeMap = new TreeMap() ; 
+		
+		indexes = new Vector() ;
 	}
 
 	public void clear()
 	{
+		int vectorSize = 0 ;
+		Vector vector ;
 		while( treeMap.size() != 0 )
 		{
-			Vector vector = ( Vector )treeMap.remove( treeMap.firstKey() ) ;
+			vector = ( Vector )treeMap.remove( treeMap.firstKey() ) ;
+			vectorSize = vector.size() ;
 			vector.clear() ;
 		}
 		rowCountCached = false ;
+		
+		currentIndices -= vectorSize ;
+		indexes.clear() ;
 	}
 
 	public String getProjectId()
@@ -53,6 +64,11 @@ public class MSBTableModel
 		vector.add( data ) ;
 	}
 
+	public void bumpIndex()
+	{
+		indexes.add( new Integer( currentIndices++ ) ) ;
+	}
+	
 	public int getRowCount()
 	{
 		if( !rowCountCached )
@@ -94,5 +110,10 @@ public class MSBTableModel
 		if( !widthCached )
 			widthCount = _columnData.size() ;
 		return widthCount ;
+	}
+	
+	public Vector getIndices()
+	{
+		return indexes ;
 	}
 }
