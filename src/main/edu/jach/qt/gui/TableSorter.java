@@ -16,6 +16,8 @@ import javax.swing.ToolTipManager ;
 
 import org.apache.log4j.Logger;
 
+import edu.jach.qt.gui.MSBQueryTableModel ;
+
 /**
  * ****USED BY THE OMP-QT TO SORT THE COLUMNS OF THE RESULT TABLE.****
  *    
@@ -260,7 +262,18 @@ public class TableSorter extends TableMap {
 	 */
 	public void reallocateIndexes()
 	{
-		indexes = (( edu.jach.qt.gui.MSBQueryTableModel )model).getIndexes() ;	
+		if( model instanceof MSBQueryTableModel )
+		{
+			indexes = (( MSBQueryTableModel )model).getIndexes() ;
+		}
+		else
+		{
+			int size = model.getRowCount() ;
+			indexes = new int[ size ] ;
+			int position = 0 ;
+			while( position < size )
+				indexes[ position ] = position++ ;
+		}
 	}
 
     /**
