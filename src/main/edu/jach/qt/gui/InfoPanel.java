@@ -149,6 +149,9 @@ public class InfoPanel extends JPanel implements ActionListener {
 					// Runs on the event-dispatching thread.
 					public void finished()
 					{
+						logoPanel.stop() ;
+						qtf.setCursor( normalCursor ) ;
+						searchButton.setEnabled( true ) ;
 						if( isStatusOK.booleanValue() )
 						{
 							Thread tableFill = new Thread( msb_qtm );
@@ -187,17 +190,15 @@ public class InfoPanel extends JPanel implements ActionListener {
 							}
 							queryExpiredTimer = new Timer();
 							qtf.setQueryExpired( false );
-							System.out.println( "Query expiration: " + System.getProperty( "queryTimeout" ) );
-							Integer timeout = new Integer( System.getProperty( "queryTimeout" ) );
+							String queryTimeout = System.getProperty( "queryTimeout" ) ;
+							System.out.println( "Query expiration: " + queryTimeout ) ;
+							Integer timeout = new Integer( queryTimeout ) ;
 							if( timeout.intValue() != 0 )
 							{
 								int delay = timeout.intValue() * 60 * 1000; // Conversion from minutes of milliseconds
 								queryExpiredTimer.schedule( new QueryExpiredTask() , delay );
 							}
 						}
-						logoPanel.stop();
-						qtf.setCursor( normalCursor );
-						searchButton.setEnabled( true );
 					}
 				};
 				logger.info( "Query Sent" );

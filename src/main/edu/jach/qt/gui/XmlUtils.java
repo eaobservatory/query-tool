@@ -453,10 +453,12 @@ public class XmlUtils {
 	return data;
     }
 
-    public static void clearProjectData() {
-	File pdf = new File (System.getProperty("msbSummary")+"."+System.getProperty("user.name"));
-	pdf.delete();
-    }
+    public static void clearProjectData()
+	{
+		File pdf = new File( System.getProperty( "msbSummary" ) + "." + System.getProperty( "user.name" ) );
+		if( pdf.exists() && pdf.canWrite() )
+			pdf.delete();
+	}
 
     public static int getProjectCount() {
 	return getProjectData()[0].size();

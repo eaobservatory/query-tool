@@ -95,21 +95,7 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
 	public void run()
 	{
 		// Clear the current model
-		if( model != null )
-		{
-			while( model.size() != 0 )
-			{
-				Object temp =  model.remove( 0 ) ;
-				if( temp instanceof MSBTableModel )
-				{
-					MSBTableModel msbTableModel = ( MSBTableModel )temp ;
-					msbTableModel.clear() ;
-				}
-			}
-			model.clear();
-			rowCountCached = false ;
-		}
-		modelIndex.clear();
+		clear() ;
 
 		// Parse the MSB summary which should have already been generated from the query.
 		try
@@ -385,9 +371,19 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
 	{
 		if( model != null )
 		{
+			while( model.size() != 0 )
+			{
+				Object temp =  model.remove( 0 ) ;
+				if( temp instanceof MSBTableModel )
+				{
+					MSBTableModel msbTableModel = ( MSBTableModel )temp ;
+					msbTableModel.clear() ;
+				}
+			}
 			model.clear();
-			modelIndex.removeAllElements();
+			rowCountCached = false ;
 		}
+		modelIndex.clear();
 		updateColumns();
 	}
 
