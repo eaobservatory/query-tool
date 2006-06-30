@@ -93,9 +93,15 @@ public class MSBTableModel
 		Vector vector = null ; 
 		vector = ( Vector )treeMap.get( name ) ;
 		if( vector == null )
+		{
+			System.out.println( _projectId + " " + row + ":" + column + " contains null" ) ;
 			return null ;
+		}
 		if( row > vector.size() )
+		{
+			System.out.println( _projectId + " row " + row + " is out of bounds > " + vector.size() ) ;
 			return null ;
+		}
 		return vector.elementAt( row ) ;
 	}
 	
