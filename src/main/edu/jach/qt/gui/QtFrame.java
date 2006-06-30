@@ -379,14 +379,17 @@ public class QtFrame
 					om.setSpItem( localQuerytool.fetchMSB( msbID ) );
 					isStatusOK = new Boolean( true );
 				}
-				catch( NullPointerException e )
+				catch( Exception e )
+				{
+					// exceptions are generally Null Pointers or Number Format Exceptions
+					JOptionPane.showMessageDialog( null , "Could not fetch MSB" , e.toString() , JOptionPane.ERROR_MESSAGE );
+					logger.debug( e.getMessage() ) ;					
+				}
+				finally
 				{
 					isStatusOK = new Boolean( false );
 					om.enableList( true );
-					InfoPanel.logoPanel.stop() ;
-					JOptionPane.showMessageDialog( null , "Could not fetch MSB" , "Null Pointer Exception" , JOptionPane.ERROR_MESSAGE );
-
-					logger.debug( e.getMessage() ) ;
+					InfoPanel.logoPanel.stop() ;					
 				}
 				return isStatusOK; // not used yet
 			}
