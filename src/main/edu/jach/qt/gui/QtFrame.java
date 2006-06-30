@@ -63,7 +63,7 @@ import sun.misc.SignalHandler ;
 import java.util.EventListener ;
 import edu.jach.qt.utils.Splash ;
 
-import edu.jach.qt.utils.MsbColumnInfo ;
+import edu.jach.qt.utils.MsbColumns ;
 
 /**
  * The <code>QtFrame</code> is responsible for how the main JFrame
@@ -361,6 +361,7 @@ public class QtFrame
 		{
 			Boolean isStatusOK;
 			Integer msbID;
+			MsbColumns columns = MsbClient.getColumnInfo() ;
 
 			public Object construct()
 			{
@@ -373,7 +374,8 @@ public class QtFrame
 				
 				try
 				{
-					msbID = new Integer( ( String )sorter.getValueAt( selRow , MSBQueryTableModel.MSBID ) );
+					int msbIndex = columns.getIndexForName( "msbid" ) ;
+					msbID = new Integer( ( String )sorter.getValueAt( selRow , msbIndex ) );
 					om.setSpItem( localQuerytool.fetchMSB( msbID ) );
 					isStatusOK = new Boolean( true );
 				}
@@ -383,13 +385,7 @@ public class QtFrame
 					om.enableList( true );
 					InfoPanel.logoPanel.stop() ;
 					JOptionPane.showMessageDialog( null , "Could not fetch MSB" , "Null Pointer Exception" , JOptionPane.ERROR_MESSAGE );
-					
-					Object temp = MsbClient.getColumnInfo().find( MSBQueryTableModel.MSBID ) ;
-					if( temp instanceof MsbColumnInfo )
-					{
-						MsbColumnInfo msbColumnInfo = ( MsbColumnInfo )temp ;
-						logger.debug( msbColumnInfo.getName() ) ;
-					}
+
 					logger.debug( e.getMessage() ) ;
 				}
 				return isStatusOK; // not used yet
@@ -400,15 +396,19 @@ public class QtFrame
 			{
 				InfoPanel.logoPanel.stop();
 				om.enableList( true );
-				msbID = new Integer( ( String )sorter.getValueAt( selRow , MSBQueryTableModel.MSBID ) );
+				
+				int msbIndex = columns.getIndexForName( "msbid" ) ;					
+				msbID = new Integer( ( String )sorter.getValueAt( selRow , msbIndex ) );
 				
 				if( isStatusOK.booleanValue() )
 				{
 					om.addNewTree( msbID );
 					buildStagingPanel();
 
-					String projectid = ( String )sorter.getValueAt( selRow , MSBQueryTableModel.PROJECTID );
-					String checksum = ( String )sorter.getValueAt( selRow , MSBQueryTableModel.CHECKSUM );
+					int projectIndex = columns.getIndexForName( "checksum" ) ;
+					String projectid = ( String )sorter.getValueAt( selRow , projectIndex );
+					int checksumIndex = columns.getIndexForName( "projectid" ) ;
+					String checksum = ( String )sorter.getValueAt( selRow , checksumIndex );
 
 					logger.info( "MSB " + msbID + " INFO is: " + projectid + ", " + checksum );
 					om.setProjectID( projectid );

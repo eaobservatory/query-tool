@@ -40,10 +40,7 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
   public static final String MSB_SUMMARY_TEST = System.getProperty("msbSummaryTest");
 
     private int            colCount;           // The number of columns TO DISPLAY
-                                               // This may be less than the actual number of columns
-    public static int      PROJECTID;          // Index of column containing the project ID
-    public static int      CHECKSUM;           // Index of column containing the project checksum
-    public static int      MSBID;              // Index of column containing the MSB Id
+    // This may be less than the actual number of columns
 
     private OrderedMap         model;
     private Vector         modelIndex = new Vector();
@@ -339,12 +336,7 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
 		}
 		// Set the column count
 		colCount = columns.size() - nHidden;
-		
-		// these really should be replaced
-		MSBID = columns.getIndexForName( "msbid" ) ;
-		PROJECTID = columns.getIndexForName( "projectid" ) ;
-		CHECKSUM = columns.getIndexForName( "checksum" ) ;
-		
+	
 		fireTableChanged( null );
 	}
 
