@@ -381,6 +381,7 @@ public class QtFrame
 				{
 					isStatusOK = new Boolean( false );
 					om.enableList( true );
+					InfoPanel.logoPanel.stop() ;
 					JOptionPane.showMessageDialog( null , "Could not fetch MSB" , "Null Pointer Exception" , JOptionPane.ERROR_MESSAGE );
 					
 					Object temp = MsbClient.getColumnInfo().find( MSBQueryTableModel.MSBID ) ;
