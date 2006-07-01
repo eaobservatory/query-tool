@@ -384,10 +384,10 @@ public class QtFrame
 					// exceptions are generally Null Pointers or Number Format Exceptions
 					JOptionPane.showMessageDialog( null , "Could not fetch MSB" , e.toString() , JOptionPane.ERROR_MESSAGE );
 					logger.debug( e.getMessage() ) ;					
+					isStatusOK = new Boolean( false );
 				}
 				finally
 				{
-					isStatusOK = new Boolean( false );
 					om.enableList( true );
 					InfoPanel.logoPanel.stop() ;					
 				}
