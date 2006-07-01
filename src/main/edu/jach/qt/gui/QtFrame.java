@@ -337,11 +337,17 @@ public class QtFrame
     table.setMinimumSize(new Dimension(770,275) );
 
     // Add a mouse motion listener to the header to cature drag events
-    table.getTableHeader().addMouseMotionListener ( new MouseMotionAdapter() {
-	    public void mouseDragged(MouseEvent e) {
-		updateColumnSizes();
-	    }
-	});
+		table.getTableHeader().addMouseMotionListener( new MouseMotionAdapter()
+		{
+			public void mouseDragged( MouseEvent e )
+			{
+				TableColumnModel tcm = table.getColumnModel() ;
+				MsbColumns columns = MsbClient.getColumnInfo() ;
+				for( int i=0 ; i < msbQTM.getColumnCount() ; i++ )
+					columns.move( ( String )tcm.getColumn( i ).getHeaderValue() , i ) ;
+				updateColumnSizes();
+			}
+		} );
 	    
 
     ListSelectionModel listMod =  table.getSelectionModel();

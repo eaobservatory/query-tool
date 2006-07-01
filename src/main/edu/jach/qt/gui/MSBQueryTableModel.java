@@ -44,8 +44,6 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
 
     private OrderedMap         model;
     private Vector         modelIndex = new Vector();
-    
-    public static String [] colClassNames ;
       
   //DATA
   //DOM object to hold XML document contents

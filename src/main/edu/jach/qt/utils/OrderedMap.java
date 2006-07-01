@@ -91,4 +91,14 @@ public class OrderedMap
 		treeMap.clear() ;
 		size = 0 ;
 	}
+	
+	public void move( String name , int index )
+	{
+		int current = getIndexForName( name ) ;
+		if( current != index && current > -1 )
+		{
+			vector.remove( current ) ;
+			vector.insertElementAt( name , index ) ;
+		}
+	}
 }
