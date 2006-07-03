@@ -20,7 +20,7 @@ import java.awt.event.ActionListener ;
 import java.awt.event.ActionEvent ;
 import java.awt.event.WindowAdapter ;
 import java.awt.event.WindowEvent ;
-import java.awt.event.MouseMotionAdapter ;
+import javax.swing.event.MouseInputAdapter ;
 import java.awt.event.MouseAdapter ;
 import java.awt.event.MouseEvent ;
 import java.io.IOException ;
@@ -337,9 +337,9 @@ public class QtFrame
     table.setMinimumSize(new Dimension(770,275) );
 
     // Add a mouse motion listener to the header to cature drag events
-		table.getTableHeader().addMouseMotionListener( new MouseMotionAdapter()
-		{
-			public void mouseDragged( MouseEvent e )
+		table.getTableHeader().addMouseMotionListener( new MouseInputAdapter()
+		{			
+			public void mouseReleased( MouseEvent e )
 			{
 				TableColumnModel tcm = table.getColumnModel() ;
 				MsbColumns columns = MsbClient.getColumnInfo() ;
