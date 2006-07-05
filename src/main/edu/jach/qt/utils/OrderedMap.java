@@ -101,4 +101,16 @@ public class OrderedMap
 			vector.insertElementAt( name , index ) ;
 		}
 	}
+	
+	public void move( int currentIndex , int newIndex )
+	{
+		if( currentIndex == newIndex )
+			return ;
+		if( currentIndex > -1 && currentIndex < size() )
+		{
+			Object object = vector.remove( currentIndex ) ;
+			newIndex = newIndex < size() ? newIndex : size() - 1 ;
+			vector.insertElementAt( object , newIndex ) ;
+		}
+	}
 }
