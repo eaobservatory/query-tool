@@ -1,8 +1,8 @@
 package edu.jach.qt.gui;
 
-import java.util.*;
 import javax.swing.DefaultListSelectionModel;
-import javax.swing.event.*;
+import javax.swing.event.ListSelectionListener ;
+import javax.swing.event.ListSelectionEvent ;
 
 
 class ProjectTableSelectionModel 
