@@ -20,7 +20,6 @@ import java.awt.event.ActionListener ;
 import java.awt.event.ActionEvent ;
 import java.awt.event.WindowAdapter ;
 import java.awt.event.WindowEvent ;
-import javax.swing.event.MouseInputAdapter ;
 import java.awt.event.MouseAdapter ;
 import java.awt.event.MouseEvent ;
 import java.io.IOException ;
@@ -332,24 +331,9 @@ public class QtFrame
     table = new JTable(sorter);
     ToolTipManager.sharedInstance().unregisterComponent(table);
     ToolTipManager.sharedInstance().unregisterComponent(table.getTableHeader());
-    sorter.addMouseListenerToHeaderInTable(table);
     table.setAutoResizeMode(JTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
     table.setMinimumSize(new Dimension(770,275) );
-
-    // Add a mouse motion listener to the header to cature drag events
-		table.getTableHeader().addMouseMotionListener( new MouseInputAdapter()
-		{			
-			public void mouseReleased( MouseEvent e )
-			{
-				TableColumnModel tcm = table.getColumnModel() ;
-				MsbColumns columns = MsbClient.getColumnInfo() ;
-				for( int i=0 ; i < msbQTM.getColumnCount() ; i++ )
-					columns.move( ( String )tcm.getColumn( i ).getHeaderValue() , i ) ;
-				updateColumnSizes();
-			}
-		} );
 	    
-
     ListSelectionModel listMod =  table.getSelectionModel();
     listMod.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     listMod.addListSelectionListener(this);
@@ -459,6 +443,15 @@ public class QtFrame
 	projectTable.getSelectionModel().setSelectionInterval(0,0);
     }
 
+    public void updateColumnHeaders()
+    {
+		TableColumnModel tcm = table.getColumnModel() ;
+		MsbColumns columns = MsbClient.getColumnInfo() ;
+		for( int i=0 ; i < msbQTM.getColumnCount() ; i++ )
+			columns.move( ( String )tcm.getColumn( i ).getHeaderValue() , i ) ;
+		updateColumnSizes();    	
+    }
+    
     /**
      * Method used to set the current column sizes.  This should be called
      * before each query.

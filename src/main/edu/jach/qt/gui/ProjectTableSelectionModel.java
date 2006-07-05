@@ -20,12 +20,14 @@ class ProjectTableSelectionModel
 
     }
 
-    public void valueChanged(ListSelectionEvent e) {
-	// Get the MSBQueryTableModel
-	String projectID = (String)_qtf.getProjectModel().getValueAt(getMinSelectionIndex(), 0);
-	if (projectID == null || projectID.equals("") || projectID.startsWith("-")) return;
-//   	_qtf.updateColumnSizes();
-	_qtf.getModel().setProjectId(projectID);
-  	_qtf.setColumnSizes();
-    }
+    public void valueChanged( ListSelectionEvent e )
+	{
+		// Get the MSBQueryTableModel
+		String projectID = ( String ) _qtf.getProjectModel().getValueAt( getMinSelectionIndex() , 0 );
+		if( projectID == null || projectID.equals( "" ) || projectID.startsWith( "-" ) )
+			return;
+		_qtf.updateColumnHeaders();
+		_qtf.getModel().setProjectId( projectID );
+		_qtf.setColumnSizes();
+	}
 }
