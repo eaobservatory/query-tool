@@ -69,14 +69,15 @@ public class ColumnSelector
     private void addCheckBoxes()
 	{
 		columnPanel = new JPanel( new GridLayout( 0 , 1 ) );
-		MsbColumns columns = MsbClient.getColumnInfo();
+		final MsbColumns columns = MsbClient.getColumnInfo();
+		JCheckBox checkBox ; 
 		for( int i = 0 ; i < columns.size() ; i++ )
 		{
-			MsbColumnInfo columnInfo = ( MsbColumnInfo )columns.find( i ) ;
-			JCheckBox cb = new JCheckBox( columnInfo.getName() );
+			final MsbColumnInfo columnInfo = ( MsbColumnInfo )columns.find( i ) ;
+			checkBox = new JCheckBox( columnInfo.getName() );
 			if( columnInfo.getVisible() )
-				cb.setSelected( true ) ;
-			columnPanel.add( cb );
+				checkBox.setSelected( true ) ;
+			columnPanel.add( checkBox );
 		}
 		this.getContentPane().add( columnPanel , BorderLayout.CENTER );
 	}
@@ -95,19 +96,19 @@ public class ColumnSelector
 	 * <code>BitSet</code>.  The window is then dismissed.
 	 * @param  evt  The default <code>ActionEvent</code>
 	 */
-	public void actionPerformed( ActionEvent evt )
+	public void actionPerformed( final ActionEvent evt )
 	{
-		MsbColumns columns = MsbClient.getColumnInfo() ; 
+		final MsbColumns columns = MsbClient.getColumnInfo() ; 
 		for( int i = 0 ; i < columnPanel.getComponentCount() ; i++ )
 		{
 			if( columnPanel.getComponent( i ) instanceof JCheckBox )
 			{
-				JCheckBox cb = ( JCheckBox )columnPanel.getComponent( i );
-				String name = cb.getText() ;
+				JCheckBox checkBox = ( JCheckBox )columnPanel.getComponent( i );
+				String name = checkBox.getText() ;
 				MsbColumnInfo columnInfo = columns.findName( name ) ;
 				if( columnInfo != null )
 				{
-					columnInfo.setVisible( cb.isSelected() ) ;
+					columnInfo.setVisible( checkBox.isSelected() ) ;
 				}
 			}
 		}

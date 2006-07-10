@@ -32,7 +32,7 @@ import edu.jach.qt.utils.OrderedMap ;
 
 public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
 
-  static Logger logger = Logger.getLogger(MSBQueryTableModel.class);
+  private static Logger logger = Logger.getLogger(MSBQueryTableModel.class);
   private String _projectId = null;
   public static final String ROOT_ELEMENT_TAG = "SpMSBSummary";
 
@@ -50,13 +50,13 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
   protected Document doc;
   protected Element msbIndex;
   public Integer[] projectIds;
-  boolean docIsNull;
+  private boolean docIsNull;
 
   //used to hold a list of TableModelListeners
   protected List tableModelListeners = new ArrayList();   
   
-  boolean rowCountCached = false ;
-  int cachedRowCount ;
+  private boolean rowCountCached = false ;
+  private int cachedRowCount ;
 
     /**
 	 * Constructor. Constructs a tabe model with 200 possible entries.
@@ -77,7 +77,7 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
 	 * @param project
 	 *            The name of the current project
 	 */
-	public void setProjectId( String project )
+	public void setProjectId( final String project )
 	{
 		_projectId = project;
 		rowCountCached = false ;
@@ -104,10 +104,10 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
 		}
 		catch( SAXException sxe )
 		{
-			Exception x = sxe;
+			Exception exception = sxe;
 			if( sxe.getException() != null )
-				x = sxe.getException();
-			logger.error( "SAX Error generated during parsing" , x );
+				exception = sxe.getException();
+			logger.error( "SAX Error generated during parsing" , exception );
 
 		}
 		catch( ParserConfigurationException pce )
@@ -181,9 +181,7 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
 	{
 		int rowCount = 0;
 		if( model == null || _projectId == null )
-		{
 			return rowCount;
-		}
 		int modelSize = model.size() ;
 		if( modelSize == 0 )
 			return 0 ;
@@ -221,7 +219,7 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
 	 *            the column whose value is to be looked up
 	 * @return the value Object at the specified cell
 	 */
-	public Object getValueAt( int r , int c )
+	public Object getValueAt( int r , final int c )
 	{
 		if( _projectId.equalsIgnoreCase( "all" ) )
 		{
@@ -245,9 +243,7 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
 		{
 			int index = modelIndex.indexOf( _projectId );
 			if( index != -1 )
-			{
 				return ( ( MSBTableModel )model.find( index ) ).getData( r , c );
-			}
 		}
 		return null;
 	}
@@ -268,9 +264,9 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
 	 *            the index of column
 	 * @return the name of the column
 	 */
-	public String getColumnName( int c )
+	public String getColumnName( final int column )
 	{
-		MsbColumnInfo columnInfo = MsbClient.getColumnInfo().findIndex( c ) ;
+		MsbColumnInfo columnInfo = MsbClient.getColumnInfo().findIndex( column ) ;
 		return columnInfo.getName() ;
 	}
 
@@ -280,9 +276,9 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
 	 * @parm c the index of column
 	 * @return the common ancestor class of the object values in the model.
 	 */
-	public Class getColumnClass( int c )
+	public Class getColumnClass( final int column )
 	{
-		MsbColumnInfo columnInfo = MsbClient.getColumnInfo().findIndex( c ) ;
+		MsbColumnInfo columnInfo = MsbClient.getColumnInfo().findIndex( column ) ;
 		return columnInfo.getClassType() ;
 	}
 

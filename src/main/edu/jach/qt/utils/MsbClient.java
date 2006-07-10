@@ -160,24 +160,25 @@ public class MsbClient extends SoapClient {
         return spItem;
     }
 
-    static MsbColumns columns ;
-    public static MsbColumns getColumnInfo()
+    private static MsbColumns columns ;
+    public synchronized static MsbColumns getColumnInfo()
     {
-    	if( columns != null )
-    		return columns ;
-    	else
+    	if( columns == null )
     		columns = new MsbColumns() ;
-
+    	else
+    		return columns ;
+    		
     	String[] names = getColumnNames() ;
     	String[] types = getColumnClasses() ;
     	
     	if( names.length == types.length )
     	{
+    		MsbColumnInfo columnInfo ;
     		for( int index = 0 ; index < names.length ; index++ )
     		{
     			String name = names[ index ] ;
     			String type = types[ index ] ;
-    			MsbColumnInfo columnInfo = new MsbColumnInfo( name , type ) ;
+    			columnInfo = new MsbColumnInfo( name , type ) ;
     			columns.add( columnInfo ) ;
     		}
     	}    	
@@ -205,7 +206,6 @@ public class MsbClient extends SoapClient {
 		catch( Exception e )
 		{
 			logger.error( "getColumnNames threw exception" , e );
-			columnNames = null;
 		}
 		return columnNames ;
 	}
@@ -215,7 +215,7 @@ public class MsbClient extends SoapClient {
 	 * 
 	 * @return A string array of column types (eg Integer, String, etc).
 	 */
-	static String[] columnClasses ;
+	private static String[] columnClasses ;
 	private static String[] getColumnClasses()
 	{
 		if( columnClasses != null )
@@ -231,7 +231,6 @@ public class MsbClient extends SoapClient {
 		catch( Exception e )
 		{
 			logger.error( "getColumnNames threw exception" , e );
-			columnClasses = null;
 		}
 		return columnClasses ;
 	}

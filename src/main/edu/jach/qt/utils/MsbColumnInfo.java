@@ -3,9 +3,9 @@ package edu.jach.qt.utils ;
 public class MsbColumnInfo
 {
 
-	String name ; 
-	Class klass ;
-	boolean visible = true ;
+	private String name ; 
+	private Class klass ;
+	private boolean visible = true ;
 
 	public MsbColumnInfo( String name , String klassType )
 	{

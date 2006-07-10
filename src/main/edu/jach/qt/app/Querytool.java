@@ -67,6 +67,8 @@ public class Querytool implements Runnable, Observer {
     private boolean remaining, observability, allocation,_q,zoneofavoidance;
     private String _queue;
 
+    private String DISABLE_CONSTRAINT = "disableconstraint" ;
+    
     /**
      * Creates a new <code>Querytool</code> instance.
      *
@@ -158,7 +160,7 @@ public class Querytool implements Runnable, Observer {
 		try
 		{
 			String next = "";
-			Document doc = new DocumentImpl();
+			final Document doc = new DocumentImpl();
 			Element root = doc.createElement( "MSBQuery" );
 			Element item , sub;
 			JToggleButton abstractButton;
@@ -177,39 +179,39 @@ public class Querytool implements Runnable, Observer {
 
 			if( observability )
 			{
-				item = doc.createElement( "disableconstraint" );
+				item = doc.createElement( DISABLE_CONSTRAINT );
 				item.appendChild( doc.createTextNode( OBSERVABILITY_DISABLED ) );
 				root.appendChild( item );
 			}
 
 			if( allocation )
 			{
-				item = doc.createElement( "disableconstraint" );
+				item = doc.createElement( DISABLE_CONSTRAINT );
 				item.appendChild( doc.createTextNode( ALLOCATION_DISABLED ) );
 				root.appendChild( item );
 			}
 
 			if( remaining )
 			{
-				item = doc.createElement( "disableconstraint" );
+				item = doc.createElement( DISABLE_CONSTRAINT );
 				item.appendChild( doc.createTextNode( REMAINING_DISABLED ) );
 				root.appendChild( item );
 			}
 
 			if( zoneofavoidance )
 			{
-				item = doc.createElement( "disableconstraint" );
+				item = doc.createElement( DISABLE_CONSTRAINT );
 				item.appendChild( doc.createTextNode( ZONE_OF_AVOIDANCE_DISABLED ) );
 				root.appendChild( item );
 			}
 
-			for( Enumeration e = ht.keys() ; e.hasMoreElements() ; )
+			for( final Enumeration e = ht.keys() ; e.hasMoreElements() ; )
 			{
 				next = ( ( String ) e.nextElement() );
 
 				if( next.equalsIgnoreCase( "instruments" ) )
 				{
-					for( ListIterator iter = ( ( LinkedList ) ( ht.get( next ) ) ).listIterator( 0 ) ; iter.hasNext() ; iter.nextIndex() )
+					for( final ListIterator iter = ( ( LinkedList ) ( ht.get( next ) ) ).listIterator( 0 ) ; iter.hasNext() ; iter.nextIndex() )
 					{
 						abstractButton = ( JCheckBox ) ( iter.next() );
 						if( abstractButton.isSelected() )
@@ -225,7 +227,7 @@ public class Querytool implements Runnable, Observer {
 				}
 				else if( next.equalsIgnoreCase( "semesters" ) )
 				{
-					for( ListIterator iter = ( ( LinkedList ) ( ht.get( next ) ) ).listIterator( 0 ) ; iter.hasNext() ; iter.nextIndex() )
+					for( final ListIterator iter = ( ( LinkedList ) ( ht.get( next ) ) ).listIterator( 0 ) ; iter.hasNext() ; iter.nextIndex() )
 					{
 						abstractButton = ( JCheckBox ) ( iter.next() );
 						if( abstractButton.isSelected() )
@@ -243,7 +245,7 @@ public class Querytool implements Runnable, Observer {
 				{
 
 					item = doc.createElement( next );
-					for( ListIterator iter = ( ( LinkedList ) ( ht.get( next ) ) ).listIterator( 0 ) ; iter.hasNext() ; iter.nextIndex() )
+					for( final ListIterator iter = ( ( LinkedList ) ( ht.get( next ) ) ).listIterator( 0 ) ; iter.hasNext() ; iter.nextIndex() )
 					{
 						abstractButton = ( JRadioButton ) ( iter.next() );
 						if( abstractButton.isSelected() )
@@ -270,7 +272,7 @@ public class Querytool implements Runnable, Observer {
 				else if( next.equalsIgnoreCase( "Clouds" ) )
 				{
 					item = doc.createElement( "cloud" );
-					for( ListIterator iter = ( ( LinkedList ) ( ht.get( next ) ) ).listIterator( 0 ) ; iter.hasNext() ; iter.nextIndex() )
+					for( final ListIterator iter = ( ( LinkedList ) ( ht.get( next ) ) ).listIterator( 0 ) ; iter.hasNext() ; iter.nextIndex() )
 					{
 						abstractButton = ( JRadioButton ) ( iter.next() );
 						if( abstractButton.isSelected() )
@@ -302,7 +304,7 @@ public class Querytool implements Runnable, Observer {
 				else if( next.equalsIgnoreCase( "Atmospheric Conditions" ) )
 				{
 					item = doc.createElement( next );
-					for( ListIterator iter = ( ( LinkedList ) ( ht.get( next ) ) ).listIterator( 0 ) ; iter.hasNext() ; iter.nextIndex() )
+					for( final ListIterator iter = ( ( LinkedList ) ( ht.get( next ) ) ).listIterator( 0 ) ; iter.hasNext() ; iter.nextIndex() )
 					{
 
 						logger.debug( "ATMOS: " + ( String ) iter.next() );
@@ -312,7 +314,7 @@ public class Querytool implements Runnable, Observer {
 				else if( next.equalsIgnoreCase( "country" ) )
 				{
 					item = doc.createElement( next );
-					for( ListIterator iter = ( ( LinkedList ) ( ht.get( next ) ) ).listIterator( 0 ) ; iter.hasNext() ; iter.nextIndex() )
+					for( final ListIterator iter = ( ( LinkedList ) ( ht.get( next ) ) ).listIterator( 0 ) ; iter.hasNext() ; iter.nextIndex() )
 					{
 						abstractButton = ( JRadioButton ) ( iter.next() );
 						if( abstractButton.isSelected() )
@@ -331,7 +333,7 @@ public class Querytool implements Runnable, Observer {
 				else if( ht.get( next ) instanceof LinkedList )
 				{
 					item = doc.createElement( next );
-					for( ListIterator iter = ( ( LinkedList ) ( ht.get( next ) ) ).listIterator( 0 ) ; iter.hasNext() ; iter.nextIndex() )
+					for( final ListIterator iter = ( ( LinkedList ) ( ht.get( next ) ) ).listIterator( 0 ) ; iter.hasNext() ; iter.nextIndex() )
 					{
 
 						obj = iter.next();
@@ -357,33 +359,20 @@ public class Querytool implements Runnable, Observer {
 					while( n.hasMoreElements() )
 					{
 						if( next.equalsIgnoreCase( "pi" ) )
-						{
 							item = doc.createElement( "name" );
-						}
 						else if( next.equalsIgnoreCase( "project" ) )
-						{
 							item = doc.createElement( "projectid" );
-						}
 						else if( next.equalsIgnoreCase( "seeing" ) )
-						{
 							item = doc.createElement( "seeing" );
-						}
 						else if( next.equalsIgnoreCase( "tau" ) )
-						{
 							item = doc.createElement( "tau" );
-						}
 						else if( next.equalsIgnoreCase( "airmass" ) )
-						{
 							item = doc.createElement( "airmass" );
-						}
 						else if( next.equalsIgnoreCase( "brightness" ) )
-						{
 							item = doc.createElement( "sky" );
-						}
 						else
-						{
 							continue ;
-						}
+						
 						tmpStr = ( String ) n.nextElement();
 						item.appendChild( doc.createTextNode( tmpStr.trim() ) );
 						root.appendChild( item );
@@ -399,9 +388,7 @@ public class Querytool implements Runnable, Observer {
 					// Temporary and very inefficient code fix.
 					// Gets over a problem of removing these from the item from the bag.
 					if( lrtf.getLowerText().equals( "" ) && lrtf.getUpperText().equals( "" ) )
-					{
 						continue;
-					}
 
 					if( next.equalsIgnoreCase( "duration" ) )
 					{
@@ -419,9 +406,7 @@ public class Querytool implements Runnable, Observer {
 					}
 
 					if( next.equals( "hour" ) )
-					{
 						item = doc.createElement( "ha" );
-					} // end of if ()
 
 					tmpStr = lrtf.getLowerText();
 					sub = doc.createElement( "min" );

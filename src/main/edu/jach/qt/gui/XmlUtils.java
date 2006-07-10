@@ -379,14 +379,14 @@ public class XmlUtils {
 			e = getElement( doc , tag , i );
 			currentProject = ( String )getValue( e , "projectid" );
 			// Loop thru all the models to see if there is one we can use
-			if( projectData.find( currentProject ) != null )
-			{
-				currentModel = ( MSBTableModel )projectData.find( currentProject ) ;
-			}
-			else
+			if( projectData.find( currentProject ) == null )
 			{
 				currentModel = new MSBTableModel( currentProject ) ;
 				projectData.add( currentProject , currentModel ) ;
+			}
+			else
+			{
+				currentModel = ( MSBTableModel )projectData.find( currentProject ) ;
 			}
 
 			currentModel.bumpIndex() ;
@@ -399,7 +399,7 @@ public class XmlUtils {
 			for( int j = 0 ; j < numberOfChildren ; j++ )
 			{
 				name = children.item( j ).getNodeName().trim();
-				if( name.startsWith( "#" ) )
+				if( name.charAt( 0 ) == '#' )
 					continue;
 				value = ( String ) getValue( e , name );
 				if( "timeest".equals( name ) )

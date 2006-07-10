@@ -1,31 +1,19 @@
 package edu.jach.qt.gui;
 
-import edu.jach.qt.utils.*;
+import edu.jach.qt.utils.HTMLViewer ;
 
-import gemini.sp.*;
-import gemini.sp.obsComp.*;
+import gemini.sp.SpItem ;
 
-import orac.jcmt.inst.*;
-import orac.jcmt.iter.*;
-import orac.jcmt.obsComp.*;
-import orac.ukirt.inst.*;
-import orac.ukirt.iter.*;
-import orac.util.*;
+import java.io.File ;
+import java.io.IOException ;
+import java.io.FileWriter ;
+import java.io.BufferedWriter ;
+import java.io.InputStream ;
+import java.io.Serializable ;
 
-//import om.console.*;
-//import om.util.*;
-
-import java.util.*;
-import java.lang.*;
-import java.io.*;
-import javax.swing.*;
-import java.net.URL;
-import java.awt.Dimension;
-
-import ocs.utils.*;
+import javax.swing.JOptionPane ;
 
 import org.apache.log4j.Logger;
-import calpa.html.CalHTMLPane;
 
 
 /**
@@ -91,8 +79,8 @@ public class ExecuteJCMT extends Execute {
 	{
 		isRunning = true;
 		// To execute JCMT, we write the execution to a file
-		File success = new File( "/jcmtdata/orac_data/deferred/.success" );
-		File failure = new File( "/jcmtdata/orac_data/deferred/.failure" );
+		final File success = new File( "/jcmtdata/orac_data/deferred/.success" );
+		final File failure = new File( "/jcmtdata/orac_data/deferred/.failure" );
 		success.delete();
 		failure.delete();
 		try
@@ -110,10 +98,10 @@ public class ExecuteJCMT extends Execute {
 		}
 
 		logger.info( "Executing observation " + _itemToExecute.getTitle() );
-		File file = new File( jcmtDir + File.separator + "ExecuteMe.xml" );
+		final File file = new File( jcmtDir + File.separator + "ExecuteMe.xml" );
 		try
 		{
-			FileWriter writer = new FileWriter( file );
+			final FileWriter writer = new FileWriter( file );
 			writer.write( _itemToExecute.toXML() );
 			writer.flush() ;
 			writer.close();
@@ -128,7 +116,7 @@ public class ExecuteJCMT extends Execute {
 		}
 
 		// Now send this file as an argument to the translate process
-		String translator = System.getProperty( "jcmtTranslator" );
+		final String translator = System.getProperty( "jcmtTranslator" );
 		if( translator == null )
 		{
 			logger.error( "No translation process defined" );

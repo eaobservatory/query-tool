@@ -21,13 +21,13 @@ public class SpQueuedMap extends QueuedMap
 		return queuedMap ;
 	}
 	
-	public boolean putSpItem( SpItem item )
+	public boolean putSpItem( final SpItem item )
 	{
 		if( item == null )
 			return false ;
 		if( (( SpMSB )item).getNumberRemaining() != 1 )
 			return false ;
-		String checksum = msbChecksum( item ) ;
+		final String checksum = msbChecksum( item ) ;
 		if( !checksum.equals( "" ) )
 		{
 			boolean replacement = treeMap.containsKey( checksum ) ;
@@ -48,11 +48,11 @@ public class SpQueuedMap extends QueuedMap
 		return treeMap.containsKey( checksum ) ;
 	}
 	
-	private String msbChecksum( SpItem item )
+	private String msbChecksum( final SpItem item )
 	{
 		if( item instanceof SpMSB ) 
 		{
-			SpMSB msb = ( SpMSB )item ;
+			final SpMSB msb = ( SpMSB )item ;
 			return msb.getChecksum() ;
 		}		
 		return "" ;
@@ -63,7 +63,7 @@ public class SpQueuedMap extends QueuedMap
 		SpItem spitem = ( SpItem )item ;
 		if( item instanceof SpObs )
 		{
-			SpItem parent = spitem.parent() ;
+			final SpItem parent = spitem.parent() ;
 			if( parent instanceof SpMSB )
 				spitem = parent ;
 		}		

@@ -9,17 +9,17 @@ import java.util.TreeMap ;
 
 public class MSBTableModel
 {
-	private String _projectId;
-	private MsbColumns _columnData ;
-	private TreeMap treeMap ;
+	final private String _projectId;
+	final private MsbColumns _columnData ;
+	final private TreeMap treeMap ;
 	
-	int rowCount ;
-	boolean rowCountCached = false ;
+	private int rowCount ;
+	private boolean rowCountCached = false ;
 	
-	int widthCount ;
-	boolean widthCached = false ;
+	private int widthCount ;
+	private boolean widthCached = false ;
 	
-	Vector indexes ;
+	final private Vector indexes ;
 	static int currentIndices ;
 	
 	public MSBTableModel( String project )
@@ -33,7 +33,7 @@ public class MSBTableModel
 
 	public void clear()
 	{
-		int vectorSize = getRowCount() ;
+		final int vectorSize = getRowCount() ;
 		Vector vector ;
 		while( treeMap.size() != 0 )
 		{
@@ -51,7 +51,7 @@ public class MSBTableModel
 		return _projectId;
 	}
 
-	public void insertData( String column , Object data )
+	public void insertData( final String column , final Object data )
 	{
 		Vector vector = null ; 
 		vector = ( Vector )treeMap.get( column ) ;
@@ -72,40 +72,34 @@ public class MSBTableModel
 	{
 		if( !rowCountCached )
 		{
-			Vector vector = ( Vector )treeMap.get( treeMap.firstKey() ) ;
+			final Vector vector = ( Vector )treeMap.get( treeMap.firstKey() ) ;
 			rowCount = vector.size() ;
 			rowCountCached = true ;
 		}
 		return rowCount ;
 	}
 	
-	public void moveColumnToEnd( int index )
+	public void moveColumnToEnd( final int index )
 	{
 		if( index >= _columnData.size() )
 			return ;
-		MsbColumnInfo tmp = _columnData.removeIndex( index ) ;
+		final MsbColumnInfo tmp = _columnData.removeIndex( index ) ;
 		_columnData.add( tmp ) ;
 	}
 
-	public Object getData( int row , int column )
+	public Object getData( final int row , final int column )
 	{
-		String name = _columnData.getNameForIndex( column ) ;
+		final String name = _columnData.getNameForIndex( column ) ;
 		Vector vector = null ; 
 		vector = ( Vector )treeMap.get( name ) ;
 		if( vector == null )
-		{
-			System.out.println( _projectId + " " + row + ":" + column + " contains null" ) ;
 			return null ;
-		}
 		if( row > vector.size() )
-		{
-			System.out.println( _projectId + " row " + row + " is out of bounds > " + vector.size() ) ;
 			return null ;
-		}
 		return vector.elementAt( row ) ;
 	}
 	
-	public boolean isVisible( int index )
+	public boolean isVisible( final int index )
 	{
 		return _columnData.getVisibility( index ) ;
 	}

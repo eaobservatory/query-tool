@@ -10,19 +10,14 @@ package edu.jach.qt.app;
 /* Standard imports */
 import edu.jach.qt.gui.QtFrame;
 import edu.jach.qt.gui.WidgetDataBag;
-import edu.jach.qt.utils.BasicWindowMonitor;
 import edu.jach.qt.utils.QtTools;
 
 /* Standard imports */
-import java.io.File;
 
-import java.awt.*;
-import java.lang.ClassCircularityError;
-import javax.swing.UIManager;
-import jsky.app.ot.*;
-import orac.jcmt.util.JcmtPreTranslator;
-import orac.ukirt.util.UkirtPreTranslator;
-import orac.util.SpItemDOM;
+import java.awt.Dimension ;
+import java.awt.Toolkit ;
+import java.awt.AWTError ;
+import jsky.app.ot.OtCfg ;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
@@ -141,6 +136,9 @@ final public class QT {
 
 /*
  * $Log$
+ * Revision 1.30  2006/07/10 21:28:59  shart
+ * Some changes recommmended by PMD -> SH
+ *
  * Revision 1.29  2006/01/23 20:37:04  shart
  * Remove all references to OtFileIO.setXML as it has been removed in the OT -> SH
  *

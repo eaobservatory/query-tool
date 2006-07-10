@@ -6,8 +6,8 @@ import java.util.Vector ;
 public class OrderedMap
 {
 	
-	private TreeMap treeMap ;	
-	private Vector vector ;
+	final private TreeMap treeMap ;	
+	final private Vector vector ;
 	private int size ;
 	
 	public OrderedMap()
@@ -16,17 +16,17 @@ public class OrderedMap
 		vector = new Vector() ;
 	}
 	
-	public void add( String key , Object object )
+	public void add( final String key , final Object object )
 	{
 		vector.add( key ) ;
 		treeMap.put( key , object ) ;
 		size++ ;
 	}
 
-	public Object remove( int index )
+	public Object remove( final int index )
 	{
-		Object name = vector.remove( index ) ;
-		Object object = treeMap.remove( name ) ;
+		final Object name = vector.remove( index ) ;
+		final Object object = treeMap.remove( name ) ;
 		if( object != null )
 			size-- ;
 /*
@@ -36,9 +36,9 @@ public class OrderedMap
 		return object ;
 	}
 
-	public Object remove( String name )
+	public Object remove( final String name )
 	{
-		Object object = treeMap.remove( name ) ;
+		final Object object = treeMap.remove( name ) ;
         vector.remove( name ) ;
 		if( object != null )
 			size-- ;
@@ -49,15 +49,15 @@ public class OrderedMap
         return object ;
 	}
 
-	public Object find( String name )
+	public Object find( final String name )
 	{
-		Object object = treeMap.get( name ) ;
+		final Object object = treeMap.get( name ) ;
 		return object ;
 	}
 
 	public Object find( int index )
     {
-		Object name = vector.elementAt( index ) ;
+		final Object name = vector.elementAt( index ) ;
 		Object object = treeMap.get( name ) ;
 		return object ;
     }

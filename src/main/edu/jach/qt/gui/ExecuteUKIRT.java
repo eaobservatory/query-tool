@@ -1,9 +1,7 @@
 package edu.jach.qt.gui;
 
 import edu.jach.qt.utils.QtTools ;
-import edu.jach.qt.utils.SpQueuedMap ;
 import gemini.sp.SpItem ;
-import gemini.sp.SpMSB ;
 import gemini.sp.SpTreeMan ;
 import java.io.File ;
 import java.io.IOException ;
@@ -17,7 +15,7 @@ import org.apache.log4j.Logger;
 
 public class ExecuteUKIRT extends Execute implements Runnable {
 
-    static Logger logger = Logger.getLogger(ExecuteUKIRT.class);
+    private static final Logger logger = Logger.getLogger( ExecuteUKIRT.class ) ;
 
     private boolean _useQueue;
 
@@ -30,8 +28,8 @@ public class ExecuteUKIRT extends Execute implements Runnable {
     public void run()
 	{
 		System.out.println( "Starting execution..." );
-		File success = new File( "/ukirtdata/orac_data/deferred/.success" );
-		File failure = new File( "/ukirtdata/orac_data/deferred/.failure" );
+		final File success = new File( "/ukirtdata/orac_data/deferred/.success" );
+		final File failure = new File( "/ukirtdata/orac_data/deferred/.failure" );
 		success.delete();
 		failure.delete();
 		try
@@ -49,26 +47,26 @@ public class ExecuteUKIRT extends Execute implements Runnable {
 		}
 
 		SpItem itemToExecute;
-		if( !isDeferred )
-		{
-			if( !_useQueue )
-			{
-				itemToExecute = ProgramTree.selectedItem;
-			}
-			else
-			{
-				itemToExecute = ProgramTree.getCurrentItem();
-			}
-			logger.info( "Executing observation from Program List" );
-		}
-		else
+		if( isDeferred )
 		{
 			itemToExecute = DeferredProgramList.getCurrentItem() ;
 			logger.info( "Executing observation from deferred list" );
 		}
+		else
+		{
+			if( _useQueue )
+				itemToExecute = ProgramTree.getCurrentItem() ;
+			else
+				itemToExecute = ProgramTree.selectedItem ;
+			logger.info( "Executing observation from Program List" );
+		}		
 		
 		String tname;
-		if( !_useQueue )
+		if( _useQueue )
+		{
+			tname = QtTools.createQueueXML( itemToExecute );
+		}
+		else
 		{
 			SpItem inst = ( SpItem ) SpTreeMan.findInstrument( itemToExecute );
 			if( inst == null )
@@ -80,11 +78,7 @@ public class ExecuteUKIRT extends Execute implements Runnable {
 
 			tname = QtTools.translate( itemToExecute , inst.type().getReadable() );
 		}
-		else
-		{
-			tname = QtTools.createQueueXML( itemToExecute );
-		}
-
+		
 		// Catch null sequence names - probably means translation
 		// failed:
 		if( tname == null )
@@ -113,8 +107,8 @@ public class ExecuteUKIRT extends Execute implements Runnable {
 		// to submit the file to the ukirt instrument task
 		if( TelescopeDataPanel.DRAMA_ENABLED )
 		{
-			byte[] stdout = new byte[ 1024 ];
-			byte[] stderr = new byte[ 1024 ];
+			final byte[] stdout = new byte[ 1024 ];
+			final byte[] stderr = new byte[ 1024 ];
 			try
 			{
 				Runtime rt = Runtime.getRuntime();

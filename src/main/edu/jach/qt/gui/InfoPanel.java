@@ -5,12 +5,17 @@ import edu.jach.qt.app.Querytool;
 
 /* Standard imports */
 
-import java.awt.* ; 
+import java.awt.Cursor ; 
+import java.awt.GridBagLayout ;
+import java.awt.Color ;
+import java.awt.Dimension ;
+import java.awt.GridBagConstraints ;
+import java.awt.Insets ;
+import java.awt.Component ;
 import java.awt.event.ActionListener ;
 import java.awt.event.ActionEvent ;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.lang.Boolean;
 import javax.swing.JPanel ;
 import javax.swing.JButton ;
 import javax.swing.ImageIcon ;
@@ -31,7 +36,7 @@ import org.apache.log4j.Logger;
  */
 public class InfoPanel extends JPanel implements ActionListener {
 
-    static Logger logger = Logger.getLogger(InfoPanel.class);
+    private static final Logger logger = Logger.getLogger( InfoPanel.class ) ;
 
     /**
      * The constant <code>LOGO_IMAGE</code> specifies the String
@@ -77,8 +82,8 @@ public class InfoPanel extends JPanel implements ActionListener {
     private JButton fetchMSB;
     private Timer   queryExpiredTimer;
 
-    private Cursor busyCursor = new Cursor( Cursor.WAIT_CURSOR ) ;
-    private Cursor normalCursor = new Cursor( Cursor.DEFAULT_CURSOR ) ;
+    final private Cursor busyCursor = new Cursor( Cursor.WAIT_CURSOR ) ;
+    final private Cursor normalCursor = new Cursor( Cursor.DEFAULT_CURSOR ) ;
 
     /**
      * Creates a new <code>InfoPanel</code> instance.
@@ -87,28 +92,30 @@ public class InfoPanel extends JPanel implements ActionListener {
      * @param qt a <code>Querytool</code> value
      * @param qtFrame a <code>QtFrame</code> value
      */
-    public InfoPanel (MSBQueryTableModel msbQTM, Querytool qt, QtFrame qtFrame) {
-	localQuerytool = qt;
-	msb_qtm = msbQTM;
-	qtf = qtFrame;
+    public InfoPanel( MSBQueryTableModel msbQTM , Querytool qt , QtFrame qtFrame )
+	{
+    	super() ;
+		localQuerytool = qt;
+		msb_qtm = msbQTM;
+		qtf = qtFrame;
 
-	MatteBorder matte = new MatteBorder(3,3,3,3, Color.green);
-	GridBagLayout gbl = new GridBagLayout();
+		MatteBorder matte = new MatteBorder( 3 , 3 , 3 , 3 , Color.green );
+		GridBagLayout gbl = new GridBagLayout();
 
-	setBackground(Color.black);
-	setBorder(matte);
-	setLayout(gbl);
-	setMinimumSize(new Dimension(174, 450));
-	setPreferredSize(new Dimension(174, 450));
-	setMaximumSize(new Dimension(174, 450));
+		setBackground( Color.black );
+		setBorder( matte );
+		setLayout( gbl );
+		setMinimumSize( new Dimension( 174 , 450 ) );
+		setPreferredSize( new Dimension( 174 , 450 ) );
+		setMaximumSize( new Dimension( 174 , 450 ) );
 
-	compInit();
+		compInit();
 
-    }
+	}
 
     private void compInit()
 	{
-		GridBagConstraints gbc = new GridBagConstraints();
+		final GridBagConstraints gbc = new GridBagConstraints();
 
 		// xmlPrintButton = new JButton();
 		exitButton = new JButton();
@@ -120,8 +127,8 @@ public class InfoPanel extends JPanel implements ActionListener {
 		/* Setup the SEARCH button */
 		InfoPanel.searchButton.setText( "Search" );
 		InfoPanel.searchButton.setName( "Search" );
-		java.net.URL url = ClassLoader.getSystemResource( "green_light1.gif" );
-		ImageIcon icon = new ImageIcon( url );
+		final java.net.URL url = ClassLoader.getSystemResource( "green_light1.gif" );
+		final ImageIcon icon = new ImageIcon( url );
 		InfoPanel.searchButton.setIcon( icon );
 		blinkIcon();
 		InfoPanel.searchButton.setHorizontalTextPosition( SwingConstants.LEADING );

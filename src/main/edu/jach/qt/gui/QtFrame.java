@@ -224,7 +224,7 @@ public class QtFrame
 		// use these. If they don't then delete the current files
 		if( DeferredProgramList.obsExist() )
 		{
-			JOptionPane pane = new JOptionPane( "Use current deferred Observations?" , JOptionPane.QUESTION_MESSAGE , JOptionPane.YES_NO_OPTION );
+			final JOptionPane pane = new JOptionPane( "Use current deferred Observations?" , JOptionPane.QUESTION_MESSAGE , JOptionPane.YES_NO_OPTION );
 
 			final JDialog dialog = pane.createDialog( this , "Deferred Observations Exist" );
 			dialog.addWindowListener( new WindowAdapter()
@@ -416,10 +416,10 @@ public class QtFrame
 
 		if( SwingUtilities.isLeftMouseButton( e ) && e.getClickCount() == 2 )
 		{
-			if( selRow != -1 )
-				sendToStagingArea();
-			else
+			if( selRow == -1 )
 				JOptionPane.showMessageDialog( null , "Must select a project summary first!" );
+			else
+				sendToStagingArea();
 		}
 
 		else if( SwingUtilities.isRightMouseButton( e ) && e.getClickCount() == 1 )
@@ -989,8 +989,8 @@ public class QtFrame
 
     public class CalibrationThread extends Thread
     {
-    	EventListener listener = null ;
-    	public CalibrationThread( EventListener listener )
+    	private EventListener listener = null ;
+    	public CalibrationThread( final EventListener listener )
     	{
     		this.listener = listener ;
     		calibrationMenu.setToolTipText( "Waiting for database ..." ) ;
@@ -1002,9 +1002,10 @@ public class QtFrame
 			// Get the set of keys:
 			Set keys = calibrationList.keySet() ;
 			Iterator keyIter = keys.iterator() ;
+			JMenuItem item ;
 			while( keyIter.hasNext() )
 			{
-				JMenuItem item = new JMenuItem( ( String ) keyIter.next() ) ;
+				item = new JMenuItem( ( String ) keyIter.next() ) ;
 				item.addActionListener( ( ActionListener )listener ) ;
 				calibrationMenu.add( item ) ;
 			}

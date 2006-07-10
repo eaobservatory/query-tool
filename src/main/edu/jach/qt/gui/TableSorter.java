@@ -82,34 +82,26 @@ public class TableSorter extends TableMap {
 	 *            The column of data we are comparing.
 	 * @return -1 if value in row1 < value in row2, 1 if the value in row 1 > value in row2 0 if the values are identical.
 	 */
-	public int compareRowsByColumn( int row1 , int row2 , int column )
+	public int compareRowsByColumn( final int row1 , final int row2 , final int column )
 	{
-		Class type = model.getColumnClass( column );
-		TableModel data = model;
+		final Class type = model.getColumnClass( column );
+		final TableModel data = model;
 
 		// Check for nulls.
 
-		Object o1 = data.getValueAt( row1 , column );
-		Object o2 = data.getValueAt( row2 , column );
+		final Object o1 = data.getValueAt( row1 , column );
+		final Object o2 = data.getValueAt( row2 , column );
 
 		// If both values are null, return 0.
 		if( o1 == null && o2 == null )
-		{
 			return 0;
-		}
 		else if( o1 == null )
-		{ // Define null less than everything.
-			return -1;
-		}
+			return -1; // Define null less than everything.
 		else if( o2 == null )
-		{
 			return 1;
-		}
 
 		if( o1.toString().equals( "??" ) || o1.toString().equals( "??" ) )
-		{
 			return -1;
-		}
 
 		/*
 		 * We copy all returned values from the getValue call 
@@ -122,7 +114,7 @@ public class TableSorter extends TableMap {
 
 		if( type.getSuperclass() == Number.class || type == Number.class )
 		{
-			Number n1 = new Double( data.getValueAt( row1 , column ).toString() );
+			final Number n1 = new Double( data.getValueAt( row1 , column ).toString() );
 			Number n2 = new Double( data.getValueAt( row2 , column ).toString() );
 			double d1;
 			double d2;
@@ -138,17 +130,11 @@ public class TableSorter extends TableMap {
 			}
 
 			if( d1 < d2 )
-			{
 				return -1;
-			}
 			else if( d1 > d2 )
-			{
 				return 1;
-			}
 			else
-			{
 				return 0;
-			}
 		}
 		else if( type == java.util.Date.class )
 		{
@@ -158,17 +144,11 @@ public class TableSorter extends TableMap {
 			long n2 = d2.getTime();
 
 			if( n1 < n2 )
-			{
 				return -1;
-			}
 			else if( n1 > n2 )
-			{
 				return 1;
-			}
 			else
-			{
 				return 0;
-			}
 		}
 		else if( type == String.class )
 		{
@@ -177,17 +157,11 @@ public class TableSorter extends TableMap {
 			int result = s1.compareTo( s2 );
 
 			if( result < 0 )
-			{
 				return -1;
-			}
 			else if( result > 0 )
-			{
 				return 1;
-			}
 			else
-			{
 				return 0;
-			}
 		}
 		else if( type == Boolean.class )
 		{
@@ -197,17 +171,11 @@ public class TableSorter extends TableMap {
 			boolean b2 = bool2.booleanValue();
 
 			if( b1 == b2 )
-			{
 				return 0;
-			}
 			else if( b1 )
-			{ // Define false < true
-				return 1;
-			}
+				return 1 ; // Define false < true
 			else
-			{
 				return -1;
-			}
 		}
 		else
 		{
@@ -218,17 +186,11 @@ public class TableSorter extends TableMap {
 			int result = s1.compareTo( s2 );
 
 			if( result < 0 )
-			{
 				return -1;
-			}
 			else if( result > 0 )
-			{
 				return 1;
-			}
 			else
-			{
 				return 0;
-			}
 		}
 	}
 
@@ -242,7 +204,7 @@ public class TableSorter extends TableMap {
 	 * @returns (-1, 0, 1) depending on the values in the two rows and whether the table is being sorted in ascending or descending order.
 	 * @see #compareRowsByColumn(int, int, int)
 	 */
-	public int compare( int row1 , int row2 )
+	public int compare( final int row1 , int row2 )
 	{
 		compares++;
 		for( int level = 0 ; level < sortingColumns.size() ; level++ )

@@ -623,7 +623,11 @@ final public class ProgramTree extends JPanel implements
 		getContext( sp );
 		model = new DefaultListModel();
 
-		if( _spItem != null )
+		if( _spItem == null )
+		{
+			model.clear();
+		}
+		else
 		{
 			Vector obsVector = SpTreeMan.findAllItems( sp , "gemini.sp.SpObs" );
 
@@ -633,11 +637,7 @@ final public class ProgramTree extends JPanel implements
 				model.addElement( e.nextElement() );
 			} // end of while ()
 		}
-		else
-		{
-			model.clear();
-		}
-
+		
 		obsList = new JList( model );
 		ToolTipManager.sharedInstance().registerComponent( obsList );
 		ToolTipManager.sharedInstance().setDismissDelay( 3000 );
@@ -1347,14 +1347,13 @@ final public class ProgramTree extends JPanel implements
 
     public class ExecuteInThread extends Thread
 	{
-		SpItem _item;
-
-		SpItem _deferredItem;
-
-		boolean _isDeferred;
+		private SpItem _item;
+		private SpItem _deferredItem;
+		private boolean _isDeferred;
 
 		public ExecuteInThread( SpItem item , boolean deferred )
 		{
+			super() ;
 			// if this is a deferred observation, then we need to
 			// convert the supplied item, which is an SpObs into
 			// an SpProg
@@ -1487,14 +1486,13 @@ final public class ProgramTree extends JPanel implements
 
 		public class PopUp extends Thread
 		{
-			String _message;
-
-			String _title;
-
-			int _errLevel;
+			private String _message;
+			private String _title;
+			private int _errLevel;
 
 			public PopUp( String title , String message , int errorLevel )
 			{
+				super() ;
 				_message = message;
 				_title = title;
 				_errLevel = errorLevel;
