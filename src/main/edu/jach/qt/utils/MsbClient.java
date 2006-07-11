@@ -170,6 +170,9 @@ public class MsbClient extends SoapClient {
     		
     	String[] names = getColumnNames() ;
     	String[] types = getColumnClasses() ;
+
+    	String hiddenColumns = System.getProperty( "hiddenColumns" ) ;
+    	String[] hidden = hiddenColumns.split( "#" ) ;
     	
     	if( names.length == types.length )
     	{
@@ -179,6 +182,11 @@ public class MsbClient extends SoapClient {
     			String name = names[ index ] ;
     			String type = types[ index ] ;
     			columnInfo = new MsbColumnInfo( name , type ) ;
+    			for( int i = 0 ; i < hidden.length ; i++ )
+    			{
+    				if( hidden[ i ].equalsIgnoreCase( name ) )
+    					columnInfo.setVisible( false ) ;
+    			}
     			columns.add( columnInfo ) ;
     		}
     	}    	
