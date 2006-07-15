@@ -326,118 +326,127 @@ public class QtFrame
     }
 
 
-  private void tableSetup() {
-    final TableSorter sorter = new TableSorter(msbQTM);
-    table = new JTable(sorter);
-    ToolTipManager.sharedInstance().unregisterComponent(table);
-    ToolTipManager.sharedInstance().unregisterComponent(table.getTableHeader());
-    table.setAutoResizeMode(JTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
-    table.setMinimumSize(new Dimension(770,275) );
-	    
-    ListSelectionModel listMod =  table.getSelectionModel();
-    listMod.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-    listMod.addListSelectionListener(this);
-
-    popup = new JPopupMenu("MSB");
-    JMenuItem menuSendMSB = new JMenuItem("Send MSB to Staging Area" );
-    popup.add( menuSendMSB );
-    table.add(popup);
-    menuSendMSB.addActionListener( this );
-
-    table.addMouseListener(new MouseAdapter() {
-	public void mouseClicked( MouseEvent e )
+	private void tableSetup()
 	{
-		msbWorker = new SwingWorker()
-		{
-			Boolean isStatusOK;
-			Integer msbID;
-			MsbColumns columns = MsbClient.getColumnInfo() ;
+		final TableSorter sorter = new TableSorter( msbQTM );
+		table = new JTable( sorter );
+		ToolTipManager.sharedInstance().unregisterComponent( table );
+		ToolTipManager.sharedInstance().unregisterComponent( table.getTableHeader() );
+		sorter.addMouseListenerToHeaderInTable( table );
+		table.setAutoResizeMode( JTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS );
+		table.setMinimumSize( new Dimension( 770 , 275 ) );
 
-			public Object construct()
+		ListSelectionModel listMod = table.getSelectionModel();
+		listMod.setSelectionMode( ListSelectionModel.SINGLE_SELECTION );
+		listMod.addListSelectionListener( this );
+
+		popup = new JPopupMenu( "MSB" );
+		JMenuItem menuSendMSB = new JMenuItem( "Send MSB to Staging Area" );
+		popup.add( menuSendMSB );
+		table.add( popup );
+		menuSendMSB.addActionListener( this );
+
+		table.addMouseListener( new MouseAdapter()
+		{
+			public void mouseClicked( MouseEvent e )
 			{
-				InfoPanel.logoPanel.start();
-				logger.info( "Setting up staging panel for the first time." );
-				om.enableList( false );
-				
-				if( om == null )
-					om = new OmpOM();
-				
-				try
+				msbWorker = new SwingWorker()
 				{
-					int msbIndex = columns.getIndexForName( "msbid" ) ;
-					msbID = new Integer( ( String )sorter.getValueAt( selRow , msbIndex ) );
-					om.setSpItem( localQuerytool.fetchMSB( msbID ) );
-					isStatusOK = new Boolean( true );
-				}
-				catch( Exception e )
+					Boolean isStatusOK;
+
+					Integer msbID;
+
+					MsbColumns columns = MsbClient.getColumnInfo();
+
+					public Object construct()
+					{
+						InfoPanel.logoPanel.start();
+						logger.info( "Setting up staging panel for the first time." );
+						om.enableList( false );
+
+						if( om == null )
+							om = new OmpOM();
+
+						try
+						{
+							int msbIndex = columns.getIndexForName( "msbid" );
+							msbID = new Integer( ( String ) sorter.getValueAt( selRow , msbIndex ) );
+							om.setSpItem( localQuerytool.fetchMSB( msbID ) );
+							isStatusOK = new Boolean( true );
+						}
+						catch( Exception e )
+						{
+							// exceptions are generally Null Pointers or Number Format Exceptions
+							JOptionPane.showMessageDialog( null , "Could not fetch MSB" , e.toString() , JOptionPane.ERROR_MESSAGE );
+							logger.debug( e.getMessage() );
+							isStatusOK = new Boolean( false );
+						}
+						finally
+						{
+							om.enableList( true );
+							InfoPanel.logoPanel.stop();
+						}
+						return isStatusOK; // not used yet
+					}
+
+					// Runs on the event-dispatching thread.
+					public void finished()
+					{
+						InfoPanel.logoPanel.stop();
+						om.enableList( true );
+
+						int msbIndex = columns.getIndexForName( "msbid" );
+						msbID = new Integer( ( String ) sorter.getValueAt( selRow , msbIndex ) );
+
+						if( isStatusOK.booleanValue() )
+						{
+							om.addNewTree( msbID );
+							buildStagingPanel();
+
+							int projectIndex = columns.getIndexForName( "checksum" );
+							String projectid = ( String ) sorter.getValueAt( selRow , projectIndex );
+							int checksumIndex = columns.getIndexForName( "projectid" );
+							String checksum = ( String ) sorter.getValueAt( selRow , checksumIndex );
+
+							logger.info( "MSB " + msbID + " INFO is: " + projectid + ", " + checksum );
+							om.setProjectID( projectid );
+							om.setChecksum( checksum );
+						}
+						else
+						{
+							logger.error( "No msb ID retrieved!" );
+						}
+					}
+				}; // End inner class
+
+				if( SwingUtilities.isLeftMouseButton( e ) && e.getClickCount() == 2 )
 				{
-					// exceptions are generally Null Pointers or Number Format Exceptions
-					JOptionPane.showMessageDialog( null , "Could not fetch MSB" , e.toString() , JOptionPane.ERROR_MESSAGE );
-					logger.debug( e.getMessage() ) ;					
-					isStatusOK = new Boolean( false );
+					if( selRow == -1 )
+						JOptionPane.showMessageDialog( null , "Must select a project summary first!" );
+					else
+						sendToStagingArea();
 				}
-				finally
+
+				else if( SwingUtilities.isRightMouseButton( e ) && e.getClickCount() == 1 )
 				{
-					om.enableList( true );
-					InfoPanel.logoPanel.stop() ;					
+
+					logger.debug( "Right Mouse Hit" );
+					if( selRow != -1 )
+						popup.show( ( Component ) e.getSource() , e.getX() , e.getY() );
 				}
-				return isStatusOK; // not used yet
 			}
 
-			// Runs on the event-dispatching thread.
-			public void finished()
+			public void mousePressed( MouseEvent e )
 			{
-				InfoPanel.logoPanel.stop();
-				om.enableList( true );
-				
-				int msbIndex = columns.getIndexForName( "msbid" ) ;					
-				msbID = new Integer( ( String )sorter.getValueAt( selRow , msbIndex ) );
-				
-				if( isStatusOK.booleanValue() )
-				{
-					om.addNewTree( msbID );
-					buildStagingPanel();
-
-					int projectIndex = columns.getIndexForName( "checksum" ) ;
-					String projectid = ( String )sorter.getValueAt( selRow , projectIndex );
-					int checksumIndex = columns.getIndexForName( "projectid" ) ;
-					String checksum = ( String )sorter.getValueAt( selRow , checksumIndex );
-
-					logger.info( "MSB " + msbID + " INFO is: " + projectid + ", " + checksum );
-					om.setProjectID( projectid );
-					om.setChecksum( checksum );
-				}
-				else
-				{
-					logger.error( "No msb ID retrieved!" );
-				}
 			}
-		}; // End inner class
 
-		if( SwingUtilities.isLeftMouseButton( e ) && e.getClickCount() == 2 )
-		{
-			if( selRow == -1 )
-				JOptionPane.showMessageDialog( null , "Must select a project summary first!" );
-			else
-				sendToStagingArea();
-		}
+			public void mouseReleased( MouseEvent e )
+			{
+			}
 
-		else if( SwingUtilities.isRightMouseButton( e ) && e.getClickCount() == 1 )
-		{
-
-			logger.debug( "Right Mouse Hit" );
-			if( selRow != -1 )
-				popup.show( ( Component ) e.getSource() , e.getX() , e.getY() );
-		}
+		} );
+		table.setVisible( true );
 	}
-
-	public void mousePressed( MouseEvent e ){}
-	public void mouseReleased( MouseEvent e ){}
-
-
-      } );
-    table.setVisible(true);
-  }
 
     public void initProjectTable() {
 	projectTable.getSelectionModel().setSelectionInterval(0,0);
