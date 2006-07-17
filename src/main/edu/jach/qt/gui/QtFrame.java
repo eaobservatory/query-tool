@@ -21,6 +21,7 @@ import java.awt.event.ActionEvent ;
 import java.awt.event.WindowAdapter ;
 import java.awt.event.WindowEvent ;
 import java.awt.event.MouseAdapter ;
+import java.awt.event.MouseMotionAdapter ;
 import java.awt.event.MouseEvent ;
 import java.io.IOException ;
 import java.io.File ;
@@ -336,6 +337,15 @@ public class QtFrame
 		table.setAutoResizeMode( JTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS );
 		table.setMinimumSize( new Dimension( 770 , 275 ) );
 
+		 // Add a mouse motion listener to the header to cature drag events
+	    table.getTableHeader().addMouseMotionListener( new MouseMotionAdapter()
+		{
+			public void mouseDragged( MouseEvent e )
+			{
+				updateColumnSizes();
+			}
+		} );
+		
 		ListSelectionModel listMod = table.getSelectionModel();
 		listMod.setSelectionMode( ListSelectionModel.SINGLE_SELECTION );
 		listMod.addListSelectionListener( this );
@@ -465,13 +475,16 @@ public class QtFrame
      * Method used to set the current column sizes.  This should be called
      * before each query.
      */
-    public void updateColumnSizes() {
-	TableColumnModel tcm = table.getColumnModel();
-	tableColumnSizes = new int [table.getColumnCount()];
-	for (int i=0; i<msbQTM.getColumnCount(); i++) {
-	    tableColumnSizes[i] = tcm.getColumn(i).getWidth();
+    public void updateColumnSizes()
+	{
+		TableColumnModel tcm = table.getColumnModel();
+		tableColumnSizes = new int[ table.getColumnCount() ];
+		for( int i = 0 ; i < msbQTM.getColumnCount() ; i++ )
+		{
+			int width = tcm.getColumn( i ).getWidth() ; 
+			tableColumnSizes[ i ] = width ;
+		}
 	}
-    }
 
     /**
 	 * Method to set the column sizes following a query.
