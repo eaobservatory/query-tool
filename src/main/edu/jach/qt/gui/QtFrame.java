@@ -21,7 +21,6 @@ import java.awt.event.ActionEvent ;
 import java.awt.event.WindowAdapter ;
 import java.awt.event.WindowEvent ;
 import java.awt.event.MouseAdapter ;
-import java.awt.event.MouseMotionAdapter ;
 import java.awt.event.MouseEvent ;
 import java.io.IOException ;
 import java.io.File ;
@@ -336,15 +335,6 @@ public class QtFrame
 		sorter.addMouseListenerToHeaderInTable( table );
 		table.setAutoResizeMode( JTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS );
 		table.setMinimumSize( new Dimension( 770 , 275 ) );
-
-		 // Add a mouse motion listener to the header to cature drag events
-	    table.getTableHeader().addMouseMotionListener( new MouseMotionAdapter()
-		{
-			public void mouseDragged( MouseEvent e )
-			{
-				updateColumnSizes();
-			}
-		} );
 		
 		ListSelectionModel listMod = table.getSelectionModel();
 		listMod.setSelectionMode( ListSelectionModel.SINGLE_SELECTION );
@@ -467,8 +457,7 @@ public class QtFrame
 		TableColumnModel tcm = table.getColumnModel() ;
 		MsbColumns columns = MsbClient.getColumnInfo() ;
 		for( int i=0 ; i < msbQTM.getColumnCount() ; i++ )
-			columns.move( ( String )tcm.getColumn( i ).getHeaderValue() , i ) ;
-		updateColumnSizes();    	
+			columns.move( ( String )tcm.getColumn( i ).getHeaderValue() , i ) ;   	
     }
     
     /**
