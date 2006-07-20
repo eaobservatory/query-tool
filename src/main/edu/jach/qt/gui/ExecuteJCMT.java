@@ -15,6 +15,9 @@ import javax.swing.JOptionPane ;
 
 import org.apache.log4j.Logger;
 
+import gemini.sp.SpMSB ;
+import edu.jach.qt.utils.SpQueuedMap ;
+
 
 /**
  * Implements the executable method for JCMT.  It simply sends either a 
@@ -278,7 +281,16 @@ public class ExecuteJCMT extends Execute {
 			}
 		}
 		isRunning = false;
-		failure.delete();		
+		failure.delete();
+		
+		if( _itemToExecute != null )
+		{ 
+			SpItem obs = _itemToExecute ;
+			SpItem child = _itemToExecute.child() ;
+			if( child instanceof SpMSB )
+				obs = child ;
+			SpQueuedMap.getSpQueuedMap().putSpItem( obs ) ;
+		}	
 		
 		return false;
 	}

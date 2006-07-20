@@ -64,6 +64,8 @@ import edu.jach.qt.utils.Splash ;
 
 import edu.jach.qt.utils.MsbColumns ;
 
+import edu.jach.qt.utils.SpQueuedMap ;
+
 /**
  * The <code>QtFrame</code> is responsible for how the main JFrame
  * is to look.  It starts 2 panel classes InfoPanel and InputPanel
@@ -369,6 +371,17 @@ public class QtFrame
 
 						try
 						{
+							int checksumIndex = columns.getIndexForName( "checksum" );
+							String checksum = ( String ) sorter.getValueAt( selRow , checksumIndex );
+							if( SpQueuedMap.getSpQueuedMap().containsMsbChecksum( checksum ) )
+							{
+								int rtn = JOptionPane.showOptionDialog( null , "This observation has previously been sent to the queue.\n Continue ?" , "Duplicate execution warning" , JOptionPane.YES_NO_OPTION , JOptionPane.WARNING_MESSAGE , null , null , null );
+								if( rtn == JOptionPane.NO_OPTION )
+								{
+									isStatusOK = new Boolean( false ) ;
+									return isStatusOK ;
+								}
+							}
 							int msbIndex = columns.getIndexForName( "msbid" );
 							msbID = new Integer( ( String ) sorter.getValueAt( selRow , msbIndex ) );
 							om.setSpItem( localQuerytool.fetchMSB( msbID ) );
@@ -403,10 +416,10 @@ public class QtFrame
 							om.addNewTree( msbID );
 							buildStagingPanel();
 
-							int projectIndex = columns.getIndexForName( "checksum" );
-							String projectid = ( String ) sorter.getValueAt( selRow , projectIndex );
-							int checksumIndex = columns.getIndexForName( "projectid" );
+							int checksumIndex = columns.getIndexForName( "checksum" );
 							String checksum = ( String ) sorter.getValueAt( selRow , checksumIndex );
+							int projectIndex = columns.getIndexForName( "projectid" );
+							String projectid = ( String ) sorter.getValueAt( selRow , projectIndex );
 
 							logger.info( "MSB " + msbID + " INFO is: " + projectid + ", " + checksum );
 							om.setProjectID( projectid );

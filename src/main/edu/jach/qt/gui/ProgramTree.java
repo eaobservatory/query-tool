@@ -373,7 +373,8 @@ final public class ProgramTree extends JPanel implements
 				t = new Thread( execute );
 				t.start();
 				t.join();
-				File failFile = new File( "/ukirtdata/orac_data/deferred/.failure" );
+				String deferredDirectory = System.getProperty( "deferredDirectory" ) ;
+				File failFile = new File( deferredDirectory + File.separator + ".failure" );
 				if( failFile.exists() )
 				{
 					failed = true;

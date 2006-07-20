@@ -12,6 +12,9 @@ import java.io.Serializable ;
 import javax.swing.JOptionPane ;
 import org.apache.log4j.Logger;
 
+import gemini.sp.SpMSB ;
+import edu.jach.qt.utils.SpQueuedMap ;
+
 
 public class ExecuteUKIRT extends Execute implements Runnable {
 
@@ -28,8 +31,9 @@ public class ExecuteUKIRT extends Execute implements Runnable {
     public void run()
 	{
 		System.out.println( "Starting execution..." );
-		final File success = new File( "/ukirtdata/orac_data/deferred/.success" );
-		final File failure = new File( "/ukirtdata/orac_data/deferred/.failure" );
+		String deferredDirectory = System.getProperty( "deferredDirectory" ) ;
+		final File success = new File( deferredDirectory + File.separator + ".success" );
+		final File failure = new File( deferredDirectory + File.separator + ".failure" );
 		success.delete();
 		failure.delete();
 		try
@@ -60,6 +64,15 @@ public class ExecuteUKIRT extends Execute implements Runnable {
 				itemToExecute = ProgramTree.selectedItem ;
 			logger.info( "Executing observation from Program List" );
 		}		
+
+		if( itemToExecute != null )
+		{ 
+			SpItem obs = itemToExecute ;
+			SpItem child = itemToExecute.child() ;
+			if( child instanceof SpMSB )
+				obs = child ;
+			SpQueuedMap.getSpQueuedMap().putSpItem( obs ) ;
+		}
 		
 		String tname;
 		if( _useQueue )

@@ -396,65 +396,71 @@ final public class DeferredProgramList extends JPanel implements
 
 
     /*
-     * This more or less mimics the doExecute() method the ProgramTree.java.
-     * Its real purpose is to let users do calibrations even if the "Send for Execution"
-     * button is disabled.
-     */
-    private void execute() {
-	Thread t = null;
+	 * This more or less mimics the doExecute() method the ProgramTree.java. Its real purpose is to let users do calibrations even if the "Send for Execution" button is disabled.
+	 */
+	private void execute()
+	{
+		Thread t = null;
 
-	// If we have nothing selected. don't bother doing anything
-	if (currentItem == null)
-	    return;
+		// If we have nothing selected. don't bother doing anything
+		if( currentItem == null )
+			return;
 
-	// If we have items selected on both the ProgramList and Deferred List
-	// the let the execute method handle the problem.
+		// If we have items selected on both the ProgramList and Deferred List
+		// the let the execute method handle the problem.
 
-	// Call the appropriate Execute method
-	if (System.getProperty("telescope").equalsIgnoreCase("ukirt")) {
-	    try {
-		logger.info("Sending observation "+currentItem.getTitle()+" for execution.");
-		ExecuteUKIRT execute = new ExecuteUKIRT(_useQueue);
-		t = new Thread (execute, "UKIRT Execution Thread");
+		// Call the appropriate Execute method
+		if( System.getProperty( "telescope" ).equalsIgnoreCase( "ukirt" ) )
+		{
+			try
+			{
+				logger.info( "Sending observation " + currentItem.getTitle() + " for execution." );
+				ExecuteUKIRT execute = new ExecuteUKIRT( _useQueue );
+				t = new Thread( execute , "UKIRT Execution Thread" );
 
-		// Start the process and wait for it to complete
-// 		logger.info("Thread "+t.getName()+" started.");
-		t.start();
-		t.join();
-// 		logger.info("Thread "+t.getName()+" stopped.");
-                // Reset _useQueue
-		_useQueue = true;
-		// Now check the result
-		File failFile = new File ("/ukirtdata/orac_data/deferred/.failure");
-		File successFile = new File ("/ukirtdata/orac_data/deferred/.success");
-		if (failFile.exists()) {
-		    new ErrorBox(this, "Failed to Execute. Check messages.");
-		    logger.warn ("Failed to execute observation");
+				// Start the process and wait for it to complete
+				t.start();
+				t.join();
+				// Reset _useQueue
+				_useQueue = true;
+				// Now check the result
+				String deferredDirectory = System.getProperty( "deferredDirectory" ) ;
+				File failFile = new File( deferredDirectory + File.separator + ".failure" );
+				File successFile = new File( deferredDirectory + File.separator + ".success" );
+				if( failFile.exists() )
+				{
+					new ErrorBox( this , "Failed to Execute. Check messages." );
+					logger.warn( "Failed to execute observation" );
+				}
+				else if( successFile.exists() )
+				{
+					// Mark this observation as having been done
+					markThisObservationAsDone( currentItem );
+					logger.info( "Observation executed successfully" );
+				}
+				else
+				{
+					// Neither file exists - report an error to the user
+					new ErrorBox( "Unable to determine success status - assuming failed." );
+					logger.error( "Unable to determine success status for observation." );
+				}
+			}
+			catch( Exception e )
+			{
+				logger.error( "Failed to execute thread." , e );
+				if( t != null && t.isAlive() )
+				{
+					logger.error( "Last observation still seems to be running" );
+				}
+			}
+			return;
 		}
-		else if (successFile.exists()) {
-		    // Mark this observation as having been done
-		    markThisObservationAsDone(currentItem);
-		    logger.info("Observation executed successfully");
+		else if( System.getProperty( "telescope" ).equalsIgnoreCase( "jcmt" ) )
+		{
+			new ExecuteInThread( currentItem , true ).start();
+			return;
 		}
-		else {
-		    // Neither file exists - report an error to the user
-		    new ErrorBox("Unable to determine success status - assuming failed.");
-		    logger.error ("Unable to determine success status for observation.");
-		}
-	    }
-	    catch (Exception e) {
-		logger.error("Failed to execute thread.",e);
-		if (t!= null && t.isAlive()) {
-		    logger.error("Last observation still seems to be running");
-		}
-	    }
-	    return;
 	}
-	else if (System.getProperty("telescope").equalsIgnoreCase("jcmt")) {
-	    new ExecuteInThread (currentItem, true).start();
-	    return;
-	}
-    }
 
 
     /**
