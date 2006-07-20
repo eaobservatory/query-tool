@@ -122,7 +122,8 @@ public class SpQueuedMap extends QueuedMap
 			calendar.setTimeZone( timeZone ) ;
 			String date = calendar.get( Calendar.YEAR ) + "" + calendar.get( Calendar.MONTH ) + "" + calendar.get( Calendar.DATE ) + File.separator ;
 
-			String cacheFiles = System.getProperty( "cacheFiles" ) ;
+			String cacheFiles = File.separator + System.getProperty( "telescope" ).toLowerCase() + "data" + File.separator ;
+			cacheFiles += System.getProperty( "cacheFiles" ) ;
 			String home = System.getProperty( "user.home" ) ;
 			if( cacheFiles == null || cacheFiles.equals( "" ) )
 				cacheFiles = home ;

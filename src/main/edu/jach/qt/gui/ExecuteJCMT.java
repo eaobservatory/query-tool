@@ -82,16 +82,18 @@ public class ExecuteJCMT extends Execute {
 	{
 		isRunning = true;
 		// To execute JCMT, we write the execution to a file
-		final File success = new File( "/jcmtdata/orac_data/deferred/.success" );
-		final File failure = new File( "/jcmtdata/orac_data/deferred/.failure" );
+		String deferredDirectory = File.separator + System.getProperty( "telescope" ).toLowerCase() + "data" + File.separator ;
+		deferredDirectory += System.getProperty( "deferredDir" ) + File.separator ;
+		final File success = new File( deferredDirectory + ".success" ) ;
+		final File failure = new File( deferredDirectory + ".failure" ) ;
 		success.delete();
 		failure.delete();
 		try
 		{
 			success.createNewFile();
 			failure.createNewFile();
-			Runtime.getRuntime().exec( "chmod 666 /jcmtdata/orac_data/deferred/.success" );
-			Runtime.getRuntime().exec( "chmod 666 /jcmtdata/orac_data/deferred/.failure" );
+			Runtime.getRuntime().exec( "chmod 666 " + deferredDirectory + ".success" );
+			Runtime.getRuntime().exec( "chmod 666 " + deferredDirectory + ".failure" );
 		}
 		catch( IOException ioe )
 		{

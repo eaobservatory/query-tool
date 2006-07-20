@@ -424,9 +424,10 @@ final public class DeferredProgramList extends JPanel implements
 				// Reset _useQueue
 				_useQueue = true;
 				// Now check the result
-				String deferredDirectory = System.getProperty( "deferredDirectory" ) ;
-				File failFile = new File( deferredDirectory + File.separator + ".failure" );
-				File successFile = new File( deferredDirectory + File.separator + ".success" );
+				String deferredDirectory = File.separator + System.getProperty( "telescope" ).toLowerCase() + "data" + File.separator ;
+				deferredDirectory += System.getProperty( "deferredDir" ) + File.separator ;
+				File failFile = new File( deferredDirectory + ".failure" );
+				File successFile = new File( deferredDirectory + ".success" );
 				if( failFile.exists() )
 				{
 					new ErrorBox( this , "Failed to Execute. Check messages." );

@@ -31,9 +31,10 @@ public class ExecuteUKIRT extends Execute implements Runnable {
     public void run()
 	{
 		System.out.println( "Starting execution..." );
-		String deferredDirectory = System.getProperty( "deferredDirectory" ) ;
-		final File success = new File( deferredDirectory + File.separator + ".success" );
-		final File failure = new File( deferredDirectory + File.separator + ".failure" );
+		String deferredDirectory = File.separator + System.getProperty( "telescope" ).toLowerCase() + "data" + File.separator ;
+		deferredDirectory += System.getProperty( "deferredDir" ) + File.separator ;
+		final File success = new File( deferredDirectory + ".success" );
+		final File failure = new File( deferredDirectory + ".failure" );
 		success.delete();
 		failure.delete();
 		try

@@ -373,8 +373,9 @@ final public class ProgramTree extends JPanel implements
 				t = new Thread( execute );
 				t.start();
 				t.join();
-				String deferredDirectory = System.getProperty( "deferredDirectory" ) ;
-				File failFile = new File( deferredDirectory + File.separator + ".failure" );
+				String deferredDirectory = File.separator + System.getProperty( "telescope" ).toLowerCase() + "data" + File.separator ;
+				deferredDirectory += System.getProperty( "deferredDir" ) + File.separator ;
+				File failFile = new File( deferredDirectory + ".failure" );
 				if( failFile.exists() )
 				{
 					failed = true;
