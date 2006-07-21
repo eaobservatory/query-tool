@@ -8,7 +8,6 @@ import java.io.File ;
 import java.io.IOException ;
 import java.util.Calendar;
 import java.util.TimeZone ;
-import java.util.Date ;
 
 public class SpQueuedMap extends QueuedMap
 {
@@ -31,17 +30,13 @@ public class SpQueuedMap extends QueuedMap
 	{
 		if( item == null )
 			return false ;
-/*
-		if( (( SpMSB )item).getNumberRemaining() != 1 )
-			return false ;
-*/
 		boolean replacement = false ;
 		final String checksum = msbChecksum( item ) ;
 		if( !checksum.equals( "" ) )
 		{
 			replacement = treeMap.containsKey( checksum ) ;
 			if( (( SpMSB )item).getNumberRemaining() == 1 )
-				treeMap.put( checksum , new Date( System.currentTimeMillis() ) ) ;
+				treeMap.put( checksum , "" + System.currentTimeMillis() ) ;
 			writeChecksumToDisk( ( SpMSB )item ) ;
 		}
 		else
@@ -67,8 +62,11 @@ public class SpQueuedMap extends QueuedMap
 		if( checksum == null )
 			return null ;
 		if( treeMap.containsKey( checksum ) )
-			return ( ( Date )treeMap.get( checksum ) ).toString() ;
-		return isChecksumOnDisk( checksum ) ;
+			return convertTimeStamp( ( String )treeMap.get( checksum ) ) ;
+		String onDisk = isChecksumOnDisk( checksum ) ;
+		if( onDisk != null )
+			treeMap.put( checksum , onDisk ) ;
+		return convertTimeStamp( onDisk ) ;
 	}
 	
 	private String msbChecksum( final SpItem item )
@@ -135,7 +133,7 @@ public class SpQueuedMap extends QueuedMap
 			}
 		}
 		if( directoryContents.length != 0 && highestRepeatCount <= directoryContents.length )
-			success = new Date( nearestDate ).toString() ;
+			success = "" + nearestDate ;
 		
  		return success ;
 	}
@@ -196,4 +194,28 @@ public class SpQueuedMap extends QueuedMap
 			directory.delete() ;
 		}		
 	}
+	
+	private String convertTimeStamp( String time )
+	{
+		String returnString = null ;
+		try
+		{
+			long parsedTime = Long.parseLong( time ) ;
+			returnString = "" ;
+			long currentTime = System.currentTimeMillis() ;
+			long difference = currentTime - parsedTime ;
+			long seconds = difference / 1000 ;
+			long minutes = seconds / 60 ;
+			long hours = minutes / 60 ;
+			if( hours != 0 )
+				returnString += hours + " hours " ;
+			if( minutes != 0 )
+				returnString += ( minutes % 60 ) + " minutes " ;
+			if( returnString.equals( "" ) )
+				returnString += seconds + " seconds " ;
+			returnString += "ago" ;
+		}
+		catch( NumberFormatException nfe ){}
+		return returnString ;
+	}	
 }

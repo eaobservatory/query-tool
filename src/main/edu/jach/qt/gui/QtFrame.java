@@ -376,7 +376,7 @@ public class QtFrame
 							String time = SpQueuedMap.getSpQueuedMap().containsMsbChecksum( checksum ) ;
 							if( time != null )
 							{
-								int rtn = JOptionPane.showOptionDialog( null , "This observation was sent to the queue at " + time + ".\n Continue ?" , "Duplicate execution warning" , JOptionPane.YES_NO_OPTION , JOptionPane.WARNING_MESSAGE , null , null , null );
+								int rtn = JOptionPane.showOptionDialog( null , "This observation was sent to the queue " + time + ".\n Continue ?" , "Duplicate execution warning" , JOptionPane.YES_NO_OPTION , JOptionPane.WARNING_MESSAGE , null , null , null );
 								if( rtn == JOptionPane.NO_OPTION )
 								{
 									isStatusOK = new Boolean( false ) ;
