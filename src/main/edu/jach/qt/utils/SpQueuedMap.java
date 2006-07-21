@@ -134,7 +134,7 @@ public class SpQueuedMap extends QueuedMap
 				highestRepeatCount = 0 ;
 			}
 		}
-		if( highestRepeatCount <= directoryContents.length )
+		if( directoryContents.length != 0 && highestRepeatCount <= directoryContents.length )
 			success = new Date( nearestDate ).toString() ;
 		
  		return success ;
