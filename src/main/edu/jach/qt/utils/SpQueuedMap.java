@@ -8,6 +8,7 @@ import java.io.File ;
 import java.io.IOException ;
 import java.util.Calendar;
 import java.util.TimeZone ;
+import java.util.Date ;
 
 public class SpQueuedMap extends QueuedMap
 {
@@ -30,15 +31,18 @@ public class SpQueuedMap extends QueuedMap
 	{
 		if( item == null )
 			return false ;
+/*
 		if( (( SpMSB )item).getNumberRemaining() != 1 )
 			return false ;
+*/
 		boolean replacement = false ;
 		final String checksum = msbChecksum( item ) ;
 		if( !checksum.equals( "" ) )
 		{
 			replacement = treeMap.containsKey( checksum ) ;
-			treeMap.put( checksum , null ) ;
-			writeChecksumToDisk( checksum ) ;
+			if( (( SpMSB )item).getNumberRemaining() == 1 )
+				treeMap.put( checksum , new Date( System.currentTimeMillis() ) ) ;
+			writeChecksumToDisk( ( SpMSB )item ) ;
 		}
 		else
 		{
@@ -58,12 +62,12 @@ public class SpQueuedMap extends QueuedMap
 		return treeMap.containsKey( checksum ) ;
 	}
 	
-	public boolean containsMsbChecksum( String checksum )
+	public String containsMsbChecksum( String checksum )
 	{
 		if( checksum == null )
-			return false ;
+			return null ;
 		if( treeMap.containsKey( checksum ) )
-			return true ;
+			return ( ( Date )treeMap.get( checksum ) ).toString() ;
 		return isChecksumOnDisk( checksum ) ;
 	}
 	
@@ -89,11 +93,13 @@ public class SpQueuedMap extends QueuedMap
 		return spitem ;
 	}
 
-	private boolean writeChecksumToDisk( String checksum )
+	private boolean writeChecksumToDisk( SpMSB item )
 	{
 		boolean success = false ;
 		String path = getChecksumCachePath() ;
-		File file = new File( path + checksum ) ;
+		String checksum = msbChecksum( item ) ;
+		int remaining = item.getNumberRemaining() ;
+		File file = new File( path + checksum + "_" + remaining + "_" + System.currentTimeMillis() ) ;
 		try
 		{
 			 success = file.createNewFile() ;
@@ -102,13 +108,36 @@ public class SpQueuedMap extends QueuedMap
 		return success ;
 	}
 
-	private boolean isChecksumOnDisk( String checksum )
+	private String isChecksumOnDisk( String checksum )
 	{
-		boolean success = false ;
+		String success = null ;
 		String path = getChecksumCachePath() ;
-		File file = new File( path + checksum ) ;
-		success = file.exists() ;
-		return success ;
+		File filePath = new File( path ) ;
+		FileGlobFilter filter = new FileGlobFilter( "^" + checksum + "_\\d+_\\d*" ) ;
+		String[] directoryContents = filePath.list( filter ) ;
+		int highestRepeatCount = 0 ;
+		long nearestDate = 0 ;
+		for( int index = 0 ; index < directoryContents.length ; index++ )
+		{
+			String[] split = directoryContents[ index ].split( "_" ) ;
+			try
+			{
+				int repeatCount = Integer.parseInt( split[ 1 ] ) ;
+				if( repeatCount > highestRepeatCount )
+					highestRepeatCount = repeatCount ;
+				long date = Long.parseLong( split[ 2 ] ) ;
+				if( date > nearestDate )
+					nearestDate = date ;
+			}
+			catch( NumberFormatException nfe )
+			{
+				highestRepeatCount = 0 ;
+			}
+		}
+		if( highestRepeatCount <= directoryContents.length )
+			success = new Date( nearestDate ).toString() ;
+		
+ 		return success ;
 	}
 
 	String cachePath = null ;
