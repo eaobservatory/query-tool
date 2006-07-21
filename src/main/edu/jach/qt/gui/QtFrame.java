@@ -373,14 +373,17 @@ public class QtFrame
 						{
 							int checksumIndex = columns.getIndexForName( "checksum" );
 							String checksum = ( String ) sorter.getValueAt( selRow , checksumIndex );
-							String time = SpQueuedMap.getSpQueuedMap().containsMsbChecksum( checksum ) ;
-							if( time != null )
+							if( remaining.isSelected() )
 							{
-								int rtn = JOptionPane.showOptionDialog( null , "This observation was sent to the queue " + time + ".\n Continue ?" , "Duplicate execution warning" , JOptionPane.YES_NO_OPTION , JOptionPane.WARNING_MESSAGE , null , null , null );
-								if( rtn == JOptionPane.NO_OPTION )
+								String time = SpQueuedMap.getSpQueuedMap().containsMsbChecksum( checksum ) ;
+								if( time != null )
 								{
-									isStatusOK = new Boolean( false ) ;
-									return isStatusOK ;
+									int rtn = JOptionPane.showOptionDialog( null , "This observation was sent to the queue " + time + ".\n Continue ?" , "Duplicate execution warning" , JOptionPane.YES_NO_OPTION , JOptionPane.WARNING_MESSAGE , null , null , null );
+									if( rtn == JOptionPane.NO_OPTION )
+									{
+										isStatusOK = new Boolean( false ) ;
+										return isStatusOK ;
+									}
 								}
 							}
 							int msbIndex = columns.getIndexForName( "msbid" );
