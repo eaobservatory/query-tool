@@ -11,7 +11,6 @@ import java.util.TimeZone ;
 
 public class SpQueuedMap extends QueuedMap
 {
-
 	private static SpQueuedMap queuedMap = null ;
 	
 	private SpQueuedMap() 
@@ -39,10 +38,6 @@ public class SpQueuedMap extends QueuedMap
 				treeMap.put( checksum , "" + System.currentTimeMillis() ) ;
 			writeChecksumToDisk( ( SpMSB )item ) ;
 		}
-		else
-		{
-			replacement = put( item.toXML() , null ) ;
-		}
 		return replacement ;
 	}
 	
@@ -52,8 +47,6 @@ public class SpQueuedMap extends QueuedMap
 			return false ;
 		item = getCorrectItem( item ) ;
 		String checksum = msbChecksum( item ) ;
-		if( checksum.equals( "" ) )
-			checksum = hash( item.toXML() ) ;
 		return treeMap.containsKey( checksum ) ;
 	}
 	
@@ -168,7 +161,7 @@ public class SpQueuedMap extends QueuedMap
 				
 				if( !directory.mkdirs() )
 				{
-					System.out.println( "Unable to create " + cachePath ) ;
+					System.out.println( "Unable to create " + cachePath + " using " + home ) ;
 					cachePath = home ;
 					if( !cachePath.endsWith( File.separator ) )
 						cachePath += File.separator ;
