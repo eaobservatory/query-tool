@@ -202,13 +202,19 @@ public class SpQueuedMap extends QueuedMap
 			long hours = minutes / 60 ;
 			minutes %= 60 ;
 			if( hours != 0 )
+			{
 				returnString += hours + " hour" ;
-			if( hours > 1 )
-				returnString += "s " ;
+				if( hours > 1 )
+					returnString += "s" ;
+				returnString += " " ;
+			}
 			if( minutes != 0 )
+			{
 				returnString += minutes + " minute" ;
-			if( minutes > 1 )
-				returnString += "s " ;
+				if( minutes > 1 )
+					returnString += "s" ;
+				returnString += " " ;
+			}
 			if( returnString.equals( "" ) )
 				returnString += seconds + " seconds " ;
 			returnString += "ago" ;
