@@ -201,6 +201,7 @@ public class InfoPanel extends JPanel implements ActionListener {
 							}
 							msb_qtm.setProjectId( "All" );
 							qtf.setColumnSizes();
+							qtf.resetScrollBars() ;
 							logoPanel.stop();
 							qtf.setCursor( normalCursor );
 							if( queryExpiredTimer != null )

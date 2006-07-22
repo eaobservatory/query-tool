@@ -111,7 +111,8 @@ public class QtFrame
   private WidgetPanel           _widgetPanel;
   private int []                tableColumnSizes;
   private boolean               queryExpired = false;
-
+  private JScrollPane resultsPanel ;
+  private JScrollPane projectPane ;
 
   SwingWorker msbWorker;
 
@@ -278,9 +279,9 @@ public class QtFrame
 		projectTableSetup( ptm );
 		tableSetup();
 		splash.done() ;
-		JScrollPane resultsPanel = new JScrollPane( table );
+		resultsPanel = new JScrollPane( table );
 		resultsPanel.getViewport().setScrollMode( JViewport.BLIT_SCROLL_MODE );
-		JScrollPane projectPane = new JScrollPane( projectTable );
+		projectPane = new JScrollPane( projectTable );
 		projectPane.getViewport().setScrollMode( JViewport.BLIT_SCROLL_MODE );
 
 		JSplitPane tablePanel = new JSplitPane( JSplitPane.HORIZONTAL_SPLIT , projectPane , resultsPanel );
@@ -469,6 +470,14 @@ public class QtFrame
 	projectTable.getSelectionModel().setSelectionInterval(0,0);
     }
 
+    public void resetScrollBars()
+    {
+    	if( resultsPanel != null )
+    		resultsPanel.getVerticalScrollBar().setValue( 0 ) ;
+    	if( projectPane != null )
+    		projectPane.getVerticalScrollBar().setValue( 0 ) ;
+    }
+    
     public void updateColumnHeaders()
     {
 		TableColumnModel tcm = table.getColumnModel() ;
