@@ -2,6 +2,7 @@ package edu.jach.qt.gui;
 
 /* QT imports */
 import edu.jach.qt.app.Querytool;
+import edu.jach.qt.utils.CalibrationList;
 
 /* Standard imports */
 
@@ -14,15 +15,23 @@ import java.awt.Insets ;
 import java.awt.Component ;
 import java.awt.event.ActionListener ;
 import java.awt.event.ActionEvent ;
+import java.util.EventListener;
+import java.util.Iterator;
+import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import javax.swing.JMenuItem;
 import javax.swing.JPanel ;
 import javax.swing.JButton ;
 import javax.swing.ImageIcon ;
 import javax.swing.SwingConstants ;
 import javax.swing.border.MatteBorder ;
+import javax.swing.event.MenuListener;
 
 import org.apache.log4j.Logger;
+
+import edu.jach.qt.utils.SpQueuedMap ;
 
 /**
  * InfoPanel.java
@@ -142,6 +151,9 @@ public class InfoPanel extends JPanel implements ActionListener {
 				qtf.getWidgets().setButtons();
 				qtf.updateColumnSizes();
 				qtf.repaint( 0 );
+				
+				ChecksumCacheThread checksumCacheThread = new ChecksumCacheThread() ;
+				checksumCacheThread.start() ;
 
 				final SwingWorker worker = new SwingWorker()
 				{
@@ -405,6 +417,15 @@ public class InfoPanel extends JPanel implements ActionListener {
         });
         t.start();
     }
+    
+    public class ChecksumCacheThread extends Thread
+    {
+    	public void run()
+		{
+    		SpQueuedMap map = SpQueuedMap.getSpQueuedMap() ;
+    		map.fillCache() ;
+		}
+    }    
 }// InfoPanel
 
 

@@ -211,18 +211,31 @@ public class SpQueuedMap extends QueuedMap
 			if( hours != 0 )
 				returnString += hours + " hour" ;
 			if( hours > 1 )
-				returnString += "s" ;
-			returnString += " " ;
+				returnString += "s " ;
 			if( minutes != 0 )
 				returnString += minutes + " minute" ;
 			if( minutes > 1 )
-				returnString += "s" ;
-			returnString += " " ;
+				returnString += "s " ;
 			if( returnString.equals( "" ) )
 				returnString += seconds + " seconds " ;
 			returnString += "ago" ;
 		}
 		catch( NumberFormatException nfe ){}
 		return returnString ;
-	}	
+	}
+	
+	public void fillCache()
+	{
+		String path = getChecksumCachePath() ;
+		File filePath = new File( path ) ;
+		String[] directoryContents = filePath.list() ;
+		for( int index = 0 ; index < directoryContents.length ; index++ )
+		{
+			String[] split = directoryContents[ index ].split( "_" ) ;
+			String checksum =  split[ 0 ] ;
+			String timestamp = isChecksumOnDisk( split[ 0 ] ) ;
+			if( timestamp != null )
+				treeMap.put( checksum , timestamp ) ;
+		}
+	}
 }
