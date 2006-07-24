@@ -89,7 +89,7 @@ public class QtFrame
 
   private MSBQueryTableModel	msbQTM;
   private JTable                projectTable;
-  private JTable		table;
+  private QtTable		table;
   private int			selRow;
   private JMenuItem		saveItem;
   private JMenuItem		saveAsItem;
@@ -332,7 +332,7 @@ public class QtFrame
 	private void tableSetup()
 	{
 		final TableSorter sorter = new TableSorter( msbQTM );
-		table = new JTable( sorter );
+		table = new QtTable( sorter );
 		ToolTipManager.sharedInstance().unregisterComponent( table );
 		ToolTipManager.sharedInstance().unregisterComponent( table.getTableHeader() );
 		sorter.addMouseListenerToHeaderInTable( table );
