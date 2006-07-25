@@ -34,7 +34,7 @@ public class SpQueuedMap extends QueuedMap
 		if( !checksum.equals( "" ) )
 		{
 			replacement = treeMap.containsKey( checksum ) ;
-			if( (( SpMSB )item).getNumberRemaining() == 1 )
+			if( (( SpMSB )item).getNumberRemaining() < 2 )
 				treeMap.put( checksum , "" + System.currentTimeMillis() ) ;
 			writeChecksumToDisk( ( SpMSB )item ) ;
 		}
@@ -104,7 +104,7 @@ public class SpQueuedMap extends QueuedMap
 		String success = null ;
 		String path = getChecksumCachePath() ;
 		File filePath = new File( path ) ;
-		FileGlobFilter filter = new FileGlobFilter( "^" + checksum + "_\\d+_\\d*" ) ;
+		FileGlobFilter filter = new FileGlobFilter( "^" + checksum + "_-?\\d+_\\d*" ) ;
 		String[] directoryContents = filePath.list( filter ) ;
 		int highestRepeatCount = 0 ;
 		long nearestDate = 0 ;
@@ -227,7 +227,8 @@ public class SpQueuedMap extends QueuedMap
 	{
 		String path = getChecksumCachePath() ;
 		File filePath = new File( path ) ;
-		String[] directoryContents = filePath.list() ;
+		FileGlobFilter filter = new FileGlobFilter( "^\\w+_-?\\d+_\\d*" ) ;
+		String[] directoryContents = filePath.list( filter ) ;
 		for( int index = 0 ; index < directoryContents.length ; index++ )
 		{
 			String[] split = directoryContents[ index ].split( "_" ) ;
