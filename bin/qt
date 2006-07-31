@@ -4,6 +4,8 @@ onintr tidy
 
 cd `dirname $0` 
 
+umask 002
+
 set OTROOT              = /jac_sw/hlsroot/acsis_support/acsisot
 set OTROOT              = /jac_sw/orac3
 set JAVA		= /local/java/jdk/bin/java
