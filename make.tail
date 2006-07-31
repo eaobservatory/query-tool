@@ -104,6 +104,7 @@ ${LIBDIR}/%.jar: ${CLASSFILES}
 	${MAKE} ${MAKEOPTIONS} ${LIBDIR}/$@
 
 build: ${PACKAGELISTLOOOP}
+	chmod -R g+w config
 	echo Done.
 
 _all:_buildall
