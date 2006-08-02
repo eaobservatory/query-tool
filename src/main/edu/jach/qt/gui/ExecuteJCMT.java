@@ -131,6 +131,8 @@ public class ExecuteJCMT extends Execute {
 		}
 		byte[] odfFile = new byte[ 1024 ];
 		byte[] errorMessage = new byte[ 1024 ];
+		StringBuffer inputBuffer = new StringBuffer() ;
+		StringBuffer errorBuffer = new StringBuffer() ;
 		Runtime rt;
 
 		// Writer to add errors to log file before exiting
@@ -151,19 +153,42 @@ public class ExecuteJCMT extends Execute {
 			logger.debug( "Running command " + command );
 			Process p = rt.exec( command );
 			InputStream istream = p.getInputStream();
-			istream.read( odfFile );
 			InputStream estream = p.getErrorStream();
-			estream.read( errorMessage );
+			int inputLength , errorLength ;
+			boolean inputFinished = false ;
+			boolean errorFinished = false ;
+			inputBuffer.delete( 0 , inputBuffer.length() ) ;
+			errorBuffer.delete( 0 , errorBuffer.length() ) ;
+			while( !( inputFinished && errorFinished ) )
+			{
+				if( !inputFinished )
+				{
+					inputLength = istream.read( odfFile ) ;
+					if( inputLength == -1 )
+						inputFinished = true ;
+					else
+						inputBuffer.append( new String( odfFile ).trim() ) ;
+				}
+				if( !errorFinished )
+				{
+					errorLength = estream.read( errorMessage ) ;
+					if( errorLength == -1 )
+						errorFinished = true ;
+					else
+						errorBuffer.append( new String( errorMessage ).trim() ) ;
+				}
+			
+			}
 			int rtn = p.waitFor();
 			logger.info( "Translator returned with exit status " + rtn );
-			logger.debug( "Output from translator: " + new String( odfFile ).trim() );
-			logger.debug( "Error from translator: " + new String( errorMessage ).trim() );
+			logger.debug( "Output from translator: " + inputBuffer.toString() );
+			logger.debug( "Error from translator: " + errorBuffer.toString() );
 			if( rtn != 0 )
 			{
 				logger.error( "Returning with non-zero error status following translation" );
 				if( errorWriter != null )
 				{
-					errorWriter.write( new String( errorMessage ).trim() );
+					errorWriter.write( errorBuffer.toString() );
 					errorWriter.newLine();
 					errorWriter.flush() ;
 					errorWriter.close();
@@ -181,7 +206,7 @@ public class ExecuteJCMT extends Execute {
 			{
 				try
 				{
-					errorWriter.write( new String( errorMessage ).trim() );
+					errorWriter.write( errorBuffer.toString() );
 					errorWriter.newLine();
 					errorWriter.flush() ;
 					errorWriter.close();
@@ -230,19 +255,42 @@ public class ExecuteJCMT extends Execute {
 					Process p = rt.exec( command );
 					InputStream istream = p.getInputStream();
 					InputStream estream = p.getErrorStream();
-					istream.read( odfFile );
-					estream.read( errorMessage );
+					int inputLength , errorLength ;
+					boolean inputFinished = false ;
+					boolean errorFinished = false ;
+					inputBuffer.delete( 0 , inputBuffer.length() ) ;
+					errorBuffer.delete( 0 , errorBuffer.length() ) ;
+					while( !( inputFinished && errorFinished ) )
+					{
+						if( !inputFinished )
+						{
+							inputLength = istream.read( odfFile ) ;
+							if( inputLength == -1 )
+								inputFinished = true ;
+							else
+								inputBuffer.append( new String( odfFile ).trim() ) ;
+						}
+						if( !errorFinished )
+						{
+							errorLength = estream.read( errorMessage ) ;
+							if( errorLength == -1 )
+								errorFinished = true ;
+							else
+								errorBuffer.append( new String( errorMessage ).trim() ) ;
+						}
+					
+					}
 					p.waitFor();
 					int rtn = p.exitValue();
 					logger.info( "LoadOCSQUEUE returned with exit status " + rtn );
-					logger.debug( "Output from LoadOCSQUEUE: " + new String( odfFile ).trim() );
-					logger.debug( "Error from LoadOCSQUEUE: " + new String( errorMessage ).trim() );
+					logger.debug( "Output from LoadOCSQUEUE: " + inputBuffer.toString() );
+					logger.debug( "Error from LoadOCSQUEUE: " + errorBuffer.toString() );
 					if( rtn != 0 )
 					{
 						logger.error( "Error loading queue" );
 						if( errorWriter != null )
 						{
-							errorWriter.write( new String( errorMessage ).trim() );
+							errorWriter.write( errorBuffer.toString() );
 							errorWriter.newLine();
 							errorWriter.flush() ;
 							errorWriter.close();
