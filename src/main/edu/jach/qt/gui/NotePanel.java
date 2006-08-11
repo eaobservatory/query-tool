@@ -1,18 +1,29 @@
 package edu.jach.qt.gui;
 
 
-import java.io.*;
-import java.awt.*;
-import java.util.*;
-import javax.swing.*;
-import javax.swing.border.*;
+import java.awt.GridBagConstraints ;
+import java.awt.GridBagLayout ;
+import java.awt.Color ;
+import java.awt.Font ;
+import java.awt.BorderLayout ;
+import java.awt.Component ;
+import java.util.Enumeration ;
+import java.util.ArrayList ;
+import java.util.Vector ;
+import javax.swing.JPanel ;
+import javax.swing.JTextPane ;
+import javax.swing.JScrollPane ;
+import javax.swing.BorderFactory ;
+import javax.swing.border.TitledBorder ;
+import javax.swing.border.Border ;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 import javax.swing.text.Document;
 
-import gemini.sp.*;
-
+import gemini.sp.SpTreeMan ;
+import gemini.sp.SpItem ;
+import gemini.sp.SpNote ;
 
 /**
  * Constructs a scrollable text panel.
@@ -21,38 +32,36 @@ import gemini.sp.*;
  */
 final public class NotePanel extends JPanel {
 
-    private GridBagConstraints		gbc;
-    private static JTextPane            textPanel;
+    private GridBagConstraints gbc;
 
-    /**
-     * Constructs a scrollable non-editable text panel.
-     * Sets the label of "Observer Notes", and the line wrapping convention.
-     */
-    public NotePanel() {
-	Border border=BorderFactory.createMatteBorder(2, 2, 2, 2, Color.white);
-	setBorder(new TitledBorder(border, "Observer Notes", 
-				   0, 0, new Font("Roman",Font.BOLD,12),Color.black));
-	setLayout(new BorderLayout() );
-	
-	GridBagLayout gbl = new GridBagLayout();
-	setLayout(gbl);
-	gbc = new GridBagConstraints();
-	
-	textPanel = new JTextPane();
-	textPanel.setEditable(false);
+	private static JTextPane textPanel = new JTextPane();
 
-	JScrollPane scrollPane = new JScrollPane(textPanel);
-	scrollPane.setVerticalScrollBarPolicy (JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-	
-	gbc.fill = GridBagConstraints.BOTH;
-	//gbc.anchor = GridBagConstraints.EAST;
-	gbc.insets.bottom = 5;
-	gbc.insets.left = 10;
-	gbc.insets.right = 5;
-	gbc.weightx = 100;
-	gbc.weighty = 100;
-	add(scrollPane, gbc, 0, 0, 2, 1);
-    }
+	/**
+	 * Constructs a scrollable non-editable text panel. Sets the label of "Observer Notes", and the line wrapping convention.
+	 */
+	public NotePanel()
+	{
+		Border border = BorderFactory.createMatteBorder( 2 , 2 , 2 , 2 , Color.white );
+		setBorder( new TitledBorder( border , "Observer Notes" , 0 , 0 , new Font( "Roman" , Font.BOLD , 12 ) , Color.black ) );
+		setLayout( new BorderLayout() );
+
+		GridBagLayout gbl = new GridBagLayout();
+		setLayout( gbl );
+		gbc = new GridBagConstraints();
+
+		textPanel.setEditable( false );
+
+		JScrollPane scrollPane = new JScrollPane( textPanel );
+		scrollPane.setVerticalScrollBarPolicy( JScrollPane.VERTICAL_SCROLLBAR_ALWAYS );
+
+		gbc.fill = GridBagConstraints.BOTH;
+		gbc.insets.bottom = 5;
+		gbc.insets.left = 10;
+		gbc.insets.right = 5;
+		gbc.weightx = 100;
+		gbc.weighty = 100;
+		add( scrollPane , gbc , 0 , 0 , 2 , 1 );
+	}
     
   /**
    * Add a compnent to the <code>GridBagConstraints</code>
