@@ -6,17 +6,35 @@
 
 package edu.jach.qt.gui;
 
-import gemini.sp.*;
-import gemini.sp.iter.*;
-import orac.ukirt.inst.*;
-import orac.ukirt.iter.*;
-import java.awt.*;
-import java.awt.event.*;
-import java.util.*;
-import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.table.*;
-import javax.swing.text.*;
+import gemini.sp.SpItem ;
+import gemini.sp.SpObs ;
+import gemini.sp.SpTreeMan ;
+import gemini.sp.SpType ;
+import gemini.sp.SpAvTable ;
+import java.awt.Color ;
+import java.awt.Dimension ;
+import java.awt.Component ;
+import java.awt.event.ActionListener ;
+import java.awt.event.ActionEvent ;
+import java.util.Vector ;
+import java.util.Enumeration ;
+import javax.swing.JDialog ;
+import javax.swing.JTable ;
+import javax.swing.JScrollPane ;
+import javax.swing.ListSelectionModel ;
+import javax.swing.BorderFactory ;
+import javax.swing.JPanel ;
+import javax.swing.BoxLayout ;
+import javax.swing.JButton ;
+import javax.swing.JLabel ;
+import javax.swing.JTextField ;
+import javax.swing.JOptionPane ;
+import javax.swing.JFrame ;
+import javax.swing.event.ListSelectionListener ;
+import javax.swing.event.ListSelectionEvent ;
+import javax.swing.table.TableCellRenderer ;
+import javax.swing.table.TableColumn ;
+import javax.swing.text.JTextComponent ;
 import org.apache.log4j.Logger;
 
 /**
@@ -97,45 +115,40 @@ public class AttributeEditor extends JDialog
   }
 
   /**
-   * private Vector getConfigNames(String configItem)
-   *
-   * Look for the given configuration item (accessed via
-   * System.getProperty()). This should have a value which is a space
-   * separated list of tokens. Return a Vector of these tokens.
-   *
-   * @param String configItem
-   * @author David Clarke
-   **/
-  private Vector getConfigNames(String configItem) {
-    String list = System.getProperty(configItem);
-    //    if (list.length() == 0) list = "None";
+	 * private Vector getConfigNames(String configItem)
+	 * 
+	 * Look for the given configuration item (accessed via System.getProperty()). This should have a value which is a space separated list of tokens. Return a Vector of these tokens.
+	 * 
+	 * @param String
+	 *            configItem
+	 * @author David Clarke
+	 */
+	private Vector getConfigNames( String configItem )
+	{
+		String list = System.getProperty( configItem );
 
-    if (list == null) {
-      return new Vector();
-    }
+		if( list == null )
+			return new Vector();
 
-    StringTokenizer tok = new StringTokenizer (list);
-    Vector names = new Vector(tok.countTokens());
+		String[] tok = list.split( " " ) ;
+		Vector names = new Vector( tok.length );
 
-    while (tok.hasMoreElements()) {
-      String name = tok.nextToken();
-      names.addElement(name);
-    }
+		for( int index = 0 ; index < tok.length ; index++ )
+			names.addElement( tok[ index ] ) ;
 
-    return names;
-  }
+		return names;
+	}
 
 
   /**
-   * private SpItem findSequence(SpObs observation)
-   *
-   * Search the children of the given observation for the sequence
-   * component. Returns the first one it finds (kind of assuming that
-   * there can be only one), or null if it doesn't find one at all.
-   *
-   * @param SpObs observation
-   * @author David Clarke
-   **/
+	 * private SpItem findSequence(SpObs observation)
+	 * 
+	 * Search the children of the given observation for the sequence component. Returns the first one it finds (kind of assuming that there can be only one), or null if it doesn't find one at all.
+	 * 
+	 * @param SpObs
+	 *            observation
+	 * @author David Clarke
+	 */
   private SpItem findSequence(SpObs observation) {
     Enumeration children = observation.children();
 
@@ -396,118 +409,124 @@ public class AttributeEditor extends JDialog
   
 
   /**
-   * private void flushChanges()
-   *
-   * Look at the editorTable to see if there are any changes which
-   * have not been notified to the model. This can come about if the
-   * user has typed some changes into one of the editable cells in the
-   * table and pressed OK without explicitely blurring the cell. So
-   * check to see if there is a cell editor associated with the table,
-   * and if there is then wheek the value out of the editor and into
-   * the model.
-   *
-   * @author Too ashamed to admit it
-   **/
-  private void flushChanges() {
-    JTextComponent comp = (JTextComponent) editorTable.getEditorComponent();
+	 * private void flushChanges()
+	 * 
+	 * Look at the editorTable to see if there are any changes which have not been notified to the model. 
+	 * This can come about if the user has typed some changes into one of the editable cells in the table and pressed OK 
+	 * without explicitely blurring the cell. 
+	 * So check to see if there is a cell editor associated with the table, 
+	 * and if there is then wheek the value out of the editor and into the model.
+	 * 
+	 * @author Too ashamed to admit it
+	 */
+	private void flushChanges()
+	{
+		JTextComponent comp = ( JTextComponent ) editorTable.getEditorComponent();
 
-    if (comp != null) {	// There is some editing going on
-      model.setValueAt((String)comp.getText(),
-		       editorTable.getEditingRow(),
-		       editorTable.getEditingColumn());
-    }
-  }
+		if( comp != null )// There is some editing going on
+			model.setValueAt( ( String ) comp.getText() , editorTable.getEditingRow() , editorTable.getEditingColumn() );
+	}
 
   
   /**
-   * private boolean makeChanges()
-   *
-   * Effect any scaling and then write back all changes to the
-   * observation. Return value denotes whether or not the method
-   * completed normally.
-   **/
-  private boolean makeChanges() {
-      String message;
-    if (doingScale) {
-      try {
-	_scaleFactorUsed = Double.valueOf(scaleFactor.getText()).doubleValue();
-	if (Math.abs(_scaleFactorUsed) < 1e-6) {
-	    message = "Zero (or very small) scale factor (" +
-		scaleFactor.getText() + ").";
-	    JOptionPane.showMessageDialog (this,
-					   message,
-					   "Does not Compute",
-					   JOptionPane.WARNING_MESSAGE );
-	  return false;
-	} 
-	else if (_scaleFactorUsed < 0) {
-	    message = "Negative scale factor (" +
-		scaleFactor.getText() + ").";
-	    JOptionPane.showMessageDialog (this,
-					   message,
-					   "Does not Compute",
-					   JOptionPane.WARNING_MESSAGE );
-	  return false;
-	} 
-	else {
-	  model.scaleValuesBy(_scaleFactorUsed);
-	}
-      } 
-      catch (Exception e) {
-	  message = "Invalid scale factor (" + scaleFactor.getText() + ").";
-	    JOptionPane.showMessageDialog (this,
-					   message,
-					   "Unable to comply",
-					   JOptionPane.ERROR_MESSAGE );
+	 * private boolean makeChanges()
+	 * 
+	 * Effect any scaling and then write back all changes to the observation. 
+	 * Return value denotes whether or not the method completed normally.
+	 */
+	private boolean makeChanges()
+	{
+		String message;
+		if( doingScale )
+		{
+			try
+			{
+				_scaleFactorUsed = Double.valueOf( scaleFactor.getText() ).doubleValue();
+				if( Math.abs( _scaleFactorUsed ) < 1e-6 )
+				{
+					message = "Zero (or very small) scale factor (" + scaleFactor.getText() + ").";
+					JOptionPane.showMessageDialog( this , message , "Does not Compute" , JOptionPane.WARNING_MESSAGE );
+					return false;
+				}
+				else if( _scaleFactorUsed < 0 )
+				{
+					message = "Negative scale factor (" + scaleFactor.getText() + ").";
+					JOptionPane.showMessageDialog( this , message , "Does not Compute" , JOptionPane.WARNING_MESSAGE );
+					return false;
+				}
+				else
+				{
+					model.scaleValuesBy( _scaleFactorUsed );
+				}
+			}
+			catch( Exception e )
+			{
+				message = "Invalid scale factor (" + scaleFactor.getText() + ").";
+				JOptionPane.showMessageDialog( this , message , "Unable to comply" , JOptionPane.ERROR_MESSAGE );
 
-	return false;
-      }
-    } 
-    else {
-      flushChanges();
-    }
-    
-    boolean doneSome = false;
-    
-    // Here we get changed attribute values from the table model and
-    // set them in the SpItem.
-    int row = 0;
-    Enumeration pairs    = avPairs.elements();
-    Enumeration triplets = iavTriplets.elements();
-    
-    while (pairs.hasMoreElements()) {
-      AVPair pair = (AVPair) pairs.nextElement();
-      if (model.isChangedAt(row)) {
-	if (!doneSome) {
-	  logger.info("Updating attributes");
-	  doneSome = true;
-	}
-	logger.info(model.getValueAt(row, 0) + " = '" + model.getValueAt(row, 1) + "'");
-	pair.origin().setValue((String)model.getValueAt(row, 1));
-      }
-      row ++;
-    }
-    while (triplets.hasMoreElements()) {
-      AIVTriplet triplet = (AIVTriplet) triplets.nextElement();
-      if (model.isChangedAt(row)) {
-	if (!doneSome) {
-	  logger.info("Updating attributes");
-	  doneSome = true;
-	}
-	logger.info(model.getValueAt(row, 0) + " = '" + model.getValueAt(row, 1) + "'");
-	triplet.origin().setValue((String)model.getValueAt(row, 1));
-      }
-      row ++;
-    }
-    
-    if (!doneSome) {
-      System.out.println ("No changes made");
-      logger.info("No changes made");
-    }
+				return false;
+			}
+		}
+		else
+		{
+			flushChanges();
+		}
 
-    return true;
-    
-  }
+		boolean doneSome = false;
+
+		// Here we get changed attribute values from the table model and
+		// set them in the SpItem.
+		int row = 0;
+		Enumeration pairs = avPairs.elements();
+		Enumeration triplets = iavTriplets.elements();
+
+		while( pairs.hasMoreElements() )
+		{
+			AVPair pair = ( AVPair ) pairs.nextElement();
+			if( model.isChangedAt( row ) )
+			{
+				if( !doneSome )
+				{
+					logger.info( "Updating attributes" );
+					doneSome = true;
+				}
+				
+				String name = "" ;
+				String value = "" ;
+				Object tmp = model.getValueAt( row , 0 ) ;
+				if( tmp instanceof String )
+					name = ( String )tmp ;
+				tmp = model.getValueAt( row , 1 ) ;
+				if( tmp instanceof String )
+					value = ( String )tmp ;
+				logger.info( name + " = '" + value + "'" );
+				pair.origin().setValue( ( String ) model.getValueAt( row , 1 ) );
+			}
+			row++;
+		}
+		while( triplets.hasMoreElements() )
+		{
+			AIVTriplet triplet = ( AIVTriplet ) triplets.nextElement();
+			if( model.isChangedAt( row ) )
+			{
+				if( !doneSome )
+				{
+					logger.info( "Updating attributes" );
+					doneSome = true;
+				}
+				logger.info( model.getValueAt( row , 0 ) + " = '" + model.getValueAt( row , 1 ) + "'" );
+				triplet.origin().setValue( ( String ) model.getValueAt( row , 1 ) );
+			}
+			row++;
+		}
+
+		if( !doneSome )
+		{
+			System.out.println( "No changes made" );
+			logger.info( "No changes made" );
+		}
+		return true;
+	}
 
   /** Closes the dialog */
   private void closeDialog() {
@@ -524,34 +543,33 @@ public class AttributeEditor extends JDialog
    * @return Vector
    * @author Alan Bridger
    */
-  private Vector getInstAttValues (SpItem instrument) {
+	private Vector getInstAttValues( SpItem instrument )
+	{
+		// Get the current values of the editable attributes
+		Enumeration attributes = configAttributes.elements();
+		Vector av = new Vector( configAttributes.size() );
 
-    // Get the current values of the editable attributes
-    Enumeration attributes = configAttributes.elements();
-    Vector      av = new Vector(configAttributes.size());
+		avTable = inst.getTable();
 
-    avTable = inst.getTable();
+		while( attributes.hasMoreElements() )
+		{
+			String att;
+			String val;
+			AVPair avp;
 
-    while (attributes.hasMoreElements()) {
-      String att;
-      String val;
-      AVPair avp;
-
-      att = (String) attributes.nextElement();
-      if (att != null) {
-	val = avTable.get(att);
-      } else {
-	val = "No such attribute";
-      }
-      if ((val != null) && (!val.equals(""))) {
-	avp = new AVPair(att, val, instrument, att, 0);
-	av.addElement(avp);
-      }
-    }
-
-    return av;
-
-  }
+			att = ( String )attributes.nextElement();
+			if( att != null )
+				val = avTable.get( att );
+			else
+				val = "No such attribute";
+			if( ( val != null ) && ( !val.equals( "" ) ) )
+			{
+				avp = new AVPair( att , val , instrument , att , 0 );
+				av.addElement( avp );
+			}
+		}
+		return av;
+	}
 
   /**
    * private void getIterAttValues(SpObs observation)
@@ -569,13 +587,12 @@ public class AttributeEditor extends JDialog
    * @param SpObs observation
    * @author David Clarke
    */
-  private void getIterAttValues (SpItem root) {
-//     System.out.println("Attributes = " + configAttributes);
-//     System.out.println("Iterators  = " + configIterators);
-    logger.info("Attributes = " + configAttributes);
-    logger.info("Iterators  = " + configIterators);
-    getIterAttValues(root, "", "");
-  }
+	private void getIterAttValues( SpItem root )
+	{
+		logger.info( "Attributes = " + configAttributes );
+		logger.info( "Iterators  = " + configIterators );
+		getIterAttValues( root , "" , "" );
+	}
 
   /**
    * private void getLocalIterAttValues(SpItem root, String indent)
@@ -589,100 +606,88 @@ public class AttributeEditor extends JDialog
    * @author David Clarke
    *
    */
-  private void getLocalIterAttValues(SpItem root, String subtype, String path, String indent) {
-    final String iterSuffix = "Iter";
-    
-    // Iterate over root's attributes
-    SpAvTable   table = root.getTable();
-    Enumeration keys = table.attributes();
-    
-    //    System.out.println(indent +
-    //		       root.typeStr() + "_" + subtype +
-    //		       " (" + root.name() + ") " +
-    //		       " (" + root.getTitle() + ") " +
-    //		       root);
-    while (keys.hasMoreElements()) {
-      String key;
-      String lookupKey;
+	private void getLocalIterAttValues( SpItem root , String subtype , String path , String indent )
+	{
+		final String iterSuffix = "Iter";
 
-      key = (String) keys.nextElement();
-      if (key.endsWith(iterSuffix)) {
-	lookupKey = key.substring(0, key.length()-iterSuffix.length());
-      } else {
-	lookupKey = key;
-      }
+		// Iterate over root's attributes
+		SpAvTable table = root.getTable();
+		Enumeration keys = table.attributes();
 
-      if (configAttributes.contains(lookupKey)) {
-	Vector val = table.getAll(key);
-	//	System.out.println(indent + "   YES " + key + " (as " + lookupKey + ") = " + val);
-	if (val.size() == 1) {
-	  iavTriplets.addElement(new AIVTriplet(concatPath(path, root),
-						lookupKey,
-						(String) val.elementAt(0),
-						new AttributeOrigin(root, key, 0))); 
-	} else {
-	  for (int i = 0; i < val.size(); i++) {
-	    iavTriplets.addElement(new AIVTriplet(concatPath(path, root),
-						  lookupKey + "[" + i + "]",
-						  (String) val.elementAt(i),
-						  new AttributeOrigin(root, key, i))); 
-	  }
+		while( keys.hasMoreElements() )
+		{
+			String key;
+			String lookupKey;
+
+			key = ( String ) keys.nextElement();
+			if( key.endsWith( iterSuffix ) )
+				lookupKey = key.substring( 0 , key.length() - iterSuffix.length() );
+			else
+				lookupKey = key;
+
+			if( configAttributes.contains( lookupKey ) )
+			{
+				Vector val = table.getAll( key );
+				if( val.size() == 1 )
+				{
+					iavTriplets.addElement( new AIVTriplet( concatPath( path , root ) , lookupKey , ( String ) val.elementAt( 0 ) , new AttributeOrigin( root , key , 0 ) ) );
+				}
+				else
+				{
+					for( int i = 0 ; i < val.size() ; i++ )
+					{
+						iavTriplets.addElement( new AIVTriplet( concatPath( path , root ) , lookupKey + "[" + i + "]" , ( String ) val.elementAt( i ) , new AttributeOrigin( root , key , i ) ) );
+					}
+				}
+			}
+		}
 	}
-	//      } else {
-	//	System.out.println(indent +  "   no  " + key + " (as " + lookupKey + ")");
-      }
-    }
-  }
 
 
 
   /**
-   * private void getIterAttValues(SpItem root, String indent)
-   *
-   * Recursively walk the observation tree (in pre-order) looking for
-   * attributes specified in avPairs that are in iterators specified
-   * by configIterators. Get the value of any such attribute and
-   * append to the iavTriplets vector.
-   *
-   * @param SpItem root
-   * @param String path
-   * @param String indent
-   * @author David Clarke
-   *
-   */
-  private void getIterAttValues (SpItem root,
-				 String path,
-				 String indent) {
-    //    System.out.println(indent + "-- getIterAttValues(" +
-    //		       root.subtypeStr() + ", " +
-    //		       root.getTitle() + ", " +
-    //		       root.name() + ")"
-    //		       );
+	 * private void getIterAttValues(SpItem root, String indent)
+	 * 
+	 * Recursively walk the observation tree (in pre-order) looking for attributes specified in avPairs 
+	 * that are in iterators specified by configIterators. 
+	 * Get the value of any such attribute and append to the iavTriplets vector.
+	 * 
+	 * @param SpItem
+	 *            root
+	 * @param String
+	 *            path
+	 * @param String
+	 *            indent
+	 * @author David Clarke
+	 * 
+	 */
+	private void getIterAttValues( SpItem root , String path , String indent )
+	{
+		if( root != null )
+		{
 
-    if (root != null) {
+			String subtype = root.subtypeStr();
 
-      String subtype = root.subtypeStr();
+			// If root is a suitable iterator, look through its attributes
+			// for ones specified in avPairs
+			if( configIterators.contains( subtype ) )
+				getLocalIterAttValues( root , subtype , path , indent + "   " );
 
-      // If root is a suitable iterator, look through its attributes
-      // for ones specified in avPairs
-      if (configIterators.contains(subtype)) {
-	getLocalIterAttValues(root, subtype, path, indent + "   ");
-      }
-
-      // Recurse over root's children
-      Enumeration children = root.children();
-      while (children.hasMoreElements()) {
-	SpItem child = (SpItem) children.nextElement();
-	getIterAttValues(child, concatPath(path, root), indent+"   ");
-      }
-    }
-  }
+			// Recurse over root's children
+			Enumeration children = root.children();
+			while( children.hasMoreElements() )
+			{
+				SpItem child = ( SpItem ) children.nextElement();
+				getIterAttValues( child , concatPath( path , root ) , indent + "   " );
+			}
+		}
+	}
 
   /**
-   * private void initColumnSizes() picks good column sizes for the table.
-   *
-   * @author David Clarke
-   */
+	 * private void initColumnSizes() picks good column sizes for the table.
+	 * 
+	 * @author David Clarke
+	 */
   private void initColumnSizes() {
     
     final int minWidth = 80;
@@ -767,7 +772,7 @@ public class AttributeEditor extends JDialog
 
   private SpObs obs;
   private SpItem sequence;
-  private SpItem inst, child;
+  private SpItem inst ;
   private String instName;
   private Vector configAttributes;
   private Vector configIterators;
