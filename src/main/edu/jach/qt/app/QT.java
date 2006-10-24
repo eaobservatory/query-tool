@@ -112,7 +112,10 @@ final public class QT {
       qtf.setLocation(x,y);
       qtf.validate();
       qtf.setVisible(true);
-
+      
+      String bigTelescope = System.getProperty( "TELESCOPE" ) ; 
+      if( bigTelescope == null || bigTelescope.equals( "" ) )
+    	  System.setProperty( "TELESCOPE" , System.getProperty( "telescope" ) ) ;     
    }
    
    /**
@@ -136,6 +139,9 @@ final public class QT {
 
 /*
  * $Log$
+ * Revision 1.31  2006/10/24 02:00:29  shart
+ * Hack to help the fact that the same parameter in OT and QT use a different case, will fix, just not today  -> SH
+ *
  * Revision 1.30  2006/07/10 21:28:59  shart
  * Some changes recommmended by PMD -> SH
  *
