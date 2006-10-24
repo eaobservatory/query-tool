@@ -91,9 +91,7 @@ final public class NotePanel extends JPanel {
 	public static void setNote( SpItem sp )
 	{
 		if( sp == null )
-		{
 			return;
-		}
 
 		// StringBuffer notes = new StringBuffer();
 		ArrayList notes = new ArrayList();
@@ -126,9 +124,7 @@ final public class NotePanel extends JPanel {
 		{
 			doc.remove( 0 , doc.getLength() ) ;
 			for( int i = 0 ; i < notes.size() ; i++ )
-			{
 				doc.insertString( doc.getLength() , ( String ) notes.get( i ) , textPanel.getStyle( ( String ) styles.get( i ) ) );
-			}
 		}
 		catch( Exception ex )
 		{
@@ -138,16 +134,20 @@ final public class NotePanel extends JPanel {
 		textPanel.repaint() ;
 	}
 
-    private static void initStyles() {
-	Style def = StyleContext.getDefaultStyleContext().
-	    getStyle(StyleContext.DEFAULT_STYLE);
+    private static void initStyles()
+	{
+		if( textPanel == null )
+			textPanel = new JTextPane() ;
+			
+    	StyleContext styleContext = StyleContext.getDefaultStyleContext() ;
+		Style def = styleContext.getStyle( StyleContext.DEFAULT_STYLE );
 
-        Style regular = textPanel.addStyle("regular", def);
-        StyleConstants.setFontFamily(def, "SansSerif");
+		Style regular = textPanel.addStyle( "regular" , def );
+		StyleConstants.setFontFamily( def , "SansSerif" );
 
-        Style s = textPanel.addStyle("bold", regular);
-        StyleConstants.setBold(s, true);
-    }
+		Style s = textPanel.addStyle( "bold" , regular );
+		StyleConstants.setBold( s , true );
+	}
 
 
 }
