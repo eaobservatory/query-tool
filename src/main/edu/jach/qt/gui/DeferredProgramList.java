@@ -864,7 +864,7 @@ final public class DeferredProgramList extends JPanel implements
 		_item.setPI( "observer" ) ;
 		_item.setCountry( "JAC" ) ;
 		_item.setTelescope() ;
-		if( _item.getProjectID() == null )
+		if( _item.getProjectID() == null || _item.getProjectID().equals( "" ) )
 			_item.setProjectID( "CAL" ) ;
 		SpInsertData spID = SpTreeMan.evalInsertInside( item , _item );
 		if( spID != null )
