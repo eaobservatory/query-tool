@@ -858,16 +858,18 @@ final public class DeferredProgramList extends JPanel implements
 	SpProg _item = (SpProg) SpFactory.create(SpType.SCIENCE_PROGRAM);
 	boolean _isDeferred;
 
-	public ExecuteInThread ( SpItem item, boolean deferred ) {
-	    // Make the obs into an SpProg
-	    _item.setPI("observer");
-	    _item.setCountry("JAC");
-	    _item.setProjectID("Deferred Obs");
-	    SpInsertData spID = SpTreeMan.evalInsertInside(item, _item);
-	    if ( spID != null ) {
-		 SpTreeMan.insert(spID);
-	    }
-	    _isDeferred = deferred;
+	public ExecuteInThread( SpItem item , boolean deferred )
+	{
+		// Make the obs into an SpProg
+		_item.setPI( "observer" ) ;
+		_item.setCountry( "JAC" ) ;
+		_item.setTelescope() ;
+		if( _item.getProjectID() == null )
+			_item.setProjectID( "CAL" ) ;
+		SpInsertData spID = SpTreeMan.evalInsertInside( item , _item );
+		if( spID != null )
+			SpTreeMan.insert( spID );
+		_isDeferred = deferred;
 	}
 
 	public void run () {

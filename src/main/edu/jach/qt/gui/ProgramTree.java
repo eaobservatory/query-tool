@@ -457,13 +457,9 @@ final public class ProgramTree extends JPanel implements
 				try
 				{
 					if( isDeferred )
-					{
 						new ExecuteInThread( item , isDeferred ).start();
-					}
 					else
-					{
 						new ExecuteInThread( _spItem , isDeferred ).start();
-					}
 				}
 				catch( Exception e )
 				{
@@ -871,39 +867,38 @@ final public class ProgramTree extends JPanel implements
     }
 
     /**
-     * private void editAttributes()
-     *
-     * Invokes the attribute editor on the current item, as long as that
-     * item is an observation.
-     **/
-    private void editAttributes() {
-	
-	// Recheck that this is an observation
-	if (selectedItem.type()==SpType.OBSERVATION) {
+	 * private void editAttributes()
+	 * 
+	 * Invokes the attribute editor on the current item, as long as that item is an observation.
+	 */
+	private void editAttributes()
+	{
 
-	    setExecutable(false);
+		// Recheck that this is an observation
+		if( selectedItem.type() == SpType.OBSERVATION )
+		{
 
-	    SpObs observation = (SpObs) selectedItem;
+			setExecutable( false );
 
-	    try {
-		if (!observation.equals(null)) {
-		    new AttributeEditor(observation, new javax.swing.JFrame(), true).show();
-		} 
-		else {
-		    JOptionPane.showMessageDialog(this,
-						  "Current selection is not an observation.",
-						  "Not an Obs!",
-						  JOptionPane.INFORMATION_MESSAGE);
+			SpObs observation = ( SpObs ) selectedItem;
+
+			try
+			{
+				if( !observation.equals( null ) )
+					new AttributeEditor( observation , new javax.swing.JFrame() , true ).show();
+				else
+					JOptionPane.showMessageDialog( this , "Current selection is not an observation." , "Not an Obs!" , JOptionPane.INFORMATION_MESSAGE );
+			}
+			catch( Exception e )
+			{
+				logger.error( "Error instantiating AttributeEditor" , e );
+			}
+			finally
+			{
+				setExecutable( true );
+			}
 		}
-	    }
-	    catch (Exception e) {
-		logger.error("Error instantiating AttributeEditor", e);
-	    }
-	    finally {
-		setExecutable(true);
-	    }
 	}
-    }
  
     /**
      * private void scaleAttributes()
@@ -1365,6 +1360,7 @@ final public class ProgramTree extends JPanel implements
 				root.setPI( "observer" );
 				root.setCountry( "JAC" );
 				root.setProjectID( "CAL" );
+				root.setTelescope() ;
 				SpInsertData spID = SpTreeMan.evalInsertInside( item , root );
 				if( spID != null )
 				{
