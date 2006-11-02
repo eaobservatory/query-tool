@@ -13,9 +13,12 @@ import javax.xml.parsers.DocumentBuilder ;
 import javax.xml.parsers.ParserConfigurationException ;
 
 //import om.util.*;
+import orac.util.SpInputXML;
+
 import org.apache.log4j.Logger;
 
 import edu.jach.qt.gui.XmlUtils ;
+import gemini.sp.SpProg ;
 
 
 /* Miscellaneous imports */
@@ -25,6 +28,12 @@ import org.apache.xml.serialize.OutputFormat ;
 import org.w3c.dom.Document ;
 import org.w3c.dom.Element ;
 import org.xml.sax.SAXException;  
+
+import java.util.Enumeration ;
+import gemini.sp.SpAND ;
+import gemini.sp.SpMSB ;
+import gemini.sp.SpItem ;
+import gemini.sp.SpObs ;
 
 /**
  * This class returns a <code>Hashtable</code> of calibrations.  Each entry in the
@@ -45,12 +54,69 @@ public class CalibrationList {
 
     static Logger logger = Logger.getLogger(CalibrationList.class);
 
+    static TreeMap treeMap = null ;
+    
     /**
      * Constructor
      */
     private CalibrationList() {
     }
 
+    public static OrderedMap getCalibrations()
+    {
+    	OrderedMap orderedMap = new OrderedMap() ;
+    	
+    	try
+    	{
+    		String scienceProgramString = MsbClient.fetchCalibrationProgram() ;
+    		SpItem spItem = ( new SpInputXML() ).xmlToSpItem( scienceProgramString ) ;
+    		SpProg scienceProgram = null ;
+    		if( spItem instanceof SpProg )
+    			scienceProgram = ( SpProg )spItem ;
+    		if( scienceProgram != null )
+    			orderedMap = pickApart( orderedMap , scienceProgram ) ;
+    	}
+    	catch( Exception e )
+    	{
+    		System.out.println( e ) ;
+    	}    	
+    	return orderedMap ;
+    }
+    
+    private static OrderedMap pickApart( OrderedMap orderedMap , SpItem spItem )
+    {
+		Enumeration enumeration = spItem.children() ;
+		
+		String telescope = System.getProperty( "telescope" ) ;
+		
+		Object object ;
+		
+		while( enumeration.hasMoreElements() )
+		{
+			object = enumeration.nextElement() ;
+			if( object instanceof SpAND )
+			{
+				SpAND and = ( SpAND )object ;
+				String title = and.getTitle() ;
+				orderedMap.add( title , null ) ;
+			}
+			else if( object instanceof SpObs && "UKIRT".equalsIgnoreCase( telescope ) )
+			{
+				SpObs obs = ( SpObs )object ;
+				String title = obs.getTitleAttr() ;	
+				orderedMap.add( title , obs ) ;
+			}	
+			else if( object instanceof SpMSB && !( object instanceof SpObs ) )
+			{
+				SpMSB msb = ( SpMSB )object ;
+				String title = msb.getTitleAttr() ;
+				orderedMap.add( title , msb ) ;				
+			}
+			orderedMap = pickApart( orderedMap , ( SpItem )object ) ;
+		}    	   	
+    	return orderedMap ;
+    }
+    
     /**
 	 * Get the list of calibration observations for a specified telescope.
 	 * 
@@ -58,9 +124,8 @@ public class CalibrationList {
 	 *            The name os the telescope.
 	 * @return A <code>TreeMap</code> of observations. If no observations are found then there will be zero entries in the table.
 	 */
-	public static TreeMap getCalibrations( String telescope )
+    public static TreeMap getCalibrations( String telescope )
 	{
-
 		TreeMap tree = new TreeMap();
 		Document doc = new DocumentImpl();
 		Element root = doc.createElement( "MSBQuery" );
@@ -104,9 +169,7 @@ public class CalibrationList {
 		/* Send the query to the database */
 		String result = MsbClient.queryCalibration( writer.toString() );
 		if( result == null || result.equals( "" ) )
-		{
 			return null;
-		}
 
 		/*
 		 * To allow us to parser the returned XML, create a temporary file to write the XML to, and then build it again using the document model
@@ -165,6 +228,4 @@ public class CalibrationList {
 		// the hashtable anyway and rely on the caller to realise that it is of zero size
 		return tree;
 	}
-
-
 }

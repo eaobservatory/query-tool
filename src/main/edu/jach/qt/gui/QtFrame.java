@@ -26,9 +26,6 @@ import java.io.IOException ;
 import java.io.File ;
 import java.util.Hashtable ;
 import java.util.Vector ;
-import java.util.Iterator ;
-import java.util.Set ;
-import java.util.TreeMap ;
 import javax.swing.JFrame ;
 import javax.swing.JTable ;
 import javax.swing.JMenuItem ;
@@ -65,6 +62,7 @@ import edu.jach.qt.utils.Splash ;
 import edu.jach.qt.utils.MsbColumns ;
 
 import edu.jach.qt.utils.SpQueuedMap ;
+import edu.jach.qt.utils.OrderedMap ;
 
 /**
  * The <code>QtFrame</code> is responsible for how the main JFrame
@@ -106,7 +104,7 @@ public class QtFrame
   private Querytool		localQuerytool;
   private InfoPanel		infoPanel;
   private JPopupMenu		popup;
-  private TreeMap calibrationList = new TreeMap() ;
+  private OrderedMap calibrationList = new OrderedMap() ;
   private JMenu                 calibrationMenu = new JMenu("Calibrations");
   private WidgetPanel           _widgetPanel;
   private int []                tableColumnSizes;
@@ -877,17 +875,15 @@ public class QtFrame
 		{
 			JMenuItem thisItem = ( JMenuItem ) source;
 			// Check to see if this came from the calibration list
-			if( calibrationList.containsKey( thisItem.getText() ) )
+			if( calibrationList.find( thisItem.getText() ) != null )
 			{
 				// Get the "MSB" that this represents
-				SpItem item = MsbClient.fetchMSB( ( Integer ) calibrationList.get( thisItem.getText() ) );
+				SpItem item = ( SpItem )calibrationList.find( thisItem.getText() ) ;
 				// Add it to the deferred queue
 				DeferredProgramList.addCalibration( item );
 				// Set the tabbed pane to show the Staging Area
 				if( tabbedPane.getTabCount() > 1 )
-				{
 					tabbedPane.setSelectedIndex( tabbedPane.getTabCount() - 1 );
-				}
 			}
 			else if( thisItem.getText().equalsIgnoreCase( "Index" ) )
 			{
@@ -1035,16 +1031,32 @@ public class QtFrame
     	
     	public void run()
 		{
-			calibrationList.putAll( CalibrationList.getCalibrations( System.getProperty( "telescope" ) ) );
-			// Get the set of keys:
-			Set keys = calibrationList.keySet() ;
-			Iterator keyIter = keys.iterator() ;
+			calibrationList =  CalibrationList.getCalibrations() ;
 			JMenuItem item ;
-			while( keyIter.hasNext() )
+			JMenu nextMenu = calibrationMenu ;
+			int counter = 0 ;
+			String lastANDFolder = "" ;
+			for( int index = 0 ; index < calibrationList.size() ; index++ )
 			{
-				item = new JMenuItem( ( String ) keyIter.next() ) ;
+				String key = ( String )calibrationList.getNameForIndex( index ) ;
+				if( key.startsWith( "AND" ) )
+				{
+					nextMenu = new JMenu( key ) ;
+					nextMenu.addMenuListener( ( MenuListener )listener ) ;
+					calibrationMenu.add( nextMenu ) ;
+					lastANDFolder = key ;
+					continue ;
+				}
+				item = new JMenuItem( key ) ;
 				item.addActionListener( ( ActionListener )listener ) ;
-				calibrationMenu.add( item ) ;
+				if( counter++ > 50 )
+				{
+					nextMenu = new JMenu( lastANDFolder + " continued" ) ;
+					nextMenu.addMenuListener( ( MenuListener )listener ) ;
+					calibrationMenu.add( nextMenu ) ;
+					counter = 0 ;
+				}
+				nextMenu.add( item ) ;
 			}
 			calibrationMenu.addMenuListener( ( MenuListener )listener ) ;
 			calibrationMenu.setEnabled( true ) ;

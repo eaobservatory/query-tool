@@ -61,6 +61,7 @@ import gemini.sp.SpInsertData ;
 import gemini.sp.SpProg ;
 import gemini.sp.SpFactory ;
 import gemini.sp.SpType ;
+import gemini.sp.obsComp.SpInstObsComp ;
 
 /* ORAC imports */
 import orac.util.SpInputXML ;
@@ -88,7 +89,6 @@ final public class DeferredProgramList extends JPanel implements
     private DragSource                  dragSource=null;
     private static JList		obsList;
     private GridBagConstraints		gbc;
-    private String                      deferredFileName;
     private JScrollPane			scrollPane = new JScrollPane();
     private DefaultListModel		model;
     private static SpItem               currentItem;
@@ -217,7 +217,7 @@ final public class DeferredProgramList extends JPanel implements
 	model.addElement(obs);
 	displayList();
     }
-
+    
     /**
 	 * Add a calibration observation from the Calibrations Menu to the list.
 	 * 
@@ -232,10 +232,32 @@ final public class DeferredProgramList extends JPanel implements
 		// A calibration observation is an SpProg - need to convert to an SpObs
 		Vector theseObs = SpTreeMan.findAllItems( cal , "gemini.sp.SpObs" );
 		SpItem thisObs = ( SpItem ) theseObs.firstElement();
-		thisObs.getTable().set( "project" , "CAL" );
-		thisObs.getTable().set( "msbid" , "CAL" );
-		thisObs.getTable().set( ":msb" , "true" );
+		if( thisObs != cal )
+		{
+			thisObs.getTable().set( "project" , "CAL" ) ;
+			thisObs.getTable().set( "msbid" , "CAL" ) ;
+			thisObs.getTable().set( ":msb" , "true" ) ;
+			
+			SpInstObsComp inst = SpTreeMan.findInstrument( thisObs ) ;
+			SpInsertData insertable = SpTreeMan.evalInsertInside( inst , thisObs ) ;
+			if( insertable != null )
+				SpTreeMan.insert( insertable ) ;
+
+/*		
+			String telescope = System.getProperty( "telescope" ) ;
+			telescope = telescope.toLowerCase() ;
+			theseObs = SpTreeMan.findAllItems( thisObs , "orac." + telescope + ".inst.SpDRRecipe" );
+			if( theseObs.size() > 0 )
+			{
+				insertable = SpTreeMan.evalInsertInside( ( SpItem )theseObs.firstElement() , thisObs ) ;
+				if( insertable != null )
+					SpTreeMan.insert( insertable ) ;
+			}
+*/		
+		}
+
 		( ( SpObs ) thisObs ).setOptional( true );
+		
 		if( !isDuplicate( thisObs ) )
 		{
 			makePersistent( thisObs );
@@ -341,36 +363,21 @@ final public class DeferredProgramList extends JPanel implements
 	}
     }
 
-    private SpItem makeNewObs(SpItem current)
-    {
-	// The is a fix to get over historical problems with XML
-	// What we need to do is write the current observation to a 
-	// temporary file and then reread it to get it into the correct 
-	// format.
-	// Create a temporary file
-	SpItem newItem = current;
-	try {
-	    File tmpFile = File.createTempFile("Observation", ".xml");
-	    FileWriter fw = new FileWriter(tmpFile);
-	    fw.write(current.toXML());
-	    fw.close();
-
-	    FileReader fr = new FileReader(tmpFile);
-	    char [] fileContents = new char [(int)tmpFile.length()];
-	    fr.read(fileContents);
-	    fr.close();
-	    tmpFile.delete();
-
-	    String xmlString = String.valueOf(fileContents);
-	    newItem = (new SpInputXML()).xmlToSpItem(xmlString);
+    private static SpItem makeNewObs( SpItem current )
+	{
+		// The is a fix to get over historical problems with XML
+		SpItem newItem = current;
+		try
+		{
+			String xmlString = current.toXML() ;
+			newItem = ( new SpInputXML() ).xmlToSpItem( xmlString ) ;
+		}
+		catch( Exception e )
+		{
+			return current;
+		}
+		return newItem;
 	}
-	catch (IOException ioe) {return current;}
-	catch (Exception e) {return current;}
-
-	return newItem;
-	
-	
-    }
 
     /**
      * Check whether the current observation is already in the deferred list.
@@ -729,6 +736,7 @@ final public class DeferredProgramList extends JPanel implements
 	    SpItem thisObs = ProgramTree.obsToDefer;
 	    if (((SpObs)thisObs).isOptional()) {
 		appendItem(thisObs);
+	    //addCalibration(thisObs) ;
 		evt.getDropTargetContext().dropComplete(true);
 	    }
 	    else {

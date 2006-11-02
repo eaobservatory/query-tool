@@ -90,26 +90,54 @@ public class MsbClient extends SoapClient {
      * @param xmlQueryString a <code>String</code> value. The xml representing the query.
      * @return a <code>String</code> value of the results in XML.
      */
-    public static String queryCalibration(String xmlQueryString) {
-	Object tmp;
-	try {
-	    logger.debug("Sending queryMSB: "+xmlQueryString);
-	    URL url = new URL(System.getProperty("msbServer"));
-	    flushParameter();
-	    addParameter("xmlquery", String.class, xmlQueryString);
-	    tmp = doCall(url, "urn:OMP::MSBServer", "queryMSB");	    
-	}catch (Exception e) {return null;}
-	return tmp.toString();
-    }
-
+    public static String queryCalibration( String xmlQueryString )
+	{
+		Object tmp;
+		try
+		{
+			logger.debug( "Sending queryMSB: " + xmlQueryString );
+			URL url = new URL( System.getProperty( "msbServer" ) );
+			flushParameter();
+			addParameter( "xmlquery" , String.class , xmlQueryString );
+			addParameter( "maxcount" , Integer.class , new Integer( 2000 ) );
+			tmp = doCall( url , "urn:OMP::MSBServer" , "queryMSB" );
+		}
+		catch( Exception e )
+		{
+			return null;
+		}
+		return tmp.toString();
+	}   
+    
+    public static String fetchCalibrationProgram()
+	{
+		Object tmp ;
+		String xml = "" ;
+		String telescope = System.getProperty( "telescope" ) ;
+		try
+		{
+			logger.debug( "Sending fetchCalProgram: " + telescope ) ;
+			URL url = new URL( System.getProperty( "msbServer" ) ) ;
+			flushParameter() ;
+			addParameter( "telescope" , String.class , telescope ) ;
+			tmp = doCall( url , "urn:OMP::MSBServer" , "fetchCalProgram" ) ;
+			if( tmp instanceof byte[] )
+				xml = new String( ( byte[] )tmp ) ;
+		}
+		catch( Exception e )
+		{
+			return null;
+		}
+		return xml ;
+	}     
+    
     /**
-     * <code>fetchMSB</code> Fetch the msb indicated by the msbid. The
-     * SpItem will return null on failure. In the future this should
-     * throw an exception instead.
-     *
-     * @param msbid an <code>Integer</code> value of the MSB
-     * @return a <code>SpItem</code> value representing the MSB.
-     */
+	 * <code>fetchMSB</code> Fetch the msb indicated by the msbid. The SpItem will return null on failure. In the future this should throw an exception instead.
+	 * 
+	 * @param msbid
+	 *            an <code>Integer</code> value of the MSB
+	 * @return a <code>SpItem</code> value representing the MSB.
+	 */
     public static SpItem fetchMSB(Integer msbid) {
 
         SpItem spItem = null;
