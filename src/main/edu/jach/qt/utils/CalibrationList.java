@@ -1,6 +1,12 @@
 package edu.jach.qt.utils;
 
 /* Gemini imports */
+import gemini.sp.SpProg ;
+import gemini.sp.SpSurveyContainer ;
+import gemini.sp.SpAND ;
+import gemini.sp.SpMSB ;
+import gemini.sp.SpItem ;
+import gemini.sp.SpObs ;
 
 /* Standard imports */
 import java.io.File ;
@@ -11,14 +17,7 @@ import java.util.TreeMap ;
 import javax.xml.parsers.DocumentBuilderFactory ;
 import javax.xml.parsers.DocumentBuilder ;
 import javax.xml.parsers.ParserConfigurationException ;
-
-//import om.util.*;
-import orac.util.SpInputXML;
-
-import org.apache.log4j.Logger;
-
-import edu.jach.qt.gui.XmlUtils ;
-import gemini.sp.SpProg ;
+import java.util.Enumeration ;
 
 
 /* Miscellaneous imports */
@@ -29,11 +28,9 @@ import org.w3c.dom.Document ;
 import org.w3c.dom.Element ;
 import org.xml.sax.SAXException;  
 
-import java.util.Enumeration ;
-import gemini.sp.SpAND ;
-import gemini.sp.SpMSB ;
-import gemini.sp.SpItem ;
-import gemini.sp.SpObs ;
+import orac.util.SpInputXML;
+import org.apache.log4j.Logger;
+import edu.jach.qt.gui.XmlUtils ;
 
 /**
  * This class returns a <code>Hashtable</code> of calibrations.  Each entry in the
@@ -111,6 +108,10 @@ public class CalibrationList {
 				SpMSB msb = ( SpMSB )object ;
 				String title = msb.getTitleAttr() ;
 				orderedMap.add( title , msb ) ;				
+			}
+			else if( object instanceof SpSurveyContainer )
+			{
+				continue ;
 			}
 			orderedMap = pickApart( orderedMap , ( SpItem )object ) ;
 		}    	   	
