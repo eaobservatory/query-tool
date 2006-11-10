@@ -1036,15 +1036,16 @@ public class QtFrame
 			JMenu nextMenu = calibrationMenu ;
 			int counter = 0 ;
 			String lastANDFolder = "" ;
+			int trimLength = "AND Folder:".length() ;
 			for( int index = 0 ; index < calibrationList.size() ; index++ )
 			{
 				String key = ( String )calibrationList.getNameForIndex( index ) ;
 				if( key.startsWith( "AND" ) )
 				{
-					nextMenu = new JMenu( key ) ;
+					lastANDFolder = key.substring( trimLength ) ;
+					nextMenu = new JMenu( lastANDFolder ) ;
 					nextMenu.addMenuListener( ( MenuListener )listener ) ;
 					calibrationMenu.add( nextMenu ) ;
-					lastANDFolder = key ;
 					continue ;
 				}
 				item = new JMenuItem( key ) ;
