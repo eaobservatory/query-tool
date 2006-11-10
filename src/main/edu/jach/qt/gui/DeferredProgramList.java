@@ -242,6 +242,9 @@ final public class DeferredProgramList extends JPanel implements
 			SpInsertData insertable = SpTreeMan.evalInsertInside( inst , thisObs ) ;
 			if( insertable != null )
 				SpTreeMan.insert( insertable ) ;
+			
+			if( thisObs.getTitleAttr().equals( "Observation" ) )
+				thisObs.setTitleAttr( cal.getTitleAttr() ) ;
 
 /*		
 			String telescope = System.getProperty( "telescope" ) ;
