@@ -141,7 +141,7 @@ final public class DeferredProgramList extends JPanel implements
 	displayList();
     }
 
-    public static SpItem getCurrentItem()
+    public static synchronized SpItem getCurrentItem()
     {
     	return currentItem ;
     }
@@ -183,12 +183,12 @@ final public class DeferredProgramList extends JPanel implements
 					FileReader reader = new FileReader( currentFile );
 					char[] buffer = new char[ ( int ) currentFile.length() ];
 					reader.read( buffer );
-					SpItem currentItem = ( new SpInputXML() ).xmlToSpItem( String.valueOf( buffer ) );
-					if( currentItem != null )
+					SpItem currentSpItem = ( new SpInputXML() ).xmlToSpItem( String.valueOf( buffer ) );
+					if( currentSpItem != null )
 					{
-						fileToObjectMap.put( currentItem , currentFileName );
-						addElement( currentItem );
-						NotePanel.setNote( currentItem ) ;
+						fileToObjectMap.put( currentSpItem , currentFileName );
+						addElement( currentSpItem );
+						NotePanel.setNote( currentSpItem ) ;
 					}
 				}
 				catch( FileNotFoundException fnf )
@@ -508,13 +508,9 @@ final public class DeferredProgramList extends JPanel implements
 
 		File deferredDir = new File( dirName ) ;
 		if( !deferredDir.exists() )
-		{
 			logger.error( "Error writing file, directory " + dirName + " does not exist"  , new FileNotFoundException() ) ;
-		}
 		else if( !deferredDir.canWrite() )
-		{
 			logger.error( "Unable to write to directory " + dirName , new FileNotFoundException() ) ;						
-		}
 		
 		String fName = dirName + File.separator + makeFilenameForThisItem( item ) ;
 		FileWriter fw = null ;
@@ -654,124 +650,131 @@ final public class DeferredProgramList extends JPanel implements
     }
 
     /**
-     * Mark an observation as done.
-     * This is done by timestamping the title.
-     */
-    public static void markThisObservationAsDone (SpItem thisObservation)
-    {
-	// Add a dat-time stamp to the title
-	String currentTitle = thisObservation.getTitle();
-	StringTokenizer st = new StringTokenizer(currentTitle, "_");
-	String baseName = "";
-	while (st.hasMoreTokens()) {
-	    String subStr = st.nextToken();
-	    if (subStr.equals("done")) break;
-	    baseName = baseName + subStr;
+	 * Mark an observation as done. This is done by timestamping the title.
+	 */
+	public static void markThisObservationAsDone( SpItem thisObservation )
+	{
+		// Add a dat-time stamp to the title
+		String currentTitle = thisObservation.getTitle();
+		String[] split = currentTitle.split( "_" ) ;
+		String baseName = "";
+		for( int index = 0 ; index < split.length ; index++ )
+		{
+			String subStr = split[ index ] ;
+			if( subStr.equals( "done" ) )
+				break;
+			baseName += subStr ;
+		}
+		currentTitle = baseName;
+		SimpleDateFormat df = new SimpleDateFormat( "yyyyMMdd'T'HHmmss" );
+		Calendar cal = Calendar.getInstance( TimeZone.getTimeZone( "UTC" ) );
+		String observationTime = df.format( cal.getTime() );
+		String newTitle = currentTitle + "_done_" + observationTime;
+		thisObservation.setTitleAttr( newTitle );
+
+		// Delete the old entry and replace by the current
+		String fileToRemove = ( String )fileToObjectMap.get( obsList.getSelectedValue() );
+		File f = new File( fileToRemove );
+		f.delete();
+		fileToObjectMap.remove( obsList.getSelectedValue() );
+		int index = obsList.getSelectedIndex();
+		if( index > -1 )
+			( ( DefaultListModel ) obsList.getModel() ).removeElementAt( index );
+		currentItem = null;
+
+		makePersistent( thisObservation );
+
+		( ( DefaultListModel ) obsList.getModel() ).addElement( thisObservation );
 	}
-	currentTitle = baseName;
-	SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd'T'HHmmss");	
-	Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-	String observationTime = df.format(cal.getTime());
-	String newTitle = currentTitle + "_done_" + observationTime;
-	thisObservation.setTitleAttr(newTitle);
-
-	// Delete the old entry and replace by the current
-	String fileToRemove = (String) fileToObjectMap.get(obsList.getSelectedValue());
-	File f = new File (fileToRemove);
-	f.delete();
-	fileToObjectMap.remove(obsList.getSelectedValue());
-	((DefaultListModel)obsList.getModel()).removeElementAt(obsList.getSelectedIndex());
-	currentItem = null;
-
-	makePersistent(thisObservation);
-
-	((DefaultListModel)obsList.getModel()).addElement(thisObservation);
-    }
 
 
     /*
-     * Add the event listeners
-     */
-    /* DROP TARGET EVENTS */
-    /**
-     * Implementation of <code>DropTargetListener</code> interface.
-     * @param evt A <code>DropTargetDragEvent</code> object.
-     */
-    public void dragEnter(DropTargetDragEvent evt)
-    {
-    }
+	 * Add the event listeners
+	 */
+	/* DROP TARGET EVENTS */
+	/**
+	 * Implementation of <code>DropTargetListener</code> interface.
+	 * 
+	 * @param evt
+	 *            A <code>DropTargetDragEvent</code> object.
+	 */
+	public void dragEnter( DropTargetDragEvent evt ){}
+
+	/**
+	 * Implementation of <code>DropTargetListener</code> interface.
+	 * 
+	 * @param evt
+	 *            A <code>DropTargetEvent</code> object.
+	 */
+	public void dragExit( DropTargetEvent evt ){}
+
+	/**
+	 * Implementation of <code>DropTargetListener</code> interface.
+	 * 
+	 * @param evt
+	 *            A <code>DropTargetDragEvent</code> object.
+	 */
+	public void dragOver( DropTargetDragEvent evt ){}
+
+	/**
+	 * Implementation of <code>DropTargetListener</code> interface.
+	 * 
+	 * @param evt
+	 *            A <code>DropTargetDragEvent</code> object.
+	 */
+	public void dropActionChanged( DropTargetDragEvent evt ){}
 
     /**
-     * Implementation of <code>DropTargetListener</code> interface.
-     * @param evt A <code>DropTargetEvent</code> object.
-     */
-    public void dragExit(DropTargetEvent evt)
-    {
-    }
-
-    /**
-     * Implementation of <code>DropTargetListener</code> interface.
-     * @param evt A <code>DropTargetDragEvent</code> object.
-     */
-    public void dragOver(DropTargetDragEvent evt)
-    {
-    }
-
-    /**
-     * Implementation of <code>DropTargetListener</code> interface.
-     * @param evt A <code>DropTargetDragEvent</code> object.
-     */
-    public void dropActionChanged(DropTargetDragEvent evt)
-    {
-    }
-
-    /**
-     * Implementation of <code>DropTargetListener</code> interface.
-     * Adds the currently selected item from the Program List to
-     * the deferred list.
-     * @param evt A <code>DropTargetDropEvent</code> object.
-     */
-    public void drop (DropTargetDropEvent evt)
-    {
-	if (this.dropTarget.isActive()) {
-	    Transferable t = evt.getTransferable();
-	    evt.acceptDrop(DnDConstants.ACTION_MOVE);
-	    SpItem thisObs = ProgramTree.obsToDefer;
-	    if (((SpObs)thisObs).isOptional()) {
-		appendItem(thisObs);
-	    //addCalibration(thisObs) ;
-		evt.getDropTargetContext().dropComplete(true);
-	    }
-	    else {
-		JOptionPane.showMessageDialog(this,
-					      "Can not defer mandatory observations!"
-					      );
-		evt.getDropTargetContext().dropComplete(false);
-	    }
+	 * Implementation of <code>DropTargetListener</code> interface. Adds the currently selected item from the Program List to the deferred list.
+	 * 
+	 * @param evt
+	 *            A <code>DropTargetDropEvent</code> object.
+	 */
+	public void drop( DropTargetDropEvent evt )
+	{
+		if( this.dropTarget.isActive() )
+		{
+			evt.acceptDrop( DnDConstants.ACTION_MOVE );
+			SpItem thisObs = ProgramTree.obsToDefer;
+			if( ( ( SpObs ) thisObs ).isOptional() )
+			{
+				appendItem( thisObs );
+				evt.getDropTargetContext().dropComplete( true );
+			}
+			else
+			{
+				JOptionPane.showMessageDialog( this , "Can not defer mandatory observations!" );
+				evt.getDropTargetContext().dropComplete( false );
+			}
+		}
+		else
+		{
+			evt.rejectDrop();
+			evt.dropComplete( false );
+		}
 	}
-	else {
-	    evt.rejectDrop();
-	    evt.dropComplete(false);
-	}
-    }
 
     /**
-     * Deletes an observation from the current list.
-     * @param thisObservation  The observation to remove.
-     */
-    public static void removeThisObservation (SpItem thisObservation)
-    {
-	String fileToRemove = (String) fileToObjectMap.get(obsList.getSelectedValue());
-	// Delete the file
-	File f = new File (fileToRemove);
-	f.delete();
-	
-	// Delete the entry from the map
-	fileToObjectMap.remove(obsList.getSelectedValue());
-	
-	// Remove the entry from the list
-	((DefaultListModel)obsList.getModel()).removeElementAt(obsList.getSelectedIndex());
-    }
+	 * Deletes an observation from the current list.
+	 * 
+	 * @param thisObservation
+	 *            The observation to remove.
+	 */
+	public static void removeThisObservation( SpItem thisObservation )
+	{
+		String fileToRemove = ( String ) fileToObjectMap.get( obsList.getSelectedValue() );
+		// Delete the file
+		File f = new File( fileToRemove );
+		f.delete();
+
+		// Delete the entry from the map
+		fileToObjectMap.remove( obsList.getSelectedValue() );
+
+		// Remove the entry from the list
+		int index = obsList.getSelectedIndex();
+		if( index > -1 )
+			( ( DefaultListModel ) obsList.getModel() ).removeElementAt( index );
+	}
 
 
     /* DRAG SOURCE EVENTS */
@@ -780,38 +783,43 @@ final public class DeferredProgramList extends JPanel implements
      * Removes the entry from the list on successful drop.
      * @param evt  A <code>DragSourceDropEvent</code> object.
      */
-    public void dragDropEnd (DragSourceDropEvent evt)
-    {
-	if (evt.getDropSuccess() ) {
-	    String fileToRemove = (String) fileToObjectMap.get(obsList.getSelectedValue());
-	    // Delete the file
-	    File f = new File (fileToRemove);
-	    f.delete();
+    public void dragDropEnd( DragSourceDropEvent evt )
+	{
+		if( evt.getDropSuccess() )
+		{
+			String fileToRemove = ( String ) fileToObjectMap.get( obsList.getSelectedValue() );
+			// Delete the file
+			File f = new File( fileToRemove );
+			f.delete();
 
-	    // Delete the entry from the map
-	    fileToObjectMap.remove(obsList.getSelectedValue());
+			// Delete the entry from the map
+			fileToObjectMap.remove( obsList.getSelectedValue() );
 
-	    // Remove the entry from the list
-	    ((DefaultListModel)obsList.getModel()).removeElementAt(obsList.getSelectedIndex());
+			// Remove the entry from the list
+			int index = obsList.getSelectedIndex();
+			if( index > -1 )
+				( ( DefaultListModel ) obsList.getModel() ).removeElementAt( index );
 
-	    currentItem = null;
+			currentItem = null;
+		}
+		obsList.setEnabled( true );
+		this.dropTarget.setActive( true );
 	}
-	obsList.setEnabled(true);
-	this.dropTarget.setActive(true);
-    }
 
     /**
-     * Implementation of the <code>DragSourceListener</code> interface.
-     * @param evt  A <code>DragSourceDragEvent</code> object.
-     */
-    public void dragEnter (DragSourceDragEvent evt)
-    {
-    }
+	 * Implementation of the <code>DragSourceListener</code> interface.
+	 * 
+	 * @param evt
+	 *            A <code>DragSourceDragEvent</code> object.
+	 */
+	public void dragEnter( DragSourceDragEvent evt ){}
 
     /**
-     * Implementation of the <code>DragSourceListener</code> interface.
-     * @param evt  A <code>DragSourceEvent</code> object.
-     */
+	 * Implementation of the <code>DragSourceListener</code> interface.
+	 * 
+	 * @param evt
+	 *            A <code>DragSourceEvent</code> object.
+	 */
     public void dragExit(DragSourceEvent evt)
     {
 	evt.getDragSourceContext().setCursor(DragSource.DefaultMoveNoDrop);
@@ -827,20 +835,19 @@ final public class DeferredProgramList extends JPanel implements
     }
 
     /**
-     * Implementation of the <code>DragSourceListener</code> interface.
-     * @param evt  A <code>DragSourceDragEvent</code> object.
-     */
-    public void dropActionChanged(DragSourceDragEvent evt)
-    {
-    }
+	 * Implementation of the <code>DragSourceListener</code> interface.
+	 * 
+	 * @param evt
+	 *            A <code>DragSourceDragEvent</code> object.
+	 */
+	public void dropActionChanged( DragSourceDragEvent evt ){}
 
     /**
-     * Implementation of the <code>DragGestureListener</code> interface.
-     * Disables the current list from being a drop target temporarily so that
-     * we cant drop items from the list back on to the list.
-     *
-     * @param event  A <code>DragGestureEvent</code> object.
-     */
+	 * Implementation of the <code>DragGestureListener</code> interface. Disables the current list from being a drop target temporarily so that we cant drop items from the list back on to the list.
+	 * 
+	 * @param event
+	 *            A <code>DragGestureEvent</code> object.
+	 */
     public void dragGestureRecognized( DragGestureEvent event) 
     {
 	SpItem selected = (SpItem) obsList.getSelectedValue();

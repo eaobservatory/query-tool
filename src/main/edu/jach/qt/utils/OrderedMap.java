@@ -3,6 +3,19 @@ package edu.jach.qt.utils ;
 import java.util.TreeMap ;
 import java.util.Vector ;
 
+/**
+ * 
+ * OrderedMap is a map, but retains the order items were placed into the structure.
+ * Items fetched by name have the lookup speed of a map, with the slight overhead 
+ * of calling the map's methods indirectly. Items can be found by name or by index.
+ * 
+ * Nb. OrderedMap does not check for duplication, what can happen is that a duplicate 
+ * key will be overridden by the first instance if searching for it's index, and the 
+ * object will have been replaced by the duplicate ( most recent addition of. )
+ * Multiple indices will point to the duplicated object.
+ *
+ */
+
 public class OrderedMap
 {
 	
@@ -16,37 +29,47 @@ public class OrderedMap
 		vector = new Vector() ;
 	}
 	
-	public void add( final String key , final Object object )
+	public synchronized void add( final String key , final Object object )
 	{
-		vector.add( key ) ;
-		treeMap.put( key , object ) ;
-		size++ ;
+		synchronized( vector )
+		{
+			synchronized( treeMap )
+			{
+				vector.add( key ) ;
+				treeMap.put( key , object ) ;
+				size++ ;
+			}
+		}
 	}
 
-	public Object remove( final int index )
+	public synchronized Object remove( final int index )
 	{
-		final Object name = vector.remove( index ) ;
-		final Object object = treeMap.remove( name ) ;
-		if( object != null )
-			size-- ;
-/*
-		if( vector.size() != treeMap.size() )
-			System.out.print( "Columns : Error in removing by index" ) ;
-*/
-		return object ;
+		synchronized( vector )
+		{
+			synchronized( treeMap )
+			{
+				final Object name = vector.remove( index ) ;
+				final Object object = treeMap.remove( name ) ;
+				if( object != null )
+					size-- ;
+				return object ;
+			}
+		}
 	}
 
-	public Object remove( final String name )
+	public synchronized Object remove( final String name )
 	{
-		final Object object = treeMap.remove( name ) ;
-        vector.remove( name ) ;
-		if( object != null )
-			size-- ;
-/*
-		if( vector.size() != treeMap.size() )
-			System.out.print( "Columns : Error in removing by name" ) ;
-*/
-        return object ;
+		synchronized( treeMap )
+		{
+			synchronized( vector )
+			{		
+				final Object object = treeMap.remove( name ) ;
+				vector.remove( name ) ;
+				if( object != null )
+					size-- ;
+				return object ;
+			}
+		}
 	}
 	
 	public Object find( final String name )
@@ -78,10 +101,6 @@ public class OrderedMap
 	
 	public int size()
 	{
-/*
-		if( vector.size() != treeMap.size() || size != vector.size() || size != treeMap.size() )
-			System.out.print( "Columns : Size does not represent internal dimensions" ) ;
-*/
 		return size ;
 	}
 
@@ -92,25 +111,31 @@ public class OrderedMap
 		size = 0 ;
 	}
 	
-	public void move( String name , int index )
+	public synchronized void move( String name , int index )
 	{
 		int current = getIndexForName( name ) ;
-		if( current != index && current > -1 )
+		synchronized( vector )
 		{
-			vector.remove( current ) ;
-			vector.insertElementAt( name , index ) ;
+			if( current != index && current > -1 )
+			{
+				vector.remove( current ) ;
+				vector.insertElementAt( name , index ) ;
+			}
 		}
 	}
 	
-	public void move( int currentIndex , int newIndex )
+	public synchronized void move( int currentIndex , int newIndex )
 	{
 		if( currentIndex == newIndex )
 			return ;
-		if( currentIndex > -1 && currentIndex < size() )
+		synchronized( vector )
 		{
-			Object object = vector.remove( currentIndex ) ;
-			newIndex = newIndex < size() ? newIndex : size() - 1 ;
-			vector.insertElementAt( object , newIndex ) ;
+			if( currentIndex > -1 && currentIndex < size() )
+			{
+				Object object = vector.remove( currentIndex ) ;
+				newIndex = newIndex < size() ? newIndex : size() - 1 ;
+				vector.insertElementAt( object , newIndex ) ;
+			}
 		}
 	}
 }

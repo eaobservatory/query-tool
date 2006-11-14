@@ -9,6 +9,13 @@ import java.io.IOException ;
 import java.util.Calendar;
 import java.util.TimeZone ;
 
+/**
+ * 
+ * SpQueuedMap is a map that handles the caching of SpItems sent to the queue.
+ * It's aim is to flag items that are about to be sent too many times.
+ *
+ */
+
 public class SpQueuedMap extends QueuedMap
 {
 	private static SpQueuedMap queuedMap = null ;

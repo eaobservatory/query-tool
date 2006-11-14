@@ -7,6 +7,12 @@ import java.util.zip.CRC32 ;
 import java.security.MessageDigest ;
 import java.security.NoSuchAlgorithmException ;
 
+/**
+ * 
+ * QueuedMap is a map that hashes the key independantly of the maps own implementation.
+ * As to why you would want to do this, you probably don't.
+ */
+
 public class QueuedMap 
 {
 
