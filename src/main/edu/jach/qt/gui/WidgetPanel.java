@@ -254,66 +254,62 @@ public class WidgetPanel extends JPanel
   }//parseConfig
 
     /**
-     * Special function for setting the value of the Moon buttons.
-     * Assumes that dark occurs when the moon is set, grey when the moon
-     * is up but less than 25% illuminated and bright otherwise.
-     */
-    public void setButtons() {
-	if ( ignoreMoonUpdates ) {
-	    return;
-	}
+	 * Special function for setting the value of the Moon buttons. Assumes that dark occurs when the moon is set, grey when the moon is up but less than 25% illuminated and bright otherwise.
+	 */
+	public void setButtons()
+	{
+		if( ignoreMoonUpdates )
+			return;
 
-	// Currently sets the moon based on whether it is up and the illuminated fraction
-	SimpleMoon moon = new SimpleMoon();
-	Hashtable ht = widgetBag.getHash();
-	
-	boolean dark = false;
-	boolean grey = false;
-	boolean bright = false;
-	
-	if (moon.isUp() == false ) {
-	    dark = true;
-	}
-	else if (moon.getIllumination() < 0.25) {
-	    grey = true;
-	}
-	else {
-	    bright = true;
-	}
+		// Currently sets the moon based on whether it is up and the illuminated fraction
+		SimpleMoon moon = new SimpleMoon();
+		Hashtable ht = widgetBag.getHash();
 
-	for (Enumeration e = ht.keys(); e.hasMoreElements() ; ) {
-	    String next = ((String)e.nextElement());
-	    if (next.equalsIgnoreCase("Moon")) {
-		for (ListIterator iter = ((LinkedList)(ht.get(next))).listIterator(0);
-		     iter.hasNext();
-		     iter.nextIndex()) {
-		    Object o = iter.next();
-		    if (o  instanceof JRadioButton) {
-			JToggleButton abstractButton = (JRadioButton) o;
-			abstractButton.addMouseListener ( new MouseAdapter() {
-				public void mouseClicked (MouseEvent e) {
-				    ignoreMoonUpdates = true;
-				    ToolTipManager.sharedInstance().registerComponent(moonPanel);
-				    moonPanel.setToolTipText ( "Auto update disabled by user; use \"Set Default\" to enable");
-				    moonPanel.setBackground(Color.darkGray);
+		boolean dark = false;
+		boolean grey = false;
+		boolean bright = false;
+
+		if( moon.isUp() == false )
+			dark = true;
+		else if( moon.getIllumination() < 0.25 )
+			grey = true;
+		else
+			bright = true;
+
+		for( Enumeration e = ht.keys() ; e.hasMoreElements() ; )
+		{
+			String next = ( ( String ) e.nextElement() );
+			if( next.equalsIgnoreCase( "Moon" ) )
+			{
+				for( ListIterator iter = ( ( LinkedList ) ( ht.get( next ) ) ).listIterator( 0 ) ; iter.hasNext() ; iter.nextIndex() )
+				{
+					Object o = iter.next();
+					if( o instanceof JRadioButton )
+					{
+						JToggleButton abstractButton = ( JRadioButton ) o;
+						abstractButton.addMouseListener( new MouseAdapter()
+						{
+							public void mouseClicked( MouseEvent e )
+							{
+								ignoreMoonUpdates = true;
+								ToolTipManager.sharedInstance().registerComponent( moonPanel );
+								moonPanel.setToolTipText( "Auto update disabled by user; use \"Set Default\" to enable" );
+								moonPanel.setBackground( Color.red );
+							}
+						} );
+						String buttonName = abstractButton.getText();
+						if( buttonName.equalsIgnoreCase( "Dark" ) && dark == true )
+							abstractButton.setSelected( true );
+						else if( buttonName.equalsIgnoreCase( "Grey" ) && grey == true )
+							abstractButton.setSelected( true );
+						else if( buttonName.equalsIgnoreCase( "Bright" ) && bright == true )
+							abstractButton.setSelected( true );
+					}
 				}
-			    });			
-			String buttonName = abstractButton.getText();
-			if (buttonName.equalsIgnoreCase("Dark") && dark == true) {
-			    abstractButton.setSelected(true);
 			}
-			else if (buttonName.equalsIgnoreCase("Grey") && grey == true) {
-			    abstractButton.setSelected(true);
-			}
-			else if (buttonName.equalsIgnoreCase("Bright") && bright == true) {
-			    abstractButton.setSelected(true);
-			}
-		    }
+			break;
 		}
-	    }
-	    break;
 	}
-    }
 
     /**
      * Set whether ot not updates should be made for each query.  This is turned off by the mouse listener

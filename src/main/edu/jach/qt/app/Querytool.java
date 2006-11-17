@@ -253,17 +253,11 @@ public class Querytool implements Runnable, Observer {
 							String tmpMoon = abstractButton.getText().trim();
 							String moon = "";
 							if( tmpMoon.equals( "Dark" ) )
-							{
 								moon = "0";
-							}
 							else if( tmpMoon.equals( "Grey" ) )
-							{
 								moon = "2";
-							}
 							else
-							{
 								moon = "26";
-							} // end of else
 
 							item.appendChild( doc.createTextNode( moon ) );
 						}
@@ -536,7 +530,7 @@ public class Querytool implements Runnable, Observer {
         }
         // Recalculate the moon if the user has not overridden the default,
         // otherwise leave it as it is
-        if ( WidgetPanel.getMoonPanel() != null && WidgetPanel.getMoonPanel().getBackground() != Color.darkGray ) {
+        if ( WidgetPanel.getMoonPanel() != null && WidgetPanel.getMoonPanel().getBackground() != Color.red ) {
             SimpleMoon moon;
             if ( lrtf.timerRunning() || !tu.isValidDate(tmpStr) ) {
                 moon = new SimpleMoon();
