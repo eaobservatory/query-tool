@@ -497,61 +497,58 @@ public class Querytool implements Runnable, Observer {
         return (_xmlString == null);
     }
 
-    private Element processDate (LabeledRangeTextField lrtf,
-            Document doc,
-            Element root) {
-        Element item;
-        String tmpStr;
+    private Element processDate( LabeledRangeTextField lrtf , Document doc , Element root )
+	{
+		Element item;
+		String tmpStr;
 
-        // Make sure the specified time is in a valid format and
-        // if not, "make it so number 1"
-        String time = lrtf.getUpperText();
-        StringTokenizer st = new StringTokenizer(time, ":");
-        if (st.countTokens() == 1) {
-            time = time + ":00:00";
-        }
-        else if (st.countTokens() == 2) {
-            time = time + ":00";
-        }
+		// Make sure the specified time is in a valid format and
+		// if not, "make it so number 1"
+		String time = lrtf.getUpperText();
+		StringTokenizer st = new StringTokenizer( time , ":" );
+		if( st.countTokens() == 1 )
+			time = time + ":00:00";
+		else if( st.countTokens() == 2 )
+			time = time + ":00";
 
-        tmpStr = lrtf.getLowerText()+"T"+time;
+		tmpStr = lrtf.getLowerText() + "T" + time;
 
-        TimeUtils tu = new TimeUtils();
-        if ( !lrtf.timerRunning() ) {
-            if (tu.isValidDate(tmpStr) ) {
-                item = doc.createElement("date");
-                tmpStr = tu.convertLocalISODatetoUTC(tmpStr);
-                item.appendChild (doc.createTextNode(tmpStr.trim()));
-                root.appendChild (item); 
-            }
-        }
-        else {
-            // We will use the current date, so set execution to true
-        }
-        // Recalculate the moon if the user has not overridden the default,
-        // otherwise leave it as it is
-        if ( WidgetPanel.getMoonPanel() != null && WidgetPanel.getMoonPanel().getBackground() != Color.red ) {
-            SimpleMoon moon;
-            if ( lrtf.timerRunning() || !tu.isValidDate(tmpStr) ) {
-                moon = new SimpleMoon();
-            }
-            else {
-                moon = new SimpleMoon(tmpStr);
-            }
-            double moonValue = 0;
-            if ( moon.isUp() ) {
-                moonValue = moon.getIllumination()*100;
-            }
-            // Delete any existing value and repalce with the new
-            NodeList list = root.getElementsByTagName("moon");
-            if (list.getLength() != 0) {
-                root.removeChild(list.item(0));
-            }
-            item = doc.createElement("moon");
-            item.appendChild( doc.createTextNode(""+moonValue) );
-            root.appendChild (item);
-        }
-    return root;
-    }
+		TimeUtils tu = new TimeUtils();
+		if( !lrtf.timerRunning() )
+		{
+			if( tu.isValidDate( tmpStr ) )
+			{
+				item = doc.createElement( "date" );
+				tmpStr = tu.convertLocalISODatetoUTC( tmpStr );
+				item.appendChild( doc.createTextNode( tmpStr.trim() ) );
+				root.appendChild( item );
+			}
+		}
+		else
+		{
+			// We will use the current date, so set execution to true
+		}
+		// Recalculate the moon if the user has not overridden the default,
+		// otherwise leave it as it is
+		if( WidgetPanel.getMoonPanel() != null && WidgetPanel.getMoonPanel().getBackground() != Color.red )
+		{
+			SimpleMoon moon;
+			if( lrtf.timerRunning() || !tu.isValidDate( tmpStr ) )
+				moon = new SimpleMoon();
+			else
+				moon = new SimpleMoon( tmpStr );
+			double moonValue = 0;
+			if( moon.isUp() )
+				moonValue = moon.getIllumination() * 100;
+			// Delete any existing value and repalce with the new
+			NodeList list = root.getElementsByTagName( "moon" );
+			if( list.getLength() != 0 )
+				root.removeChild( list.item( 0 ) );
+			item = doc.createElement( "moon" );
+			item.appendChild( doc.createTextNode( "" + moonValue ) );
+			root.appendChild( item );
+		}
+		return root;
+	}
 
 }// Querytool
