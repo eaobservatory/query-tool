@@ -30,7 +30,6 @@ import java.awt.dnd.DragSourceDragEvent ;
 import java.awt.dnd.DragSourceDropEvent ;
 import java.awt.dnd.DropTargetEvent ;
 import java.awt.dnd.DragSourceEvent ;
-import java.awt.datatransfer.Transferable ;
 import java.awt.datatransfer.StringSelection ;
 import java.awt.event.ActionListener ;
 import java.awt.event.ActionEvent ;
@@ -43,7 +42,6 @@ import java.util.TooManyListenersException ;
 import java.util.Date ;
 import java.util.Calendar ;
 import java.util.TimeZone ;
-import java.util.StringTokenizer ;
 import java.io.File ;
 import java.io.FileWriter ;
 import java.io.IOException ;
@@ -238,10 +236,13 @@ final public class DeferredProgramList extends JPanel implements
 			thisObs.getTable().set( "msbid" , "CAL" ) ;
 			thisObs.getTable().set( ":msb" , "true" ) ;
 			
-			SpInstObsComp inst = SpTreeMan.findInstrument( thisObs ) ;
-			SpInsertData insertable = SpTreeMan.evalInsertInside( inst , thisObs ) ;
-			if( insertable != null )
-				SpTreeMan.insert( insertable ) ;
+			if( !isDuplicate( thisObs ) )
+			{
+				SpInstObsComp inst = SpTreeMan.findInstrument( thisObs ) ;
+				SpInsertData insertable = SpTreeMan.evalInsertInside( inst , thisObs ) ;
+				if( insertable != null )
+					SpTreeMan.insert( insertable ) ;
+			}
 			
 			if( thisObs.getTitleAttr().equals( "Observation" ) )
 				thisObs.setTitleAttr( cal.getTitleAttr() ) ;
@@ -273,7 +274,6 @@ final public class DeferredProgramList extends JPanel implements
 		currentItem = ( SpItem ) obsList.getSelectedValue();
 		NotePanel.setNote( currentItem );
 		ProgramTree.clearSelection();
-
 	}
 
     /**
@@ -351,20 +351,23 @@ final public class DeferredProgramList extends JPanel implements
     }
 
     /**
-     * Append a new observation to the current list.
-     * @param obs  The observation to append.
-     */
-    public void appendItem(SpItem obs)
-    {
-	obs.getTable().set("project", "CAL");
-	obs.getTable().set("msbid", "CAL");
-	obs.getTable().set(":msb", "true");
-	obs = makeNewObs(obs);
-	if (isDuplicate(obs) == false) {
-	    makePersistent(obs);
-	    addElement(obs);
+	 * Append a new observation to the current list.
+	 * 
+	 * @param obs
+	 *            The observation to append.
+	 */
+	public void appendItem( SpItem obs )
+	{
+		obs.getTable().set( "project" , "CAL" );
+		obs.getTable().set( "msbid" , "CAL" );
+		obs.getTable().set( ":msb" , "true" );
+		obs = makeNewObs( obs );
+		if( isDuplicate( obs ) == false )
+		{
+			makePersistent( obs );
+			addElement( obs );
+		}
 	}
-    }
 
     private static SpItem makeNewObs( SpItem current )
 	{
@@ -383,25 +386,36 @@ final public class DeferredProgramList extends JPanel implements
 	}
 
     /**
-     * Check whether the current observation is already in the deferred list.
-     * @param obs  The observation to compare.
-     * @return     <code>true</code> is the observation already exists; <code>false</code> otherwise.
-     */
-    public static boolean isDuplicate (SpItem obs)
-    {
-	boolean isDuplicate=false;
-	obs.getTable().set("project", "CAL");
-	obs.getTable().set("msbid", "CAL");
-	String currentObs = obs.toXML();
-	for (int i=0; i<((DefaultListModel)obsList.getModel()).size();i++) {
-	    String thisObs = ((SpItem)(((DefaultListModel)obsList.getModel()).elementAt(i))).toXML();
-	    if (thisObs.equals(currentObs)){
-		isDuplicate=true;
-		break;
-	    }
+	 * Check whether the current observation is already in the deferred list.
+	 * 
+	 * @param obs
+	 *            The observation to compare.
+	 * @return <code>true</code> is the observation already exists; <code>false</code> otherwise.
+	 */
+	public static boolean isDuplicate( SpItem obs )
+	{
+		boolean isDuplicate = false ;
+
+		String currentObs = null ;
+		for( int i = 0 ; i < ( ( DefaultListModel )obsList.getModel() ).size() ; i++ )
+		{
+			SpItem thisObs = ( SpItem )( ( ( DefaultListModel )obsList.getModel()).elementAt( i ) ) ;
+			if( thisObs.equals( obs ) )
+			{
+				isDuplicate = true ;
+				break ;
+			}
+			if( currentObs == null )
+				currentObs = obs.toXML() ;
+			String obsXML = thisObs.toXML() ;
+			if( obsXML.equals( currentObs ) )
+			{
+				isDuplicate = true ;
+				break ;				
+			}
+		}		
+		return isDuplicate ;
 	}
-	return isDuplicate;
-    }
 
 
 
