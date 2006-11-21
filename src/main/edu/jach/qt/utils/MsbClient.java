@@ -201,23 +201,30 @@ public class MsbClient extends SoapClient {
 
     	String hiddenColumns = System.getProperty( "hiddenColumns" ) ;
     	String[] hidden = hiddenColumns.split( "%" ) ;
-    	
-    	if( names.length == types.length )
+
+    	if( names != null && types != null )
     	{
-    		MsbColumnInfo columnInfo ;
-    		for( int index = 0 ; index < names.length ; index++ )
-    		{
-    			String name = names[ index ] ;
-    			String type = types[ index ] ;
-    			columnInfo = new MsbColumnInfo( name , type ) ;
-    			for( int i = 0 ; i < hidden.length ; i++ )
-    			{
-    				if( hidden[ i ].equalsIgnoreCase( name ) )
-    					columnInfo.setVisible( false ) ;
-    			}
-    			columns.add( columnInfo ) ;
-    		}
-    	}    	
+	    	if( names.length == types.length )
+	    	{
+	    		MsbColumnInfo columnInfo ;
+	    		for( int index = 0 ; index < names.length ; index++ )
+	    		{
+	    			String name = names[ index ] ;
+	    			String type = types[ index ] ;
+	    			columnInfo = new MsbColumnInfo( name , type ) ;
+	    			for( int i = 0 ; i < hidden.length ; i++ )
+	    			{
+	    				if( hidden[ i ].equalsIgnoreCase( name ) )
+	    					columnInfo.setVisible( false ) ;
+	    			}
+	    			columns.add( columnInfo ) ;
+	    		}
+	    	}   
+    	}
+    	else
+    	{
+    		columns = new MsbColumns() ;
+    	}
     	return columns ;
     }
     
