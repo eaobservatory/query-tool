@@ -396,19 +396,12 @@ final public class DeferredProgramList extends JPanel implements
 	{
 		boolean isDuplicate = false ;
 
-		String currentObs = null ;
+		String currentObsXML = obs.toXML() ;
 		for( int i = 0 ; i < ( ( DefaultListModel )obsList.getModel() ).size() ; i++ )
 		{
 			SpItem thisObs = ( SpItem )( ( ( DefaultListModel )obsList.getModel()).elementAt( i ) ) ;
-			if( thisObs.equals( obs ) )
-			{
-				isDuplicate = true ;
-				break ;
-			}
-			if( currentObs == null )
-				currentObs = obs.toXML() ;
-			String obsXML = thisObs.toXML() ;
-			if( obsXML.equals( currentObs ) )
+			String thisObsXML = thisObs.toXML() ;
+			if( thisObsXML.equals( currentObsXML ) )
 			{
 				isDuplicate = true ;
 				break ;				
