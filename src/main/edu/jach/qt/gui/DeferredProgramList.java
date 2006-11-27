@@ -879,48 +879,55 @@ final public class DeferredProgramList extends JPanel implements
 	}
     }
 
-    public class ExecuteInThread extends Thread {
-	SpProg _item = (SpProg) SpFactory.create(SpType.SCIENCE_PROGRAM);
-	boolean _isDeferred;
-
-	public ExecuteInThread( SpItem item , boolean deferred )
+    public class ExecuteInThread extends Thread
 	{
-		// Make the obs into an SpProg
-		_item.setPI( "observer" ) ;
-		_item.setCountry( "JAC" ) ;
-		_item.setTelescope() ;
-		if( _item.getProjectID() == null || _item.getProjectID().equals( "" ) )
-			_item.setProjectID( "CAL" ) ;
-		SpInsertData spID = SpTreeMan.evalInsertInside( item , _item );
-		if( spID != null )
-			SpTreeMan.insert( spID );
-		_isDeferred = deferred;
+		SpProg _item = ( SpProg ) SpFactory.create( SpType.SCIENCE_PROGRAM );
+
+		boolean _isDeferred;
+
+		public ExecuteInThread( SpItem item , boolean deferred )
+		{
+			// Make the obs into an SpProg
+			_item.setPI( "observer" );
+			_item.setCountry( "JAC" );
+			_item.setTelescope();
+			if( _item.getProjectID() == null || _item.getProjectID().equals( "" ) )
+				_item.setProjectID( "CAL" );
+			SpInsertData spID = SpTreeMan.evalInsertInside( item , _item );
+			if( spID != null )
+				SpTreeMan.insert( spID );
+			_isDeferred = deferred;
+		}
+
+		public void run()
+		{
+			ExecuteJCMT execute = null ;
+			boolean failed = false;
+
+			execute = ExecuteJCMT.getInstance( _item );
+			if( execute == null )
+				return;
+			failed = execute.run();
+
+			File failFile = new File( "/jcmtdata/orac_data/deferred/.failure" );
+			File successFile = new File( "/jcmtdata/orac_data/deferred/.success" );
+			if( failFile.exists() )
+			{
+				new ErrorBox( "Failed to Execute. Check messages." );
+				logger.warn( "Failed to execute observation" );
+			}
+			else if( successFile.exists() )
+			{
+				// Mark this observation as having been done
+				markThisObservationAsDone( currentItem );
+				logger.info( "Observation executed successfully" );
+			}
+			else
+			{
+				// Neither file exists - report an error to the user
+				new ErrorBox( "Unable to determine success status - assuming failed." );
+				logger.error( "Unable to determine success status for observation." );
+			}
+		}
 	}
-
-	public void run () {
-	    ExecuteJCMT execute;
-	    boolean failed = false;
-
-	    execute = ExecuteJCMT.getInstance(_item);
-	    if ( execute == null ) return;
-	    failed = execute.run();
-
-	    File failFile = new File ("/jcmtdata/orac_data/deferred/.failure");
-	    File successFile = new File ("/jcmtdata/orac_data/deferred/.success");
-	    if (failFile.exists()) {
-		new ErrorBox("Failed to Execute. Check messages.");
-		logger.warn ("Failed to execute observation");
-	    }
-	    else if (successFile.exists()) {
-		// Mark this observation as having been done
-		markThisObservationAsDone(currentItem);
-		logger.info("Observation executed successfully");
-	    }
-	    else {
-		// Neither file exists - report an error to the user
-		new ErrorBox("Unable to determine success status - assuming failed.");
-		logger.error ("Unable to determine success status for observation.");
-	    }
-	}
-    }
 }
