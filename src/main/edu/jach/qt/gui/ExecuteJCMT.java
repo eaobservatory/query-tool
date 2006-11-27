@@ -32,10 +32,9 @@ public class ExecuteJCMT extends Execute {
 
     static Logger logger = Logger.getLogger(ExecuteJCMT.class);
     private static SpItem _itemToExecute;
-    private static String jcmtDir = File.separator +
-	"jcmtdata" + File.separator + "orac_data";
+    private static String jcmtDir = File.separator + "jcmtdata" + File.separator + "orac_data";
     static boolean isRunning = false;
-    static ExecuteJCMT _instance;
+    private static ExecuteJCMT _instance;
     
     /**
      * Constructor.
@@ -45,26 +44,30 @@ public class ExecuteJCMT extends Execute {
     private ExecuteJCMT() throws Exception {
     }
 
-    public static ExecuteJCMT getInstance (SpItem item)
-    {
-	if (isRunning) {
-	    logger.error("Already running");
-	    return null;
+    public static synchronized ExecuteJCMT getInstance( SpItem item )
+	{
+		if( isRunning )
+		{
+			logger.error( "Already running" );
+			return null;
+		}
+		try
+		{
+			_instance = new ExecuteJCMT();
+			_itemToExecute = item;
+		}
+		catch( Exception e )
+		{
+			logger.error( "Unable to construct" );
+			return null;
+		}
+		return _instance;
 	}
-	try {
-	    _instance = new ExecuteJCMT ();
-	    _itemToExecute = item;
-	}
-	catch (Exception e) {
-	    logger.error("Unable to construct");
-	    return null;
-	}
-	return _instance;
-    }
 
-    public static boolean isRunning() {
-	return isRunning;
-    }
+	public static boolean isRunning()
+	{
+		return isRunning;
+	}
 
     /**
      * Implementation of the <code>Runnable</code> interface.
