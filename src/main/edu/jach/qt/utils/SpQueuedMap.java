@@ -24,7 +24,7 @@ public class SpQueuedMap
 	
 	private SpQueuedMap() 
 	{
-		super() ;
+		treeMap = new TreeMap() ;
 	}
 
 	public static synchronized SpQueuedMap getSpQueuedMap()
