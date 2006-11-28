@@ -8,6 +8,7 @@ import java.io.File ;
 import java.io.IOException ;
 import java.util.Calendar;
 import java.util.TimeZone ;
+import java.util.TreeMap;
 
 /**
  * 
@@ -16,9 +17,10 @@ import java.util.TimeZone ;
  *
  */
 
-public class SpQueuedMap extends QueuedMap
+public class SpQueuedMap
 {
 	private static SpQueuedMap queuedMap = null ;
+	protected TreeMap treeMap = null ;
 	
 	private SpQueuedMap() 
 	{
