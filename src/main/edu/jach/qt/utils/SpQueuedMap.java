@@ -9,6 +9,7 @@ import java.io.IOException ;
 import java.util.Calendar;
 import java.util.TimeZone ;
 import java.util.TreeMap;
+import java.util.Collections ;
 
 /**
  * 
@@ -24,7 +25,7 @@ public class SpQueuedMap
 	
 	private SpQueuedMap() 
 	{
-		treeMap = new TreeMap() ;
+		treeMap = ( TreeMap )Collections.synchronizedMap( new TreeMap() ) ;
 	}
 
 	public static synchronized SpQueuedMap getSpQueuedMap()
