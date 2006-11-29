@@ -7,10 +7,8 @@ import gemini.sp.SpObs ;
 import java.io.File ;
 import java.io.IOException ;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.TimeZone ;
 import java.util.TreeMap;
-import java.util.Map ;
 
 /**
  * 
@@ -22,11 +20,11 @@ import java.util.Map ;
 public class SpQueuedMap
 {
 	private static SpQueuedMap queuedMap = null ;
-	protected Map treeMap = null ;
+	protected TreeMap treeMap = null ;
 	
 	private SpQueuedMap() 
 	{
-		treeMap = Collections.synchronizedMap( new TreeMap() ) ;
+		treeMap = new TreeMap() ;
 	}
 
 	public static synchronized SpQueuedMap getSpQueuedMap()
