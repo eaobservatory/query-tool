@@ -2,6 +2,8 @@ package edu.jach.qt.utils ;
 
 import java.util.TreeMap ;
 import java.util.Vector ;
+import java.util.Collections ;
+import java.util.Map ;
 
 /**
  * 
@@ -19,13 +21,13 @@ import java.util.Vector ;
 public class OrderedMap
 {
 	
-	final private TreeMap treeMap ;	
+	final private Map treeMap ;	
 	final private Vector vector ;
 	private int size ;
 	
 	public OrderedMap()
 	{
-		treeMap = new TreeMap() ;
+		treeMap = Collections.synchronizedMap( new TreeMap() ) ;
 		vector = new Vector() ;
 	}
 	
