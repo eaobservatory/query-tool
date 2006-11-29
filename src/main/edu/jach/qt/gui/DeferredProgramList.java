@@ -51,6 +51,8 @@ import java.text.SimpleDateFormat ;
 
 import org.apache.log4j.Logger;
 
+import java.util.HashSet ;
+
 /* Gemini imports */
 import gemini.sp.SpItem ;
 import gemini.sp.SpTreeMan ;
@@ -94,6 +96,7 @@ final public class DeferredProgramList extends JPanel implements
     private JPopupMenu                  engMenu = new JPopupMenu();
     private JMenuItem                   engItem = new JMenuItem ("Send for Engineering");
     private boolean                     _useQueue = true;
+    private static HashSet				duplicatesVector = new HashSet() ;
 
     static Logger logger = Logger.getLogger(DeferredProgramList.class);
 
@@ -236,12 +239,13 @@ final public class DeferredProgramList extends JPanel implements
 			thisObs.getTable().set( "msbid" , "CAL" ) ;
 			thisObs.getTable().set( ":msb" , "true" ) ;
 			
-			if( !isDuplicate( thisObs ) )
+			if( !duplicatesVector.contains( thisObs ) )
 			{
 				SpInstObsComp inst = SpTreeMan.findInstrument( thisObs ) ;
 				SpInsertData insertable = SpTreeMan.evalInsertInside( inst , thisObs ) ;
 				if( insertable != null )
 					SpTreeMan.insert( insertable ) ;
+				duplicatesVector.add( thisObs ) ;
 			}
 			
 			if( thisObs.getTitleAttr().equals( "Observation" ) )
@@ -406,7 +410,7 @@ final public class DeferredProgramList extends JPanel implements
 				isDuplicate = true ;
 				break ;				
 			}
-		}		
+		}	
 		return isDuplicate ;
 	}
 
