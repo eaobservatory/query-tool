@@ -31,12 +31,12 @@ public class OrderedMap
 	
 	public synchronized void add( final String key , final Object object )
 	{
-		synchronized( vector )
+		synchronized( treeMap )
 		{
-			synchronized( treeMap )
+			synchronized( vector )
 			{
-				vector.add( key ) ;
 				treeMap.put( key , object ) ;
+				vector.add( key ) ;
 				size++ ;
 			}
 		}
@@ -114,13 +114,10 @@ public class OrderedMap
 	public synchronized void move( String name , int index )
 	{
 		int current = getIndexForName( name ) ;
-		synchronized( vector )
+		if( current != index && current > -1 )
 		{
-			if( current != index && current > -1 )
-			{
-				vector.remove( current ) ;
-				vector.insertElementAt( name , index ) ;
-			}
+			vector.remove( current ) ;
+			vector.insertElementAt( name , index ) ;
 		}
 	}
 	
@@ -128,14 +125,11 @@ public class OrderedMap
 	{
 		if( currentIndex == newIndex )
 			return ;
-		synchronized( vector )
+		if( currentIndex > -1 && currentIndex < size() )
 		{
-			if( currentIndex > -1 && currentIndex < size() )
-			{
-				Object object = vector.remove( currentIndex ) ;
-				newIndex = newIndex < size() ? newIndex : size() - 1 ;
-				vector.insertElementAt( object , newIndex ) ;
-			}
+			Object object = vector.remove( currentIndex ) ;
+			newIndex = newIndex < size() ? newIndex : size() - 1 ;
+			vector.insertElementAt( object , newIndex ) ;
 		}
 	}
 }
