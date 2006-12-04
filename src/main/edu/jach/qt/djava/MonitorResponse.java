@@ -1,6 +1,10 @@
 package edu.jach.qt.djava;
 
-import au.gov.aao.drama.*;
+import au.gov.aao.drama.DramaMonitor ;
+import au.gov.aao.drama.DramaTask ;
+import au.gov.aao.drama.Arg ;
+import au.gov.aao.drama.DramaException ;
+import au.gov.aao.drama.DramaStatus ;
 import ocs.utils.CommandReceiver;
 import org.apache.log4j.Logger;
 
@@ -28,52 +32,63 @@ public abstract class MonitorResponse extends DramaMonitor.MonResponse {
   }
 
   /**
-   * Handles a sucessfull completion of the monitoring operation.
-   * This should not actually be invoked in this example, as the
-   * monitor is never cancelled.
-   * @param monitor     A DramaMonitor Object
-   * @param task        A DramaTask Object
-   * @return            <code>false</code> always
-   * @exception         DramaException if task fails.
-   */
-  public boolean SuccessCompletion(DramaMonitor monitor, DramaTask task )
-    throws DramaException {
-    task.MsgOut("Monitor SucessCompletion invoked");
-
-    return false;
-  }
+	 * Handles a sucessfull completion of the monitoring operation. This should not actually be invoked in this example, as the monitor is never cancelled.
+	 * 
+	 * @param monitor
+	 *            A DramaMonitor Object
+	 * @param task
+	 *            A DramaTask Object
+	 * @return <code>false</code> always
+	 * @exception DramaException
+	 *                if task fails.
+	 */
+	public boolean SuccessCompletion( DramaMonitor monitor , DramaTask task ) throws DramaException
+	{
+		String statusMessage = "Monitor SucessCompletion invoked" ;
+		task.MsgOut( statusMessage ) ;
+		logger.info( statusMessage ) ;
+		return false;
+	}
                                           
   /**
-   * Handles an error completion of the monitoring operation.
-   * This may be invoked if the message to start monitoring fails
-   * or if the task dies whilst we are monitoring it.
-   * @param monitor     A DramaMonitor Object
-   * @param task        A DramaTask Object
-   * @return            <code>false</code> always
-   * @exception         DramaException if task fails.
-   */
-  public boolean ErrorCompletion(DramaMonitor monitor, DramaTask task )
-    throws DramaException {
-    DramaStatus status = task.GetEntStatus();
-    task.MsgOut("Monitor Completed with error - " + status);
-
-    return false;
-  }
+	 * Handles an error completion of the monitoring operation. This may be invoked if the message to start monitoring fails or if the task dies whilst we are monitoring it.
+	 * 
+	 * @param monitor
+	 *            A DramaMonitor Object
+	 * @param task
+	 *            A DramaTask Object
+	 * @return <code>false</code> always
+	 * @exception DramaException
+	 *                if task fails.
+	 */
+	public boolean ErrorCompletion( DramaMonitor monitor , DramaTask task ) throws DramaException
+	{
+		DramaStatus status = task.GetEntStatus() ;
+		String statusMessage = "Monitor Completed with error - " + status ;
+		task.MsgOut( statusMessage ) ;
+		logger.error( statusMessage ) ;
+		return false;
+	}
 
 
   /**
-   * This method is invoked when the monitor starts. It
-   *  is used to set the GUI into its runtime state.
-   * @param monitor     A DramaMonitor Object
-   * @param task        A DramaTask Object
-   * @return            <code>false</code> always
-   * @exception         DramaException if task fails.
-   */
-  public void Started(DramaMonitor monitor, DramaTask task ) throws DramaException {
-    task.MsgOut("CSO Parameter monitoring started");
-
-    cr.setPathLock(false);
-  }
+	 * This method is invoked when the monitor starts. It is used to set the GUI into its runtime state.
+	 * 
+	 * @param monitor
+	 *            A DramaMonitor Object
+	 * @param task
+	 *            A DramaTask Object
+	 * @return <code>false</code> always
+	 * @exception DramaException
+	 *                if task fails.
+	 */
+	public void Started( DramaMonitor monitor , DramaTask task ) throws DramaException
+	{
+		String statusMessage = "CSO Parameter monitoring started" ;
+		task.MsgOut( statusMessage ) ;
+		logger.info( statusMessage ) ;
+		cr.setPathLock( false );
+	}
                                              
   /**
    * This function is invoked when a monitored parameter changes.

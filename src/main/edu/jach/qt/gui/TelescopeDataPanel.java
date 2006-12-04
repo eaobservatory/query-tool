@@ -1,17 +1,25 @@
 package edu.jach.qt.gui;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.text.*;
-import java.util.*;
-import java.io.*;
-import javax.swing.*;
-import javax.swing.border.*;
-import javax.swing.event.*;
-import ocs.utils.*;
+import java.awt.GridBagConstraints ;
+import java.awt.GridBagLayout ;
+import java.awt.Color ;
+import java.awt.Component ;
+import java.awt.event.ActionListener ;
+import java.awt.event.ActionEvent ;
+import java.text.DecimalFormat ;
+import java.util.ListIterator ;
+import javax.swing.JPanel ;
+import javax.swing.JLabel ;
+import javax.swing.JButton ;
+import javax.swing.BorderFactory ;
+import javax.swing.JToggleButton ;
+import javax.swing.JRadioButton ;
+import javax.swing.border.TitledBorder ;
+import ocs.utils.HubImplementor ;
+import ocs.utils.DcHub ;
+import ocs.utils.ObeyNotRegisteredException ;
 import org.apache.log4j.Logger;
-//import edu.jach.qt.utils.LockFile;
-import edu.jach.qt.utils.*;
+import edu.jach.qt.utils.SimpleMoon ;
 
 
 /**
@@ -84,59 +92,62 @@ public class TelescopeDataPanel extends JPanel implements ActionListener {
   }
   
     /**
-     * Set the Tau value on the appropriate <code>JLabel</code>
-     * @param val   the value to set as a decimal number.
-     */
-  public static void setTau(double val) {
-  
-    //The arg in the following constructor is a pattern for formating
-    DecimalFormat myFormatter = new DecimalFormat("0.000");
-    String output = myFormatter.format(val);
+	 * Set the Tau value on the appropriate <code>JLabel</code>
+	 * 
+	 * @param val
+	 *            the value to set as a decimal number.
+	 */
+	public static void setTau( double val )
+	{
 
-    if (acceptUpdates && !output.equals(tauString)) {
-	if (lastCSOValue.equals("")) {
-	    lastCSOValue = output;
-	    if (WidgetPanel.getAtmospherePanel() != null) {
-		WidgetPanel.getAtmospherePanel().setTextField("tau:",
-							      output);
-		
-	    }
+		// The arg in the following constructor is a pattern for formating
+		DecimalFormat myFormatter = new DecimalFormat( "0.000" );
+		String output = myFormatter.format( val ) ;
+
+		if( acceptUpdates && !output.equals( tauString ) )
+		{
+			if( lastCSOValue.equals( "" ) )
+			{
+				lastCSOValue = output;
+				if( WidgetPanel.getAtmospherePanel() != null )
+					WidgetPanel.getAtmospherePanel().setTextField( "tau:" , output );
+			}
+			else if( WidgetPanel.getAtmospherePanel() != null && lastCSOValue.equals( WidgetPanel.getAtmospherePanel().getText( "tau:" ) ) )
+			{
+				lastCSOValue = output;
+				WidgetPanel.getAtmospherePanel().setTextField( "tau:" , output );
+			}
+			else if( !( lastCSOValue.equals( WidgetPanel.getAtmospherePanel().getText( "tau:" ) ) ) )
+			{
+				acceptUpdates = false;
+			}
+		}
+		csoTauValue.setText( output );
 	}
-	else if (WidgetPanel.getAtmospherePanel() != null &&
-		 lastCSOValue.equals(WidgetPanel.getAtmospherePanel().getText("tau:"))) {
-	    lastCSOValue = output;
-	    WidgetPanel.getAtmospherePanel().setTextField("tau:",
-							  output);
-	}
-	else if (!(lastCSOValue.equals(WidgetPanel.getAtmospherePanel().getText("tau:")))) {
-	    acceptUpdates = false;
-	}
-    }
-    TelescopeDataPanel.csoTauValue.setText(""+output);
-  }
 
     /**
-     * Set the Airmass value on the appropriate <code>JLabel</code>
-     * @param val   the value to set as a decimal number.
-     */
-  public static void setAirmass(double val) {
-  
-    //The arg in the following constructor is a pattern for formating
-    DecimalFormat myFormatter = new DecimalFormat("0.000");
-    String output = myFormatter.format(val);
+	 * Set the Airmass value on the appropriate <code>JLabel</code>
+	 * 
+	 * @param val
+	 *            the value to set as a decimal number.
+	 */
+	public static void setAirmass( double val )
+	{
 
-    TelescopeDataPanel.airmassValue.setText(""+output);
-  }
+		// The arg in the following constructor is a pattern for formating
+		DecimalFormat myFormatter = new DecimalFormat( "0.000" );
+		String output = myFormatter.format( val );
 
-    public static void setTauTooltip(String tip) {
-	if (tip == null || tip.equals("")) {
-	    TelescopeDataPanel.csoTauValue.setToolTipText("Source = unknown");
+		TelescopeDataPanel.airmassValue.setText( "" + output );
 	}
-	else {
-	    TelescopeDataPanel.csoTauValue.setToolTipText("Source = "+tip);
+
+	public static void setTauTooltip( String tip )
+	{
+		if( tip == null || tip.equals( "" ) )
+			csoTauValue.setToolTipText( "Source = unknown" );
+		else
+			csoTauValue.setToolTipText( "Source = " + tip );
 	}
-	    
-    }
 
     /**
      * Builds the components of the interface.
@@ -222,23 +233,31 @@ public class TelescopeDataPanel extends JPanel implements ActionListener {
 
     
     /**
-     * Gets the tau value currently displayed on this panel.
-     * @return   The current CSO tau value.
-     */
-    public static String getCSO() {
-	return TelescopeDataPanel.csoTauValue.getText();
-    }
+	 * Gets the tau value currently displayed on this panel.
+	 * 
+	 * @return The current CSO tau value.
+	 */
+	public static String getCSO()
+	{
+		return csoTauValue.getText();
+	}
    
   /**
-   * Describe <code>add</code> method here.
-   *
-   * @param c a <code>Component</code> value
-   * @param gbc a <code>GridBagConstraints</code> value
-   * @param x an <code>int</code> value
-   * @param y an <code>int</code> value
-   * @param w an <code>int</code> value
-   * @param h an <code>int</code> value
-   */
+	 * Describe <code>add</code> method here.
+	 * 
+	 * @param c
+	 *            a <code>Component</code> value
+	 * @param gbc
+	 *            a <code>GridBagConstraints</code> value
+	 * @param x
+	 *            an <code>int</code> value
+	 * @param y
+	 *            an <code>int</code> value
+	 * @param w
+	 *            an <code>int</code> value
+	 * @param h
+	 *            an <code>int</code> value
+	 */
   public void add(Component c, GridBagConstraints gbc, 
 		  int x, int y, int w, int h) {
     gbc.gridx = x;
@@ -251,127 +270,135 @@ public class TelescopeDataPanel extends JPanel implements ActionListener {
   // implementation of java.awt.event.ActionListener interface
 
   /**
-   * Implementation of java.awt.event.ActionListener interface.
-   * This will update the following fields:
-   * <ul>
-   * <li> The Tau value
-   * <li> The airmass value
-   * <li> The Date and Time fields
-   * <li> The information about the moon.
-   *</ul>
-   * @param param1 ActionEvent created by the "Set Current" button.
-   */
-    public void actionPerformed(ActionEvent param1) {
-	logger.debug("New tau: "+ TelescopeDataPanel.csoTauValue.getText());
-        
-	// Ignore case where the tau value is set to the default
-	if (!TelescopeDataPanel.csoTauValue.getText().equals(tauString))
-	    {
-		acceptUpdates = true;
-		lastCSOValue = "";
-		WidgetPanel.getAtmospherePanel().setTextField("tau:",
-							      TelescopeDataPanel.csoTauValue.getText());
-		//WidgetPanel.getAtmospherePanel().setTau(TelescopeDataPanel.csoTauValue.getText());
-	    }
-	//WidgetPanel.getAtmospherePanel().setSeeing(TelescopeDataPanel.seeingValue.getText());
-	//WidgetPanel.getAtmospherePanel().setAirmass(TelescopeDataPanel.airmassValue.getText());
+	 * Implementation of java.awt.event.ActionListener interface.
+	 * This will update the following fields:
+	 * <ul>
+	 * <li> The Tau value
+	 * <li> The airmass value
+	 * <li> The Date and Time fields
+	 * <li> The information about the moon.
+	 *</ul>
+	 * @param param1 ActionEvent created by the "Set Current" button.
+	 */
+	public void actionPerformed( ActionEvent param1 )
+	{
+		logger.debug( "New tau: " + csoTauValue.getText() );
 
-
-	SimpleMoon moon = new SimpleMoon();
-	boolean dark = false;
-	boolean grey = false;
-	boolean bright = false;
-	
-	if (moon.isUp() == false ) {
-	    dark = true;
-	}
-	else if (moon.getIllumination() < 0.25) {
-	    grey = true;
-	}
-	else {
-	    bright = true;
-	}
-	infoPanel.getFrame().getWidgets().setMoonUpdatable (true);
-	RadioPanel moonPanel = WidgetPanel.getMoonPanel();
-	if (moonPanel != null) {
-	    ListIterator iter = moonPanel.radioElems.listIterator(0);
-	    while (iter.hasNext()) {
-		JToggleButton abstractButton = (JRadioButton)iter.next();
-		if (abstractButton.getText().equalsIgnoreCase("dark") && dark == true) {
-		    abstractButton.setSelected(true);
+		// Ignore case where the tau value is set to the default
+		if( !csoTauValue.getText().equals( tauString ) )
+		{
+			acceptUpdates = true;
+			lastCSOValue = "";
+			WidgetPanel.getAtmospherePanel().setTextField( "tau:" , TelescopeDataPanel.csoTauValue.getText() );
 		}
-		else if (abstractButton.getText().equalsIgnoreCase("Grey") && grey == true) {
-		    abstractButton.setSelected(true);
-		}
-		else if (abstractButton.getText().equalsIgnoreCase("Bright") && bright == true) {
-		    abstractButton.setSelected(true);
-		}
-	    }
-	}
 
-	infoPanel.getFrame().setMenuDefault();
+		SimpleMoon moon = new SimpleMoon();
+		boolean dark = false;
+		boolean grey = false;
+		boolean bright = false;
 
-	WidgetPanel widgetPanel = infoPanel.getFrame().getWidgets();
-	Component [] components = widgetPanel.getComponents();
-	for (int i=0; i<widgetPanel.getComponentCount(); i++ ) {
-	    if ( components[i] instanceof LabeledTextField ) {
-		((LabeledTextField)components[i]).setText("");
-	    }
-	    else if ( components[i] instanceof LabeledRangeTextField ) {
-		LabeledRangeTextField lrtf = (LabeledRangeTextField) components[i];
-		if ( components[i].getName().equalsIgnoreCase("airmass") ) {
-		    if (!TelescopeDataPanel.airmassValue.getText().equals(tauString)) {
-			String zCurrentAirmass = TelescopeDataPanel.airmassValue.getText();
-			Double currentAirmass;
-			try {
-			    currentAirmass = new Double(zCurrentAirmass);
-			    double upperLimit = currentAirmass.doubleValue();
-			    upperLimit = upperLimit - 20.*upperLimit/100.;
-			    if (upperLimit < 1.0 ) upperLimit = 1.0;
+		if( moon.isUp() == false )
+			dark = true;
+		else if( moon.getIllumination() < 0.25 )
+			grey = true;
+		else
+			bright = true;
 
-			    double lowerLimit = currentAirmass.doubleValue();
-			    lowerLimit = lowerLimit + 20.*lowerLimit/100.;
-			    if (lowerLimit > 3.0) lowerLimit = 3.0;
-
-			    lrtf.setLowerText (new Double(upperLimit));
-			    lrtf.setUpperText (new Double(lowerLimit));
+		infoPanel.getFrame().getWidgets().setMoonUpdatable( true );
+		RadioPanel moonPanel = WidgetPanel.getMoonPanel();
+		if( moonPanel != null )
+		{
+			ListIterator iter = moonPanel.radioElems.listIterator( 0 );
+			while( iter.hasNext() )
+			{
+				JToggleButton abstractButton = ( JRadioButton ) iter.next();
+				if( abstractButton.getText().equalsIgnoreCase( "dark" ) && dark == true )
+					abstractButton.setSelected( true );
+				else if( abstractButton.getText().equalsIgnoreCase( "Grey" ) && grey == true )
+					abstractButton.setSelected( true );
+				else if( abstractButton.getText().equalsIgnoreCase( "Bright" ) && bright == true )
+					abstractButton.setSelected( true );
 			}
-			catch ( NumberFormatException nfe ) {
+		}
+
+		infoPanel.getFrame().setMenuDefault();
+
+		WidgetPanel widgetPanel = infoPanel.getFrame().getWidgets();
+		Component[] components = widgetPanel.getComponents();
+		for( int i = 0 ; i < widgetPanel.getComponentCount() ; i++ )
+		{
+			if( components[ i ] instanceof LabeledTextField )
+			{
+				( ( LabeledTextField ) components[ i ] ).setText( "" );
 			}
-		    }
-		    else {
-			lrtf.setLowerText("");
-			lrtf.setUpperText("");
-		    }
+			else if( components[ i ] instanceof LabeledRangeTextField )
+			{
+				LabeledRangeTextField lrtf = ( LabeledRangeTextField ) components[ i ];
+				if( components[ i ].getName().equalsIgnoreCase( "airmass" ) )
+				{
+					if( !TelescopeDataPanel.airmassValue.getText().equals( tauString ) )
+					{
+						String zCurrentAirmass = TelescopeDataPanel.airmassValue.getText();
+						Double currentAirmass;
+						try
+						{
+							currentAirmass = new Double( zCurrentAirmass );
+							double upperLimit = currentAirmass.doubleValue();
+							upperLimit = upperLimit - 20. * upperLimit / 100.;
+							if( upperLimit < 1.0 )
+								upperLimit = 1.0;
+
+							double lowerLimit = currentAirmass.doubleValue();
+							lowerLimit = lowerLimit + 20. * lowerLimit / 100.;
+							if( lowerLimit > 3.0 )
+								lowerLimit = 3.0;
+
+							lrtf.setLowerText( new Double( upperLimit ) );
+							lrtf.setUpperText( new Double( lowerLimit ) );
+						}
+						catch( NumberFormatException nfe ){}
+					}
+					else
+					{
+						lrtf.setLowerText( "" );
+						lrtf.setUpperText( "" );
+					}
+				}
+				else if( components[ i ].getName().equalsIgnoreCase( "observation" ) )
+				{
+					lrtf.restartTimer();
+					// Wait for the timer to restart
+					while( !( lrtf.timerRunning() ) )
+					{
+						try
+						{
+							Thread.sleep( 100 );
+						}
+						catch( InterruptedException ie )
+						{
+							// break out of the loop to stop any serious problems
+							logger.debug( "Interrupted wating for timer!" , ie );
+							break;
+						}
+					}
+					// Wait a bit more to make sure things have settled down
+					try
+					{
+						Thread.sleep( 100 );
+					}
+					catch( InterruptedException ie )
+					{
+						logger.debug( "Interrupted wating for timer!" , ie );
+					}
+					infoPanel.getFrame().resetCurrentMSB();
+				}
+				else
+				{
+					( ( LabeledRangeTextField ) components[ i ] ).setLowerText( "" );
+					( ( LabeledRangeTextField ) components[ i ] ).setUpperText( "" );
+				}
+			}
 		}
-		else if (  components[i].getName().equalsIgnoreCase("observation") ) {
-		    lrtf.restartTimer();
-                    // Wait for the timer to restart
-                    while ( !(lrtf.timerRunning()) ) {
-                        try {
-                            Thread.sleep(100);
-                        }
-                        catch (InterruptedException ie ) {
-                            // break out of the loop to stop any serious problems
-                            logger.debug("Interrupted wating for timer!", ie);
-                            break;
-                        }
-                    }
-                    // Wait a bit more to make sure things have settled down
-                    try {
-                        Thread.sleep(100);
-                    }
-                    catch (InterruptedException ie ) {
-                        logger.debug("Interrupted wating for timer!", ie);
-                    } 
-		    infoPanel.getFrame().resetCurrentMSB();
-		}
-		else {
-		    ((LabeledRangeTextField)components[i]).setLowerText("");
-		    ((LabeledRangeTextField)components[i]).setUpperText("");
-		}
-	    }
+		InfoPanel.searchButton.doClick();
 	}
-        InfoPanel.searchButton.doClick();
-    }
 }
