@@ -46,19 +46,20 @@ public class ExecuteJCMT extends Execute {
 
     public static synchronized ExecuteJCMT getInstance( SpItem item )
 	{
-		if( isRunning )
-		{
-			logger.error( "Already running" );
-			return null;
-		}
 		try
 		{
-			_instance = new ExecuteJCMT();
+			if( _instance == null )
+				_instance = new ExecuteJCMT();
 			_itemToExecute = item;
 		}
 		catch( Exception e )
 		{
 			logger.error( "Unable to construct" );
+			return null;
+		}
+		if( isRunning )
+		{
+			logger.error( "Already running" );
 			return null;
 		}
 		return _instance;
