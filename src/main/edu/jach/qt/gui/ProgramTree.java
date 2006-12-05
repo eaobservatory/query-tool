@@ -1361,6 +1361,7 @@ final public class ProgramTree extends JPanel implements
 				root.setCountry( "JAC" );
 				root.setProjectID( "CAL" );
 				root.setTelescope() ;
+				root.setTitleAttr( item.getTitleAttr() ) ;
 				SpInsertData spID = SpTreeMan.evalInsertInside( item , root );
 				if( spID != null )
 				{
