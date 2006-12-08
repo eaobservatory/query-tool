@@ -1,17 +1,26 @@
 package edu.jach.qt.gui;
 
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
-import javax.swing.text.*;
-import javax.swing.event.*;
+import java.awt.GridLayout ;
+import java.awt.Color ;
+import java.awt.event.ActionListener ;
+import java.awt.event.KeyListener ;
+import java.awt.event.ActionEvent ;
+import java.awt.event.KeyEvent ;
+import javax.swing.JTextField ;
+import javax.swing.JLabel ;
+import javax.swing.JRadioButton ;
+import javax.swing.event.DocumentListener ;
+import javax.swing.event.DocumentEvent ;
 import javax.swing.Timer;
 
-import java.util.*;
-import java.lang.*;
-import java.text.*;
+import java.util.Hashtable ;
+import java.util.Vector ;
+import java.util.ListIterator ;
+import java.util.LinkedList ;
+import java.text.DecimalFormat ;
 
-import edu.jach.qt.utils.*;
+import edu.jach.qt.utils.TimeUtils ;
+import edu.jach.qt.utils.SimpleMoon ;
 import org.apache.log4j.Logger;
 
 /**
@@ -167,44 +176,44 @@ public class LabeledRangeTextField extends WidgetPanel
       lowerBound.setText(val);
   }
 
-    /** Return the contents of the (maximum) text field as a <code>Vector</code>.
-     * A list of inputs may be specified by separating each entry with a comma.
-     * @return The contents of the text field.
-     */
-  public Vector getUpperList() {
-    String tmpStr = getUpperText();
-    Vector result = new Vector();
-    StringTokenizer st = new StringTokenizer(tmpStr, ",");
+    /**
+	 * Return the contents of the (maximum) text field as a <code>Vector</code>. A list of inputs may be specified by separating each entry with a comma.
+	 * 
+	 * @return The contents of the text field.
+	 */
+	public Vector getUpperList()
+	{
+		String tmpStr = getUpperText() ;
+		Vector result = new Vector() ;
+		String[] split = tmpStr.split( "," ) ;
 
-    while (st.hasMoreTokens()) {
-      String temp1 = st.nextToken();
-      result.add(temp1);
-    }
-    return result;
-  }
+		for( int index = 0 ; index < split.length ; index++ )
+			result.add( split[ index ] ) ;
+		return result ;
+	}
  
-    /** Return the contents of the (minimum) text field as a <code>Vector</code>.
-     * A list of inputs may be specified by separating each entry with a comma.
-     * @return The contents of the text field.
-     */
-  public Vector getLowerList() {
-    String tmpStr = getLowerText();
-    Vector result = new Vector();
-    StringTokenizer st = new StringTokenizer(tmpStr, ",");
+    /**
+	 * Return the contents of the (minimum) text field as a <code>Vector</code>. A list of inputs may be specified by separating each entry with a comma.
+	 * 
+	 * @return The contents of the text field.
+	 */
+	public Vector getLowerList()
+	{
+		String tmpStr = getLowerText() ;
+		Vector result = new Vector() ;
+		String[] split = tmpStr.split( "," ) ;
 
-    while (st.hasMoreTokens()) {
-      String temp1 = st.nextToken();
-      result.add(temp1);
-    }
-    return result;
-  }
+		for( int index = 0 ; index < split.length ; index++ )
+			result.add( split[ index ] ) ;
+		return result ;
+	}
  
   /**
-   * The <code>insertUpdate</code> adds the current text to the
-   * WidgetDataBag.  All observers are notified.
-   *
-   * @param e a <code>DocumentEvent</code> value
-   */
+	 * The <code>insertUpdate</code> adds the current text to the WidgetDataBag. All observers are notified.
+	 * 
+	 * @param e
+	 *            a <code>DocumentEvent</code> value
+	 */
   public void insertUpdate(DocumentEvent e) {
 
     setAttribute(name.substring(0,name.length()-1), this);
@@ -292,6 +301,7 @@ public class LabeledRangeTextField extends WidgetPanel
 		SimpleMoon moon = new SimpleMoon( dateTime );
 		if( moon.isUp() )
 			moonValue = moon.getIllumination() * 100;
+		moon = null ;
 
 		Hashtable ht = widgetBag.getHash();
 		JRadioButton b = null ;
