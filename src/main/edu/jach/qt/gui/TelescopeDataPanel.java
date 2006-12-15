@@ -20,6 +20,7 @@ import ocs.utils.DcHub ;
 import ocs.utils.ObeyNotRegisteredException ;
 import org.apache.log4j.Logger;
 import edu.jach.qt.utils.SimpleMoon ;
+import javax.swing.JOptionPane ;
 
 
 /**
@@ -399,6 +400,8 @@ public class TelescopeDataPanel extends JPanel implements ActionListener {
 				}
 			}
 		}
-		InfoPanel.searchButton.doClick();
+		int runSearch = JOptionPane.showConfirmDialog( this , "Perform fresh search with defaults ?" , "Perform fresh search with defaults ?" , JOptionPane.YES_NO_OPTION );
+		if( runSearch == 0 )
+			InfoPanel.searchButton.doClick() ;
 	}
 }
