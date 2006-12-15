@@ -295,7 +295,7 @@ public class LabeledRangeTextField extends WidgetPanel
 		// Recalculate moon
 		// Try to update the moon Panel
 		RadioPanel moonPanel = WidgetPanel.getMoonPanel();
-		if( moonPanel == null || moonPanel.getBackground() == Color.darkGray )
+		if( moonPanel == null || moonPanel.getBackground() == Color.red )
 			return;
 		double moonValue = 0;
 		SimpleMoon moon = new SimpleMoon( dateTime );
