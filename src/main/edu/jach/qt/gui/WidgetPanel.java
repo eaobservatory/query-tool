@@ -2,15 +2,33 @@ package edu.jach.qt.gui;
 
 
 /* QT imports */
-import edu.jach.qt.app.*;
-import edu.jach.qt.utils.*;
+import edu.jach.qt.utils.TextReader ;
+import edu.jach.qt.utils.SimpleMoon ;
 
 /* Standard imports */
-import java.awt.*;
-import java.awt.event.*;
-import java.io.*;
-import java.util.*;
-import javax.swing.*;
+import java.awt.GridBagConstraints ;
+import java.awt.GridBagLayout ;
+import java.awt.Component ;
+import java.awt.Color ;
+import java.awt.event.ActionListener ;
+import java.awt.event.ActionEvent ;
+import java.awt.event.MouseAdapter ;
+import java.awt.event.MouseEvent ;
+import java.io.IOException ;
+import java.util.Hashtable ;
+import java.util.LinkedList ;
+import java.util.Enumeration ;
+import java.util.ListIterator ;
+import javax.swing.JPanel ;
+import javax.swing.JCheckBox ;
+import javax.swing.Box ;
+import javax.swing.SwingConstants ;
+import javax.swing.BoxLayout ;
+import javax.swing.JToggleButton ;
+import javax.swing.JRadioButton ;
+import javax.swing.ToolTipManager ;
+
+import edu.jach.qt.utils.MoonChangeListener ;
 
 /* Miscellaneous imports */
 import org.apache.log4j.Logger;
@@ -29,8 +47,8 @@ import org.apache.log4j.Logger;
  * @author <a href="mailto:mrippa@jach.hawaii.edu">Mathew Rippa</a>
  * $Id$
  */
-public class WidgetPanel extends JPanel 
-  implements ActionListener {
+public class WidgetPanel extends JPanel implements ActionListener , MoonChangeListener
+{
 
   static Logger logger = Logger.getLogger(WidgetPanel.class);
 
@@ -54,27 +72,29 @@ public class WidgetPanel extends JPanel
   public ButtonPanel instrumentPanel;
 
   /**
-   * Creates a new <code>WidgetPanel</code> instance.
-   *
-   * @param ht a <code>Hashtable</code> value
-   * @param wdb a <code>WidgetDataBag</code> value
-   */
-  public WidgetPanel(Hashtable ht, WidgetDataBag wdb) {
-    abbrevTable = ht;
-    widgetBag = wdb;
-      
-    //setBackground(java.awt.Color.gray);
-  }
+	 * Creates a new <code>WidgetPanel</code> instance.
+	 * 
+	 * @param ht
+	 *            a <code>Hashtable</code> value
+	 * @param wdb
+	 *            a <code>WidgetDataBag</code> value
+	 */
+	public WidgetPanel( Hashtable ht , WidgetDataBag wdb )
+	{
+		abbrevTable = ht;
+		widgetBag = wdb;
+
+		SimpleMoon.addChangeListener( this ) ;
+	}
 
   /**
-   * The <code>parseConfig</code> method is the single method
-   * responsible for configuring Widgets at runtime.  It parses the
-   * config/qtWidgets.conf file and sets up the determined widgets as 
-   * described by the current layout manager.
-   *
-   * @param file a <code>String</code> value
-   * @exception IOException if an error occurs
-   */
+	 * The <code>parseConfig</code> method is the single method responsible for configuring Widgets at runtime. It parses the config/qtWidgets.conf file and sets up the determined widgets as described by the current layout manager.
+	 * 
+	 * @param file
+	 *            a <code>String</code> value
+	 * @exception IOException
+	 *                if an error occurs
+	 */
   public void parseConfig(String file) throws IOException {
 
     GridBagLayout layout = new GridBagLayout();
@@ -254,7 +274,9 @@ public class WidgetPanel extends JPanel
   }//parseConfig
 
     /**
-	 * Special function for setting the value of the Moon buttons. Assumes that dark occurs when the moon is set, grey when the moon is up but less than 25% illuminated and bright otherwise.
+	 * Special function for setting the value of the Moon buttons. 
+	 * Assumes that dark occurs when the moon is set, 
+	 * grey when the moon is up but less than 25% illuminated and bright otherwise.
 	 */
 	public void setButtons()
 	{
@@ -262,7 +284,7 @@ public class WidgetPanel extends JPanel
 			return;
 
 		// Currently sets the moon based on whether it is up and the illuminated fraction
-		SimpleMoon moon = new SimpleMoon();
+		SimpleMoon moon = SimpleMoon.getInstance() ;
 		Hashtable ht = widgetBag.getHash();
 
 		boolean dark = false;
@@ -312,23 +334,26 @@ public class WidgetPanel extends JPanel
 	}
 
     /**
-     * Set whether ot not updates should be made for each query.  This is turned off by the mouse listener
-     * associated with each button on the moon panel
-     */
-    public void setMoonUpdatable (boolean flag) {
-	ignoreMoonUpdates = !flag;
-	if ( flag == true && moonPanel != null ) {
-	    moonPanel.setToolTipText (null);
-	    moonPanel.setBackground ( instrumentPanel.getBackground() );
+	 * Set whether ot not updates should be made for each query. This is turned off by the mouse listener associated with each button on the moon panel
+	 */
+	public void setMoonUpdatable( boolean flag )
+	{
+		ignoreMoonUpdates = !flag;
+		if( flag == true && moonPanel != null )
+		{
+			moonPanel.setToolTipText( null );
+			moonPanel.setBackground( instrumentPanel.getBackground() );
+		}
 	}
-    }
 
     /**
-     * Add a nes Text Field to the JTextFieldPanel.
-     * @param type    The type of the textfield.  Must one of <italic>Labeled</italic>,
-     *                <italic>MinMax</italic> or <italic>Range</italic>.
-     * @param gbc     The GridBatConstraints class for these objets.
-     */
+	 * Add a nes Text Field to the JTextFieldPanel.
+	 * 
+	 * @param type
+	 *            The type of the textfield. Must one of <italic>Labeled</italic>, <italic>MinMax</italic> or <italic>Range</italic>.
+	 * @param gbc
+	 *            The GridBatConstraints class for these objets.
+	 */
   private void addTextFields(String type, GridBagConstraints gbc) {
     String next, tmp;
     do {
@@ -402,29 +427,30 @@ public class WidgetPanel extends JPanel
   }
 
   /**
-   * The <code>abbreviate</code> method is used to convert the text
-   * in a widget JLabel to an abbreviation used in the xml description.
-   *
-   * @param next a <code>String</code> value
-   * @return a <code>String</code> value
-   */
-  public String abbreviate(String next) {
-    String result = "ERROR";
-    if (!next.equals("")) {
-      result = "";
-      next.trim();
+	 * The <code>abbreviate</code> method is used to convert the text in a widget JLabel to an abbreviation used in the xml description.
+	 * 
+	 * @param next
+	 *            a <code>String</code> value
+	 * @return a <code>String</code> value
+	 */
+	public String abbreviate( String next )
+	{
+		String result = "ERROR";
+		if( !next.equals( "" ) )
+		{
+			result = "";
+			next.trim();
 
-      StringTokenizer st = new StringTokenizer(next);
-      result = ((String) st.nextElement()).trim();
-    }
-    return result.toLowerCase();
-  }
+			String[] st = next.split( "\\p{Space}" ) ;
+			result = st[ 0 ].trim() ;
+		}
+		return result.toLowerCase() ;
+	}
 
   /**
-   * The code>printTable</code> method here gives subJPanels the
-   * ability to print the current abbreviation table.
-   *
-   */
+	 * The code>printTable</code> method here gives subJPanels the ability to print the current abbreviation table.
+	 * 
+	 */
   protected void printTable() {
     logger.debug(abbrevTable.toString());
   }
@@ -570,5 +596,9 @@ public class WidgetPanel extends JPanel
 	return widgetBag;
     }
 
+	public void moonChanged()
+	{
+		setButtons() ;
+	}
 
 }// WidgetPanel

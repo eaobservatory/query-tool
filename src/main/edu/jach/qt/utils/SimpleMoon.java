@@ -3,6 +3,13 @@ package edu.jach.qt.utils;
 import java.util.Calendar;
 import java.util.TimeZone;
 
+import edu.jach.qt.gui.Timer ;
+import edu.jach.qt.gui.TimerEvent;
+import edu.jach.qt.gui.TimerListener ;
+
+import java.util.HashSet ;
+import java.util.Iterator ;
+
 /**
  * <code>SimpleMoon</code> is used to derive location and illumination
  * information about the moon.
@@ -11,7 +18,8 @@ import java.util.TimeZone;
  * @version    $Revision$
  *
  */
-public class SimpleMoon {
+public class SimpleMoon implements TimerListener
+{
 
     // Set up some stuff we are going to use
     private static final double JD2000 = 2451545.;
@@ -36,41 +44,107 @@ public class SimpleMoon {
 
     private TelescopeInformation ti;
     private Calendar _cal;
+    
+    private static SimpleMoon simpleMoon = null ;
+    
+    private static HashSet hashSet = new HashSet() ;
 
     // Constructor - sets up current information
-    /**
-     * Default constructor.
-     * Calulates the Right Ascension and Declination of the moon
-     * for the current local time and location.
-     *
-     * @see TelescopeInformation
-     */
-    public SimpleMoon() {
-	ti = new TelescopeInformation(System.getProperty("telescope"));
-	latitude = ((Double)(ti.getValue("latitude"))).doubleValue();
-	longitude = ((Double)(ti.getValue("longitude"))).doubleValue();
-	getCurrentPosition();
+	/**
+	 * Default constructor. Calulates the Right Ascension and Declination of the moon for the current local time and location.
+	 * 
+	 * @see TelescopeInformation
+	 */
+	private SimpleMoon()
+	{
+		ti = new TelescopeInformation( System.getProperty( "telescope" ) );
+		latitude = ( ( Double ) ( ti.getValue( "latitude" ) ) ).doubleValue();
+		longitude = ( ( Double ) ( ti.getValue( "longitude" ) ) ).doubleValue();
+		getCurrentPosition();
+		Timer t = new Timer( 60 * 1000 ) ;
+		t.addTimerListener( this ) ;
+	}
+
+	// Constructor - sets up information based on a specified time
+	/**
+	 * Constructor which calculates the Moons Right Ascension and Declination for a specified time at the current location. The time must be in the format yyyy-mm-ddThh:mm:ss (the T is a literal). If an illegal string is used, the current time is assumed.
+	 * 
+	 * @see TelescopeInformation
+	 * @param isoDateTime
+	 *            <code>String</code> containing the required date.
+	 */
+	/*
+	public SimpleMoon( String isoDateTime )
+	{
+		ti = new TelescopeInformation( System.getProperty( "telescope" ) );
+		latitude = ( ( Double ) ( ti.getValue( "latitude" ) ) ).doubleValue();
+		longitude = ( ( Double ) ( ti.getValue( "longitude" ) ) ).doubleValue();
+		getCurrentPosition( isoDateTime );
+	}
+	*/
+
+    public static synchronized SimpleMoon getInstance()
+    {
+    	if( simpleMoon == null )
+    		simpleMoon = new SimpleMoon() ;
+    	return simpleMoon ;
     }
 
-    // Constructor - sets up information based on a specified time
-    /**
-     * Constructor which calculates the Moons Right Ascension and 
-     * Declination for a specified time at the current location.
-     * The time must be in the format yyyy-mm-ddThh:mm:ss (the T is
-     * a literal).  If an illegal string is used, the current time
-     * is assumed.
-     *
-     * @see                 TelescopeInformation
-     * @param isoDateTime   <code>String</code> containing the required
-     *                      date.
-     */
-    public SimpleMoon (String isoDateTime) {
-	ti = new TelescopeInformation(System.getProperty("telescope"));
-	latitude = ((Double)(ti.getValue("latitude"))).doubleValue();
-	longitude = ((Double)(ti.getValue("longitude"))).doubleValue();
-	getCurrentPosition(isoDateTime);
+ 
+    public void set( String isoDateTime )
+    {
+    	simpleMoon.getCurrentPosition( isoDateTime ) ;
+    }
+ 
+    public void reset()
+    {
+    	simpleMoon.getCurrentPosition() ;
     }
 
+    private boolean wasUp = false ;
+    private int wasIlluminated = 0 ;
+    public void timeElapsed( TimerEvent evt )
+    {
+    	boolean tmpBool = isUp() ;
+    	if( tmpBool != wasUp )
+    	{
+    		wasUp = tmpBool ;
+    		stateChanged() ;
+    		return ;
+    	} 
+    	
+    	double tmpDouble = getIllumination() ;
+    	int tmpInt = ( int )( tmpDouble * 100. ) ;
+    	if( tmpInt != wasIlluminated )
+    	{
+    		wasIlluminated = tmpInt ;
+    		stateChanged() ;
+    		return ;
+    	}
+    }
+    
+    private void stateChanged()
+    {
+    	MoonChangeListener listener ;
+    	Iterator iterator = hashSet.iterator() ;
+    	while( iterator.hasNext() )
+    	{
+    		listener = ( MoonChangeListener )iterator.next() ;
+    		listener.moonChanged() ;
+    	}
+    }
+
+    public static void addChangeListener( MoonChangeListener listener )
+    {
+    	hashSet.add( listener ) ;
+    }
+
+    public static void removeChangeListener( MoonChangeListener listener )
+    {
+    	if( hashSet.contains( listener ) )
+    		hashSet.remove( listener ) ;
+    }    
+    
     // Get the faction illuminated
     /**
      * Returns the fraction of the moon illuminated.

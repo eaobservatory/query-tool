@@ -35,7 +35,8 @@ import javax.swing.JOptionPane ;
  * @version $Id$
  */
 
-public class TelescopeDataPanel extends JPanel implements ActionListener {
+public class TelescopeDataPanel extends JPanel implements ActionListener
+{
 
   static Logger logger = Logger.getLogger(TelescopeDataPanel.class);
    
@@ -56,41 +57,44 @@ public class TelescopeDataPanel extends JPanel implements ActionListener {
   private static boolean acceptUpdates = true;
 
     /**
-     * Constructor.
-     * This constructor does the following tasks:
-     * <ul>
-     * <li> Checks to see if the QT is locked and if so converts to scenario mode.
-     * <li> Gets handles for the DRAMA monitired tasks.
-     * </ul>
-     * @param panel   the <code>InfoPanel</code> Object contructing this panel.
-     */
-  public TelescopeDataPanel(InfoPanel panel) {
-    csoTau		= new JLabel("CSO Tau: ", JLabel.LEADING);
-    seeing		= new JLabel("Seeing: ", JLabel.LEADING);
-    airmass		= new JLabel("Airmass: ", JLabel.LEADING);
-    csoTauValue		= new JLabel(tauString, JLabel.LEADING);
-    seeingValue		= new JLabel(tauString, JLabel.LEADING);
-    airmassValue	= new JLabel(tauString, JLabel.LEADING);
-    updateButton	= new JButton("Set Default");
-    this.infoPanel      = panel;
+	 * Constructor. This constructor does the following tasks:
+	 * <ul>
+	 * <li> Checks to see if the QT is locked and if so converts to scenario mode.
+	 * <li> Gets handles for the DRAMA monitired tasks.
+	 * </ul>
+	 * 
+	 * @param panel
+	 *            the <code>InfoPanel</code> Object contructing this panel.
+	 */
+	public TelescopeDataPanel( InfoPanel panel )
+	{
+		csoTau = new JLabel( "CSO Tau: " , JLabel.LEADING );
+		seeing = new JLabel( "Seeing: " , JLabel.LEADING );
+		airmass = new JLabel( "Airmass: " , JLabel.LEADING );
+		csoTauValue = new JLabel( tauString , JLabel.LEADING );
+		seeingValue = new JLabel( tauString , JLabel.LEADING );
+		airmassValue = new JLabel( tauString , JLabel.LEADING );
+		updateButton = new JButton( "Set Default" );
+		this.infoPanel = panel;
 
-    if (TelescopeDataPanel.DRAMA_ENABLED) {
-      hub = DcHub.getHandle();
-      hub.setParentComponent(this); // Use for ErrorBox dialogs in the hub.
+		if( TelescopeDataPanel.DRAMA_ENABLED )
+		{
+			hub = DcHub.getHandle();
+			hub.setParentComponent( this ); // Use for ErrorBox dialogs in the hub.
 
-      // CSOMON
-      csomonHI = new HubImplementor("CSOMON");
-      csomonHI.setCallBack("edu.jach.qt.djava.CSOPathResponseHandler");
-      csomonHI.setBuffers(900, 5, 1800, 12);
+			// CSOMON
+			csomonHI = new HubImplementor( "CSOMON" );
+			csomonHI.setCallBack( "edu.jach.qt.djava.CSOPathResponseHandler" );
+			csomonHI.setBuffers( 900 , 5 , 1800 , 12 );
 
-      //Closing
-      closeHI = new HubImplementor("CloseDcHub");
+			// Closing
+			closeHI = new HubImplementor( "CloseDcHub" );
 
-      hub.register(csomonHI);
+			hub.register( csomonHI );
 
-    }
-    config();
-  }
+		}
+		config();
+	}
   
     /**
 	 * Set the Tau value on the appropriate <code>JLabel</code>
@@ -293,7 +297,8 @@ public class TelescopeDataPanel extends JPanel implements ActionListener {
 			WidgetPanel.getAtmospherePanel().setTextField( "tau:" , TelescopeDataPanel.csoTauValue.getText() );
 		}
 
-		SimpleMoon moon = new SimpleMoon();
+		SimpleMoon moon = SimpleMoon.getInstance() ;
+		moon.reset() ;
 		boolean dark = false;
 		boolean grey = false;
 		boolean bright = false;

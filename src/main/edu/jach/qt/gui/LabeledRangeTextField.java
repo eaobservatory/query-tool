@@ -298,7 +298,8 @@ public class LabeledRangeTextField extends WidgetPanel
 		if( moonPanel == null || moonPanel.getBackground() == Color.red )
 			return;
 		double moonValue = 0;
-		SimpleMoon moon = new SimpleMoon( dateTime );
+		SimpleMoon moon = SimpleMoon.getInstance() ;
+		moon.set( dateTime ) ;
 		if( moon.isUp() )
 			moonValue = moon.getIllumination() * 100;
 		moon = null ;

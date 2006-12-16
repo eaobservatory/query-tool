@@ -532,11 +532,11 @@ public class Querytool implements Runnable, Observer {
 		// otherwise leave it as it is
 		if( WidgetPanel.getMoonPanel() != null && WidgetPanel.getMoonPanel().getBackground() != Color.red )
 		{
-			SimpleMoon moon;
+			SimpleMoon moon = SimpleMoon.getInstance() ;
 			if( lrtf.timerRunning() || !tu.isValidDate( tmpStr ) )
-				moon = new SimpleMoon();
+				moon.reset() ;
 			else
-				moon = new SimpleMoon( tmpStr );
+				moon.set( tmpStr ) ;
 			double moonValue = 0;
 			if( moon.isUp() )
 				moonValue = moon.getIllumination() * 100;

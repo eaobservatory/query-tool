@@ -205,9 +205,7 @@ public class InfoPanel extends JPanel implements ActionListener {
 							logoPanel.stop();
 							qtf.setCursor( normalCursor );
 							if( queryExpiredTimer != null )
-							{
 								queryExpiredTimer.cancel();
-							}
 							queryExpiredTimer = new Timer();
 							qtf.setQueryExpired( false );
 							String queryTimeout = System.getProperty( "queryTimeout" ) ;
