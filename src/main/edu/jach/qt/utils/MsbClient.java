@@ -200,7 +200,9 @@ public class MsbClient extends SoapClient {
     	String[] types = getColumnClasses() ;
 
     	String hiddenColumns = System.getProperty( "hiddenColumns" ) ;
-    	String[] hidden = hiddenColumns.split( "%" ) ;
+    	String[] hidden = new String[ 0 ] ;
+    	if( hiddenColumns != null )
+    		hidden = hiddenColumns.split( "%" ) ;
 
     	if( names != null && types != null )
     	{
