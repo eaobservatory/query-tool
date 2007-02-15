@@ -429,6 +429,11 @@ final public class ProgramTree extends JPanel implements
 					logger.info( "Last execution still running" );
 			}
 			setExecutable( true );
+			if( !isDeferred )
+			{
+				obsList.setListData( new Vector() ) ;
+				obsList.clearSelection();
+			}
 		}
 		else if( System.getProperty( "telescope" ).equalsIgnoreCase( "jcmt" ) )
 		{
@@ -456,12 +461,7 @@ final public class ProgramTree extends JPanel implements
 					setExecutable( true );
 				}
 			}
-			setExecutable( true );
-		}
-		if( !isDeferred )
-		{
-			obsList.setListData( new Vector() ) ;
-			obsList.clearSelection();
+//			setExecutable( true );
 		}
 	}
 
@@ -1379,8 +1379,11 @@ final public class ProgramTree extends JPanel implements
 
 			File failFile = new File( "/jcmtdata/orac_data/deferred/.failure" );
 			execute = ExecuteJCMT.getInstance( _item );
-			if( execute == null )
+			if( execute == null && ExecuteJCMT.isRunning() )
+			{
+				JOptionPane.showMessageDialog( null , "Please Wait. ExecuteJCMT already running." , "Already running" , JOptionPane.INFORMATION_MESSAGE );				
 				return;
+			}
 			try
 			{
 				failed = execute.run();
@@ -1472,6 +1475,11 @@ final public class ProgramTree extends JPanel implements
 			}
 			_deferredItem = null;
 			setExecutable( true );
+			if( !_isDeferred )
+			{
+				obsList.setListData( new Vector() ) ;
+				obsList.clearSelection();
+			}
 			logger.debug( "Enabling run button since the ExecuteJCMT task has completed" );
 		}
 
