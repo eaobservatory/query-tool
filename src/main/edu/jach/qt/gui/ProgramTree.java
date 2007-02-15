@@ -443,10 +443,13 @@ final public class ProgramTree extends JPanel implements
 			{
 				try
 				{
+					ExecuteInThread ein ;
 					if( isDeferred )
-						new ExecuteInThread( item , isDeferred ).start();
+						ein = new ExecuteInThread( item , isDeferred ) ;
 					else
-						new ExecuteInThread( _spItem , isDeferred ).start();
+						ein = new ExecuteInThread( _spItem , isDeferred ) ;
+					ein.start() ;
+					ein.join() ;
 				}
 				catch( Exception e )
 				{
