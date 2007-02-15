@@ -461,7 +461,6 @@ final public class ProgramTree extends JPanel implements
 					setExecutable( true );
 				}
 			}
-//			setExecutable( true );
 		}
 	}
 
