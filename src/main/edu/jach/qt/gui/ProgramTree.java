@@ -356,11 +356,6 @@ final public class ProgramTree extends JPanel implements
 			isDeferred = true;
 			item = DeferredProgramList.getCurrentItem() ;
 		}
-		else
-		{
-			obsList.setListData( new Vector() ) ;
-			obsList.clearSelection();
-		}
 		
 		setExecutable( false );
 		engButton.setToolTipText( "Run button disabled during execution" );
@@ -419,27 +414,19 @@ final public class ProgramTree extends JPanel implements
 					}
 
 					if( !isDeferred && IsModelEmpty() && TelescopeDataPanel.DRAMA_ENABLED )
-					{
 						msbDone = showMSBDoneDialog();
-					} // end of if ()
 				}
 				else if( !( failed ) )
 				{
 					// We are using the queue, so assime the observation is done
 					msbDone = true;
 				}
-
-				setExecutable( true );
 			}
 			catch( Exception e )
 			{
 				logger.error( "Failed to execute" , e );
 				if( t != null && t.isAlive() )
-				{
 					logger.info( "Last execution still running" );
-				}
-				setExecutable( true );
-				return;
 			}
 			setExecutable( true );
 		}
@@ -468,6 +455,11 @@ final public class ProgramTree extends JPanel implements
 				}
 			}
 			setExecutable( true );
+		}
+		if( !isDeferred )
+		{
+			obsList.setListData( new Vector() ) ;
+			obsList.clearSelection();
 		}
 	}
 
@@ -1456,9 +1448,7 @@ final public class ProgramTree extends JPanel implements
 						{
 							Thread.sleep( 500 );
 						}
-						catch( Exception x )
-						{
-						}
+						catch( Exception x ){}
 						continue;
 					}
 					// For heterodyne, mark all the observation as done and bring up the popup
