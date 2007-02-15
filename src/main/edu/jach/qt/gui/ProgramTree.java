@@ -449,7 +449,6 @@ final public class ProgramTree extends JPanel implements
 					else
 						ein = new ExecuteInThread( _spItem , isDeferred ) ;
 					ein.start() ;
-					ein.join() ;
 				}
 				catch( Exception e )
 				{
