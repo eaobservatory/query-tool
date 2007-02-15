@@ -115,57 +115,63 @@ public class QtFrame
   SwingWorker msbWorker;
 
   /**
-   * Creates a new <code>QtFrame</code> instance.
-   *
-   * @param wdb a <code>WidgetDataBag</code> value
-   * @param qt a <code>Querytool</code> value
-   */
-  public QtFrame(WidgetDataBag wdb, Querytool qt) {
-    widgetBag = wdb;
-    localQuerytool = qt;
+	 * Creates a new <code>QtFrame</code> instance.
+	 * 
+	 * @param wdb
+	 *            a <code>WidgetDataBag</code> value
+	 * @param qt
+	 *            a <code>Querytool</code> value
+	 */
+	public QtFrame( WidgetDataBag wdb , Querytool qt )
+	{
+		widgetBag = wdb;
+		localQuerytool = qt;
 
-    enableEvents(AWTEvent.WINDOW_EVENT_MASK);
-    GridBagLayout layout = new GridBagLayout();
-    getContentPane().setLayout(layout);
-    this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-    this.addWindowListener( new WindowAdapter () {
-	    public void windowClosing(WindowEvent e) {
-		exitQT();
-	    }
-	} );
+		enableEvents( AWTEvent.WINDOW_EVENT_MASK );
+		GridBagLayout layout = new GridBagLayout();
+		getContentPane().setLayout( layout );
+		this.setDefaultCloseOperation( DO_NOTHING_ON_CLOSE );
+		this.addWindowListener( new WindowAdapter()
+		{
+			public void windowClosing( WindowEvent e )
+			{
+				exitQT();
+			}
+		} );
 
-    SignalHandler handler = new SignalHandler () {
-	    public void handle (Signal sig) {
-		// Handle SIGTERM
-		setVisible(false);
-		dispose();
-		System.exit(0);
-	    }
-	};
-    Signal.handle(new Signal("TERM"), handler);
+		SignalHandler handler = new SignalHandler()
+		{
+			public void handle( Signal sig )
+			{
+				// Handle SIGTERM
+				setVisible( false );
+				dispose();
+				System.exit( 0 );
+			}
+		};
+		Signal.handle( new Signal( "TERM" ) , handler );
 
+		try
+		{
 
-    try {
+			om = new OmpOM();
+			om.addNewTree( null );
 
-      om = new OmpOM();
-      om.addNewTree(null);
-
-      compInit();
-      validateTree();
-      tabbedPane.setSelectedIndex(0);
-
-
-    }
-    catch(Exception e) {
-      e.printStackTrace();
-    }
-
-  }
+			compInit();
+			validateTree();
+			tabbedPane.setSelectedIndex( 0 );
+			logger.info( "Tree validated" ) ;
+		}
+		catch( Exception e )
+		{
+			e.printStackTrace();
+		}
+		logger.info( "Exiting QtFrame constructor" ) ;
+	}
 
   /**
-   * On exit, prompt the user if they want to save any deferred observation, then
-   * shutdown.
-   */
+	 * On exit, prompt the user if they want to save any deferred observation, then shutdown.
+	 */
   public void exitQT() {
       logger.info("QT shutdown by user");
       boolean canExit = true;
@@ -277,6 +283,9 @@ public class QtFrame
 		projectTableSetup( ptm );
 		tableSetup();
 		splash.done() ;
+		
+		logger.info( "Table setup" ) ;
+		
 		resultsPanel = new JScrollPane( table );
 		resultsPanel.getViewport().setScrollMode( JViewport.BLIT_SCROLL_MODE );
 		projectPane = new JScrollPane( projectTable );
@@ -295,6 +304,8 @@ public class QtFrame
 
 		// Build Menu
 		buildMenu();
+		
+		logger.info( "Menu built" ) ;
 
 		getContentPane().setLayout( new BorderLayout() );
 		getContentPane().add( topPanel , BorderLayout.NORTH );
@@ -309,6 +320,8 @@ public class QtFrame
 		{
 			logger.fatal( "Widget Panel Parse Failed" , e );
 		}
+		
+		logger.info( "Widget config parsed" ) ;
 	}
 
     private void projectTableSetup(ProjectTableModel ptm) {
