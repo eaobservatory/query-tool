@@ -40,90 +40,79 @@ final public class QT {
   static Logger logger = Logger.getLogger(QT.class);
 
    /**
-    * Creates a new <code>QT</code> instance which starts a 
-    * Querytool, the app itself, and a QtFrame, the user interface.  The
-    * frame is also set be centered on the screen.
-    */
-   public QT () {
-       if (System.getProperty("QT_LOG_DIR") == null || System.getProperty("QT_LOG_DIR").equals(""))
-       {
-	   PropertyConfigurator.configure("../../config/nolog4j.properties");
-       }
-       else
-       {
-	 PropertyConfigurator.configure("../config/log4j.properties");
-       }
+	 * Creates a new <code>QT</code> instance which starts a Querytool, the app itself, and a QtFrame, the user interface. The frame is also set be centered on the screen.
+	 */
+	public QT()
+	{
+		if( System.getProperty( "QT_LOG_DIR" ) == null || System.getProperty( "QT_LOG_DIR" ).equals( "" ) )
+			PropertyConfigurator.configure( "../../config/nolog4j.properties" );
+		else
+			PropertyConfigurator.configure( "../config/log4j.properties" );
 
-     logger.info("-------WELCOME TO THE QT----------");
+		logger.info( "-------WELCOME TO THE QT----------" );
 
-     try {
-// 	 if (System.getProperty("telescope").equalsIgnoreCase("ukirt")) {
-// 	     SpItemDOM.setPreTranslator(new UkirtPreTranslator("Base", "GUIDE"));
-// 	 }
-// 	 else if (System.getProperty("telescope").equalsIgnoreCase("jcmt")) {
-// 	     SpItemDOM.setPreTranslator(new JcmtPreTranslator("SCIENCE", "REFERENCE"));
-// 	 }
-	 OtCfg.init();
-     } 
-     
-     catch ( Exception e) {
-       logger.fatal("PreTranslator error starting the QT", e);
-       System.exit(1);
-     }
+		try
+		{
+			OtCfg.init();
+		}
+		catch( Exception e )
+		{
+			logger.fatal( "PreTranslator error starting the QT" , e );
+			System.exit( 1 );
+		}
+		catch( ClassCircularityError cce )
+		{
+			logger.fatal( "Talk to SHAUN!!!: PreTranslator ClassCircularityError starting the QT" , cce );
+			System.exit( 1 );
+		}
 
-     catch ( ClassCircularityError cce) {
-       logger.fatal("Talk to SHAUN!!!: PreTranslator ClassCircularityError starting the QT", cce);
-       System.exit(1);
-     }
+		QtTools.loadConfig( System.getProperty( "qtConfig" ) );
 
+		WidgetDataBag wdb = new WidgetDataBag();
+		Querytool qt = new Querytool( wdb );
+		QtFrame qtf = new QtFrame( wdb , qt );
 
-      QtTools.loadConfig(System.getProperty("qtConfig"));
+		qtf.setSize( 1150 , 620 );
+		qtf.setTitle( "OMP Query Tool Observation Manager" );
 
-      WidgetDataBag wdb = new WidgetDataBag ();
-      Querytool qt = new Querytool(wdb);
-      QtFrame qtf = new QtFrame(wdb, qt);
+		Dimension screenSize;
+		try
+		{
+			Toolkit tk = Toolkit.getDefaultToolkit();
+			screenSize = tk.getScreenSize();
+		}
+		catch( AWTError awe )
+		{
+			screenSize = new Dimension( 640 , 480 );
+		}
+		Dimension frameSize = qtf.getSize();
 
-      
-      qtf.setSize(1150,620);
-      //qtf.setSize(new Dimension(1150, 600));
-      qtf.setTitle("OMP Query Tool Observation Manager");
+		/* Fill screen if the screen is smaller that qtfSize. */
+		if( frameSize.height > screenSize.height )
+			frameSize.height = screenSize.height;
+		if( frameSize.width > screenSize.width )
+			frameSize.width = screenSize.width;
 
-      Dimension screenSize;
-      try {
-	  Toolkit tk = Toolkit.getDefaultToolkit();
-	  screenSize = tk.getScreenSize();
-      }
-      catch (AWTError awe) {
-	  screenSize = new Dimension (640, 480);
-      }
-      Dimension frameSize = qtf.getSize();
+		/* Center the screen */
+		int x = screenSize.width / 2 - frameSize.width / 2;
+		int y = screenSize.height / 2 - frameSize.height / 2;
+		qtf.setLocation( x , y );
+		qtf.validate();
+		qtf.setVisible( true );
+		
+		logger.info( "QT should now be visible" ) ;
 
-      /* Fill screen if the screen is smaller that qtfSize. */
-      if (frameSize.height > screenSize.height) {
-	 frameSize.height = screenSize.height;
-      }
-      if (frameSize.width > screenSize.width) {
-	 frameSize.width = screenSize.width;
-      }
-
-      /* Center the screen */
-      int x = screenSize.width/2 - frameSize.width/2;
-      int y = screenSize.height/2 - frameSize.height/2;
-      qtf.setLocation(x,y);
-      qtf.validate();
-      qtf.setVisible(true);
-      
-      String bigTelescope = System.getProperty( "TELESCOPE" ) ; 
-      if( bigTelescope == null || bigTelescope.equals( "" ) )
-    	  System.setProperty( "TELESCOPE" , System.getProperty( "telescope" ) ) ;     
-   }
+		String bigTelescope = System.getProperty( "TELESCOPE" );
+		if( bigTelescope == null || bigTelescope.equals( "" ) )
+			System.setProperty( "TELESCOPE" , System.getProperty( "telescope" ) );
+	}
    
    /**
-    * Currently we take no args at startup.  Just get the 
-    * LookAndFeel from the UIManager and start the Main QT class.
-    *
-    * @param args a <code>String[]</code> value
-    */
+	 * Currently we take no args at startup. Just get the LookAndFeel from the UIManager and start the Main QT class.
+	 * 
+	 * @param args
+	 *            a <code>String[]</code> value
+	 */
    public static void main(String[] args) {
        try {
 	   new QT();
@@ -139,6 +128,9 @@ final public class QT {
 
 /*
  * $Log$
+ * Revision 1.32  2007/02/15 00:13:50  shart
+ * For debugging puposes -> SH
+ *
  * Revision 1.31  2006/10/24 02:00:29  shart
  * Hack to help the fact that the same parameter in OT and QT use a different case, will fix, just not today  -> SH
  *
