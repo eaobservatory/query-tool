@@ -1,9 +1,5 @@
 package edu.jach.qt.gui;
 
-
-//import orac.jcmt.inst.*;
-//import orac.jcmt.iter.*;
-
 /* Gemini imports */
 import gemini.sp.*;
 import gemini.sp.iter.*;
@@ -17,21 +13,15 @@ import orac.ukirt.inst.*;
 import orac.ukirt.iter.*;
 import orac.jcmt.inst.*;
 import orac.jcmt.iter.*;
-import orac.util.*;
 
 /* QT imports */
-import edu.jach.qt.gui.*;
 import edu.jach.qt.utils.*;
 
 /* Standard imports */
 import java.awt.*;
-import java.awt.event.*;
 import java.io.*;
 import java.util.*;
 import javax.swing.*;
-import javax.swing.border.*;
-import javax.swing.event.*;
-import javax.swing.tree.*;
 
 /* Miscellaneous imports */
 import org.apache.log4j.Logger;
@@ -70,131 +60,76 @@ public class OmpOM extends JPanel{
      */
     this.initSpItems(System.getProperty("telescope"));
 
-//     /* Init UKIRT Instruments */
-//     SpItem spItem = new SpInstUFTI();
-//     spItem = new SpInstCGS4();
-//     spItem = new SpInstIRCAM3();
-//     spItem = new SpInstMichelle();
-//     spItem = new SpDRRecipe();
-
-//     /*OMP Specific*/
-//     spItem = new SpIterChop();
-
-//     /* Init UKIRT SpTypes */
-//     spItem = new SpIterBiasObs();
-//     spItem = new SpIterBiasObs();
-//     spItem = new SpIterCGS4();
-//     spItem = new SpIterCGS4CalUnit();
-//     spItem = new SpIterCGS4CalObs();
-//     spItem = new SpIterCalUnit();
-//     spItem = new SpIterDarkObs();
-//     spItem = new SpIterFP();
-//     spItem = new SpIterIRCAM3();
-//     spItem = new SpIterIRPOL();
-//     spItem = new SpIterMichelle();
-//     spItem = new SpIterMichelleCalObs();
-//     spItem = new SpIterNod();
-//     spItem = new SpIterNodObs();
-//     spItem = new SpIterUFTI();
-
-//     /* Init GEMINI Miscellaneous */
-//     spItem = new SpIterRepeat();
-//     spItem = new SpIterOffset();
-//     spItem = new SpIterObserve();
-//     spItem = new SpIterSky();
-//     spItem = new SpSchedConstObsComp();
-//     spItem = new SpSiteQualityObsComp();
-
-    /* Init JCMT Instruments */
-    //spItem = new SpInstSCUBA();
-    //spItem = new SpInstHeterodyne();
-
-    /* Init JCMT SpTypes */
-    //spItem = new SpIterFocusObs();
-    //spItem = new SpIterFrequency();
-    //spItem = new SpIterJiggleObs();
-    //spItem = new SpIterRasterObs();
-    //spItem = new SpIterSkydipObs();
-    //spItem = new SpIterStareObs();
-    //spItem = new SpIterScanObs();
-    //spItem = new SpIterPointingObs();
-    //spItem = new SpIterPhotomObs();
-
-    /* Init JCMT Miscellaneous */
-    //spItem = new orac.jcmt.obsComp.SpSiteQualityObsComp();
-
     logger.info("SpItems initialized");
     
     ptree = new ProgramTree();
   }
 
-    private void initSpItems(String telescope) {
-	if (telescope.equalsIgnoreCase("ukirt")) {
-	    /* Init UKIRT Instruments */
-	    SpItem spItem = new SpInstUFTI();
-	    spItem = new SpInstCGS4();
-	    spItem = new SpInstIRCAM3();
-	    spItem = new SpInstMichelle();
-	    spItem = new orac.ukirt.inst.SpDRRecipe();
+    private void initSpItems( String telescope )
+	{
+		if( telescope.equalsIgnoreCase( "ukirt" ) )
+		{
+			/* Init UKIRT Instruments */
+			SpItem spItem = new SpInstUFTI();
+			spItem = new SpInstCGS4();
+			spItem = new SpInstIRCAM3();
+			spItem = new SpInstUIST();
+			spItem = new SpInstWFCAM();
+			spItem = new orac.ukirt.inst.SpDRRecipe();
 
-	    /*OMP Specific*/
-	    spItem = new SpIterChop();
+			/* OMP Specific */
+			spItem = new SpIterChop();
 
-	    /* Init UKIRT SpTypes */
-	    spItem = new SpIterBiasObs();
-	    spItem = new SpIterBiasObs();
-	    spItem = new SpIterCGS4();
-	    spItem = new SpIterCGS4CalUnit();
-	    spItem = new SpIterCGS4CalObs();
-	    spItem = new SpIterCalUnit();
-	    spItem = new SpIterDarkObs();
-	    spItem = new SpIterFP();
-	    spItem = new SpIterIRCAM3();
-	    spItem = new SpIterIRPOL();
-	    spItem = new SpIterMichelle();
-	    spItem = new SpIterMichelleCalObs();
-	    spItem = new SpIterNod();
-	    spItem = new SpIterNodObs();
-	    spItem = new SpIterUFTI();
-	    
-	    /* Init GEMINI Miscellaneous */
-	    spItem = new SpIterRepeat();
-	    spItem = new SpIterOffset();
-	    spItem = new orac.ukirt.iter.SpIterObserve();
-	    spItem = new orac.ukirt.iter.SpIterSky();
-	    spItem = new SpSchedConstObsComp();
-	    spItem = new SpSiteQualityObsComp();
+			/* Init UKIRT SpTypes */
+			spItem = new SpIterBiasObs();
+			spItem = new SpIterBiasObs();
+			spItem = new SpIterCGS4();
+			spItem = new SpIterCGS4CalUnit();
+			spItem = new SpIterCGS4CalObs();
+			spItem = new SpIterCalUnit();
+			spItem = new SpIterDarkObs();
+			spItem = new SpIterFP();
+			spItem = new SpIterIRCAM3();
+			spItem = new SpIterIRPOL();
+			spItem = new SpIterNod();
+			spItem = new SpIterUFTI();
+
+			/* Init GEMINI Miscellaneous */
+			spItem = new SpIterRepeat();
+			spItem = new SpIterOffset();
+			spItem = new orac.ukirt.iter.SpIterObserve();
+			spItem = new orac.ukirt.iter.SpIterSky();
+			spItem = new SpSchedConstObsComp();
+			spItem = new SpSiteQualityObsComp();
+		}
+		else if( telescope.equalsIgnoreCase( "jcmt" ) )
+		{
+			/* Init JCMT Instruments */
+			SpItem spItem = new SpInstHeterodyne();
+
+			/* Init JCMT SpTypes */
+			spItem = new SpIterChop();
+			spItem = new orac.jcmt.inst.SpDRRecipe();
+			spItem = new SpIterFocusObs();
+			spItem = new SpIterFrequency();
+			spItem = new SpIterJiggleObs();
+			spItem = new SpIterNoiseObs();
+			spItem = new SpIterPOL();
+			spItem = new SpIterPointingObs();
+			spItem = new SpIterRasterObs();
+			spItem = new SpIterSkydipObs();
+			spItem = new SpIterStareObs();
+			/* Init JCMT Miscellaneous */
+			spItem = new orac.jcmt.obsComp.SpSiteQualityObsComp();
+		}
 	}
-	else if (telescope.equalsIgnoreCase("jcmt")) {
-	    /* Init JCMT Instruments */
-	    SpItem spItem = new SpInstSCUBA();
-	    spItem = new SpInstHeterodyne();
-	    
-	    /* Init JCMT SpTypes */
-	    spItem = new SpIterChop();
-	    spItem = new orac.jcmt.inst.SpDRRecipe();
-	    spItem = new SpIterFocusObs();
-	    spItem = new SpIterFrequency();
-	    spItem = new SpIterJiggleObs();
-	    spItem = new SpIterNoiseObs();
-	    spItem = new SpIterPOL();
-	    spItem = new SpIterPointingObs();
-	    spItem = new SpIterRasterObs();
-	    spItem = new SpIterSkydipObs();
-	    spItem = new SpIterStareObs();
-// 	    spItem = new SpIterScanObs();
-// 	    spItem = new SpIterPhotomObs();
-	    
-	    /* Init JCMT Miscellaneous */
-	    spItem = new orac.jcmt.obsComp.SpSiteQualityObsComp();	
-	}
-    }
 
     /**
-     * Set the Project Identifier.
-     * Set the projectID to that passed in.
-     * @param projectID   The value of the project id to set.
-     */
+	 * Set the Project Identifier. Set the projectID to that passed in.
+	 * 
+	 * @param projectID
+	 *            The value of the project id to set.
+	 */
   public void setProjectID(String projectID) {
     ptree.setProjectID(projectID);
   }
@@ -332,17 +267,11 @@ public class OmpOM extends JPanel{
 		dsp.setDividerLocation( 150 );
 		JSplitPane splitPane = new JSplitPane( JSplitPane.HORIZONTAL_SPLIT , ptree , dsp );
 		if( ProgramTree.getCurrentItem() != null )
-		{
 			NotePanel.setNote( ProgramTree.getCurrentItem() );
-		}
 		else if( DeferredProgramList.getCurrentItem() != null )
-		{
 			NotePanel.setNote( DeferredProgramList.getCurrentItem() ) ;
-		}
 		else
-		{
 			NotePanel.setNote( spItem );
-		}
 		return splitPane;
 	}
 
