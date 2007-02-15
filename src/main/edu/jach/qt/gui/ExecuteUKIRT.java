@@ -45,9 +45,7 @@ public class ExecuteUKIRT extends Execute implements Runnable {
 		catch( IOException ioe )
 		{
 			if( TelescopeDataPanel.DRAMA_ENABLED )
-			{
 				logger.error( "Unable to create success/fail file" , ioe );
-			}
 			// return;
 		}
 
@@ -82,7 +80,7 @@ public class ExecuteUKIRT extends Execute implements Runnable {
 		}
 		else
 		{
-			SpItem inst = ( SpItem ) SpTreeMan.findInstrument( itemToExecute );
+			SpItem inst = ( SpItem )SpTreeMan.findInstrument( itemToExecute );
 			if( inst == null )
 			{
 				logger.error( "No instrument found" );
@@ -128,13 +126,9 @@ public class ExecuteUKIRT extends Execute implements Runnable {
 				Runtime rt = Runtime.getRuntime();
 				String command;
 				if( super.isDeferred )
-				{
 					command = "/jac_sw/omp/QT/bin/insertOCSQUEUE.ksh " + tname;
-				}
 				else
-				{
 					command = "/jac_sw/omp/QT/bin/loadUKIRT.ksh " + tname;
-				}
 				logger.debug( "Running command " + command );
 				Process p = rt.exec( command );
 				InputStream istream = p.getInputStream();
