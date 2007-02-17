@@ -282,61 +282,57 @@ final public class ProgramTree extends JPanel implements
 	@throws none
       
     */
-    public void actionPerformed (ActionEvent evt) {
-	Object source = evt.getSource();
-	if (source == xpand) {
-	    SpItem itemToXpand;
-	    if (selectedItem == null && DeferredProgramList.getCurrentItem() == null) {
-		return;
-	    }
-	    else if (selectedItem == null) {
-		itemToXpand = DeferredProgramList.getCurrentItem() ;
-	    }
-	    else {
-		itemToXpand = selectedItem;
-	    }
+    public void actionPerformed( ActionEvent evt )
+	{
+		Object source = evt.getSource();
+		if( source == xpand )
+		{
+			SpItem itemToXpand;
+			if( selectedItem == null && DeferredProgramList.getCurrentItem() == null )
+				return;
+			else if( selectedItem == null )
+				itemToXpand = DeferredProgramList.getCurrentItem();
+			else
+				itemToXpand = selectedItem;
 
-	    if (tv == null) {
-		tv = new TreeViewer(itemToXpand);
-	    }
-	    else {
-		tv.update(itemToXpand);
-	    }
-	}
-	else if ( source == engButton ) {
-	    _useQueue = true;
-	    doExecute();
-	}
-
-	if (source instanceof JMenuItem) {
-	    JMenuItem thisItem = (JMenuItem) source;
-	    if ( thisItem.getText().equals(editText) ) {
-		editAttributes();
-	    } 
-	    else if ( thisItem.getText().equals(scaleText) ) {
-		scaleAttributes();
-	    } 
-	    else if ( thisItem.getText().equals(rescaleText) ) {
-		rescaleAttributes();   
-	    }
-	    else if ( thisItem.getText().equals( engString ) ) {
-		_useQueue = false;
-                doExecute();
-            }
-	    else if (thisItem.getText().equals(msbDoneText)) {
-		if (projectID != null && 
-		    projectID != ""   &&
-		    checkSum  != null && 
-		    checkSum  != ""   &&
-		    ( System.getProperty("telescope").equalsIgnoreCase("ukirt") || instrumentContext instanceof SpInstHeterodyne )  && 
-		    anObservationHasBeenDone == true &&
-		    msbDone == false &&
-		    TelescopeDataPanel.DRAMA_ENABLED) { 
-		    msbDone = showMSBDoneDialog();
+			if( tv == null )
+				tv = new TreeViewer( itemToXpand );
+			else
+				tv.update( itemToXpand );
 		}
-	    }
+		else if( source == engButton )
+		{
+			_useQueue = true;
+			doExecute();
+		}
+
+		if( source instanceof JMenuItem )
+		{
+			JMenuItem thisItem = ( JMenuItem ) source;
+			if( thisItem.getText().equals( editText ) )
+			{
+				editAttributes();
+			}
+			else if( thisItem.getText().equals( scaleText ) )
+			{
+				scaleAttributes();
+			}
+			else if( thisItem.getText().equals( rescaleText ) )
+			{
+				rescaleAttributes();
+			}
+			else if( thisItem.getText().equals( engString ) )
+			{
+				_useQueue = false;
+				doExecute();
+			}
+			else if( thisItem.getText().equals( msbDoneText ) )
+			{
+				if( projectID != null && projectID != "" && checkSum != null && checkSum != "" && ( System.getProperty( "telescope" ).equalsIgnoreCase( "ukirt" ) ) && anObservationHasBeenDone == true && msbDone == false && TelescopeDataPanel.DRAMA_ENABLED )
+					msbDone = showMSBDoneDialog();
+			}
+		}
 	}
-    }
 
     public void doExecute()
 	{
@@ -573,15 +569,12 @@ final public class ProgramTree extends JPanel implements
 	 */
 	public void addList( SpItem sp )
 	{
-
 		// Check if there is already an existing model and whether it still has
 		// observations to perform
 		if( instrumentContext instanceof SpInstHeterodyne && HTMLViewer.visible() )
-		{
 			return;
-		}
 
-		if( model != null && msbDone == false && ( System.getProperty( "telescope" ).equalsIgnoreCase( "ukirt" ) || instrumentContext instanceof SpInstHeterodyne ) && anObservationHasBeenDone == true && TelescopeDataPanel.DRAMA_ENABLED )
+		if( model != null && msbDone == false && ( System.getProperty( "telescope" ).equalsIgnoreCase( "ukirt" ) ) && anObservationHasBeenDone == true && TelescopeDataPanel.DRAMA_ENABLED )
 		{
 			if( sp != null )
 			{
@@ -1067,25 +1060,20 @@ final public class ProgramTree extends JPanel implements
 
     class PopupListener extends MouseAdapter {
 
-	public void mousePressed (MouseEvent e) {
+    	public void mousePressed( MouseEvent e )
+		{
 
-	    // If this was not the right button just return immediately.
-	    if (! e.isPopupTrigger() ) {
-		return;
-	    }
+			// If this was not the right button just return immediately.
+			if( !e.isPopupTrigger() )
+				return;
 
-	    if (selectedItem == null && 
-		( System.getProperty("telescope").equalsIgnoreCase("ukirt") || instrumentContext instanceof SpInstHeterodyne) &&
-			TelescopeDataPanel.DRAMA_ENABLED) {
-		msbDone = showMSBDoneDialog();
-	    }
-	    // If this is an observation then show the popup
-	    else if (selectedItem != null &&
-		     selectedItem.type()==SpType.OBSERVATION) {
-		scalePopup.show (e.getComponent(), e.getX(), e.getY());
-	    }   
-	}	
-    }    
+//			 If this is an observation then show the popup
+			if( selectedItem == null && ( System.getProperty( "telescope" ).equalsIgnoreCase( "ukirt" ) ) && TelescopeDataPanel.DRAMA_ENABLED )
+				msbDone = showMSBDoneDialog();
+			else if( selectedItem != null && selectedItem.type() == SpType.OBSERVATION )
+				scalePopup.show( e.getComponent() , e.getX() , e.getY() );
+		}
+	}    
 
     /**
      * Implementation of <code>DropTargetListener</code> Interface 
@@ -1236,19 +1224,13 @@ final public class ProgramTree extends JPanel implements
      * Request whether we can shutdown the QT at this point.  It basically calls the MSBDoneDialog
      * and will return "true" if we can shutdown, or false otherwise.
      */
-    public boolean shutDownRequest() {
-	if ( ( System.getProperty("telescope").equalsIgnoreCase("ukirt") || // We are using ukirt
-	       instrumentContext instanceof SpInstHeterodyne )  &&          // We have a heterodyne component
-	     anObservationHasBeenDone &&                                    // At least one observation has been 
-                                                                            // done from the current MSB
-	     !msbDone &&                                                    // The MSB has not been marked as done
-	     TelescopeDataPanel.DRAMA_ENABLED ) {                           // We are not running scenario.
-	    return ( showMSBDoneDialog() );
+    public boolean shutDownRequest()
+	{
+		if( ( System.getProperty( "telescope" ).equalsIgnoreCase( "ukirt" ) ) && anObservationHasBeenDone && !msbDone && TelescopeDataPanel.DRAMA_ENABLED )
+			return ( showMSBDoneDialog() );
+		else
+			return true; // We can safely exit
 	}
-	else {
-	    return true;  // We can safely exit
-	}
-    }
 
     private boolean showMSBDoneDialog() {
 	boolean done = false;
@@ -1378,7 +1360,7 @@ final public class ProgramTree extends JPanel implements
 
 			File failFile = new File( "/jcmtdata/orac_data/deferred/.failure" );
 			execute = ExecuteJCMT.getInstance( _item );
-			if( execute == null && ExecuteJCMT.isRunning() )
+			if( execute == null )
 			{
 				JOptionPane.showMessageDialog( null , "Please Wait. ExecuteJCMT already running." , "Already running" , JOptionPane.INFORMATION_MESSAGE );				
 				return;
