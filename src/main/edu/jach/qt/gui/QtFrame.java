@@ -45,12 +45,15 @@ import javax.swing.SwingConstants ;
 import javax.swing.ImageIcon ;
 import javax.swing.JMenuBar ;
 import javax.swing.JButton ;
+import javax.swing.event.ChangeEvent;
 import javax.swing.event.PopupMenuListener ; 
 import javax.swing.event.MenuListener ; 
 import javax.swing.event.ListSelectionListener ;
 import javax.swing.event.MenuEvent ;
 import javax.swing.event.PopupMenuEvent ;
 import javax.swing.event.ListSelectionEvent ;
+import javax.swing.event.TableColumnModelEvent;
+import javax.swing.event.TableColumnModelListener;
 import javax.swing.table.TableColumnModel ;
 import javax.swing.table.TableColumn ;
 import org.apache.log4j.Logger;
@@ -473,6 +476,24 @@ public class QtFrame
 			}
 
 		} );
+		
+		TableColumnModel tcm = table.getColumnModel() ;
+		TableColumnModelListener mover = new TableColumnModelListener()
+		{
+			public void columnAdded( TableColumnModelEvent e ){}
+			public void columnMarginChanged( ChangeEvent e ){}
+			public void columnMoved( TableColumnModelEvent e )
+			{
+				MsbColumns columns = MsbClient.getColumnInfo() ;
+				int from = e.getFromIndex() ;
+				int to = e.getToIndex() ;
+				columns.move( from , to ) ;
+			}
+			public void columnRemoved( TableColumnModelEvent e ){}
+			public void columnSelectionChanged( ListSelectionEvent e ){}
+		} ;
+		tcm.addColumnModelListener( mover ) ;
+		
 		table.setVisible( true );
 	}
 
