@@ -29,7 +29,6 @@ import javax.swing.tree.*;
 
 /* Miscellaneous imports */
 import org.apache.log4j.Logger;
-import edu.jach.qt.utils.MSBDoneDialog;
 
 
 /**
@@ -53,7 +52,6 @@ final public class ProgramTree extends JPanel implements
     public static final String BIN_SEL_IMAGE = System.getProperty("binImage");
 
     private GridBagConstraints		gbc;
-    private static JButton		run;
     private static JButton		engButton;
     private JButton                     xpand;
     private JTree			tree;
@@ -90,10 +88,7 @@ final public class ProgramTree extends JPanel implements
     private JMenuItem                   msbDoneMenuItem;
     private final String                msbDoneText = "Accept/Reject this MSB";
 
-    private boolean                     anObservationHasBeenDone = false;
-    private boolean                     msbDone = false;  // The MSB has been either accepted or rejected
     private boolean                     _useQueue = true;
-    private File                        msbPendingFile;
     private String                      msbPendingDir = File.separator +
 	                                                System.getProperty("telescope").trim().toLowerCase() +
 	                                                "data" + 
@@ -195,13 +190,15 @@ final public class ProgramTree extends JPanel implements
     }
 
     /**
-     * Set the <code>projectID</code> to a specified value.
-     * @param projectID  The value to set.
-     */
-    public void setProjectID(String projectID) {
-// 	this.projectID = projectID;
-	this.projectID = ((SpProg)_spItem).getProjectID();
-	if (this.projectID == null)
+         * Set the <code>projectID</code> to a specified value.
+         * 
+         * @param projectID
+         *                The value to set.
+         */
+    public void setProjectID( String projectID )
+    {
+	this.projectID = ( ( SpProg )_spItem ).getProjectID();
+	if( this.projectID == null )
 	    this.projectID = projectID;
     }
 
@@ -209,33 +206,39 @@ final public class ProgramTree extends JPanel implements
 	return _spItem;
     }
     
+
     /**
-     * Set the <code>checkSum</code> to a specified value.
-     * @param checksum  The value to set.
-     */
-    public void setChecksum(String checksum) {
-// 	this.checkSum = checksum;
-	this.checkSum = XmlUtils.getChecksum(_spItem.toXML());
-	if (this.checkSum == null)
+    * Set the <code>checkSum</code> to a specified value.
+    * 
+    * @param checksum
+    *                The value to set.
+    */
+    public void setChecksum( String checksum )
+    {
+	this.checkSum = XmlUtils.getChecksum( _spItem.toXML() );
+	if( this.checkSum == null )
 	    this.checkSum = checksum;
     }
 
     /**
-     * Set the "Send for Execution" to (dis)abled.
-     * @param  flag  <code>true</code> to enable execution.
-     */
-    public static void setExecutable (boolean flag) {
-// 	if (TelescopeDataPanel.DRAMA_ENABLED) {
-	    logger.debug ( "In ProgramTree.setExecutable(); setting run.enabled to "+flag);
-	    engButton.setEnabled(flag);
-	    if ( flag == false ) {
-		engButton.setToolTipText ( "Disabled due to edited time constraint" );
-		ToolTipManager.sharedInstance().setInitialDelay(250);
-	    }
-	    else {
-		engButton.setToolTipText ( null );
-	    }
-// 	}
+    * Set the "Send for Execution" to (dis)abled.
+    * 
+    * @param flag
+    *                <code>true</code> to enable execution.
+    */
+    public static void setExecutable( boolean flag )
+    {
+	logger.debug( "In ProgramTree.setExecutable(); setting run.enabled to " + flag );
+	engButton.setEnabled( flag );
+	if( flag == false )
+	{
+	    engButton.setToolTipText( "Disabled due to edited time constraint" );
+	    ToolTipManager.sharedInstance().setInitialDelay( 250 );
+	}
+	else
+	{
+	    engButton.setToolTipText( null );
+	}
     }
 
     /**
@@ -273,16 +276,17 @@ final public class ProgramTree extends JPanel implements
     }
 
   
-    /** public void actionPerformed(ActionEvent evt) is a public method
-	to react button actions. The reaction is mainly about to start a
-	SGML translation, then a "remote" frame to form a sequence console.
-      
-	@param ActionEvent
-	@return  none
-	@throws none
-      
-    */
-    public void actionPerformed( ActionEvent evt )
+    	/**
+         * public void actionPerformed(ActionEvent evt) is a public method to
+         * react button actions. The reaction is mainly about to start a SGML
+         * translation, then a "remote" frame to form a sequence console.
+         * 
+         * @param ActionEvent
+         * @return none
+         * @throws none
+         * 
+         */
+    	public void actionPerformed( ActionEvent evt )
 	{
 		Object source = evt.getSource();
 		if( source == xpand )
@@ -326,15 +330,10 @@ final public class ProgramTree extends JPanel implements
 				_useQueue = false;
 				doExecute();
 			}
-			else if( thisItem.getText().equals( msbDoneText ) )
-			{
-				if( projectID != null && projectID != "" && checkSum != null && checkSum != "" && ( System.getProperty( "telescope" ).equalsIgnoreCase( "ukirt" ) ) && anObservationHasBeenDone == true && msbDone == false && TelescopeDataPanel.DRAMA_ENABLED )
-					msbDone = showMSBDoneDialog();
-			}
 		}
 	}
 
-    public void doExecute()
+    	public void doExecute()
 	{
 		SpItem item = null;
 		boolean isDeferred = false;
@@ -399,23 +398,9 @@ final public class ProgramTree extends JPanel implements
 				if( !_useQueue )
 				{
 					if( !isDeferred && !failed )
-					{
-						msbPendingFile = new File( msbPendingDir + projectID + "_" + checkSum + ".pending" );
-						anObservationHasBeenDone = true;
 						markAsDone( obsList.getSelectedIndex() );
-					}
 					else if( !failed )
-					{
 						DeferredProgramList.markThisObservationAsDone( item );
-					}
-
-					if( !isDeferred && IsModelEmpty() && TelescopeDataPanel.DRAMA_ENABLED )
-						msbDone = showMSBDoneDialog();
-				}
-				else if( !( failed ) )
-				{
-					// We are using the queue, so assime the observation is done
-					msbDone = true;
 				}
 			}
 			catch( Exception e )
@@ -477,51 +462,17 @@ final public class ProgramTree extends JPanel implements
 	}
     }
 
-    private boolean IsModelEmpty() {
-	for (int i=0; i<model.getSize(); i++) {
-	    SpObs obs = (SpObs)model.getElementAt(i);
-	    String obsName = obs.getTitle();
-	    if (obsName.endsWith("X)")) {
-		// Find the index of the last space character
-		int lastSpace = obsName.lastIndexOf(" ");
-		obsName = obsName.substring(0, lastSpace);
-	    }
-	    
-	    if (!(obsName.endsWith("*"))) {
-		return false;
-	    }
-	}
-	return true;
-    }
-
-    private int getRemainingObservations() {
-	int nRemaining=0;
-	for (int i=0; i<model.getSize(); i++) {
-	    SpObs obs = (SpObs)model.getElementAt(i);
-	    String obsName = obs.getTitle();
-	    if (obsName.endsWith("X)")) {
-		// Find the index of the last space character
-		int lastSpace = obsName.lastIndexOf(" ");
-		obsName = obsName.substring(0, lastSpace);
-	    }
-	    if (!(obsName.endsWith("*"))) {
-		nRemaining++;
-	    }
-	}
-	return nRemaining;
-    }
-  
-
     /**
-       public void addTree(String title,SpItem sp) is a public method
-       to set up a JTree GUI bit for a science program object in the panel
-       and to set up a listener too
-     
-       @param String title and SpItem sp
-       @return  none
-       @throws none
-       @deprecated  Replaced by {@link #addList(SpItem)}
-     
+    * public void addTree(String title,SpItem sp) is a public method to set
+    * up a JTree GUI bit for a science program object in the panel and to
+    * set up a listener too
+    * 
+    * @param String
+    *                title and SpItem sp
+    * @return none
+    * @throws none
+    * @deprecated Replaced by {@link #addList(SpItem)}
+    * 
     */
     public void addTree(SpItem sp)
     {
@@ -574,34 +525,7 @@ final public class ProgramTree extends JPanel implements
 		if( instrumentContext instanceof SpInstHeterodyne && HTMLViewer.visible() )
 			return;
 
-		if( model != null && msbDone == false && ( System.getProperty( "telescope" ).equalsIgnoreCase( "ukirt" ) ) && anObservationHasBeenDone == true && TelescopeDataPanel.DRAMA_ENABLED )
-		{
-			if( sp != null )
-			{
-				msbDone = showMSBDoneDialog();
-				// Now check whether we can proceed
-				if( !msbDone )
-				{
-					logger.info( "Cancelled loading of new MSB" );
-					return;
-				}
-			}
-			else
-			{
-				/* 
-				* If the input is null we are trying to empty the list. This
-				* should only happen at startup (in which case model should be
-				* null and we should never get here), or when the user has clicked
-				* on the "Set Default" button, in which case they were probably
-				* searching for programs to do later in the night.
-				*/
-				return;
-			}
-		}
-
 		// If we get here we should reinitialise with the new argument
-		anObservationHasBeenDone = false;
-		msbDone = false; 
 		_spItem = sp;
 
 		getContext( sp );
@@ -617,9 +541,7 @@ final public class ProgramTree extends JPanel implements
 
 			Enumeration e = obsVector.elements();
 			while( e.hasMoreElements() )
-			{
 				model.addElement( e.nextElement() );
-			} // end of while ()
 		}
 		
 		obsList = new JList( model );
@@ -705,31 +627,6 @@ final public class ProgramTree extends JPanel implements
 	obsList.clearSelection();
 	selectedItem = null;
     }
-
-    /**
-     * Get the current <code>JTree</code>.
-     * @return The current tree structure.
-     * @deprecated - this class now implements a list, not a tree. Not Replaced
-     public JTree getTree() {
-     return tree;
-     }
-  
-     /**
-     public void removeTree( ) is a public method
-     to remove a JTree GUI bit for a science program object in the panel
-     and to set up a listener too
-      
-     @param none
-     @return  none
-     @throws none
-     @deprecated Not replaced.
-      
-    */
-    public void removeTree()
-    {
-	this.remove(scrollPane);
-    }
-  
 
     /**
        public void valueChanged( TreeSelectionEvent event) is a public method
@@ -825,31 +722,6 @@ final public class ProgramTree extends JPanel implements
 		node.add(temp);
 		getItems(child,temp);
 	    }
-    }
-  
-  
-    /** 
-	public void findItems (SpItem spItem,DefaultMutableTreeNode node)
-	is a public method to find a named item in the SpItem list.
-      
-	@param SpItem spItem, String name
-	@return  SpItem
-	@throws none
-      
-    */
-    private SpItem findItem (SpItem spItem, String name) {
-	int index = 0;
-	Enumeration children = spItem.children();
-	SpItem tmpItem = null;
-	while (children.hasMoreElements()) {
-	    SpItem  child = (SpItem) children.nextElement();
-	    if(child.toString().equals(name))
-		return child;
-	    tmpItem = findItem(child,name);
-	    if(tmpItem != null)
-		return tmpItem;
-	}
-	return null;
     }
 
     /**
@@ -1058,22 +930,20 @@ final public class ProgramTree extends JPanel implements
     }
   
 
-    class PopupListener extends MouseAdapter {
+    class PopupListener extends MouseAdapter
+    {
+	public void mousePressed( MouseEvent e )
+	{
 
-    	public void mousePressed( MouseEvent e )
-		{
+	    // If this was not the right button just return immediately.
+	    if( !e.isPopupTrigger() )
+		return;
 
-			// If this was not the right button just return immediately.
-			if( !e.isPopupTrigger() )
-				return;
-
-//			 If this is an observation then show the popup
-			if( selectedItem == null && ( System.getProperty( "telescope" ).equalsIgnoreCase( "ukirt" ) ) && TelescopeDataPanel.DRAMA_ENABLED )
-				msbDone = showMSBDoneDialog();
-			else if( selectedItem != null && selectedItem.type() == SpType.OBSERVATION )
-				scalePopup.show( e.getComponent() , e.getX() , e.getY() );
-		}
-	}    
+	    // If this is an observation then show the popup
+	    if( selectedItem != null && selectedItem.type() == SpType.OBSERVATION )
+		scalePopup.show( e.getComponent() , e.getX() , e.getY() );
+	}
+    }    
 
     /**
      * Implementation of <code>DropTargetListener</code> Interface 
@@ -1221,93 +1091,14 @@ final public class ProgramTree extends JPanel implements
     }
 
     /**
-     * Request whether we can shutdown the QT at this point.  It basically calls the MSBDoneDialog
-     * and will return "true" if we can shutdown, or false otherwise.
-     */
+         * Request whether we can shutdown the QT at this point. It basically
+         * calls the MSBDoneDialog and will return "true" if we can shutdown, or
+         * false otherwise.
+         */
     public boolean shutDownRequest()
-	{
-		if( ( System.getProperty( "telescope" ).equalsIgnoreCase( "ukirt" ) ) && anObservationHasBeenDone && !msbDone && TelescopeDataPanel.DRAMA_ENABLED )
-			return ( showMSBDoneDialog() );
-		else
-			return true; // We can safely exit
-	}
-
-    private boolean showMSBDoneDialog() {
-	boolean done = false;
-
-	Container parent = this.getParent();
-	while (parent != null &&
-	       (!(parent instanceof java.awt.Frame))) {
-	    parent = parent.getParent();
-	}
-	// Create the comm files
-	File cancelFile = new File ("/tmp/cancel");
-	File acceptFile = new File ("/tmp/accept");
-	File rejectFile = new File ("/tmp/reject");
-	File noDataFile = new File ("/tmp/noData");
-// 	String title = ((SpProg)_spItem).getTitle();
-	String title = "<unknown>";
-	if ( SpTreeMan.findAllItems(_spItem, "gemini.sp.SpMSB").size() > 0) {
-	    title = ((SpMSB) SpTreeMan.findAllItems(_spItem, "gemini.sp.SpMSB").firstElement()).getTitle();
-	    checkSum = ((SpMSB) SpTreeMan.findAllItems(_spItem, "gemini.sp.SpMSB").firstElement()).getChecksum();
-	}
-	else if ( SpTreeMan.findAllItems(_spItem, "gemini.sp.SpObs").size() > 0) {
-	    title = ((SpObs) SpTreeMan.findAllItems(_spItem, "gemini.sp.SpObs").firstElement()).getTitle();
-	    checkSum = ((SpObs) SpTreeMan.findAllItems(_spItem, "gemini.sp.SpObs").firstElement()).getChecksum();
-	}
-	projectID = ((SpProg)_spItem).getProjectID();
-	try {
-	    cancelFile.delete();
-	    cancelFile.createNewFile();
-	    acceptFile.delete();
-	    acceptFile.createNewFile();
-	    rejectFile.delete();
-	    rejectFile.createNewFile();
-	    noDataFile.delete();
-	    noDataFile.createNewFile();
-	}
-	catch (IOException ioe) {
-	    logger.warn ("Unable to create one of the MSBDoneDialog com files");
-	}
-	String msg = "Creating MSB Done popup for Project "+projectID+", MSB "+title+", chksum = "+checkSum;
-	logger.info (msg);
-	MSBDoneDialog mdd = new MSBDoneDialog ((Frame)parent, 
-					       projectID, 
-					       title,
-					       checkSum);
-	// See which comms file exist after accept/reject
-	if (cancelFile.exists()) {
-	    cancelFile.delete();
-	    logger.info ("User opted to cancel");
-	}
-	else if (noDataFile.exists()) {
-	    noDataFile.delete();
-	    done=true;
-	    anObservationHasBeenDone = false;
-	    ((DefaultListModel)obsList.getModel()).clear();
-	    logger.info ("User selected 'No Data Taken'");
-	}
-	else if (acceptFile.exists()) {
-	    acceptFile.delete();
-	    done = true;
-	    anObservationHasBeenDone = false;
-	    InfoPanel.searchButton.doClick();
-	    ((DefaultListModel)obsList.getModel()).clear();
-	    logger.info("User accepted MSB");
-	}
-	else if (rejectFile.exists()) {
-	    rejectFile.delete();
-	    done = true;
-	    anObservationHasBeenDone = false;
-	    InfoPanel.searchButton.doClick();
-	    logger.info ("User rejected MSB");
-	}
-	if ( !anObservationHasBeenDone && msbPendingFile != null ) {
-	    msbPendingFile.delete();
-	}
-	return done;
+    {
+	    return true; // We can safely exit
     }
-
 
     public void enableList(boolean flag) {
 	obsList.setEnabled(flag);
@@ -1356,7 +1147,6 @@ final public class ProgramTree extends JPanel implements
 		{
 			ExecuteJCMT execute;
 			boolean failed = false;
-			msbDone = false;
 
 			File failFile = new File( "/jcmtdata/orac_data/deferred/.failure" );
 			execute = ExecuteJCMT.getInstance( _item );
@@ -1416,9 +1206,9 @@ final public class ProgramTree extends JPanel implements
 				}
 				failed = true;
 			}
-			if( !_isDeferred && !failed )
+			if( !failed )
 			{
-				if( instrumentContext instanceof SpInstSCUBA )
+				if( !_isDeferred )
 				{
 					model.clear();
 					_spItem = null;
@@ -1426,33 +1216,8 @@ final public class ProgramTree extends JPanel implements
 				}
 				else
 				{
-					// See if the HTMLViewer is still visible. If it is, put
-					// this thread to sleep for a while.
-					while( HTMLViewer.visible() )
-					{
-						try
-						{
-							Thread.sleep( 500 );
-						}
-						catch( Exception x ){}
-						continue;
-					}
-					// For heterodyne, mark all the observation as done and bring up the popup
-					for( int i = 0 ; i < obsList.getModel().getSize() ; i++ )
-					{
-						markAsDone( i );
-						if( TelescopeDataPanel.DRAMA_ENABLED && System.getProperty( "DOMAIN" ).equals( "jcmt" ) )
-						{
-							anObservationHasBeenDone = true;
-							msbPendingFile = new File( msbPendingDir + projectID + "_" + checkSum + ".pending" );
-							msbDone = showMSBDoneDialog();
-						}
-					}
+				    DeferredProgramList.markThisObservationAsDone( _deferredItem );
 				}
-			}
-			else if( !failed )
-			{
-				DeferredProgramList.markThisObservationAsDone( _deferredItem );
 			}
 			_deferredItem = null;
 			setExecutable( true );

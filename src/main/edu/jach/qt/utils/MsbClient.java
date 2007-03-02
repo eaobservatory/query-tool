@@ -350,44 +350,6 @@ public class MsbClient extends SoapClient {
   }
 
   /**
-   * <code>rejectMSB</code> Does Not Mark the given project ID as done in the database.
-   *
-   * @param projID a <code>String</code> the project ID.
-   * @param checksum a <code>String</code> the checksum for this project.
-   * @param user the ID of the user ("observer" should never be used)
-   * @param comment textual information associated with the project
-   */
-  public static void rejectMSB(String projID, String checksum,
-			     String user, String comment) throws Exception {
-    try {
-
-      logger.debug("Sending rejectMSB "+projID+ " "+checksum);
-
-      URL url = new URL(System.getProperty("msbServer"));
-      System.out.println("Sending request to "+url.toString());
-      flushParameter();
-      addParameter("projID", String.class, projID);
-      addParameter("checksum", String.class, checksum);
-      addParameter("userID", String.class, user);
-      addParameter("reason", String.class, comment);
-
-      Object tmp = doCall(url, "urn:OMP::MSBServer", "rejectMSB");
-
-      if (tmp != null ) {
-	// tmp has something with success
-      }
-
-    }
-    catch (InvalidUserException e) {
-	throw e;
-    }
-    catch (Exception e) {
-      e.printStackTrace();
-    }
-    return;
-  }
-
-  /**
    * Describe <code>main</code> method here.
    *
    * @param args a <code>String[]</code> value
