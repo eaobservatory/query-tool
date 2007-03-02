@@ -447,5 +447,6 @@ public class TableSorter extends TableMap {
 		};
 		JTableHeader th = tableView.getTableHeader();
 		th.addMouseListener( listMouseListener );
+		th.setReorderingAllowed( false ) ;
 	}
 }
