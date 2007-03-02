@@ -49,7 +49,6 @@ public class HTMLViewer extends JDialog {
 				     null,
 				     options);
 	setContentPane(optionPane);
-	validateTree();
 	pack();
 	setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 	addWindowListener(new WindowAdapter() {
@@ -96,7 +95,6 @@ public class HTMLViewer extends JDialog {
 		}
 	    });
 	
-	validateTree();
 	pack();
 	setVisible(true);
 	_isVisible = true;

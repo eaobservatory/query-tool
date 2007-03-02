@@ -268,7 +268,6 @@ public class WidgetPanel extends JPanel implements ActionListener , MoonChangeLi
 
     }//end while
 
-    validateTree();
     setButtons();
 
   }//parseConfig

@@ -158,7 +158,6 @@ public class QtFrame
 			om.addNewTree( null );
 
 			compInit();
-			validateTree();
 			tabbedPane.setSelectedIndex( 0 );
 			logger.info( "Tree validated" ) ;
 		}
