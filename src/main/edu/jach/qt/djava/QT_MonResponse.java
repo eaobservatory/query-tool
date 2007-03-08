@@ -54,7 +54,7 @@ public class QT_MonResponse extends MonitorResponse {
 		}
 		else
 		{
-			logger.info( "Unhandled " + name + " update: " + value.RealValue( name ) );
+			logger.debug( "Unhandled " + name + " update: " + value.RealValue( name ) );
 		}
 	}
 }
