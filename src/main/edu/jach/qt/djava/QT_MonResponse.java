@@ -52,5 +52,9 @@ public class QT_MonResponse extends MonitorResponse {
 			logger.info( "AIRMASS update: " + value.RealValue( name ) );
 			TelescopeDataPanel.setAirmass( value.RealValue( name ) );
 		}
+		else
+		{
+			logger.info( "Unhandled " + name + " update: " + value.RealValue( name ) );
+		}
 	}
 }
