@@ -14,10 +14,9 @@ set qtConfig	        = ../config/qtSystem.conf
 set LOGPATH             = ""
 
 # 64-bit machines need more memory allocated to them
+set MAXMEM = 256m
 if( ${MACHTYPE} == x86_64 ) then
         set MAXMEM = 512m
-else
-        set MAXMEM = 256m
 endif
 
 set usage		= "Usage: $0 <telescope> [-h] [-options] \n\nwhere telescope is:\n\tukirt\t\tspecifies the UKIRT widget set\n\tjcmt\t\tspecifies the jcmt widget set\n\nand options include:\n\t-hilo <solaris_host>\t\tspecifies we are running in hilo and sets the solaris host\n\t-config <file>\tspecies the absolute path to the \042file\042 used for this session\n\t-scenario\tspecifies scenario mode (does not depend on drama)\n\n"
