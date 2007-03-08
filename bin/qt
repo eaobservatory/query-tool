@@ -13,6 +13,13 @@ set baseOTConfigDir	= ${OTROOT}/OT/install/cfg
 set qtConfig	        = ../config/qtSystem.conf
 set LOGPATH             = ""
 
+# 64-bit machines need more memory allocated to them
+if( ${MACHTYPE} == x86_64 ) then
+        set MAXMEM = 512m
+else
+        set MAXMEM = 256m
+endif
+
 set usage		= "Usage: $0 <telescope> [-h] [-options] \n\nwhere telescope is:\n\tukirt\t\tspecifies the UKIRT widget set\n\tjcmt\t\tspecifies the jcmt widget set\n\nand options include:\n\t-hilo <solaris_host>\t\tspecifies we are running in hilo and sets the solaris host\n\t-config <file>\tspecies the absolute path to the \042file\042 used for this session\n\t-scenario\tspecifies scenario mode (does not depend on drama)\n\n"
 
 set classic = ""
@@ -258,7 +265,7 @@ setenv DTCL_DIR /jac_sw/drama/CurrentRelease/include/
 
 set CLASSPATH = ../lib/qt.jar:../lib/calpahtml.jar:../lib/xercesImpl.jar:../lib/xmlParserAPIs.jar:../lib/mail.jar:../lib/activation.jar:../lib/soap.jar:${OTROOT}/OT/install/classes:${OTROOT}/GEMINI/install/classes:/jac_sw/itsroot/install/ompSM/javlib/ompSM.jar:${OTROOT}/ORAC/install/classes:${OTROOT}/OMP/install/classes:${OTROOT}/ODB/install/classes:../lib/jsky.jar:../lib/diva.jar:../lib/junit.jar:../icons:/local/java/jdk/lib/tools.jar:/jac_sw/itsroot/install/dcHub/javalib/dcHub.jar:/jac_sw/drama/CurrentRelease/javalib
 
-${JAVA} -Xms64m -Xmx256m ${classic} ${xdebug} ${xnoagent} ${xrunjdwptrans} ${xbootclasspath} -Ddebug=${debug} -DDRAMA_ENABLED=${dramaEnabled} -DSIMULATE=${tosim} -DENGINEERING=${toeng} -DQUICKLOOK=${toql} -Dtelescope=${telescope} -DSOLARIS_HOST=${solHost} -DqtConfig=${qtConfig} -Dot.cfgdir=${instConfigDir}/ -Dot.resource.cfgdir=./ -DwidgetFile=${widgetFile} -DQT_LOG_DIR=${QT_LOG_DIR} -DDOMAIN=${domain} -DOMP -DDCHUB_TIMEOUT=${timeout} -DTASKNAME=${taskname} -cp ${CLASSPATH}:${instConfigDir} edu.jach.qt.app.QT
+${JAVA} -Xms64m -Xmx${MAXMEM} ${classic} ${xdebug} ${xnoagent} ${xrunjdwptrans} ${xbootclasspath} -Ddebug=${debug} -DDRAMA_ENABLED=${dramaEnabled} -DSIMULATE=${tosim} -DENGINEERING=${toeng} -DQUICKLOOK=${toql} -Dtelescope=${telescope} -DSOLARIS_HOST=${solHost} -DqtConfig=${qtConfig} -Dot.cfgdir=${instConfigDir}/ -Dot.resource.cfgdir=./ -DwidgetFile=${widgetFile} -DQT_LOG_DIR=${QT_LOG_DIR} -DDOMAIN=${domain} -DOMP -DDCHUB_TIMEOUT=${timeout} -DTASKNAME=${taskname} -cp ${CLASSPATH}:${instConfigDir} edu.jach.qt.app.QT
 
     tidy: 
     onintr - 
