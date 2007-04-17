@@ -410,7 +410,7 @@ final public class ProgramTree extends JPanel implements
 					logger.info( "Last execution still running" );
 			}
 			setExecutable( true );
-			if( !isDeferred )
+			if( !isDeferred && !failed )
 			{
 				obsList.setListData( new Vector() ) ;
 				obsList.clearSelection();
@@ -1221,7 +1221,7 @@ final public class ProgramTree extends JPanel implements
 			}
 			_deferredItem = null;
 			setExecutable( true );
-			if( !_isDeferred )
+			if( !_isDeferred && !failed )
 			{
 				obsList.setListData( new Vector() ) ;
 				obsList.clearSelection();
