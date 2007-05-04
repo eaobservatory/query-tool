@@ -437,6 +437,7 @@ final public class DeferredProgramList extends JPanel implements
 			{
 				logger.info( "Sending observation " + currentItem.getTitle() + " for execution." );
 				ExecuteUKIRT execute = new ExecuteUKIRT( _useQueue );
+				execute.setDeferred( true ) ;
 				t = new Thread( execute , "UKIRT Execution Thread" );
 
 				// Start the process and wait for it to complete
@@ -912,6 +913,7 @@ final public class DeferredProgramList extends JPanel implements
 			execute = ExecuteJCMT.getInstance( _item );
 			if( execute == null )
 				return;
+			execute.setDeferred( _isDeferred ) ;
 			failed = execute.run();
 
 			File failFile = new File( "/jcmtdata/orac_data/deferred/.failure" );

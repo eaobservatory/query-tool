@@ -60,7 +60,7 @@ public class ExecuteUKIRT extends Execute implements Runnable {
 			if( _useQueue )
 				itemToExecute = ProgramTree.getCurrentItem() ;
 			else
-				itemToExecute = ProgramTree.selectedItem ;
+				itemToExecute = ProgramTree.getSelectedItem() ;
 			logger.info( "Executing observation from Program List" );
 		}		
 

@@ -68,7 +68,7 @@ final public class ProgramTree extends JPanel implements
     private DropTarget                  dropTarget   = null;
     private DragSource                  dragSource   = null;
     private TrashCan                    trash        = null;
-    public static  SpItem               selectedItem = null;
+    private static  SpItem               selectedItem = null;
     public static  SpItem               obsToDefer;
     private SpItem                      instrumentContext;
     private Vector                      targetContext;
@@ -189,6 +189,11 @@ final public class ProgramTree extends JPanel implements
 	add(xpand, gbc, 0, 2, 1, 1);
     }
 
+    public static synchronized SpItem getSelectedItem()
+    {
+    	return selectedItem ;
+    }
+    
     /**
          * Set the <code>projectID</code> to a specified value.
          * 
@@ -360,6 +365,7 @@ final public class ProgramTree extends JPanel implements
 			try
 			{
 				ExecuteUKIRT execute = new ExecuteUKIRT( _useQueue );
+				execute.setDeferred( false ) ;
 				t = new Thread( execute );
 				t.start();
 				t.join();
@@ -1157,6 +1163,7 @@ final public class ProgramTree extends JPanel implements
 			}
 			try
 			{
+				execute.setDeferred( _isDeferred ) ;
 				failed = execute.run();
 			}
 			catch( Exception e )

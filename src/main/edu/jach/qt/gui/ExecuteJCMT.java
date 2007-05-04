@@ -69,7 +69,7 @@ public class ExecuteJCMT extends Execute {
 	{
 		return isRunning;
 	}
-
+	
     /**
      * Implementation of the <code>Runnable</code> interface.
      * The success or failure of the file is determined by a
@@ -248,13 +248,9 @@ public class ExecuteJCMT extends Execute {
 					rt = Runtime.getRuntime();
 					String command;
 					if( super.isDeferred )
-					{
-						command = "/jac_sw/omp/QT/bin/insertOCSQUEUE.ksh " + new String( odfFile ).trim();
-					}
+						command = "/jac_sw/omp/QT/bin/insertJCMTQUEUE.ksh " + new String( odfFile ).trim();
 					else
-					{
-						command = "/jac_sw/omp/QT/bin/loadUKIRT.ksh " + new String( odfFile ).trim();
-					}
+						command = "/jac_sw/omp/QT/bin/loadJCMT.ksh " + new String( odfFile ).trim();
 					logger.debug( "Running command " + command );
 					Process p = rt.exec( command );
 					InputStream istream = p.getInputStream();
@@ -286,9 +282,9 @@ public class ExecuteJCMT extends Execute {
 					}
 					p.waitFor();
 					int rtn = p.exitValue();
-					logger.info( "LoadOCSQUEUE returned with exit status " + rtn );
-					logger.debug( "Output from LoadOCSQUEUE: " + inputBuffer.toString() );
-					logger.debug( "Error from LoadOCSQUEUE: " + errorBuffer.toString() );
+					logger.info( "QUEUE returned with exit status " + rtn );
+					logger.debug( "Output from QUEUE: " + inputBuffer.toString() );
+					logger.debug( "Error from QUEUE: " + errorBuffer.toString() );
 					if( rtn != 0 )
 					{
 						logger.error( "Error loading queue" );
