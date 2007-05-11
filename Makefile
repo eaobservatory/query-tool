@@ -39,7 +39,8 @@ EXTERNALCLASSES = \
 	/jac_sw/drama/CurrentRelease/javalib \
 	$(OTROOT)/OT/install/classes \
 	$(OTROOT)/OMP/install/classes \
-	/jac_sw/itsroot/install/dcHub/javalib/dcHub.jar
+	/jac_sw/itsroot/install/dcHub/javalib/dcHub.jar \
+	/star/starjava/lib/pal/pal.jar
 
 ifdef SOURCES
 include ../../../../../../make.tail

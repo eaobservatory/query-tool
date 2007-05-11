@@ -10,6 +10,8 @@ import javax.swing.JLabel ;
 import javax.swing.SwingConstants ;
 import java.text.SimpleDateFormat;
 
+import edu.jach.qt.utils.LocalSiderealTime ;
+
 /**
  * Class associateing local time with a label for display on an interface.
  *
@@ -27,6 +29,8 @@ public class TimePanel extends JPanel implements TimerListener
 	JLabel universal ;
 	SimpleDateFormat localDateFormatter ;
 	SimpleDateFormat universalDateFormatter ;
+	LocalSiderealTime localSiderealTime ;
+	JLabel lst ;
 	/**
 	 * Constructor.
 	 * Sets a timer running and adds a listener.
@@ -37,26 +41,34 @@ public class TimePanel extends JPanel implements TimerListener
 		
 		local = new JLabel() ;
 		universal = new JLabel() ;
+		lst = new JLabel() ;
 		
 		local.setHorizontalAlignment( SwingConstants.CENTER );
 		universal.setHorizontalAlignment( SwingConstants.CENTER );
+		lst.setHorizontalAlignment( SwingConstants.CENTER );
 		
 		local.setBackground( Color.black );
 		universal.setBackground( Color.black );
+		lst.setBackground( Color.black );
 		local.setForeground( Color.green );
 		universal.setForeground( Color.green );
+		lst.setForeground( Color.green );
 		
 		local.setOpaque( true );
 		universal.setOpaque( true );
+		lst.setOpaque( true );
 		
-		setLayout( new GridLayout( 2 , 1 ) ) ;
+		setLayout( new GridLayout( 3 , 1 ) ) ;
 		
 		add( local ) ;
 		add( universal ) ;
+		add( lst ) ;
 		
 		localDateFormatter = new SimpleDateFormat( "kk.mm.ss z" );
 		universalDateFormatter = new SimpleDateFormat( "kk.mm.ss z" );
 		universalDateFormatter.setTimeZone( TimeZone.getTimeZone( "UTC" ) ) ;
+		
+		localSiderealTime = new LocalSiderealTime( "JCMT" ) ;
 
 		Timer t = new Timer( 1000 );
 		t.addTimerListener( this );
@@ -71,10 +83,12 @@ public class TimePanel extends JPanel implements TimerListener
 	{
 		Calendar cal = Calendar.getInstance();
 		Date date = cal.getTime();
+		localSiderealTime.setDate();
 		String localTime = localDateFormatter.format( date ) ;
 		String universalTime = universalDateFormatter.format( date ) ;
 		local.setText( localTime ) ;
 		universal.setText( universalTime );
+		lst.setText( localSiderealTime.stime() ) ;
 	}
 
 }// TimePanel
