@@ -365,7 +365,7 @@ final public class ProgramTree extends JPanel implements
 			try
 			{
 				ExecuteUKIRT execute = new ExecuteUKIRT( _useQueue );
-				execute.setDeferred( false ) ;
+				execute.setDeferred( isDeferred ) ;
 				t = new Thread( execute );
 				t.start();
 				t.join();
