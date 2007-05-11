@@ -68,7 +68,7 @@ public class TimePanel extends JPanel implements TimerListener
 		universalDateFormatter = new SimpleDateFormat( "kk.mm.ss z" );
 		universalDateFormatter.setTimeZone( TimeZone.getTimeZone( "UTC" ) ) ;
 		
-		localSiderealTime = new LocalSiderealTime( "JCMT" ) ;
+		localSiderealTime = new LocalSiderealTime( System.getProperty("telescope").trim() ) ;
 
 		Timer t = new Timer( 1000 );
 		t.addTimerListener( this );
