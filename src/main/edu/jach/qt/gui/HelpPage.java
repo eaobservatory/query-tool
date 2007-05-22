@@ -4,21 +4,10 @@ import java.io.File;
 import edu.jach.qt.utils.HTMLViewer ;
 
 /**
- * Display the current help information in an external browser.
+ * Display the current help information in local browser.
  * The help files are located inthe config directory in the
- * subdirectory Documents.  If the user specified a Browser
- * in the qtSystem config file, that browser will be used for
- * display.  If that fails, or no browser is specified, then
- * this will try to use some others.  Currently, ther supported
- * browsers are:
- *<ul>
- * <li> netscape 
- * <li> opera
- * <li> mosaic
- * <li> xemacs
- * <li> mozilla
- *</ul>
- *
+ * subdirectory Documents.
+ * 
  * @author $Author$
  * @version $Id$
  */
