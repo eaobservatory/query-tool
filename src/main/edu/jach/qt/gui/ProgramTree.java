@@ -2,30 +2,94 @@ package edu.jach.qt.gui;
 
 
 /* Gemini imports */
-import gemini.sp.*;
+import gemini.sp.SpItem ;
+import gemini.sp.SpProg ;
+import gemini.sp.SpObs ;
+import gemini.sp.SpTreeMan ;
+import gemini.sp.SpType ;
+import gemini.sp.SpInsertData ;
+import gemini.sp.SpFactory ;
 
 /* JSKY imports */
 
 /* ORAC imports */
-import orac.jcmt.inst.*;
+import orac.jcmt.inst.SpInstHeterodyne ;
 
 /* ORAC-OM imports */
 
 /* QT imports */
-import edu.jach.qt.utils.*;
+import edu.jach.qt.utils.ErrorBox ;
+import edu.jach.qt.utils.HTMLViewer ;
+import edu.jach.qt.utils.MyTreeCellRenderer ;
+import edu.jach.qt.utils.ObsListCellRenderer ;
 
 /* Standard imports */
-import java.awt.*;
-import java.awt.dnd.*;
+import java.awt.GridBagConstraints ;
+import java.awt.GridBagLayout ;
+import java.awt.BorderLayout ;
+import java.awt.Font ;
+import java.awt.Color ;
+import java.awt.Insets ;
+import java.awt.Component ;
+
+import java.awt.dnd.DragSourceListener ;
+import java.awt.dnd.DropTargetListener ;
+import java.awt.dnd.DragGestureListener ;
+import java.awt.dnd.DragSource ;
+import java.awt.dnd.DropTarget ;
+import java.awt.dnd.DnDConstants ;
+import java.awt.dnd.DropTargetDropEvent ;
+import java.awt.dnd.DropTargetDragEvent ;
+import java.awt.dnd.DropTargetEvent ;
+import java.awt.dnd.DragSourceDropEvent ;
+import java.awt.dnd.DragSourceDragEvent ;
+import java.awt.dnd.DragSourceEvent ;
+import java.awt.dnd.DragGestureEvent ;
 import java.awt.datatransfer.StringSelection;
-import java.awt.event.*;
-import java.io.*;
-import java.net.*;
-import java.util.*;
-import javax.swing.*;
-import javax.swing.border.*;
-import javax.swing.event.*;
-import javax.swing.tree.*;
+
+import java.awt.event.ActionListener ;
+import java.awt.event.KeyListener ;
+import java.awt.event.ActionEvent ;
+import java.awt.event.KeyEvent ;
+import java.awt.event.MouseListener ;
+import java.awt.event.MouseAdapter ;
+import java.awt.event.MouseEvent ;
+import java.awt.event.InputEvent ;
+
+import java.io.BufferedReader ;
+import java.io.FileReader ;
+import java.io.File ;
+import java.io.IOException ;
+
+import java.net.URL ;
+
+import java.util.Vector ;
+import java.util.Enumeration ;
+import java.util.TooManyListenersException ;
+
+import javax.swing.JPanel ;
+import javax.swing.DefaultListModel ;
+import javax.swing.JButton ;
+import javax.swing.JTree ;
+import javax.swing.JList ;
+import javax.swing.JScrollPane ;
+import javax.swing.JMenuItem ;
+import javax.swing.JPopupMenu ;
+import javax.swing.BorderFactory ;
+import javax.swing.ToolTipManager ;
+import javax.swing.JLabel ;
+import javax.swing.ImageIcon ;
+import javax.swing.JOptionPane ;
+
+import javax.swing.border.TitledBorder ;
+import javax.swing.border.Border ;
+
+import javax.swing.event.TreeSelectionListener ;
+import javax.swing.event.TreeSelectionEvent ;
+
+import javax.swing.tree.DefaultTreeModel ;
+import javax.swing.tree.DefaultMutableTreeNode ;
+import javax.swing.tree.TreePath ;
 
 /* Miscellaneous imports */
 import org.apache.log4j.Logger;
@@ -1125,7 +1189,7 @@ final public class ProgramTree extends JPanel implements
 			// an SpProg
 			if( deferred )
 			{
-				SpProg root = ( SpProg ) SpFactory.create( SpType.SCIENCE_PROGRAM );
+				SpProg root = ( SpProg )SpFactory.create( SpType.SCIENCE_PROGRAM );
 				root.setPI( "observer" );
 				root.setCountry( "JAC" );
 				root.setProjectID( "CAL" );
