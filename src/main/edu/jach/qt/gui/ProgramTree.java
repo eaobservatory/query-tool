@@ -674,36 +674,37 @@ final public class ProgramTree extends JPanel implements
     public void keyTyped(KeyEvent e) { }
 
     /**
-     * Remove the currently selected node. 
-     */
-    public void removeCurrentNode() {
+	 * Remove the currently selected node. 
+	 */
+	public void removeCurrentNode()
+	{
+		SpObs item = ( SpObs )obsList.getSelectedValue();
 
-	SpObs item = (SpObs)obsList.getSelectedValue();
-
- 	Vector obsV = SpTreeMan.findAllItems(_spItem, "gemini.sp.SpObs");
-	int i;
-	SpObs [] obsToDelete = {(SpObs)obsV.elementAt(obsList.getSelectedIndex())};
-	try {
-	    if ( item != null && SpTreeMan.evalExtract(obsToDelete) == true) {
-		SpTreeMan.extract(obsToDelete);
-		((DefaultListModel)obsList.getModel()).removeElementAt(obsList.getSelectedIndex());
-	    }
-	    else if (item == null) {
-		JOptionPane.showMessageDialog(this,
-					      "No Observation to remove",
-					      "Message", JOptionPane.INFORMATION_MESSAGE);
-		return;
-	    }
-	    else {
-		JOptionPane.showMessageDialog(this,
-					      "Encountered a problem deleting this observation",
-					      "Message", JOptionPane.WARNING_MESSAGE);
-	    }
+		Vector obsV = SpTreeMan.findAllItems( _spItem , "gemini.sp.SpObs" );
+		int i;
+		SpObs[] obsToDelete = { ( SpObs )obsV.elementAt( obsList.getSelectedIndex() ) };
+		try
+		{
+			if( item != null && SpTreeMan.evalExtract( obsToDelete ) == true )
+			{
+				SpTreeMan.extract( obsToDelete );
+				( ( DefaultListModel )obsList.getModel() ).removeElementAt( obsList.getSelectedIndex() );
+			}
+			else if( item == null )
+			{
+				JOptionPane.showMessageDialog( this , "No Observation to remove" , "Message" , JOptionPane.INFORMATION_MESSAGE );
+				return;
+			}
+			else
+			{
+				JOptionPane.showMessageDialog( this , "Encountered a problem deleting this observation" , "Message" , JOptionPane.WARNING_MESSAGE );
+			}
+		}
+		catch( Exception e )
+		{
+			logger.error( "Exception encountered while deleting observation" , e );
+		}
 	}
-	catch (Exception e) {
-	    logger.error ("Exception encountered while deleting observation", e);
-	}
-    }
    
     /**
      * public void getItems (SpItem spItem,DefaultMutableTreeNode node)
@@ -973,29 +974,27 @@ final public class ProgramTree extends JPanel implements
     }
 
     /**
-     * Implementation of <code>DropTargetListener</code> Interface 
-     * @param evt  <code>DropTargetDropEvent</code> event
-     */
-    public void drop(DropTargetDropEvent evt){
-	SpObs itemForDrop;
-	if (selectedItem != null) {
-	    itemForDrop = (SpObs)selectedItem;
-	}
-	else {
-	    itemForDrop = (SpObs)DeferredProgramList.getCurrentItem();
-	}
+	 * Implementation of <code>DropTargetListener</code> Interface 
+	 * @param evt  <code>DropTargetDropEvent</code> event
+	 */
+	public void drop( DropTargetDropEvent evt )
+	{
+		SpObs itemForDrop;
+		if( selectedItem != null )
+			itemForDrop = ( SpObs )selectedItem;
+		else
+			itemForDrop = ( SpObs )DeferredProgramList.getCurrentItem();
 
-	if (itemForDrop != null && !itemForDrop.isOptional()) {
-	    JOptionPane.showMessageDialog(this,
-					  "Can not delete a mandatory observation!"
-					  );
-	    return;
+		if( itemForDrop != null && !itemForDrop.isOptional() )
+		{
+			JOptionPane.showMessageDialog( this , "Can not delete a mandatory observation!" );
+		}
+		else
+		{
+			evt.acceptDrop( DnDConstants.ACTION_MOVE );
+			evt.getDropTargetContext().dropComplete( true );
+		}
 	}
-	
-	evt.acceptDrop(DnDConstants.ACTION_MOVE);
-	evt.getDropTargetContext().dropComplete(true);
-	return;
-    }
 
     /**
      * Implementation of <code>DropTargetListener</code> Interface 
@@ -1005,43 +1004,35 @@ final public class ProgramTree extends JPanel implements
     }
 
     /**
-     * Implementation of <code>DragGestureListener</code> Interface
-     * @param event  <code>DragGestureEvent</code> event
-     * 
-     */
-  
-    public void dragGestureRecognized( DragGestureEvent event) {
-	InputEvent ipe = event.getTriggerEvent();
-	if (ipe.getModifiers() != ipe.BUTTON1_MASK ) {
-	    return;
+	 * Implementation of <code>DragGestureListener</code> Interface
+	 * @param event  <code>DragGestureEvent</code> event
+	 * 
+	 */
+
+	public void dragGestureRecognized( DragGestureEvent event )
+	{
+		InputEvent ipe = event.getTriggerEvent();
+		if( ipe.getModifiers() != ipe.BUTTON1_MASK )
+			return;
+		Object selected = obsList.getSelectedValue();
+		enableList( false );
+		DeferredProgramList.clearSelection();
+		selectedItem = ( SpItem )selected;
+
+		if( selected != null )
+		{
+			obsToDefer = selectedItem.deepCopy();
+			StringSelection text = new StringSelection( obsToDefer.toString() );
+
+			// as the name suggests, starts the dragging
+			dragSource.startDrag( event , DragSource.DefaultMoveNoDrop , text , this );
+		}
+		else
+		{
+			logger.warn( "nothing was selected to drag" );
+		}
+
 	}
-	Object selected = obsList.getSelectedValue();
-	enableList(false);
-	DeferredProgramList.clearSelection();
-	selectedItem = (SpItem)selected;
-	if ( selected != null ){
-	    SpItem tmp = _spItem.deepCopy();
-	    obsToDefer   = selectedItem.deepCopy();
-	    SpInsertData spid;
-	    if (SpTreeMan.findInstrumentInContext(obsToDefer) == null && instrumentContext !=  null) {
-		spid = SpTreeMan.evalInsertInside(instrumentContext, obsToDefer);
-		SpTreeMan.insert(spid);
-	    }
-	    if ( SpTreeMan.findTargetListInContext(obsToDefer) == null  && 
-		 targetContext != null &&
-		 targetContext.size() != 0) {
-		spid = SpTreeMan.evalInsertInside((SpItem)targetContext.firstElement(), obsToDefer);
-		SpTreeMan.insert(spid);
-	    }
-	    _spItem = tmp;
-	    StringSelection text = new StringSelection( obsToDefer.toString());
-        
-	    // as the name suggests, starts the dragging
-	    dragSource.startDrag (event, DragSource.DefaultMoveNoDrop, text, this);
-	} else {
-	    logger.warn( "nothing was selected to drag");   
-	}
-    }
 
     /**
      * Implementation of <code>DragSourceListener </code> Interface
@@ -1052,23 +1043,25 @@ final public class ProgramTree extends JPanel implements
     }
 
     /**
-     * Implementation of <code>DragSourceListener </code> Interface
-     * @param evt  <code>DragSourceDragEvent</code> event
-     * 
-     */
-    public void dragOver(DragSourceDragEvent evt){
-	/* Chnage the cursor to indicate drop allowed */
-	evt.getDragSourceContext().setCursor(DragSource.DefaultMoveDrop);
-    }
+	 * Implementation of <code>DragSourceListener </code> Interface
+	 * @param evt  <code>DragSourceDragEvent</code> event
+	 * Change the cursor to indicate drop allowed
+	 * 
+	 */
+	public void dragOver( DragSourceDragEvent evt )
+	{
+		evt.getDragSourceContext().setCursor( DragSource.DefaultMoveDrop );
+	}
 
-    /**
-     * Implementation of <code>DragSourceListener </code> Interface
-     * @param evt  <code>DragSourceEvent</code> event
-     * 
-     */
-    public void dragExit(DragSourceEvent evt){
-	evt.getDragSourceContext().setCursor(DragSource.DefaultMoveNoDrop);
-    }
+	/**
+	 * Implementation of <code>DragSourceListener </code> Interface
+	 * @param evt  <code>DragSourceEvent</code> event
+	 * 
+	 */
+	public void dragExit( DragSourceEvent evt )
+	{
+		evt.getDragSourceContext().setCursor( DragSource.DefaultMoveNoDrop );
+	}
 
     /**
      * Implementation of <code>DragSourceListener </code> Interface
@@ -1079,22 +1072,26 @@ final public class ProgramTree extends JPanel implements
     }
 
     /**
-     * Implementation of <code>DragSourceListener </code> Interface
-     * @param evt  <code>DragSourceDropEvent</code> event
-     * 
-     */
-    public void dragDropEnd(DragSourceDropEvent evt){
-	if (evt.getDropSuccess() == true) {
-	    SpObs obs = (SpObs) obsList.getSelectedValue();
-	    if (obs != null) {
-		if (obs.isOptional() == true) {
-		    removeCurrentNode();
-		    selectedItem=null;
+	 * Implementation of <code>DragSourceListener </code> Interface
+	 * @param evt  <code>DragSourceDropEvent</code> event
+	 * 
+	 */
+	public void dragDropEnd( DragSourceDropEvent evt )
+	{
+		if( evt.getDropSuccess() == true )
+		{
+			SpObs obs = ( SpObs )obsList.getSelectedValue();
+			if( obs != null )
+			{
+				if( obs.isOptional() )
+				{
+					removeCurrentNode();
+					selectedItem = null;
+				}
+			}
 		}
-	    }
+		enableList( true );
 	}
-	enableList(true);
-    }
 
     /**
          * Request whether we can shutdown the QT at this point. It basically
