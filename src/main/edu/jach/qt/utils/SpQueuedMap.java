@@ -115,9 +115,12 @@ public class SpQueuedMap
 		File filePath = new File( path ) ;
 		FileGlobFilter filter = new FileGlobFilter( "^" + checksum + "_-?\\d+_\\d*" ) ;
 		String[] directoryContents = filePath.list( filter ) ;
+		int directoryContentsLength = 0 ;
+		if( directoryContents != null  )
+			directoryContentsLength = directoryContents.length ;
 		int highestRepeatCount = 0 ;
 		long nearestDate = 0 ;
-		for( int index = 0 ; index < directoryContents.length ; index++ )
+		for( int index = 0 ; index < directoryContentsLength ; index++ )
 		{
 			String[] split = directoryContents[ index ].split( "_" ) ;
 			try
@@ -134,7 +137,7 @@ public class SpQueuedMap
 				highestRepeatCount = 0 ;
 			}
 		}
-		if( directoryContents.length != 0 && highestRepeatCount <= directoryContents.length )
+		if( directoryContentsLength != 0 && highestRepeatCount <= directoryContentsLength )
 			success = "" + nearestDate ;
 		
  		return success ;
@@ -149,7 +152,10 @@ public class SpQueuedMap
 			Calendar calendar = Calendar.getInstance() ;
 			TimeZone timeZone = TimeZone.getTimeZone( "UTC" ) ;
 			calendar.setTimeZone( timeZone ) ;
-			String date = calendar.get( Calendar.YEAR ) + "" + calendar.get( Calendar.MONTH ) + "" + calendar.get( Calendar.DATE ) + File.separator ;
+			int year = calendar.get( Calendar.YEAR ) ;
+			int month = calendar.get( Calendar.MONTH ) + 1 ;
+			int day = calendar.get( Calendar.DATE ) ;
+			String date = year + "" + month + "" + day + File.separator ;
 
 			String cacheFiles = File.separator + System.getProperty( "telescope" ).toLowerCase() + "data" + File.separator ;
 			cacheFiles += System.getProperty( "cacheFiles" ) ;
@@ -185,8 +191,11 @@ public class SpQueuedMap
 		if( directory.exists() && directory.canWrite() && directory.isDirectory() )
 		{
 			File[] contents = directory.listFiles() ;
+			int contentsLength = 0 ;
+			if( contents != null )
+				contentsLength = contents.length ;
 			File temp ;
-			for( int i = 0 ; i < contents.length ; i++ )
+			for( int i = 0 ; i < contentsLength ; i++ )
 			{
 				temp = contents[ i ] ;
 				if( temp.isDirectory() )
@@ -238,7 +247,10 @@ public class SpQueuedMap
 		File filePath = new File( path ) ;
 		FileGlobFilter filter = new FileGlobFilter( "^\\w+_-?\\d+_\\d*" ) ;
 		String[] directoryContents = filePath.list( filter ) ;
-		for( int index = 0 ; index < directoryContents.length ; index++ )
+		int directoryContentsLength = 0 ;
+		if( directoryContents != null )
+			directoryContentsLength = directoryContents.length ;
+		for( int index = 0 ; index < directoryContentsLength ; index++ )
 		{
 			String[] split = directoryContents[ index ].split( "_" ) ;
 			String checksum =  split[ 0 ] ;

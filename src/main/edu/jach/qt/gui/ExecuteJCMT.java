@@ -90,10 +90,10 @@ public class ExecuteJCMT extends Execute {
 		deferredDirectory += System.getProperty( "deferredDir" ) + File.separator ;
 		final File success = new File( deferredDirectory + ".success" ) ;
 		final File failure = new File( deferredDirectory + ".failure" ) ;
-		success.delete();
-		failure.delete();
 		try
 		{
+			success.delete() ;
+			failure.delete() ;
 			success.createNewFile();
 			failure.createNewFile();
 			Runtime.getRuntime().exec( "chmod 666 " + deferredDirectory + ".success" );
