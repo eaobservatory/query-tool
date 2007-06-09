@@ -105,7 +105,7 @@ public class ExecuteJCMT extends Execute {
 	private boolean sendToQueue( byte[] odfFile )
 	{
 		boolean failure = false ;
-		if( true /*TelescopeDataPanel.DRAMA_ENABLED*/ )
+		if( TelescopeDataPanel.DRAMA_ENABLED )
 		{
 			String fName = new String( odfFile );
 			fName = fName.trim();
