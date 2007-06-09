@@ -1215,34 +1215,17 @@ final public class ProgramTree extends JPanel implements
 			ExecuteJCMT execute;
 			boolean failed = false;
 
-			File failFile = new File( "/jcmtdata/orac_data/deferred/.failure" );
 			execute = ExecuteJCMT.getInstance( _item );
 			if( execute == null )
 			{
 				JOptionPane.showMessageDialog( null , "Please Wait. ExecuteJCMT already running." , "Already running" , JOptionPane.INFORMATION_MESSAGE );				
 				return;
 			}
-			try
-			{
-				execute.setDeferred( _isDeferred ) ;
-				failed = execute.run();
-			}
-			catch( Exception e )
-			{
-				if( !failFile.exists() )
-				{
-					try
-					{
-						failFile.createNewFile();
-					}
-					catch( IOException ioe )
-					{
-						logger.error( "Execution failed and could not return normally" );
-						setExecutable( true );
-						return;
-					}
-				}
-			}
+			File failFile = execute.failFile() ;
+			File successFile = execute.successFile() ;
+
+			execute.setDeferred( _isDeferred ) ;
+			failed = execute.run();
 
 			if( failFile.exists() )
 			{
@@ -1294,6 +1277,13 @@ final public class ProgramTree extends JPanel implements
 				obsList.setListData( new Vector() ) ;
 				obsList.clearSelection();
 			}
+			
+			// done with status files
+			if( failFile.exists() )
+				failFile.delete() ;
+			if( successFile.exists() )
+				successFile.delete() ;
+			
 			logger.debug( "Enabling run button since the ExecuteJCMT task has completed" );
 		}
 
