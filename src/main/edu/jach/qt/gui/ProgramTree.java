@@ -402,7 +402,7 @@ final public class ProgramTree extends JPanel implements
 		}
 	}
 
-    	public void doExecute()
+    public void doExecute()
 	{
 		SpItem item = null;
 		boolean isDeferred = false;
@@ -430,12 +430,14 @@ final public class ProgramTree extends JPanel implements
 			{
 				ExecuteUKIRT execute = new ExecuteUKIRT( _useQueue );
 				execute.setDeferred( isDeferred ) ;
+				
+				File failFile = execute.failFile() ;
+				File successFile = execute.successFile() ;
+				
 				t = new Thread( execute );
 				t.start();
 				t.join();
-				String deferredDirectory = File.separator + System.getProperty( "telescope" ).toLowerCase() + "data" + File.separator ;
-				deferredDirectory += System.getProperty( "deferredDir" ) + File.separator ;
-				File failFile = new File( deferredDirectory + ".failure" );
+
 				if( failFile.exists() )
 				{
 					failed = true;
@@ -472,6 +474,12 @@ final public class ProgramTree extends JPanel implements
 					else if( !failed )
 						DeferredProgramList.markThisObservationAsDone( item );
 				}
+				
+				// done with status files
+				if( failFile.exists() )
+					failFile.delete() ;
+				if( successFile.exists() )
+					successFile.delete() ;
 			}
 			catch( Exception e )
 			{
@@ -1221,6 +1229,7 @@ final public class ProgramTree extends JPanel implements
 				JOptionPane.showMessageDialog( null , "Please Wait. ExecuteJCMT already running." , "Already running" , JOptionPane.INFORMATION_MESSAGE );				
 				return;
 			}
+			
 			File failFile = execute.failFile() ;
 			File successFile = execute.successFile() ;
 
