@@ -7,18 +7,11 @@ import gemini.sp.SpItem ;
 import java.io.File ;
 import java.io.IOException ;
 import java.io.FileWriter ;
-import java.io.BufferedWriter ;
-import java.io.InputStream ;
-import java.io.Serializable ;
-
-import javax.swing.JOptionPane ;
 
 import org.apache.log4j.Logger;
 
 import gemini.sp.SpMSB ;
 import edu.jach.qt.utils.SpQueuedMap ;
-
-import java.util.Random ;
 
 
 /**
@@ -35,10 +28,8 @@ public class ExecuteJCMT extends Execute {
     static Logger logger = Logger.getLogger(ExecuteJCMT.class);
     private static SpItem _itemToExecute;
     private static String jcmtDir = null ;
-	private static String deferredDirPath = null ;
     static boolean isRunning = false;
     private static ExecuteJCMT _instance;
-    private static Random random = new Random() ;
     
     /**
      * Constructor.
@@ -87,111 +78,7 @@ public class ExecuteJCMT extends Execute {
 		}
 		return jcmtDir ;
 	}
-	
-	private boolean chmod( File file )
-	{
-		boolean success = true ;
-		try
-		{
-			StringBuffer buffer = new StringBuffer() ;
-			buffer.append( "chmod 666" ) ;
-			buffer.append( " " ) ;
-			buffer.append( file.getAbsolutePath() ) ;
-			String command = buffer.toString() ;
-			Runtime.getRuntime().exec( command ) ;
-			buffer = null ;
-		}
-		catch( IOException ioe )
-		{
-			logger.error( "Unable to change file access permissions " + file.getAbsolutePath() ) ;
-			success = false ;
-		}
-		return success ;
-	}
-	
-	public static String deferredDirPath()
-	{
-		if( deferredDirPath == null )
-		{
-			StringBuffer buffer = new StringBuffer() ;
-			buffer.append( File.separator ) ;
-			buffer.append( System.getProperty( "telescope" ).toLowerCase() ) ;
-			buffer.append( "data" ) ;
-			buffer.append( File.separator ) ;
-			buffer.append( System.getProperty( "deferredDir" ) ) ; 
-			buffer.append( File.separator ) ;
-			deferredDirPath = buffer.toString() ;
-			buffer = null ;
-		}
-		return deferredDirPath ;
-	}
 
-	private static File successFile = null ;
-	
-	public File successFile()
-	{
-		if( successFile == null )
-		{
-			StringBuffer buffer = new StringBuffer() ;
-			buffer.append( deferredDirPath() ) ;
-			buffer.append( ".success-" ) ;
-			buffer.append( random.nextLong() ) ;
-			String filename = buffer.toString() ;
-			successFile = new File( filename ) ;
-			buffer = null ;
-		}
-		
-		if( !successFile.exists() )
-		{
-			try
-			{
-				File parent = successFile.getParentFile() ;
-				if( !parent.canWrite() )
-					logger.warn( "Don't appear to be able to write to " + parent.getAbsolutePath() ) ;
-				successFile.createNewFile() ;
-				chmod( successFile ) ;
-			}
-			catch( IOException ioe )
-			{
-				logger.error( "Unable to create success file " + successFile.getAbsolutePath() ) ;
-			}
-		}
-		return successFile ;
-	}
-	
-	private static File failFile = null ;
-	
-	public File failFile()
-	{
-		if( failFile == null )
-		{
-			StringBuffer buffer = new StringBuffer() ;
-			buffer.append( deferredDirPath() ) ;
-			buffer.append( ".failure-" ) ;
-			buffer.append( random.nextLong() ) ;
-			String filename = buffer.toString() ;
-			failFile = new File( filename ) ;
-			buffer = null ;
-		}
-		
-		if( !failFile.exists() )
-		{
-			try
-			{
-				File parent = failFile.getParentFile() ;
-				if( !parent.canWrite() )
-					logger.warn( "Don't appear to be able to write to " + parent.getAbsolutePath() ) ;
-				failFile.createNewFile() ;
-				chmod( failFile ) ;
-			}
-			catch( IOException ioe )
-			{
-				logger.error( "Unable to create failure file " + failFile.getAbsolutePath() ) ;
-			}
-		}
-		return failFile ;		
-	}	
-	
 	private byte[] translate( File file )
 	{
 		byte[] odfFile = new byte[ 1024 ] ;
@@ -204,7 +91,7 @@ public class ExecuteJCMT extends Execute {
 			buffer.append( file.getPath() ) ;
 			String command = buffer.toString() ;
 			buffer = null ;
-			int rtn = executeCommand( command , odfFile ) ;
+			int rtn = executeCommand( command ) ;
 			if( rtn != 0 )
 				odfFile = null ;
 		}
@@ -218,7 +105,7 @@ public class ExecuteJCMT extends Execute {
 	private boolean sendToQueue( byte[] odfFile )
 	{
 		boolean failure = false ;
-		if( TelescopeDataPanel.DRAMA_ENABLED )
+		if( true /*TelescopeDataPanel.DRAMA_ENABLED*/ )
 		{
 			String fName = new String( odfFile );
 			fName = fName.trim();
@@ -240,7 +127,7 @@ public class ExecuteJCMT extends Execute {
 				command = buffer.toString() ;
 				buffer = null ;
 				logger.debug( "Running command " + command );
-				int rtn = executeCommand( command , odfFile ) ;
+				int rtn = executeCommand( command ) ;
 				if( rtn != 0 )
 					failure = true ;
 				if( failure )
@@ -257,68 +144,6 @@ public class ExecuteJCMT extends Execute {
 			SpQueuedMap.getSpQueuedMap().putSpItem( obs ) ;
 		}
 		return failure ;
-	}
-
-	private int executeCommand( String command , byte[] odfFile )
-	{
-		byte[] errorMessage = new byte[ 1024 ];
-		StringBuffer inputBuffer = new StringBuffer() ;
-		StringBuffer errorBuffer = new StringBuffer() ;
-		BufferedWriter errorWriter = null ;
-		Runtime rt;
-		int rtn = -1 ;
-		try
-		{
-			rt = Runtime.getRuntime();	
-			Process p = rt.exec( command );
-			InputStream istream = p.getInputStream();
-			InputStream estream = p.getErrorStream();
-			int inputLength , errorLength ;
-			boolean inputFinished = false ;
-			boolean errorFinished = false ;
-			inputBuffer.delete( 0 , inputBuffer.length() ) ;
-			errorBuffer.delete( 0 , errorBuffer.length() ) ;
-			while( !( inputFinished && errorFinished ) )
-			{
-				if( !inputFinished )
-				{
-					inputLength = istream.read( odfFile ) ;
-					if( inputLength == -1 )
-						inputFinished = true ;
-					else
-						inputBuffer.append( new String( odfFile ).trim() ) ;
-				}
-				
-				if( !errorFinished )
-				{
-					errorLength = estream.read( errorMessage ) ;
-					if( errorLength == -1 )
-						errorFinished = true ;
-					else
-						errorBuffer.append( new String( errorMessage ).trim() ) ;
-				}			
-			}
-			p.waitFor();
-			rtn = p.exitValue();
-			logger.info( "QUEUE returned with exit status " + rtn );
-			logger.debug( "Output from QUEUE: " + inputBuffer.toString() ) ;
-			logger.debug( "Error from QUEUE: " + errorBuffer.toString() ) ;
-			errorWriter = new BufferedWriter( new FileWriter( failFile() ) ) ;
-			errorWriter.write( errorBuffer.toString() ) ;
-			errorWriter.newLine() ;
-			errorWriter.flush() ;
-			errorWriter.close() ;
-		}
-		catch( IOException ioe )
-		{
-			logger.error( "Error executing ..." , ioe ) ;
-		}
-		catch( InterruptedException ie )
-		{
-			logger.error( "Exited prematurely..." , ie ) ;
-		}
-
-		return rtn ;
 	}
 	
 	private File convertProgramToXML()
@@ -390,26 +215,4 @@ public class ExecuteJCMT extends Execute {
 		
 		return failure ;
 	}
-
-    public class PopUp extends Thread implements Serializable
-	{
-		String _message;
-
-		String _title;
-
-		int _errLevel;
-
-		public PopUp( String title , String message , int errorLevel )
-		{
-			_message = message;
-			_title = title;
-			_errLevel = errorLevel;
-		}
-
-		public void run()
-		{
-			JOptionPane.showMessageDialog( null , _message , _title , _errLevel );
-		}
-	}
-
 }
