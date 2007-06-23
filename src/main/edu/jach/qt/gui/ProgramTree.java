@@ -14,6 +14,7 @@ import gemini.sp.SpFactory ;
 
 /* ORAC imports */
 import orac.jcmt.inst.SpInstHeterodyne ;
+import orac.ukirt.inst.SpInstUIST ;
 
 /* ORAC-OM imports */
 
@@ -426,6 +427,36 @@ final public class ProgramTree extends JPanel implements
 		
 		if( System.getProperty( "telescope" ).equalsIgnoreCase( "ukirt" ) )
 		{
+			
+			if( isDeferred )
+			{
+				item = DeferredProgramList.getCurrentItem() ;
+			}
+			else
+			{
+				if( _useQueue )
+					item = ProgramTree.getCurrentItem() ;
+				else
+					item = ProgramTree.getSelectedItem() ;
+			}	
+			
+			getContext( item ) ;
+			
+			if( instrumentContext instanceof SpInstUIST )
+			{
+				SpInstUIST uist = ( SpInstUIST )instrumentContext ;
+				if( uist.isPolarimetry() )
+				{
+					int result = JOptionPane.showConfirmDialog( null ,"You are attempting to do a Polarimetry observation with UIST - is the IRPOL arm in the beam ?"  , "Is IRPOL arm in beam ?" , JOptionPane.YES_NO_OPTION ) ;
+					if( result == JOptionPane.NO_OPTION )
+					{
+						JOptionPane.showMessageDialog( null , "Queue submission cancelled." , "Queue submission cancelled." , JOptionPane.INFORMATION_MESSAGE ) ;
+						setExecutable( true ) ;
+						return ;
+					}
+				}
+			}
+			
 			try
 			{
 				ExecuteUKIRT execute = new ExecuteUKIRT( _useQueue );
