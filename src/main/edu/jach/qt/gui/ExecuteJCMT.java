@@ -81,7 +81,7 @@ public class ExecuteJCMT extends Execute {
 
 	private byte[] translate( File file )
 	{
-		byte[] odfFile = new byte[ 1024 ] ;
+		byte[] stdout = new byte[ 1024 ] ;
 		final String translator = System.getProperty( "jcmtTranslator" ) ;
 		if( translator != null )
 		{
@@ -91,27 +91,32 @@ public class ExecuteJCMT extends Execute {
 			buffer.append( file.getPath() ) ;
 			String command = buffer.toString() ;
 			buffer = null ;
-			int rtn = executeCommand( command , odfFile ) ;
+			int rtn = executeCommand( command , stdout ) ;
 			if( rtn != 0 )
-				odfFile = null ;
+				stdout = null ;
 		}
 		else
 		{
 			logger.error( "No translation process defined" ) ;
+			stdout = null ;
 		}
-		return odfFile ;
+		file.delete() ;
+		return stdout ;
 	}
 	
 	private boolean sendToQueue( byte[] odfFile )
 	{
 		boolean failure = false ;
-		if( TelescopeDataPanel.DRAMA_ENABLED )
+		
+		String fileName = new String( odfFile ) ;
+		fileName = fileName.trim() ;
+		File file = new File( fileName ) ;
+		
+		if( file.exists() && TelescopeDataPanel.DRAMA_ENABLED )
 		{
-			String fName = new String( odfFile );
-			fName = fName.trim();
-			if( fName.toLowerCase().endsWith( "html" ) )
+			if( fileName.toLowerCase().endsWith( "html" ) )
 			{
-				HTMLViewer viewer = new HTMLViewer( null , fName );
+				HTMLViewer viewer = new HTMLViewer( null , fileName );
 			}
 			else
 			{
@@ -123,12 +128,11 @@ public class ExecuteJCMT extends Execute {
 				else
 					buffer.append( "loadJCMT.ksh" ) ;
 				buffer.append( " " ) ;
-				String odfString = new String( odfFile ).trim() ;
-				buffer.append( odfString ) ;
+				buffer.append( fileName ) ;
 				command = buffer.toString() ;
 				buffer = null ;
 				logger.debug( "Running command " + command );
-				int rtn = executeCommand( command ) ;
+				int rtn = executeCommand( command , null ) ;
 				if( rtn != 0 )
 					failure = true ;
 				if( failure )
@@ -152,7 +156,9 @@ public class ExecuteJCMT extends Execute {
 		StringBuffer buffer = new StringBuffer() ;
 		buffer.append( jcmtDir() ) ;
 		buffer.append( File.separator ) ;
-		buffer.append( "ExecuteMe.xml" ) ;
+		buffer.append( "Execute-" ) ;
+		buffer.append( nextRandom() ) ;
+		buffer.append( ".xml" ) ;
 		String filename = buffer.toString() ;
 		buffer = null ;
 		File file = new File( filename );
@@ -192,18 +198,18 @@ public class ExecuteJCMT extends Execute {
 		logger.info( "Executing observation " + _itemToExecute.getTitle() );
 
 		File XMLFile = null ;
-		byte[] odfFile = null ;
+		byte[] stdout = null ;
 		boolean failure = false ;
 		
 		XMLFile = convertProgramToXML() ;
 		
 		if( XMLFile != null )
-			odfFile = translate( XMLFile ) ;
+			stdout = translate( XMLFile ) ;
 		else
 			failure = true ;
 		
-		if( odfFile != null )
-			failure = sendToQueue( odfFile ) ;
+		if( stdout != null )
+			failure = sendToQueue( stdout ) ;
 		else
 			failure = true ;
 		

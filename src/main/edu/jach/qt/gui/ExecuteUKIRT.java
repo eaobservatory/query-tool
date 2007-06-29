@@ -101,7 +101,7 @@ public class ExecuteUKIRT extends Execute implements Runnable {
 			
 			logger.debug( "Running command " + command );
 
-			int rtn = executeCommand( command ) ;
+			int rtn = executeCommand( command , null ) ;
 			if( rtn != 0 )
 			{
 				logger.error( "Error loading UKIRT task" );

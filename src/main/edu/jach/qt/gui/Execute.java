@@ -108,7 +108,7 @@ public class Execute {
 			StringBuffer buffer = new StringBuffer() ;
 			buffer.append( deferredDirPath() ) ;
 			buffer.append( ".success-" ) ;
-			buffer.append( random.nextLong() ) ;
+			buffer.append( nextRandom() ) ;
 			String filename = buffer.toString() ;
 			successFile = new File( filename ) ;
 			buffer = null ;
@@ -141,7 +141,7 @@ public class Execute {
 			StringBuffer buffer = new StringBuffer() ;
 			buffer.append( deferredDirPath() ) ;
 			buffer.append( ".failure-" ) ;
-			buffer.append( random.nextLong() ) ;
+			buffer.append( nextRandom() ) ;
 			String filename = buffer.toString() ;
 			failFile = new File( filename ) ;
 			buffer = null ;
@@ -164,12 +164,7 @@ public class Execute {
 		}
 		return failFile ;		
 	}	
-	
-	protected int executeCommand( String command )
-	{
-		return executeCommand( command , new byte[ 1024 ] ) ;
-	}
-	
+
 	protected int executeCommand( String command , byte[] stdout )
 	{
 		if( stdout == null )
@@ -214,8 +209,9 @@ public class Execute {
 			p.waitFor();
 			rtn = p.exitValue();
 			logger.info( command + " returned with exit status " + rtn );
-			logger.debug( "Output from " + command + ": " + inputBuffer.toString() ) ;
-			logger.debug( "Error from " + command + ": " + errorBuffer.toString() ) ;
+			logger.info( "Output from " + command + ": " + inputBuffer.toString() ) ;
+			if( rtn != 0 )
+				logger.info( "Error from " + command + ": " + errorBuffer.toString() ) ;
 			errorWriter = new BufferedWriter( new FileWriter( failFile() ) ) ;
 			errorWriter.write( errorBuffer.toString() ) ;
 			errorWriter.newLine() ;
@@ -234,6 +230,11 @@ public class Execute {
 		return rtn ;
 	}
 
+	protected long nextRandom()
+	{
+		return Math.abs( random.nextLong() ) ;
+	}
+	
     public class PopUp extends Thread implements Serializable
 	{
 		String _message;
