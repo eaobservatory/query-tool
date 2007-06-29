@@ -167,7 +167,13 @@ public class Execute {
 	
 	protected int executeCommand( String command )
 	{
-		byte[] stdout = new byte[ 1024 ] ;
+		return executeCommand( command , new byte[ 1024 ] ) ;
+	}
+	
+	protected int executeCommand( String command , byte[] stdout )
+	{
+		if( stdout == null )
+			stdout = new byte[ 1024 ] ;
 		byte[] stderr = new byte[ 1024 ] ;
 		StringBuffer inputBuffer = new StringBuffer() ;
 		StringBuffer errorBuffer = new StringBuffer() ;

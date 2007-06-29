@@ -91,7 +91,7 @@ public class ExecuteJCMT extends Execute {
 			buffer.append( file.getPath() ) ;
 			String command = buffer.toString() ;
 			buffer = null ;
-			int rtn = executeCommand( command ) ;
+			int rtn = executeCommand( command , odfFile ) ;
 			if( rtn != 0 )
 				odfFile = null ;
 		}
@@ -123,7 +123,8 @@ public class ExecuteJCMT extends Execute {
 				else
 					buffer.append( "loadJCMT.ksh" ) ;
 				buffer.append( " " ) ;
-				buffer.append( new String( odfFile ).trim() ) ;
+				String odfString = new String( odfFile ).trim() ;
+				buffer.append( odfString ) ;
 				command = buffer.toString() ;
 				buffer = null ;
 				logger.debug( "Running command " + command );
