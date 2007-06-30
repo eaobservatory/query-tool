@@ -104,12 +104,22 @@ public class ExecuteJCMT extends Execute {
 		return stdout ;
 	}
 	
-	private boolean sendToQueue( byte[] odfFile )
+	private boolean sendToQueue( byte[] stdout )
 	{
 		boolean failure = false ;
 		
-		String fileName = new String( odfFile ) ;
-		fileName = fileName.trim() ;
+		if( stdout == null )
+			stdout = new byte[ 0 ] ;
+		String fileName = new String( stdout ) ;
+		String[] split = fileName.split( "\n" ) ;
+		for( int index = 0 ; index < split.length ; index++ )
+		{
+			fileName = split[ index ] ;
+			fileName = fileName.trim() ;
+			if( fileName.startsWith( File.separator ) )
+				break ;
+		}
+
 		File file = new File( fileName ) ;
 		
 		if( file.exists() && TelescopeDataPanel.DRAMA_ENABLED )
@@ -138,6 +148,10 @@ public class ExecuteJCMT extends Execute {
 				if( failure )
 					logger.error( "Problem sending to queue" ) ;
 			}
+		}
+		else
+		{
+			failure = true ;
 		}
 		
 		if( _itemToExecute != null && !failure )
