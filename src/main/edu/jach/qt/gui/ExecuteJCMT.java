@@ -111,18 +111,19 @@ public class ExecuteJCMT extends Execute {
 		if( stdout == null )
 			stdout = new byte[ 0 ] ;
 		String fileName = new String( stdout ) ;
+		fileName = fileName.trim() ; // clear up any whitespace that might give us a false positive
 		String[] split = fileName.split( "\n" ) ;
-		for( int index = 0 ; index < split.length ; index++ )
-		{
-			fileName = split[ index ] ;
-			fileName = fileName.trim() ;
-			if( fileName.startsWith( File.separator ) )
-				break ;
-		}
+			
+		fileName = split[ split.length - 1 ] ; // Tim assures me it *should* be the last entry
+		fileName = fileName.trim() ; // clean up line
 
 		File file = new File( fileName ) ;
+		boolean fileAvailable = file.exists() && file.canRead() ;
 		
-		if( file.exists() && TelescopeDataPanel.DRAMA_ENABLED )
+		if( !fileAvailable )
+			logger.error( "The following file does not appear to be available : " + file.getAbsolutePath() ) ;
+		
+		if( fileAvailable && TelescopeDataPanel.DRAMA_ENABLED )
 		{
 			if( fileName.toLowerCase().endsWith( "html" ) )
 			{
@@ -151,6 +152,8 @@ public class ExecuteJCMT extends Execute {
 		}
 		else
 		{
+			if( !fileAvailable )
+				logger.info( "DRAMA not enabled" ) ;
 			failure = true ;
 		}
 		

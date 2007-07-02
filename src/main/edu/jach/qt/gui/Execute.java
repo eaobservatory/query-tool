@@ -211,7 +211,7 @@ public class Execute {
 			logger.info( command + " returned with exit status " + rtn );
 			logger.info( "Output from " + command + ": " + inputBuffer.toString() ) ;
 			if( rtn != 0 )
-				logger.info( "Error from " + command + ": " + errorBuffer.toString() ) ;
+				logger.error( "Error from " + command + ": " + errorBuffer.toString() ) ;
 			errorWriter = new BufferedWriter( new FileWriter( failFile() ) ) ;
 			errorWriter.write( errorBuffer.toString() ) ;
 			errorWriter.newLine() ;
