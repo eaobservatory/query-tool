@@ -152,7 +152,7 @@ public class ExecuteJCMT extends Execute {
 		}
 		else
 		{
-			if( !fileAvailable )
+			if( fileAvailable )
 				logger.info( "DRAMA not enabled" ) ;
 			failure = true ;
 		}
