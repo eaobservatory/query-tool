@@ -120,9 +120,6 @@ public class ExecuteJCMT extends Execute {
 		File file = new File( fileName ) ;
 		boolean fileAvailable = file.exists() && file.canRead() ;
 		
-		if( !fileAvailable )
-			logger.error( "The following file does not appear to be available : " + file.getAbsolutePath() ) ;
-		
 		if( fileAvailable && TelescopeDataPanel.DRAMA_ENABLED )
 		{
 			if( fileName.toLowerCase().endsWith( "html" ) )
@@ -154,6 +151,8 @@ public class ExecuteJCMT extends Execute {
 		{
 			if( fileAvailable )
 				logger.info( "DRAMA not enabled" ) ;
+			else
+				logger.error( "The following file does not appear to be available : " + file.getAbsolutePath() ) ;
 			failure = true ;
 		}
 		
