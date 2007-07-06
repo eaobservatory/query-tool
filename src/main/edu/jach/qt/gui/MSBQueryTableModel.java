@@ -132,12 +132,12 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
 				// Create an internal map of projects to MSBs
 				int modelSize = model.size() ;
 				for( int i = 0 ; i < modelSize ; i++ )
-				{
 					modelIndex.add( ( ( MSBTableModel )model.find( i ) ).getProjectId() );
-				}
 			}
 			_projectId = "all";
 			logger.info( "Result contained " + getRowCount() + " MSBs in " + modelIndex.size() + " Projects" );
+			for( int index = 0 ; index < modelIndex.size() ; index++ )
+				logger.info( modelIndex.elementAt( index ) ) ;
 		}
 	}
     
