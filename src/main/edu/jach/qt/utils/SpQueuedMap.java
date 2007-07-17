@@ -185,12 +185,12 @@ public class SpQueuedMap
 			String home = System.getProperty( "user.home" ) ;
 			if( cacheFiles == null || cacheFiles.equals( "" ) )
 				cacheFiles = home ;
-			if( !cacheFiles.endsWith( File.separator ) )
-				cacheFiles += File.separator ;
 			
 			buffer.delete( 0 , buffer.length() ) ;
 			
 			buffer.append( cacheFiles ) ;
+			if( !cacheFiles.endsWith( File.separator ) )
+				buffer.append( File.separator ) ;
 			buffer.append( "QT" ) ;
 			buffer.append( File.separator ) ;
 			
