@@ -99,7 +99,17 @@ public class SpQueuedMap
 		String path = getChecksumCachePath() ;
 		String checksum = msbChecksum( item ) ;
 		int remaining = item.getNumberRemaining() ;
-		File file = new File( path + checksum + "_" + remaining + "_" + System.currentTimeMillis() ) ;
+		
+		StringBuffer buffer = new StringBuffer() ;
+		buffer.append( path ) ;
+		buffer.append( checksum ) ;
+		buffer.append( "_" ) ;
+		buffer.append( remaining ) ;
+		buffer.append( "_" ) ;
+		buffer.append( System.currentTimeMillis() ) ;
+		String fileName = buffer.toString() ;
+		
+		File file = new File( fileName ) ;
 		try
 		{
 			 success = file.createNewFile() ;
@@ -155,19 +165,39 @@ public class SpQueuedMap
 			int year = calendar.get( Calendar.YEAR ) ;
 			int month = calendar.get( Calendar.MONTH ) + 1 ;
 			int day = calendar.get( Calendar.DATE ) ;
-			String date = year + "" + month + "" + day + File.separator ;
+			
+			StringBuffer buffer = new StringBuffer() ;
+			buffer.append( year ) ;
+			buffer.append( month ) ;
+			buffer.append( day ) ;
+			buffer.append( File.separator ) ;
+			String date = buffer.toString() ;
+			
+			buffer.delete( 0 , buffer.length() ) ;
+			
+			buffer.append( File.separator ) ;
+			buffer.append( System.getProperty( "telescope" ).toLowerCase() ) ;
+			buffer.append( "data" ) ;
+			buffer.append( File.separator ) ;
+			buffer.append( System.getProperty( "cacheFiles" ) ) ;
+			String cacheFiles = buffer.toString() ;
 
-			String cacheFiles = File.separator + System.getProperty( "telescope" ).toLowerCase() + "data" + File.separator ;
-			cacheFiles += System.getProperty( "cacheFiles" ) ;
 			String home = System.getProperty( "user.home" ) ;
 			if( cacheFiles == null || cacheFiles.equals( "" ) )
 				cacheFiles = home ;
 			if( !cacheFiles.endsWith( File.separator ) )
 				cacheFiles += File.separator ;
 			
-			String QTCacheFiles = cacheFiles + "QT" + File.separator ;
+			buffer.delete( 0 , buffer.length() ) ;
+			
+			buffer.append( cacheFiles ) ;
+			buffer.append( "QT" ) ;
+			buffer.append( File.separator ) ;
+			
+			String QTCacheFiles = buffer.toString() ;
 
-			cachePath = QTCacheFiles + date ;
+			buffer.append( date ) ;
+			cachePath = buffer.toString() ;
 			File directory = new File( cachePath ) ;
 			if( !directory.exists() )
 			{
@@ -212,7 +242,7 @@ public class SpQueuedMap
 		try
 		{
 			long parsedTime = Long.parseLong( time ) ;
-			returnString = "" ;
+			StringBuffer buffer = new StringBuffer() ;
 			long currentTime = System.currentTimeMillis() ;
 			long difference = currentTime - parsedTime ;
 			long seconds = difference / 1000 ;
@@ -221,21 +251,33 @@ public class SpQueuedMap
 			minutes %= 60 ;
 			if( hours != 0 )
 			{
-				returnString += hours + " hour" ;
+				buffer.append( hours ) ;
+				buffer.append( " " ) ;
+				buffer.append( "hour" ) ;
 				if( hours > 1 )
-					returnString += "s" ;
-				returnString += " " ;
+					buffer.append( "s" ) ;
+				buffer.append( " " ) ;
 			}
 			if( minutes != 0 )
 			{
-				returnString += minutes + " minute" ;
+				buffer.append( minutes ) ;
+				buffer.append( " " ) ;
+				buffer.append( "minute" ) ;
 				if( minutes > 1 )
-					returnString += "s" ;
-				returnString += " " ;
+					buffer.append( "s" ) ;
+				buffer.append( " " ) ;
 			}
-			if( returnString.equals( "" ) )
-				returnString += seconds + " seconds " ;
-			returnString += "ago" ;
+			if( buffer.toString().equals( "" ) )
+			{
+				buffer.append( seconds ) ;
+				buffer.append( " " ) ;
+				buffer.append( "second" ) ;
+				if( seconds > 1 )
+					buffer.append( "s" ) ;
+				buffer.append( " " ) ;
+			}
+			buffer.append( "ago" ) ;
+			returnString = buffer.toString() ;
 		}
 		catch( NumberFormatException nfe ){}
 		return returnString ;
