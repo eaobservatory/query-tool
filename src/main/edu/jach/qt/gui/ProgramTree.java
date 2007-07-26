@@ -9,6 +9,7 @@ import gemini.sp.SpTreeMan ;
 import gemini.sp.SpType ;
 import gemini.sp.SpInsertData ;
 import gemini.sp.SpFactory ;
+import gemini.sp.obsComp.SpInstObsComp;
 
 /* JSKY imports */
 
@@ -782,26 +783,22 @@ final public class ProgramTree extends JPanel implements
 	public void removeCurrentNode()
 	{
 		SpObs item = ( SpObs )obsList.getSelectedValue();
-
+		
 		Vector obsV = SpTreeMan.findAllItems( _spItem , "gemini.sp.SpObs" );
-		int i;
-		SpObs[] obsToDelete = { ( SpObs )obsV.elementAt( obsList.getSelectedIndex() ) };
+
+		int index = obsList.getSelectedIndex() ;
+		(( DefaultListModel )obsList.getModel()).removeElementAt( index ) ;
+		
+		SpObs[] obsToDelete = null ;
+		if( obsV.size() > index )
+			obsToDelete = new SpObs[]{ ( SpObs )obsV.elementAt( index ) } ;
+		
 		try
 		{
-			if( item != null && SpTreeMan.evalExtract( obsToDelete ) == true )
-			{
+			if( obsToDelete != null && SpTreeMan.evalExtract( obsToDelete ) == true )
 				SpTreeMan.extract( obsToDelete );
-				( ( DefaultListModel )obsList.getModel() ).removeElementAt( obsList.getSelectedIndex() );
-			}
 			else if( item == null )
-			{
 				JOptionPane.showMessageDialog( this , "No Observation to remove" , "Message" , JOptionPane.INFORMATION_MESSAGE );
-				return;
-			}
-			else
-			{
-				JOptionPane.showMessageDialog( this , "Encountered a problem deleting this observation" , "Message" , JOptionPane.WARNING_MESSAGE );
-			}
 		}
 		catch( Exception e )
 		{
@@ -1125,6 +1122,12 @@ final public class ProgramTree extends JPanel implements
 		if( selected != null )
 		{
 			obsToDefer = selectedItem.deepCopy();
+			
+			SpInstObsComp inst = SpTreeMan.findInstrument( selectedItem ) ;
+			SpInsertData insertable = SpTreeMan.evalInsertInside( inst , obsToDefer ) ;
+			if( insertable != null )
+				SpTreeMan.insert( insertable ) ;
+			
 			StringSelection text = new StringSelection( obsToDefer.toString() );
 
 			// as the name suggests, starts the dragging
