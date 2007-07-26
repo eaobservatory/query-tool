@@ -770,11 +770,14 @@ public class QtFrame
 		observability = new JCheckBoxMenuItem( "Observability" , true );
 		remaining = new JCheckBoxMenuItem( "Remaining" , true );
 		allocation = new JCheckBoxMenuItem( "Allocation" , true );
+		
 		String ZOA = System.getProperty( "ZOA" , "true" ) ;
 		boolean tickZOA = true ;
 		if( "false".equalsIgnoreCase( ZOA ) )
 			tickZOA = false ;
 		zoneOfAvoidance = new JCheckBoxMenuItem( "Zone of Avoidance" , tickZOA ) ;
+		localQuerytool.setZoneOfAvoidanceConstraint( !tickZOA );
+		
 		disableAll = new JCheckBoxMenuItem( "Disable All" , false );
 		JMenuItem cutItem = new JMenuItem( "Cut" , new ImageIcon( "icons/cut.gif" ) );
 		cutItem.setEnabled( false );
