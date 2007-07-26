@@ -1123,10 +1123,16 @@ final public class ProgramTree extends JPanel implements
 		{
 			obsToDefer = selectedItem.deepCopy();
 			
-			SpInstObsComp inst = SpTreeMan.findInstrument( selectedItem ) ;
-			SpInsertData insertable = SpTreeMan.evalInsertInside( inst , obsToDefer ) ;
-			if( insertable != null )
-				SpTreeMan.insert( insertable ) ;
+			SpInstObsComp inst = SpTreeMan.findInstrument( obsToDefer ) ;
+			
+			// we are expecting the instrument to be null
+			if( inst == null )
+			{
+				inst = SpTreeMan.findInstrument( selectedItem ) ;
+				SpInsertData insertable = SpTreeMan.evalInsertInside( inst , obsToDefer ) ;
+				if( insertable != null )
+					SpTreeMan.insert( insertable ) ;
+			}
 			
 			StringSelection text = new StringSelection( obsToDefer.toString() );
 
