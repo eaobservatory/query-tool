@@ -776,7 +776,7 @@ final public class ProgramTree extends JPanel implements
      * Implementation of <code>KeyListener</code> interface.
      */
     public void keyTyped(KeyEvent e) { }
-
+    
     /**
 	 * Remove the currently selected node. 
 	 */
@@ -1124,16 +1124,17 @@ final public class ProgramTree extends JPanel implements
 			obsToDefer = selectedItem.deepCopy();
 			
 			SpInstObsComp inst = SpTreeMan.findInstrument( obsToDefer ) ;
-			
+
 			// we are expecting the instrument to be null
 			if( inst == null )
 			{
 				inst = SpTreeMan.findInstrument( selectedItem ) ;
-				SpInsertData insertable = SpTreeMan.evalInsertInside( inst , obsToDefer ) ;
+				SpInstObsComp clonedInst = ( SpInstObsComp )inst.deepCopy() ;
+				SpInsertData insertable = SpTreeMan.evalInsertInside( clonedInst , obsToDefer ) ;
 				if( insertable != null )
 					SpTreeMan.insert( insertable ) ;
 			}
-			
+		
 			StringSelection text = new StringSelection( obsToDefer.toString() );
 
 			// as the name suggests, starts the dragging
