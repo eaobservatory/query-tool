@@ -161,52 +161,39 @@ public class OmpOM extends JPanel{
     }
   
     /**
-     * Get the name of the program.
-     * Gets the name of the program from Title field in the first observation.
-     * @return The name of the program, or <italic>Title Not Found</italic> on error.
-     */
-  public String getProgramName() {
-    
-      SpItem currentItem;
-      if (ptree != null) {
-	  currentItem = ProgramTree.getCurrentItem();
-	  if (currentItem == null) {
-	      return "No Observations";
-	  }
-      }
-      else {
-	  return "No Observations";
-      }
-
-      Vector progVector = SpTreeMan.findAllItems(currentItem, "gemini.sp.SpMSB");
-      
-      logger.debug("progVector "+progVector);
-
-      try {
-	  
-	  if ( progVector == null  || progVector.size() == 0) {
-	      progVector = SpTreeMan.findAllItems(currentItem, "gemini.sp.SpObs");
-	      
-	      if ( progVector != null && progVector.size() >0) {
-		  return (String) ((SpObs) (progVector.firstElement())).getTitle();  
-	      }
-	      
-	      else {
-		  return "Title Not Found";
-	      }
-	  }
-	  
-	  else {
-	      return (String) ((SpMSB) (progVector.firstElement())).getTitle();
-	  }
-	  
-      } catch (NoSuchElementException nse) {
-	  logger.warn("Title Not Found");
-	  nse.printStackTrace();
-	  return "Title Not Found";
-      }
-      
-  }
+	 * Get the name of the program.
+	 * Gets the name of the program from Title field in the first observation.
+	 * @return The program name, <italic>'No Observations'</italic> if no program, or <italic>'Title Not Found'</italic> on error.
+	 */
+	public String getProgramName()
+	{
+		String returnString = "Title Not Found" ;
+		SpItem currentItem = ProgramTree.getCurrentItem() ;
+		if( currentItem != null )
+		{
+			Vector progVector = SpTreeMan.findAllItems( currentItem , "gemini.sp.SpMSB" ) ;
+			if( progVector == null || progVector.size() == 0 )
+				progVector = SpTreeMan.findAllItems( currentItem , "gemini.sp.SpObs" ) ;
+			try
+			{
+					if( progVector != null && progVector.size() > 0 )
+					{
+						SpMSB spMsb = ( SpMSB )progVector.firstElement() ;
+						returnString = spMsb.getTitle() ;
+					}
+			}
+			catch( NoSuchElementException nse )
+			{
+				logger.warn( returnString ) ;
+				nse.printStackTrace() ;
+			}
+		}
+		else
+		{
+			returnString = "No Observations" ;
+		}
+		return returnString ;
+	}
 
 
   /**
