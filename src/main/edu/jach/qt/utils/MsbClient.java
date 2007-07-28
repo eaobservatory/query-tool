@@ -1,23 +1,22 @@
 package edu.jach.qt.utils;
 
-
-// /* Gemini imports */
+// Gemini imports
 import gemini.sp.SpItem;
 
-// /* ORAC imports */
-import orac.util.SpInputXML ;
+// ORAC imports
+import orac.util.SpInputXML;
 
-/* OMP imports */
-import omp.SoapClient ; 
+// OMP imports
+import omp.SoapClient;
 
-// /* Standard imports */
-import java.io.ByteArrayInputStream ;
-import java.io.FileWriter ;
-import java.io.StringReader ;
-import java.net.URL ;
+// Standard imports
+import java.io.ByteArrayInputStream;
+import java.io.FileWriter;
+import java.net.URL;
+import java.net.MalformedURLException ;
 import java.util.zip.GZIPInputStream;
 
-// /* Miscellaneous imports */
+// Miscellaneous imports
 import org.apache.log4j.Logger;
 
 /**
@@ -32,227 +31,257 @@ import org.apache.log4j.Logger;
 
  * $Id$ 
  */
-public class MsbClient extends SoapClient {
+public class MsbClient extends SoapClient
+{
 
-  static Logger logger = Logger.getLogger(MsbClient.class);
-
-  /**
-   * <code>queryMSB</code>
-   * Perform a query to the MsbServer with the given query
-   * String. Success will return a true value and write the msbSummary
-   * xml to file.  A unique file will be written for each user to allow
-   * multiple users on th same machine.  This file should not be read by
-   * the code.
-   *
-   * @param xmlQueryString a <code>String</code> value. The xml representing the query.
-   * @return a <code>boolean</code> value indicating success.
-   */
-  public static boolean queryMSB(String xmlQueryString) {
-      try {
+	static Logger logger = Logger.getLogger( MsbClient.class );
 	
-	logger.debug("Sending queryMSB: "+xmlQueryString);
-	URL url = new URL(System.getProperty("msbServer"));
-	logger.info("Connecting to: "+url.toString());
-	flushParameter();
-	addParameter("xmlquery", String.class, xmlQueryString);
-
-	String fileName = System.getProperty("msbSummary") + "." +
-	    System.getProperty("user.name");
-
-	FileWriter fw = new FileWriter(fileName);
-	Object tmp = doCall(url, "urn:OMP::MSBServer", "queryMSB");
-
-	if (tmp != null ) {
-	  fw.write( (String)tmp );
-	  fw.close();
+	private static URL url = null ;
+	private static URL getURL()
+	{
+		if( url == null )
+		{
+			try
+			{
+				url = new URL( System.getProperty( "msbServer" ) ) ;
+			}
+			catch( MalformedURLException mue )
+			{
+				logger.error( "getURL threw Exception" , mue );
+				mue.printStackTrace();				
+			}
+		}
+		return url ;
+	}
+	
+	private static String filename = null ;
+	private static String getFilename()
+	{
+		if( filename == null )
+		{
+			StringBuffer buffer = new StringBuffer() ;
+			buffer.append( System.getProperty( "msbSummary" ) ) ;
+			buffer.append( "." ) ;
+			buffer.append( System.getProperty( "user.name" ) ) ;
+			filename = buffer.toString() ;
+			buffer = null ;
+		}
+		return filename ;
 	}
 
-	else 
-	  return false;
-	 
-      } catch (Exception e) {
-	logger.error("queryMSB threw Exception", e);
-	e.printStackTrace();
-	return false;
-      }
-      return true;
-
-  }
-
-    /**
-     * <code>queryCalibration</code>
-     * Perform a query to the MsbServer with the special calibration query
-     * String. Success will return a true value and write the msbSummary
-     * xml to file.  A unique file will be written for each user to allow
-     * multiple users on th same machine.  This file should not be read by
-     * the code.
-     *
-     * @param xmlQueryString a <code>String</code> value. The xml representing the query.
-     * @return a <code>String</code> value of the results in XML.
-     */
-    public static String queryCalibration( String xmlQueryString )
+	/**
+	 * <code>queryMSB</code>
+	 * Perform a query to the MsbServer with the given query
+	 * String. Success will return a true value and write the msbSummary
+	 * xml to file.  A unique file will be written for each user to allow
+	 * multiple users on th same machine.  This file should not be read by
+	 * the code.
+	 *
+	 * @param xmlQueryString a <code>String</code> value. The xml representing the query.
+	 * @return a <code>boolean</code> value indicating success.
+	 */
+	public static boolean queryMSB( String xmlQueryString )
 	{
-		Object tmp;
+		boolean success = false;
+
+		logger.debug( "Sending queryMSB: " + xmlQueryString );
+		logger.info( "Connecting to: " + getURL().toString() );
+		flushParameter();
+		addParameter( "xmlquery" , String.class , xmlQueryString );
 		try
-		{
-			logger.debug( "Sending queryMSB: " + xmlQueryString );
-			URL url = new URL( System.getProperty( "msbServer" ) );
-			flushParameter();
-			addParameter( "xmlquery" , String.class , xmlQueryString );
-			addParameter( "maxcount" , Integer.class , new Integer( 2000 ) );
-			tmp = doCall( url , "urn:OMP::MSBServer" , "queryMSB" );
+		{		
+			FileWriter fw = new FileWriter( getFilename() );
+			Object tmp = doCall( getURL() , "urn:OMP::MSBServer" , "queryMSB" );
+
+			if( tmp != null )
+			{
+				fw.write( ( String )tmp );
+				fw.flush();
+				fw.close();
+			}
+			success = true;
 		}
 		catch( Exception e )
 		{
-			return null;
+			logger.error( "queryMSB threw Exception" , e );
+			e.printStackTrace();
 		}
-		return tmp.toString();
-	}   
-    
-    public static String fetchCalibrationProgram()
+		return success;
+	}
+
+	/**
+	 * <code>queryCalibration</code>
+	 * Perform a query to the MsbServer with the special calibration query
+	 * String. Success will return a true value and write the msbSummary
+	 * xml to file.  A unique file will be written for each user to allow
+	 * multiple users on th same machine.  This file should not be read by
+	 * the code.
+	 *
+	 * @param xmlQueryString a <code>String</code> value. The xml representing the query.
+	 * @return a <code>String</code> value of the results in XML.
+	 */
+	public static String queryCalibration( String xmlQueryString )
 	{
-		Object tmp ;
-		String xml = "" ;
-		String telescope = System.getProperty( "telescope" ) ;
+		String returnString = null ;
+		logger.debug( "Sending queryMSB: " + xmlQueryString );
+		flushParameter();
+		addParameter( "xmlquery" , String.class , xmlQueryString );
+		addParameter( "maxcount" , Integer.class , new Integer( 2000 ) );
 		try
 		{
-			logger.debug( "Sending fetchCalProgram: " + telescope ) ;
-			URL url = new URL( System.getProperty( "msbServer" ) ) ;
-			flushParameter() ;
-			addParameter( "telescope" , String.class , telescope ) ;
-			tmp = doCall( url , "urn:OMP::MSBServer" , "fetchCalProgram" ) ;
+			Object tmp = doCall( getURL() , "urn:OMP::MSBServer" , "queryMSB" );
+			returnString = tmp.toString() ;
+		}
+		catch( Exception e )
+		{
+			logger.error( "queryCalibration threw Exception" , e ) ;
+			e.printStackTrace() ;
+		}
+		return returnString ;
+	}
+
+	public static String fetchCalibrationProgram()
+	{
+		String xml = null ;
+		String telescope = System.getProperty( "telescope" );
+		logger.debug( "Sending fetchCalProgram: " + telescope );
+		flushParameter();
+		addParameter( "telescope" , String.class , telescope );
+		try
+		{
+			Object tmp = doCall( getURL() , "urn:OMP::MSBServer" , "fetchCalProgram" );
 			if( tmp instanceof byte[] )
-				xml = new String( ( byte[] )tmp ) ;
+				xml = new String( ( byte[] )tmp );
 		}
 		catch( Exception e )
 		{
-			return null;
+			logger.error( "fetchCalibrationProgram threw Exception" , e ) ;
+			e.printStackTrace() ;
 		}
-		return xml ;
-	}     
-    
-    /**
+		return xml;
+	}
+
+	/**
 	 * <code>fetchMSB</code> Fetch the msb indicated by the msbid. The SpItem will return null on failure. In the future this should throw an exception instead.
 	 * 
 	 * @param msbid
 	 *            an <code>Integer</code> value of the MSB
 	 * @return a <code>SpItem</code> value representing the MSB.
 	 */
-    public static SpItem fetchMSB(Integer msbid) {
+	public static SpItem fetchMSB( Integer msbid )
+	{
+		SpItem spItem = null;
+		String spXML = null;
+		logger.debug( "Sending fetchMSB: " + msbid );
+		flushParameter();
+		addParameter( "key" , Integer.class , msbid );
+		try
+		{
+			FileWriter fw = new FileWriter( getFilename() ) ;
+			Object o = doCall( getURL() , "urn:OMP::MSBServer" , "fetchMSB" );
 
-        SpItem spItem = null;
-        String spXML = null;
-        try {
+			if( o != null )
+			{
+				if( !( o instanceof String ) )
+				{
+					// File is gzipped
+					byte[] input = ( byte[] )o;
+					ByteArrayInputStream bis = new ByteArrayInputStream( input );
+					GZIPInputStream gis = new GZIPInputStream( bis );
+					byte[] read = new byte[ 1024 ];
+					int len;
+					StringBuffer sb = new StringBuffer();
+					while(( len = gis.read( read ) ) > 0 )
+						sb.append( new String( read , 0 , len ) );
+					gis.close();
+					spXML = sb.toString();
+				}
+				else
+				{
+					// File is not compressed
+					spXML = ( String )o;
+				}
+				fw.write( spXML );
+				fw.flush();
+				fw.close();
+				SpInputXML spInputXML = new SpInputXML();
+				spItem = spInputXML.xmlToSpItem( spXML );
+			}
+		}
+		catch( Exception e )
+		{
+			logger.error( "fetchMSB threw Exception" , e );
+			e.printStackTrace();
+		}
+		return spItem;
+	}
 
-            logger.debug("Sending fetchMSB: "+msbid);
-            URL url = new URL(System.getProperty("msbServer"));
-            flushParameter();
-            addParameter("key", Integer.class, msbid);
+	private static MsbColumns columns;
 
-            FileWriter fw = new FileWriter(System.getProperty("msbFile")+"."+System.getProperty("user.name"));
-            Object o = doCall(url, "urn:OMP::MSBServer", "fetchMSB");
-// 	    byte [] input = (byte []) doCall(url, "urn:OMP::MSBServer", "fetchMSB");
+	public synchronized static MsbColumns getColumnInfo()
+	{
+		if( columns == null )
+			columns = new MsbColumns();
+		else
+			return columns;
 
-            if (o != null ) {
-                if ( !(o instanceof String) ) {
-//                 if ( (char)input[0] != '<' && (char)input[1] != '?' ) {
-                    // File is gzipped
-                    byte [] input = (byte [])o;
-                    ByteArrayInputStream bis = new ByteArrayInputStream(input);
-                    GZIPInputStream gis = new GZIPInputStream(bis);
-                    byte [] read = new byte[1024];
-                    int len;
-                    StringBuffer sb = new StringBuffer();
-                    while ( (len = gis.read(read)) > 0) {
-                        sb.append(new String(read, 0, len));
-                    }
-                    gis.close();
-                    spXML = sb.toString();
-                }
-                else {
-                    // File is not compressed
-                    spXML = (String)o;
-                }
-                fw.write( spXML );
-                fw.close();
-                StringReader r = new StringReader(spXML);
-                spItem = (SpItem)(new SpInputXML()).xmlToSpItem(spXML);
-           }
+		String[] names = getColumnNames();
+		String[] types = getColumnClasses();
 
-        } catch (Exception e) {
-            logger.error("queryMSB threw Exception", e);
-            e.printStackTrace();
-            return spItem;
-        }
+		String hiddenColumns = System.getProperty( "hiddenColumns" );
+		String[] hidden = new String[ 0 ];
+		if( hiddenColumns != null )
+			hidden = hiddenColumns.split( "%" );
 
-        return spItem;
-    }
+		if( names != null && types != null )
+		{
+			if( names.length == types.length )
+			{
+				MsbColumnInfo columnInfo;
+				for( int index = 0 ; index < names.length ; index++ )
+				{
+					String name = names[ index ];
+					String type = types[ index ];
+					columnInfo = new MsbColumnInfo( name , type );
+					for( int i = 0 ; i < hidden.length ; i++ )
+					{
+						if( hidden[ i ].equalsIgnoreCase( name ) )
+							columnInfo.setVisible( false );
+					}
+					columns.add( columnInfo );
+				}
+			}
+		}
+		else
+		{
+			columns = new MsbColumns();
+		}
+		return columns;
+	}
 
-    private static MsbColumns columns ;
-    public synchronized static MsbColumns getColumnInfo()
-    {
-    	if( columns == null )
-    		columns = new MsbColumns() ;
-    	else
-    		return columns ;
-    		
-    	String[] names = getColumnNames() ;
-    	String[] types = getColumnClasses() ;
-
-    	String hiddenColumns = System.getProperty( "hiddenColumns" ) ;
-    	String[] hidden = new String[ 0 ] ;
-    	if( hiddenColumns != null )
-    		hidden = hiddenColumns.split( "%" ) ;
-
-    	if( names != null && types != null )
-    	{
-	    	if( names.length == types.length )
-	    	{
-	    		MsbColumnInfo columnInfo ;
-	    		for( int index = 0 ; index < names.length ; index++ )
-	    		{
-	    			String name = names[ index ] ;
-	    			String type = types[ index ] ;
-	    			columnInfo = new MsbColumnInfo( name , type ) ;
-	    			for( int i = 0 ; i < hidden.length ; i++ )
-	    			{
-	    				if( hidden[ i ].equalsIgnoreCase( name ) )
-	    					columnInfo.setVisible( false ) ;
-	    			}
-	    			columns.add( columnInfo ) ;
-	    		}
-	    	}   
-    	}
-    	else
-    	{
-    		columns = new MsbColumns() ;
-    	}
-    	return columns ;
-    }
-    
-    /**
+	/**
 	 * Method to get the list of columns in an MSB Summary. Requires the <code>telescope</code> system parameter to be set.
 	 * 
 	 * @return A string array of column names.
 	 */
-    private static String[] columnNames ;
-    private static String[] getColumnNames()
+	private static String[] columnNames;
+
+	private static String[] getColumnNames()
 	{
 		if( columnNames != null )
-			return columnNames ;
+			return columnNames;
+		flushParameter();
+		addParameter( "telescope" , String.class , System.getProperty( "telescope" ) );
 		try
 		{
-			URL url = new URL( System.getProperty( "msbServer" ) );
-			flushParameter();
-			addParameter( "telescope" , String.class , System.getProperty( "telescope" ) );
-			Object o = doCall( url , "urn:OMP::MSBServer" , "getResultColumns" );
-			columnNames = ( String[] ) o;
+			Object o = doCall( getURL() , "urn:OMP::MSBServer" , "getResultColumns" );
+			columnNames = ( String[] )o;
 		}
 		catch( Exception e )
 		{
 			logger.error( "getColumnNames threw exception" , e );
 		}
-		return columnNames ;
+		return columnNames;
 	}
 
 	/**
@@ -260,103 +289,34 @@ public class MsbClient extends SoapClient {
 	 * 
 	 * @return A string array of column types (eg Integer, String, etc).
 	 */
-	private static String[] columnClasses ;
+	private static String[] columnClasses;
+
 	private static String[] getColumnClasses()
 	{
 		if( columnClasses != null )
-			return columnClasses ;
+			return columnClasses;
+		flushParameter();
+		addParameter( "telescope" , String.class , System.getProperty( "telescope" ) );
 		try
 		{
-			URL url = new URL( System.getProperty( "msbServer" ) );
-			flushParameter();
-			addParameter( "telescope" , String.class , System.getProperty( "telescope" ) );
-			Object o = doCall( url , "urn:OMP::MSBServer" , "getTypeColumns" );
-			columnClasses = ( String[] ) o;
+			Object o = doCall( getURL() , "urn:OMP::MSBServer" , "getTypeColumns" );
+			columnClasses = ( String[] )o;
 		}
 		catch( Exception e )
 		{
 			logger.error( "getColumnNames threw exception" , e );
 		}
-		return columnClasses ;
+		return columnClasses;
 	}
 
-
-  /**
-	 * <code>doneMSB</code> Mark the given project ID as done in the database.
-	 * 
-	 * @param projID
-	 *            a <code>String</code> the project ID.
-	 * @param checksum
-	 *            a <code>String</code> the checksum for this project.
+	/**
+	 * Describe <code>main</code> method here.
+	 *
+	 * @param args a <code>String[]</code> value
 	 */
-  public static void doneMSB(String projID, String checksum) {
-    try {
-
-      logger.debug("Sending doneMSB "+projID+ " "+checksum);
-
-      URL url = new URL(System.getProperty("msbServer"));
-      flushParameter();
-      addParameter("projID", String.class, projID);
-      addParameter("checksum", String.class, checksum);
-
-      Object tmp = doCall(url, "urn:OMP::MSBServer", "doneMSB");
-
-      if (tmp != null ) {
-	// tmp has something with success
-      }
-
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-    return;
-  }
-
-
-  /**
-   * <code>doneMSB</code> Mark the given project ID as done in the database.
-   *
-   * @param projID a <code>String</code> the project ID.
-   * @param checksum a <code>String</code> the checksum for this project.
-   * @param user the ID of the user ("observer" should never be used)
-   * @param comment textual information associated with the project
-   */
-  public static void doneMSB(String projID, String checksum,
-			     String user, String comment) throws Exception {
-    try {
-
-      logger.debug("Sending doneMSB "+projID+ " "+checksum);
-
-      URL url = new URL(System.getProperty("msbServer"));
-      flushParameter();
-      addParameter("projID", String.class, projID);
-      addParameter("checksum", String.class, checksum);
-      addParameter("userID", String.class, user);
-      addParameter("reason", String.class, comment);
-
-      Object tmp = doCall(url, "urn:OMP::MSBServer", "doneMSB");
-
-      if (tmp != null ) {
-	// tmp has something with success
-      }
-
-    } 
-    catch (InvalidUserException e) {
-	throw e;
-    }
-    catch (Exception e) {
-      e.printStackTrace();
-    }
-    return;
-  }
-
-  /**
-   * Describe <code>main</code> method here.
-   *
-   * @param args a <code>String[]</code> value
-   */
-  public static void main(String[] args) {
-    MsbClient.queryMSB("<Query><Moon>Dark</Moon></Query>");
-    MsbClient.fetchMSB(new Integer(96));
-  }
-
+	public static void main( String[] args )
+	{
+		MsbClient.queryMSB( "<Query><Moon>Dark</Moon></Query>" );
+		MsbClient.fetchMSB( new Integer( 96 ) );
+	}
 }
