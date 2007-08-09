@@ -217,17 +217,29 @@ public class ExecuteJCMT extends Execute {
 		byte[] stdout = null ;
 		boolean failure = false ;
 		
+		resetCheckpoint() ;
+		checkpoint( "Converting to XML" ) ;
+		
 		XMLFile = convertProgramToXML() ;
+
+		checkpoint( "XML" ) ;
+		checkpoint( "Translating" ) ;
 		
 		if( XMLFile != null )
 			stdout = translate( XMLFile ) ;
 		else
 			failure = true ;
 		
+		checkpoint( "Translated" ) ;
+		checkpoint( "Sending to queue" ) ;
+		
 		if( stdout != null )
 			failure = sendToQueue( stdout ) ;
 		else
 			failure = true ;
+		
+		checkpoint( "Sent to queue" ) ;
+		checkpoint( "Success ? " + !failure ) ;
 		
 		isRunning = false ;
 		
@@ -238,4 +250,27 @@ public class ExecuteJCMT extends Execute {
 		
 		return failure ;
 	}
+    
+    static long lastTime = 0 ;
+    private void checkpoint( String log )
+    {
+    	String entry = "" ;
+    	if( log != null )
+    		entry = log ;
+    	
+    	long time = System.currentTimeMillis() ;
+    		
+    	long difference = time - lastTime ;
+
+    	if( lastTime == 0 )
+    		logger.info( entry + " - " + "Checkpoint reset" ) ;
+    	else
+    		logger.info( entry + " - " + difference + " milliseconds since last checkpoint." ) ;
+    	lastTime = time ;
+    }
+    
+    private void resetCheckpoint()
+    {
+    	lastTime = 0 ;
+    }
 }
