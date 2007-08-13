@@ -8,9 +8,10 @@ package edu.jach.qt.utils;
  * @version $Header$
  */
 
-public class InvalidUserException extends Exception {
-
-    InvalidUserException(String message) {
-	super(message);
-    }
+public class InvalidUserException extends Exception
+{
+	InvalidUserException( String message )
+	{
+		super( message );
+	}
 }

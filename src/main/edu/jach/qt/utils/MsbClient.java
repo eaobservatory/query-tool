@@ -13,7 +13,7 @@ import omp.SoapClient;
 import java.io.ByteArrayInputStream;
 import java.io.FileWriter;
 import java.net.URL;
-import java.net.MalformedURLException ;
+import java.net.MalformedURLException;
 import java.util.zip.GZIPInputStream;
 
 // Miscellaneous imports
@@ -33,40 +33,40 @@ import org.apache.log4j.Logger;
  */
 public class MsbClient extends SoapClient
 {
-
 	static Logger logger = Logger.getLogger( MsbClient.class );
-	
-	private static URL url = null ;
+	private static URL url = null;
+
 	private static URL getURL()
 	{
 		if( url == null )
 		{
 			try
 			{
-				url = new URL( System.getProperty( "msbServer" ) ) ;
+				url = new URL( System.getProperty( "msbServer" ) );
 			}
 			catch( MalformedURLException mue )
 			{
 				logger.error( "getURL threw Exception" , mue );
-				mue.printStackTrace();				
+				mue.printStackTrace();
 			}
 		}
-		return url ;
+		return url;
 	}
-	
-	private static String filename = null ;
+
+	private static String filename = null;
+
 	private static String getFilename()
 	{
 		if( filename == null )
 		{
-			StringBuffer buffer = new StringBuffer() ;
-			buffer.append( System.getProperty( "msbSummary" ) ) ;
-			buffer.append( "." ) ;
-			buffer.append( System.getProperty( "user.name" ) ) ;
-			filename = buffer.toString() ;
-			buffer = null ;
+			StringBuffer buffer = new StringBuffer();
+			buffer.append( System.getProperty( "msbSummary" ) );
+			buffer.append( "." );
+			buffer.append( System.getProperty( "user.name" ) );
+			filename = buffer.toString();
+			buffer = null;
 		}
-		return filename ;
+		return filename;
 	}
 
 	/**
@@ -89,7 +89,7 @@ public class MsbClient extends SoapClient
 		flushParameter();
 		addParameter( "xmlquery" , String.class , xmlQueryString );
 		try
-		{		
+		{
 			FileWriter fw = new FileWriter( getFilename() );
 			Object tmp = doCall( getURL() , "urn:OMP::MSBServer" , "queryMSB" );
 
@@ -122,7 +122,7 @@ public class MsbClient extends SoapClient
 	 */
 	public static String queryCalibration( String xmlQueryString )
 	{
-		String returnString = null ;
+		String returnString = null;
 		logger.debug( "Sending queryMSB: " + xmlQueryString );
 		flushParameter();
 		addParameter( "xmlquery" , String.class , xmlQueryString );
@@ -130,19 +130,19 @@ public class MsbClient extends SoapClient
 		try
 		{
 			Object tmp = doCall( getURL() , "urn:OMP::MSBServer" , "queryMSB" );
-			returnString = tmp.toString() ;
+			returnString = tmp.toString();
 		}
 		catch( Exception e )
 		{
-			logger.error( "queryCalibration threw Exception" , e ) ;
-			e.printStackTrace() ;
+			logger.error( "queryCalibration threw Exception" , e );
+			e.printStackTrace();
 		}
-		return returnString ;
+		return returnString;
 	}
 
 	public static String fetchCalibrationProgram()
 	{
-		String xml = null ;
+		String xml = null;
 		String telescope = System.getProperty( "telescope" );
 		logger.debug( "Sending fetchCalProgram: " + telescope );
 		flushParameter();
@@ -155,8 +155,8 @@ public class MsbClient extends SoapClient
 		}
 		catch( Exception e )
 		{
-			logger.error( "fetchCalibrationProgram threw Exception" , e ) ;
-			e.printStackTrace() ;
+			logger.error( "fetchCalibrationProgram threw Exception" , e );
+			e.printStackTrace();
 		}
 		return xml;
 	}
@@ -177,7 +177,7 @@ public class MsbClient extends SoapClient
 		addParameter( "key" , Integer.class , msbid );
 		try
 		{
-			FileWriter fw = new FileWriter( getFilename() ) ;
+			FileWriter fw = new FileWriter( getFilename() );
 			Object o = doCall( getURL() , "urn:OMP::MSBServer" , "fetchMSB" );
 
 			if( o != null )
@@ -191,7 +191,7 @@ public class MsbClient extends SoapClient
 					byte[] read = new byte[ 1024 ];
 					int len;
 					StringBuffer sb = new StringBuffer();
-					while(( len = gis.read( read ) ) > 0 )
+					while( ( len = gis.read( read ) ) > 0 )
 						sb.append( new String( read , 0 , len ) );
 					gis.close();
 					spXML = sb.toString();

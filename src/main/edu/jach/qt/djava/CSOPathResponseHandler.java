@@ -1,6 +1,10 @@
 package edu.jach.qt.djava;
 
-import au.gov.aao.drama.*;
+import au.gov.aao.drama.DramaPath ;
+import au.gov.aao.drama.DramaMonitor;
+import au.gov.aao.drama.DramaTask;
+import au.gov.aao.drama.DramaException;
+import au.gov.aao.drama.DramaStatus;
 import ocs.utils.CommandReceiver;
 import org.apache.log4j.Logger;
 
@@ -10,60 +14,61 @@ import org.apache.log4j.Logger;
  *
  * @author <a href="mailto:mrippa@jach.hawaii.edu">Mathew Rippa</a>
  * $Id$ */
-public class CSOPathResponseHandler extends DramaPath.ResponseHandler {
+public class CSOPathResponseHandler extends DramaPath.ResponseHandler
+{
+	static Logger logger = Logger.getRootLogger();
+	private CommandReceiver cr;
 
-  static Logger logger = Logger.getRootLogger();
+	/**
+	 * Constructor.
+	 * @param p           A DramaPath Object
+	 * @param cr          A CommandReceiver Object
+	 */
+	public CSOPathResponseHandler( DramaPath p , CommandReceiver cr )
+	{
+		super( p );
+		this.cr = cr;
+		logger.debug( logger.getClass().getName() );
+	}
 
-  private CommandReceiver cr;
-    /**
-     * Constructor.
-     * @param p           A DramaPath Object
-     * @param cr          A CommandReceiver Object
-     */
-  public CSOPathResponseHandler(DramaPath p, CommandReceiver cr) {
-    super(p);
-    this.cr = cr;
-    logger.debug(logger.getClass().getName());
-  }
+	/** 
+	 * Sucess is invoked when we have completed the get path operation.
+	 * @param path     A DramaPath Object
+	 * @param task     A DramaTask Object
+	 * @return         <code>true</code> always.
+	 * @exception      DramaException if the monitor task fails.
+	 */
+	public boolean Success( DramaPath path , DramaTask task ) throws DramaException
+	{
+		// Informational message
+		logger.info( "Got path to task " + path.TaskName() + "." );
 
-  /** 
-   * Sucess is invoked when we have completed the get path operation.
-   * @param path     A DramaPath Object
-   * @param task     A DramaTask Object
-   * @return         <code>true</code> always.
-   * @exception      DramaException if the monitor task fails.
-   */
-  public boolean Success(DramaPath path, DramaTask task) throws DramaException {
-    
-    // Informational message
-    //task.MsgOut("Got path to task "+path.TaskName() +".");
-    logger.info("Got path to task "+path.TaskName() +".");
-    
-    String[] params = new String[] {"CSOSRC", "CSOTAU"};
-    
-    // Start the monitor operation.
-    DramaMonitor Monitor = new DramaMonitor(path, new QT_MonResponse(cr), true, params);
+		String[] params = new String[] { "CSOSRC" , "CSOTAU" };
 
-    // We have sent a new message, so return true.
-    return true;
-  }
+		// Start the monitor operation.
+		DramaMonitor Monitor = new DramaMonitor( path , new QT_MonResponse( cr ) , true , params );
 
-  /** 
-   * Invoked if the GetPath operation fails.
-   * @param path     A DramaPath Object
-   * @param task     A DramaTask Object
-   * @return         <code>false</code> always.
-   * @exception      DramaException if the monitor task fails.
-   */
-  public boolean Error(DramaPath path, DramaTask task)  throws DramaException {
-    DramaStatus status = task.GetEntStatus();
-    logger.warn("Failed to get path to task \"" + path + "\"");
-    logger.warn("Failed with status - " + status);
+		// We have sent a new message, so return true.
+		return true;
+	}
 
-    cr.setPathLock(false);
+	/** 
+	 * Invoked if the GetPath operation fails.
+	 * @param path     A DramaPath Object
+	 * @param task     A DramaTask Object
+	 * @return         <code>false</code> always.
+	 * @exception      DramaException if the monitor task fails.
+	 */
+	public boolean Error( DramaPath path , DramaTask task ) throws DramaException
+	{
+		DramaStatus status = task.GetEntStatus();
+		logger.warn( "Failed to get path to task \"" + path + "\"" );
+		logger.warn( "Failed with status - " + status );
 
-    return false;
-  }
+		cr.setPathLock( false );
+
+		return false;
+	}
 
 }
 

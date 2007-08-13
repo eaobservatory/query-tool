@@ -2,36 +2,30 @@ package edu.jach.qt.gui;
 
 /* QT imports */
 import edu.jach.qt.app.Querytool;
-import edu.jach.qt.utils.CalibrationList;
 
 /* Standard imports */
 
-import java.awt.Cursor ; 
-import java.awt.GridBagLayout ;
-import java.awt.Color ;
-import java.awt.Dimension ;
-import java.awt.GridBagConstraints ;
-import java.awt.Insets ;
-import java.awt.Component ;
-import java.awt.event.ActionListener ;
-import java.awt.event.ActionEvent ;
-import java.util.EventListener;
-import java.util.Iterator;
-import java.util.Set;
+import java.awt.Cursor;
+import java.awt.GridBagLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
+import java.awt.Component;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import javax.swing.JMenuItem;
-import javax.swing.JPanel ;
-import javax.swing.JButton ;
-import javax.swing.ImageIcon ;
-import javax.swing.SwingConstants ;
-import javax.swing.border.MatteBorder ;
-import javax.swing.event.MenuListener;
+import javax.swing.JPanel;
+import javax.swing.JButton;
+import javax.swing.ImageIcon;
+import javax.swing.SwingConstants;
+import javax.swing.border.MatteBorder;
 
 import org.apache.log4j.Logger;
 
-import edu.jach.qt.utils.SpQueuedMap ;
+import edu.jach.qt.utils.SpQueuedMap;
 
 /**
  * InfoPanel.java
@@ -43,67 +37,65 @@ import edu.jach.qt.utils.SpQueuedMap ;
  * @author <a href="mailto:mrippa@jach.hawaii.edu">Mathew Rippa</a>
  * $Id$
  */
-public class InfoPanel extends JPanel implements ActionListener {
+public class InfoPanel extends JPanel implements ActionListener
+{
+	private static final Logger logger = Logger.getLogger( InfoPanel.class );
 
-    private static final Logger logger = Logger.getLogger( InfoPanel.class ) ;
+	/**
+	 * The constant <code>LOGO_IMAGE</code> specifies the String
+	 * location for the QT logo image.
+	 * 
+	 */
+	public static final String LOGO_IMAGE = System.getProperty( "qtLogo" );
 
-    /**
-     * The constant <code>LOGO_IMAGE</code> specifies the String
-     * location for the QT logo image.
-     * 
-     */
-    public static final String LOGO_IMAGE = System.getProperty("qtLogo");
+	/**
+	 * The constant <code>SAT_WEBPAGE</code> specifies the webpage
+	 * containing the String of the latest image to show.
+	 * 
+	 */
+	public static final String SAT_WEBPAGE = System.getProperty( "satellitePage" );
 
-    /**
-     * The constant <code>SAT_WEBPAGE</code> specifies the webpage
-     * containing the String of the latest image to show.
-     * 
-     */
-    public static final String SAT_WEBPAGE = System.getProperty("satellitePage");
+	/**
+	 * The constant <code>IMG_PREFIX</code> is the static portion of the
+	 * image source URL.
+	 * 
+	 */
+	public static final String IMG_PREFIX = System.getProperty( "imagePrefix" );
 
-    /**
-     * The constant <code>IMG_PREFIX</code> is the static portion of the
-     * image source URL.
-     * 
-     */
-    public static final String IMG_PREFIX = System.getProperty("imagePrefix");
+	/**
+	 * The variable <code>searchButton</code> is the button clicked to
+	 * start a query.
+	 * 
+	 */
+	public static JButton searchButton = new JButton();
 
-    /**
-     * The variable <code>searchButton</code> is the button clicked to
-     * start a query.
-     * 
-     */
-    public static JButton searchButton   = new JButton();
+	/**
+	 * The variable <code>logoPanel</code> is a reference to the easily get the LogoPanel.
+	 *
+	 */
+	public static LogoPanel logoPanel = new LogoPanel();
+	private TelescopeDataPanel telescopeInfoPanel;
+	private MSBQueryTableModel msb_qtm;
+	private TimePanel timePanel;
+	private SatPanel satPanel;
+	private Querytool localQuerytool;
+	private QtFrame qtf;
+	private JButton exitButton;
+	private JButton fetchMSB;
+	private Timer queryExpiredTimer;
+	final private Cursor busyCursor = new Cursor( Cursor.WAIT_CURSOR );
+	final private Cursor normalCursor = new Cursor( Cursor.DEFAULT_CURSOR );
 
-    /**
-     * The variable <code>logoPanel</code> is a reference to the easily get the LogoPanel.
-     *
-     */
-    public static LogoPanel logoPanel    = new LogoPanel();
-
-    private TelescopeDataPanel telescopeInfoPanel;
-    private MSBQueryTableModel msb_qtm;
-    private TimePanel timePanel;
-    private SatPanel satPanel;
-    private Querytool localQuerytool;
-    private QtFrame qtf;
-    private JButton exitButton;
-    private JButton fetchMSB;
-    private Timer   queryExpiredTimer;
-
-    final private Cursor busyCursor = new Cursor( Cursor.WAIT_CURSOR ) ;
-    final private Cursor normalCursor = new Cursor( Cursor.DEFAULT_CURSOR ) ;
-
-    /**
-     * Creates a new <code>InfoPanel</code> instance.
-     *
-     * @param msbQTM a <code>MSBQueryTableModel</code> value
-     * @param qt a <code>Querytool</code> value
-     * @param qtFrame a <code>QtFrame</code> value
-     */
-    public InfoPanel( MSBQueryTableModel msbQTM , Querytool qt , QtFrame qtFrame )
+	/**
+	 * Creates a new <code>InfoPanel</code> instance.
+	 *
+	 * @param msbQTM a <code>MSBQueryTableModel</code> value
+	 * @param qt a <code>Querytool</code> value
+	 * @param qtFrame a <code>QtFrame</code> value
+	 */
+	public InfoPanel( MSBQueryTableModel msbQTM , Querytool qt , QtFrame qtFrame )
 	{
-    	super() ;
+		super();
 		localQuerytool = qt;
 		msb_qtm = msbQTM;
 		qtf = qtFrame;
@@ -119,14 +111,12 @@ public class InfoPanel extends JPanel implements ActionListener {
 		setMaximumSize( new Dimension( 174 , 450 ) );
 
 		compInit();
-
 	}
 
-    private void compInit()
+	private void compInit()
 	{
 		final GridBagConstraints gbc = new GridBagConstraints();
 
-		// xmlPrintButton = new JButton();
 		exitButton = new JButton();
 		fetchMSB = new JButton();
 		timePanel = new TimePanel();
@@ -146,14 +136,14 @@ public class InfoPanel extends JPanel implements ActionListener {
 		{
 			public void actionPerformed( ActionEvent e )
 			{
-				searchButton.setEnabled( false ) ;
+				searchButton.setEnabled( false );
 				qtf.setCursor( busyCursor );
 				qtf.getWidgets().setButtons();
 				qtf.updateColumnSizes();
 				qtf.repaint( 0 );
-				
-				ChecksumCacheThread checksumCacheThread = new ChecksumCacheThread() ;
-				checksumCacheThread.start() ;
+
+				ChecksumCacheThread checksumCacheThread = new ChecksumCacheThread();
+				checksumCacheThread.start();
 
 				final SwingWorker worker = new SwingWorker()
 				{
@@ -168,9 +158,9 @@ public class InfoPanel extends JPanel implements ActionListener {
 					// Runs on the event-dispatching thread.
 					public void finished()
 					{
-						logoPanel.stop() ;
-						qtf.setCursor( normalCursor ) ;
-						searchButton.setEnabled( true ) ;
+						logoPanel.stop();
+						qtf.setCursor( normalCursor );
+						searchButton.setEnabled( true );
 						if( isStatusOK.booleanValue() )
 						{
 							Thread tableFill = new Thread( msb_qtm );
@@ -201,16 +191,16 @@ public class InfoPanel extends JPanel implements ActionListener {
 							}
 							msb_qtm.setProjectId( "All" );
 							qtf.setColumnSizes();
-							qtf.resetScrollBars() ;
+							qtf.resetScrollBars();
 							logoPanel.stop();
 							qtf.setCursor( normalCursor );
 							if( queryExpiredTimer != null )
 								queryExpiredTimer.cancel();
 							queryExpiredTimer = new Timer();
 							qtf.setQueryExpired( false );
-							String queryTimeout = System.getProperty( "queryTimeout" ) ;
-							System.out.println( "Query expiration: " + queryTimeout ) ;
-							Integer timeout = new Integer( queryTimeout ) ;
+							String queryTimeout = System.getProperty( "queryTimeout" );
+							System.out.println( "Query expiration: " + queryTimeout );
+							Integer timeout = new Integer( queryTimeout );
 							if( timeout.intValue() != 0 )
 							{
 								int delay = timeout.intValue() * 60 * 1000; // Conversion from minutes of milliseconds
@@ -229,9 +219,6 @@ public class InfoPanel extends JPanel implements ActionListener {
 
 		InfoPanel.searchButton.setBackground( java.awt.Color.gray );
 
-		/*
-		 * xmlPrintButton.setText("Fetch MSB"); xmlPrintButton.setName("Fetch MSB"); xmlPrintButton.setBackground(java.awt.Color.gray); xmlPrintButton.addActionListener(this);
-		 */
 		fetchMSB.setText( "Fetch MSB" );
 		fetchMSB.setName( "Fetch MSB" );
 		fetchMSB.setBackground( java.awt.Color.gray );
@@ -275,156 +262,157 @@ public class InfoPanel extends JPanel implements ActionListener {
 		add( timePanel , gbc , 0 , 40 , 1 , 1 );
 	}
 
-    /**
-     * Get the parent frame.
-     * @return The parent QT Frame object.
-     */
-    public QtFrame getFrame() {
-	return qtf;
-    }
-
-    /**
-     * Get the current query.
-     * @return The current <code>QueryTool</code> object.
-     */
-    public Querytool getQuery() {
-	return localQuerytool;
-    }
-
-    private void add(Component c, GridBagConstraints gbc, 
-		     int x, int y, int w, int h) {
-	gbc.gridx = x;
-	gbc.gridy = y;
-	gbc.gridwidth = w;
-	gbc.gridheight = h;
-	add(c, gbc);      
-    }
-
-    /**
-     * <code>getXMLquery</code> will get the String that contains the
-     * current XML defining the query.
-     *
-     * @return a <code>String</code> representing the query. 
-     */
-    public String getXMLquery() {
-	return localQuerytool.getXML();
-    }
-
-    /**
-     * Get the <code>TelescopeDataPanel</code>
-     * @return  the current telescope panel.
-     */
-    public TelescopeDataPanel getTelescopeDataPanel()
-    {
-	return telescopeInfoPanel;
-    }
-
-    /**
-     * Get the <code>SatPanel</code>
-     * @return  the current satellite panel.
-     */
-    public SatPanel getSatPanel() {
-	return satPanel;
-    }
-
-    /* -- No longer use-- now a static const
-       public String getImageFile() {
-       return LOGO_IMAGE;
-       }
-    */
-
-    /*
-     * <code>getCSODcHub</code> method here.
-     *
-     * @return a <code>DcHub</code> value
-   
-     public DcHub getCSODcHub() {
-     return telescopeInfoPanel.getHub();
-     }
-    */
-
-    /**
-     * <code>actionPerformed</code> satisfies the ActionListener
-     * interface.  This is called when any ActionEvents are triggered by
-     * registered ActionListeners. In this case it's either the exit
-     * button or the fetchMSB button.
-     *
-     * @param e an <code>ActionEvent</code> value 
-     */
-    public void actionPerformed(ActionEvent e) {
-	Object source = e.getSource();
-	Color color = getBackground();
-	if (source == exitButton) {
-
-	    if (TelescopeDataPanel.DRAMA_ENABLED) {
-
-		telescopeInfoPanel.closeHub();
-	    }
-
-	    qtf.exitQT();
+	/**
+	 * Get the parent frame.
+	 * @return The parent QT Frame object.
+	 */
+	public QtFrame getFrame()
+	{
+		return qtf;
 	}
-	else if (source == fetchMSB) {
-	    qtf.sendToStagingArea();
-	}
-    }
 
-    public class QueryExpiredTask extends TimerTask {
-	public void run() {
-	    System.out.println("Query has expired");
-	    qtf.setQueryExpired(true);
-	    cancel();
+	/**
+	 * Get the current query.
+	 * @return The current <code>QueryTool</code> object.
+	 */
+	public Querytool getQuery()
+	{
+		return localQuerytool;
 	}
-    }
 
-    private void blinkIcon() {
-        javax.swing.Timer t = new javax.swing.Timer(500, new ActionListener() {
-                public void actionPerformed (ActionEvent e) {
-                    ImageIcon imageIcon = (ImageIcon) InfoPanel.searchButton.getIcon();
-                    if ( imageIcon == null ) return;
-                    String iconName = imageIcon.toString();
-                    if ( iconName == null || iconName.indexOf("green_light") != -1 ) {
-                        return;
-                    }
-                    else {
-                        if ( iconName.indexOf("_light1") != -1 ) {
-                            // Set light to light 2
-                            try {
-                                java.net.URL url = new java.net.URL ( iconName.replaceAll ("light1", "light2") );
-                                ImageIcon icon = new ImageIcon(url);
-                                InfoPanel.searchButton.setIcon( icon );
-                            }
-                            catch (Exception x) {
-                              //Ignore
-                            }
-                        }
-                        else if ( iconName.indexOf("_light2") != -1 ) {
-                            // Set light to light 1
-                            try {
-                                java.net.URL url = new java.net.URL ( iconName.replaceAll ("light2", "light1") );
-                                ImageIcon icon = new ImageIcon(url);
-                                InfoPanel.searchButton.setIcon( icon );
-                            }
-                            catch (Exception x) {
-                              //Ignore
-                            }
-                        }
-                        else {
-                            // Bo nothing
-                        }
-                    }
-                }
-        });
-        t.start();
-    }
-    
-    public class ChecksumCacheThread extends Thread
-    {
-    	public void run()
+	private void add( Component c , GridBagConstraints gbc , int x , int y , int w , int h )
+	{
+		gbc.gridx = x;
+		gbc.gridy = y;
+		gbc.gridwidth = w;
+		gbc.gridheight = h;
+		add( c , gbc );
+	}
+
+	/**
+	 * <code>getXMLquery</code> will get the String that contains the
+	 * current XML defining the query.
+	 *
+	 * @return a <code>String</code> representing the query. 
+	 */
+	public String getXMLquery()
+	{
+		return localQuerytool.getXML();
+	}
+
+	/**
+	 * Get the <code>TelescopeDataPanel</code>
+	 * @return  the current telescope panel.
+	 */
+	public TelescopeDataPanel getTelescopeDataPanel()
+	{
+		return telescopeInfoPanel;
+	}
+
+	/**
+	 * Get the <code>SatPanel</code>
+	 * @return  the current satellite panel.
+	 */
+	public SatPanel getSatPanel()
+	{
+		return satPanel;
+	}
+
+	/**
+	 * <code>actionPerformed</code> satisfies the ActionListener
+	 * interface.  This is called when any ActionEvents are triggered by
+	 * registered ActionListeners. In this case it's either the exit
+	 * button or the fetchMSB button.
+	 *
+	 * @param e an <code>ActionEvent</code> value 
+	 */
+	public void actionPerformed( ActionEvent e )
+	{
+		Object source = e.getSource();
+		if( source == exitButton )
 		{
-    		SpQueuedMap map = SpQueuedMap.getSpQueuedMap() ;
-    		map.fillCache() ;
-		}
-    }    
-}// InfoPanel
+			if( TelescopeDataPanel.DRAMA_ENABLED )
+				telescopeInfoPanel.closeHub();
 
+			qtf.exitQT();
+		}
+		else if( source == fetchMSB )
+		{
+			qtf.sendToStagingArea();
+		}
+	}
+
+	public class QueryExpiredTask extends TimerTask
+	{
+		public void run()
+		{
+			System.out.println( "Query has expired" );
+			qtf.setQueryExpired( true );
+			cancel();
+		}
+	}
+
+	private void blinkIcon()
+	{
+		javax.swing.Timer t = new javax.swing.Timer( 500 , new ActionListener()
+		{
+			public void actionPerformed( ActionEvent e )
+			{
+				ImageIcon imageIcon = ( ImageIcon )InfoPanel.searchButton.getIcon();
+				if( imageIcon == null )
+					return;
+				String iconName = imageIcon.toString();
+				if( iconName == null || iconName.indexOf( "green_light" ) != -1 )
+				{
+					return;
+				}
+				else
+				{
+					if( iconName.indexOf( "_light1" ) != -1 )
+					{
+						// Set light to light 2
+						try
+						{
+							java.net.URL url = new java.net.URL( iconName.replaceAll( "light1" , "light2" ) );
+							ImageIcon icon = new ImageIcon( url );
+							InfoPanel.searchButton.setIcon( icon );
+						}
+						catch( Exception x )
+						{
+							//Ignore
+						}
+					}
+					else if( iconName.indexOf( "_light2" ) != -1 )
+					{
+						// Set light to light 1
+						try
+						{
+							java.net.URL url = new java.net.URL( iconName.replaceAll( "light2" , "light1" ) );
+							ImageIcon icon = new ImageIcon( url );
+							InfoPanel.searchButton.setIcon( icon );
+						}
+						catch( Exception x )
+						{
+							//Ignore
+						}
+					}
+					else
+					{
+						// Do nothing
+					}
+				}
+			}
+		} );
+		t.start();
+	}
+
+	public class ChecksumCacheThread extends Thread
+	{
+		public void run()
+		{
+			SpQueuedMap map = SpQueuedMap.getSpQueuedMap();
+			map.fillCache();
+		}
+	}
+}// InfoPanel
 

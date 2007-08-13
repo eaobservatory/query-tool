@@ -7,8 +7,7 @@
 
 package edu.jach.qt.gui;
 
-import gemini.sp.*;
-import gemini.sp.iter.*;
+import gemini.sp.SpItem ;
 
 /**
  * An AttributeOrigin represents where a particular AVPair or
@@ -25,56 +24,55 @@ import gemini.sp.iter.*;
  *
  * @author David Clarke (dac)
  **/
-public class AttributeOrigin {
+public class AttributeOrigin
+{
+	private SpItem _item;
+	private String _name;
+	private int _index;
 
-  private SpItem _item;
-  private String _name;
-  private int    _index;
+	/** 
+	 * Basic constructor 
+	 * @param item  The originating item.
+	 * @param name  The name of the attribute
+	 * @param index The index to associate with this attribute.
+	 */
+	public AttributeOrigin( SpItem item , String name , int index )
+	{
+		_item = item;
+		_name = name;
+		_index = index;
+	}
 
-  /** 
-   * Basic constructor 
-   * @param item  The originating item.
-   * @param name  The name of the attribute
-   * @param index The index to associate with this attribute.
-   */
-  public AttributeOrigin(SpItem item, String name, int index) {
-    _item  = item;
-    _name  = name;
-    _index = index;
-  }
+	/** Return the item */
+	public SpItem item()
+	{
+		return _item;
+	}
 
-  /** Empty constructor */
-  //  public AttributeOrigin() {
-  //  }
+	/** Return the name */
+	public String name()
+	{
+		return _name;
+	}
 
-  /** Return the item */
-  public SpItem item() {
-    return _item;
-  }
+	/** Return the index */
+	public int index()
+	{
+		return _index;
+	}
 
-  /** Return the name */
-  public String name() {
-    return _name;
-  }
+	/** Set the value of the originating attribute */
+	public void setValue( String value )
+	{
+		item().getTable().set( name() , value , index() ); // Yukk    
+		// Set an override flag on the attribute so it does not get over-ridden by calls to updateDAConf
+		String overide = "override_" + name();
+		item().getTable().set( overide , true , index() );
+	}
 
-  /** Return the index */
-  public int index() {
-    return _index;
-  }
-
-  /** Set the value of the originating attribute */
-  public void setValue(String value) {
-    item().getTable().set(name(), value, index());    // Yukk    
-    // Set an override flag on the attribute so it does not get
-    // over-ridden by calls to updateDAConf
-    String overide = "override_"+name();
-    item().getTable().set( overide, true, index() );
-  }
-
-  /** Convert to a string */
-  public String toString() {
-    return _item.getTitle() + ":" + _name + "[" + _index + "]";
-  }
+	/** Convert to a string */
+	public String toString()
+	{
+		return _item.getTitle() + ":" + _name + "[" + _index + "]";
+	}
 }
-    
-  

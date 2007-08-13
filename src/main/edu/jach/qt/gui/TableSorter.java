@@ -1,22 +1,21 @@
-
 package edu.jach.qt.gui;
 
 // Imports for picking up mouse events from the JTable. 
-import java.awt.event.MouseAdapter ;
-import java.awt.event.MouseEvent ;
-import java.awt.event.InputEvent ;
-import java.util.Date ;
-import java.util.Vector ;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.InputEvent;
+import java.util.Date;
+import java.util.Vector;
 import javax.swing.JTable;
 import javax.swing.event.TableModelEvent;
-import javax.swing.table.TableModel ;
-import javax.swing.table.TableColumnModel ;
-import javax.swing.table.JTableHeader ;
-import javax.swing.ToolTipManager ;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableColumnModel;
+import javax.swing.table.JTableHeader;
+import javax.swing.ToolTipManager;
 
 import org.apache.log4j.Logger;
 
-import edu.jach.qt.gui.MSBQueryTableModel ;
+import edu.jach.qt.gui.MSBQueryTableModel;
 
 /**
  * ****USED BY THE OMP-QT TO SORT THE COLUMNS OF THE RESULT TABLE.****
@@ -38,40 +37,44 @@ import edu.jach.qt.gui.MSBQueryTableModel ;
  * @author Philip Milne
  */
 
-public class TableSorter extends TableMap {
-   int             indexes[];
-   Vector          sortingColumns = new Vector();
-   boolean         ascending = true;
-   int compares;
-  static Logger logger = Logger.getLogger(WidgetPanel.class);
+public class TableSorter extends TableMap
+{
+	int indexes[];
+	Vector sortingColumns = new Vector();
+	boolean ascending = true;
+	int compares;
+	static Logger logger = Logger.getLogger( WidgetPanel.class );
 
-    /**
-     * Contructor.
-     * Default contstructor which creates a 0 size <code>TableMap</code>
-     */
-   public TableSorter() {
-      indexes = new int[0]; // for consistency
-   }
+	/**
+	 * Contructor.
+	 * Default contstructor which creates a 0 size <code>TableMap</code>
+	 */
+	public TableSorter()
+	{
+		indexes = new int[ 0 ]; // for consistency
+	}
 
-    /**
-     * Constructor.
-     * Uses an existing model to contruct the <code>TableMap</code>.
-     * @param model   The <code>TableModel</code> to use to construct the Map.
-     */
-   public TableSorter(TableModel model) {
-      setModel(model);
-   }
+	/**
+	 * Constructor.
+	 * Uses an existing model to contruct the <code>TableMap</code>.
+	 * @param model   The <code>TableModel</code> to use to construct the Map.
+	 */
+	public TableSorter( TableModel model )
+	{
+		setModel( model );
+	}
 
-   /**
-    * Set the model for the <code>TableMap</code>.
-    * @param model   The <code>TableModel</code> to use to construct the Map.
-    */
-   public void setModel(TableModel model) {
-      super.setModel(model); 
-      reallocateIndexes(); 
-   }
+	/**
+	 * Set the model for the <code>TableMap</code>.
+	 * @param model   The <code>TableModel</code> to use to construct the Map.
+	 */
+	public void setModel( TableModel model )
+	{
+		super.setModel( model );
+		reallocateIndexes();
+	}
 
-    /**
+	/**
 	 * Compare the values is a specfic table column in two rows. Works independently of the type of data in the column.
 	 * 
 	 * @param row1
@@ -138,9 +141,9 @@ public class TableSorter extends TableMap {
 		}
 		else if( type == java.util.Date.class )
 		{
-			Date d1 = ( Date ) data.getValueAt( row1 , column );
+			Date d1 = ( Date )data.getValueAt( row1 , column );
 			long n1 = d1.getTime();
-			Date d2 = ( Date ) data.getValueAt( row2 , column );
+			Date d2 = ( Date )data.getValueAt( row2 , column );
 			long n2 = d2.getTime();
 
 			if( n1 < n2 )
@@ -152,8 +155,8 @@ public class TableSorter extends TableMap {
 		}
 		else if( type == String.class )
 		{
-			String s1 = ( String ) data.getValueAt( row1 , column );
-			String s2 = ( String ) data.getValueAt( row2 , column );
+			String s1 = ( String )data.getValueAt( row1 , column );
+			String s2 = ( String )data.getValueAt( row2 , column );
 			int result = s1.compareTo( s2 );
 
 			if( result < 0 )
@@ -165,15 +168,15 @@ public class TableSorter extends TableMap {
 		}
 		else if( type == Boolean.class )
 		{
-			Boolean bool1 = ( Boolean ) data.getValueAt( row1 , column );
+			Boolean bool1 = ( Boolean )data.getValueAt( row1 , column );
 			boolean b1 = bool1.booleanValue();
-			Boolean bool2 = ( Boolean ) data.getValueAt( row2 , column );
+			Boolean bool2 = ( Boolean )data.getValueAt( row2 , column );
 			boolean b2 = bool2.booleanValue();
 
 			if( b1 == b2 )
 				return 0;
 			else if( b1 )
-				return 1 ; // Define false < true
+				return 1; // Define false < true
 			else
 				return -1;
 		}
@@ -194,7 +197,7 @@ public class TableSorter extends TableMap {
 		}
 	}
 
-    /**
+	/**
 	 * Compare values in two rows from a <code>sortingColumns</code>.
 	 * 
 	 * @param row1
@@ -206,201 +209,198 @@ public class TableSorter extends TableMap {
 	 */
 	public int compare( final int row1 , int row2 )
 	{
-		compares++;
+		compares++ ;
 		for( int level = 0 ; level < sortingColumns.size() ; level++ )
 		{
-			Integer column = ( Integer ) sortingColumns.elementAt( level );
+			Integer column = ( Integer )sortingColumns.elementAt( level );
 			int result = compareRowsByColumn( row1 , row2 , column.intValue() );
 			if( result != 0 )
-			{
 				return ascending ? result : -result;
-			}
 		}
 		return 0;
 	}
 
-    /**
+	/**
 	 * Sets up a new array of indexes with the right number of elements for the current <code>model</code>.
 	 */
 	public void reallocateIndexes()
 	{
 		if( model instanceof MSBQueryTableModel )
 		{
-			indexes = (( MSBQueryTableModel )model).getIndexes() ;
+			indexes = ( ( MSBQueryTableModel )model ).getIndexes();
 		}
 		else
 		{
-			int size = model.getRowCount() ;
-			indexes = new int[ size ] ;
-			int position = 0 ;
+			int size = model.getRowCount();
+			indexes = new int[ size ];
+			int position = 0;
 			while( position < size )
 				indexes[ position ] = position++ ;
 		}
 	}
 
-    /**
+	/**
 	 * Implementation of the <code>TableModelListener</code> interface.
 	 */
-   public void tableChanged(TableModelEvent e) {
-      logger.debug("Sorter: tableChanged"); 
-      reallocateIndexes();
+	public void tableChanged( TableModelEvent e )
+	{
+		logger.debug( "Sorter: tableChanged" );
+		reallocateIndexes();
 
-      super.tableChanged(e);
-   }
+		super.tableChanged( e );
+	}
 
-    /**
-     * Checks whether the number of indices allocated matches the size
-     * of the current Table model.
-     */
-   public void checkModel() {
-      if (indexes.length != model.getRowCount()) {
-	 logger.error("Sorter not informed of a change in model.");
-      }
-   }
+	/**
+	 * Checks whether the number of indices allocated matches the size
+	 * of the current Table model.
+	 */
+	public void checkModel()
+	{
+		if( indexes.length != model.getRowCount() )
+			logger.error( "Sorter not informed of a change in model." );
+	}
 
-    /**
-     * Starts the sorting process.
-     * @param sender    The object that sent the sort request (normally a colmun header).
-     */
-   public void sort(Object sender) {
-      checkModel();
+	/**
+	 * Starts the sorting process.
+	 * @param sender    The object that sent the sort request (normally a colmun header).
+	 */
+	public void sort( Object sender )
+	{
+		checkModel();
+		compares = 0;
+		n2sort();
+	}
 
-      compares = 0;
-//       qsort();
-      n2sort();
-//       qsort(0, indexes.length-1);
-//       shuttlesort((int[])indexes.clone(), indexes, 0, indexes.length);
-//       logger.debug("Compares: "+compares);
-   }
+	/**
+	 * Performs a quicksort on a table
+	 */
+	public void qsort(){}
 
-    /**
-     * Performs a quicksort on a table
-     */
-    public void qsort() {
-    }
-
-    /**
+	/**
 	 * Perform an N-squared sort on a table.
 	 */
 	public void n2sort()
 	{
-		int rowCount = getRowCount() ;
+		int rowCount = getRowCount();
 		for( int i = 0 ; i < rowCount ; i++ )
 		{
 			for( int j = i + 1 ; j < rowCount ; j++ )
 			{
 				if( compare( indexes[ i ] , indexes[ j ] ) == 1 )
-				{
 					swap( i , j );
-				}
 			}
 		}
 	}
 
-    /**
-     *  This is a home-grown implementation which we have not had time
-     * to research - it may perform poorly in some circumstances. It
-     * requires twice the space of an in-place algorithm and makes
-     * NlogN assigments shuttling the values between the two
-     * arrays. The number of compares appears to vary between N-1 and
-     * NlogN depending on the initial order but the main reason for
-     * using it here is that, unlike qsort, it is stable.
-     * @param from   ?
-     * @param to     ?
-     * @param low    ?
-     * @param high   ?
-     * @deprecated Replaced by {@link #n2sort()}
-     */
-   public void shuttlesort(int from[], int to[], int low, int high) {
-      if (high - low < 2) {
-	 return;
-      }
-      int middle = (low + high)/2;
-      shuttlesort(to, from, low, middle);
-      shuttlesort(to, from, middle, high);
+	/**
+	 *  This is a home-grown implementation which we have not had time
+	 * to research - it may perform poorly in some circumstances. It
+	 * requires twice the space of an in-place algorithm and makes
+	 * NlogN assigments shuttling the values between the two
+	 * arrays. The number of compares appears to vary between N-1 and
+	 * NlogN depending on the initial order but the main reason for
+	 * using it here is that, unlike qsort, it is stable.
+	 * @param from   ?
+	 * @param to     ?
+	 * @param low    ?
+	 * @param high   ?
+	 * @deprecated Replaced by {@link #n2sort()}
+	 */
+	public void shuttlesort( int from[] , int to[] , int low , int high )
+	{
+		if( high - low < 2 )
+			return;
 
-      int p = low;
-      int q = middle;
+		int middle = ( low + high ) / 2;
+		shuttlesort( to , from , low , middle );
+		shuttlesort( to , from , middle , high );
 
-      /* This is an optional short-cut; at each recursive call,
-	 check to see if the elements in this subset are already
-	 ordered.  If so, no further comparisons are needed; the
-	 sub-array can just be copied.  The array must be copied rather
-	 than assigned otherwise sister calls in the recursion might
-	 get out of sinc.  When the number of elements is three they
-	 are partitioned so that the first set, [low, mid), has one
-	 element and and the second, [mid, high), has two. We skip the
-	 optimisation when the number of elements is three or less as
-	 the first compare in the normal merge will produce the same
-	 sequence of steps. This optimisation seems to be worthwhile
-	 for partially ordered lists but some analysis is needed to
-	 find out how the performance drops to Nlog(N) as the initial
-	 order diminishes - it may drop very quickly.  */
+		int p = low;
+		int q = middle;
 
-      if (high - low >= 4 && compare(from[middle-1], from[middle]) <= 0) {
-	 for (int i = low; i < high; i++) {
-	    to[i] = from[i];
-	 }
-	 return;
-      }
+		/* This is an optional short-cut; at each recursive call,
+		 check to see if the elements in this subset are already
+		 ordered.  If so, no further comparisons are needed; the
+		 sub-array can just be copied.  The array must be copied rather
+		 than assigned otherwise sister calls in the recursion might
+		 get out of sinc.  When the number of elements is three they
+		 are partitioned so that the first set, [low, mid), has one
+		 element and and the second, [mid, high), has two. We skip the
+		 optimisation when the number of elements is three or less as
+		 the first compare in the normal merge will produce the same
+		 sequence of steps. This optimisation seems to be worthwhile
+		 for partially ordered lists but some analysis is needed to
+		 find out how the performance drops to Nlog(N) as the initial
+		 order diminishes - it may drop very quickly.  */
 
-      // A normal merge. 
+		if( high - low >= 4 && compare( from[ middle - 1 ] , from[ middle ] ) <= 0 )
+		{
+			for( int i = low ; i < high ; i++ )
+				to[ i ] = from[ i ];
+			
+			return;
+		}
 
-      for (int i = low; i < high; i++) {
-	 if (q >= high || (p < middle && compare(from[p], from[q]) <= 0)) {
-	    to[i] = from[p++];
-	 }
-	 else {
-	    to[i] = from[q++];
-	 }
-      }
-   }
+		// A normal merge. 
 
-    /**
-     * Swap to rows in a table.
-     * @param i  Index of first row.
-     * @param j  Index of second row.
-     */
-   public void swap(int i, int j) {
-      int tmp = indexes[i];
-      indexes[i] = indexes[j];
-      indexes[j] = tmp;
-   }
+		for( int i = low ; i < high ; i++ )
+		{
+			if( q >= high || ( p < middle && compare( from[ p ] , from[ q ] ) <= 0 ) )
+				to[ i ] = from[ p++ ];
+			else
+				to[ i ] = from[ q++ ];
+		}
+	}
 
-   // The mapping only affects the contents of the data rows.
-   // Pass all requests to these rows through the mapping array: "indexes".
+	/**
+	 * Swap to rows in a table.
+	 * @param i  Index of first row.
+	 * @param j  Index of second row.
+	 */
+	public void swap( int i , int j )
+	{
+		int tmp = indexes[ i ];
+		indexes[ i ] = indexes[ j ];
+		indexes[ j ] = tmp;
+	}
 
-    /**
-     * Retrieve the value at a particular row and column in the table.
-     * @param aRow    The row from which to get the data.
-     * @param aColumn The column from which to get the data.
-     * @return        The Object entry at the required point.
-     */
-   public Object getValueAt(int aRow, int aColumn) {
-      checkModel();
-      return model.getValueAt(indexes[aRow], aColumn);
-   }
+	// The mapping only affects the contents of the data rows.
+	// Pass all requests to these rows through the mapping array: "indexes".
 
-    /**
-     * Set a value at a particular row and column in the table.
-     * @param aRow    The row from which to set the data.
-     * @param aColumn The column from which to set the data.
-     * @param aValue  The Object entry at the required point.
-     */
-   public void setValueAt(Object aValue, int aRow, int aColumn) {
-      checkModel();
-      model.setValueAt(aValue, indexes[aRow], aColumn);
-   }
+	/**
+	 * Retrieve the value at a particular row and column in the table.
+	 * @param aRow    The row from which to get the data.
+	 * @param aColumn The column from which to get the data.
+	 * @return        The Object entry at the required point.
+	 */
+	public Object getValueAt( int aRow , int aColumn )
+	{
+		checkModel();
+		return model.getValueAt( indexes[ aRow ] , aColumn );
+	}
 
-    /**
-     * Sort the table by the specified column.
-     * @param column   The index of the column to sort by.
-     */
-   public void sortByColumn(int column) {
-      sortByColumn(column, true);
-   }
+	/**
+	 * Set a value at a particular row and column in the table.
+	 * @param aRow    The row from which to set the data.
+	 * @param aColumn The column from which to set the data.
+	 * @param aValue  The Object entry at the required point.
+	 */
+	public void setValueAt( Object aValue , int aRow , int aColumn )
+	{
+		checkModel();
+		model.setValueAt( aValue , indexes[ aRow ] , aColumn );
+	}
 
-    /**
+	/**
+	 * Sort the table by the specified column.
+	 * @param column   The index of the column to sort by.
+	 */
+	public void sortByColumn( int column )
+	{
+		sortByColumn( column , true );
+	}
+
+	/**
 	 * Sort the table by the specified column in either ascending or
 	 * descending order.
 	 * @param column     The index of the column to sort by.

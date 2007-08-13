@@ -1,7 +1,7 @@
-package edu.jach.qt.utils ;
+package edu.jach.qt.utils;
 
-import java.util.TreeMap ;
-import java.util.Vector ;
+import java.util.TreeMap;
+import java.util.Vector;
 
 /**
  * 
@@ -18,25 +18,24 @@ import java.util.Vector ;
 
 public class OrderedMap
 {
-	
-	final private TreeMap treeMap ;	
-	final private Vector vector ;
-	private int size ;
-	
+	final private TreeMap treeMap;
+	final private Vector vector;
+	private int size;
+
 	public OrderedMap()
 	{
-		treeMap = new TreeMap() ;
-		vector = new Vector() ;
+		treeMap = new TreeMap();
+		vector = new Vector();
 	}
-	
+
 	public synchronized void add( final String key , final Object object )
 	{
 		synchronized( treeMap )
 		{
 			synchronized( vector )
 			{
-				treeMap.put( key , object ) ;
-				vector.add( key ) ;
+				treeMap.put( key , object );
+				vector.add( key );
 				size++ ;
 			}
 		}
@@ -48,11 +47,11 @@ public class OrderedMap
 		{
 			synchronized( treeMap )
 			{
-				final Object name = vector.remove( index ) ;
-				final Object object = treeMap.remove( name ) ;
+				final Object name = vector.remove( index );
+				final Object object = treeMap.remove( name );
 				if( object != null )
 					size-- ;
-				return object ;
+				return object;
 			}
 		}
 	}
@@ -62,74 +61,74 @@ public class OrderedMap
 		synchronized( treeMap )
 		{
 			synchronized( vector )
-			{		
-				final Object object = treeMap.remove( name ) ;
-				vector.remove( name ) ;
+			{
+				final Object object = treeMap.remove( name );
+				vector.remove( name );
 				if( object != null )
 					size-- ;
-				return object ;
+				return object;
 			}
 		}
 	}
-	
+
 	public Object find( final String name )
 	{
-		final Object object = treeMap.get( name ) ;
-		return object ;
+		final Object object = treeMap.get( name );
+		return object;
 	}
 
 	public Object find( int index )
-    {
-		final Object name = vector.elementAt( index ) ;
-		Object object = treeMap.get( name ) ;
-		return object ;
-    }
-	
+	{
+		final Object name = vector.elementAt( index );
+		Object object = treeMap.get( name );
+		return object;
+	}
+
 	public String getNameForIndex( int index )
 	{
-		String returnValue = "" ;
-		Object temp = vector.elementAt( index ) ;
+		String returnValue = "";
+		Object temp = vector.elementAt( index );
 		if( temp instanceof String )
-			returnValue = ( String )temp ;
-		return returnValue ;
+			returnValue = ( String )temp;
+		return returnValue;
 	}
-	
+
 	public int getIndexForName( String name )
 	{
-		return vector.indexOf( name ) ;
+		return vector.indexOf( name );
 	}
-	
+
 	public int size()
 	{
-		return size ;
+		return size;
 	}
 
 	public void clear()
 	{
-		vector.clear() ;
-		treeMap.clear() ;
-		size = 0 ;
+		vector.clear();
+		treeMap.clear();
+		size = 0;
 	}
-	
+
 	public synchronized void move( String name , int index )
 	{
-		int current = getIndexForName( name ) ;
+		int current = getIndexForName( name );
 		if( current != index && current > -1 )
 		{
-			vector.remove( current ) ;
-			vector.insertElementAt( name , index ) ;
+			vector.remove( current );
+			vector.insertElementAt( name , index );
 		}
 	}
-	
+
 	public synchronized void move( int currentIndex , int newIndex )
 	{
 		if( currentIndex == newIndex )
-			return ;
+			return;
 		if( currentIndex > -1 && currentIndex < size() )
 		{
-			Object object = vector.remove( currentIndex ) ;
-			newIndex = newIndex < size() ? newIndex : size() - 1 ;
-			vector.insertElementAt( object , newIndex ) ;
+			Object object = vector.remove( currentIndex );
+			newIndex = newIndex < size() ? newIndex : size() - 1;
+			vector.insertElementAt( object , newIndex );
 		}
 	}
 }

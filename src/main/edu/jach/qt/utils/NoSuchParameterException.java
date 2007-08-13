@@ -9,13 +9,11 @@ package edu.jach.qt.utils;
  * @author <a href="mailto: mrippa@jach.hawaii.edu"Mathew Rippa</a>
  */
 
-public class NoSuchParameterException extends Exception {
-  public NoSuchParameterException (){
-  }
+public class NoSuchParameterException extends Exception
+{
+	public NoSuchParameterException( String message )
+	{
+		super( message );
+	}
 
-  public NoSuchParameterException (String message){
-    super (message);
-  }
-
-  
 }// NoSuchParameterException

@@ -18,94 +18,82 @@ import java.io.IOException;
  * tree node lives.  This is used by drop targets when an item is being
  * moved or deleted in order to remove dragged objects from their tree.
  */
-public final class DragDropObject implements Transferable {
+public final class DragDropObject implements Transferable
+{
+	/** Identifies the object being dragged and dropped */
+	public final static DataFlavor DATA_FLAVOR = new DataFlavor( DragDropObject.class , "DragDropObject" );
 
-   /** Identifies the object being dragged and dropped */
-   public final static DataFlavor DATA_FLAVOR = new DataFlavor(DragDropObject.class, "DragDropObject");
+	private Vector children = null;
+	private DragDropObject parent = null;
+	private String myName;
+	private SpItem myItem;
 
-   // The item(s) being dragged.
+	/**
+	 * This constructor should be used when dragging a newly created object
+	 * that hasn't been inserted in any tree.
+	 */
+	public DragDropObject( SpItem spItem )
+	{
+		children = new Vector();
+		myItem = spItem;
+		myName = spItem.name();
+	}
 
-   //private SpItem[] _spItemA;
+	public SpItem getSpItem()
+	{
+		return myItem;
+	}
 
-   private Vector	      children	= null;
-   private DragDropObject     parent	= null;
-   private String	      myName;
-   private SpItem	      myItem;
-   /**
-    * This constructor should be used when dragging a newly created object
-    * that hasn't been inserted in any tree.
-    */
-   public DragDropObject(SpItem spItem) {
-      children = new Vector();
-      myItem = spItem;
-      myName = spItem.name();
-   }
+	public String getName()
+	{
+		return myName;
+	}
 
-   public SpItem getSpItem() {
-      return myItem;
-   }
+	public void add( DragDropObject info )
+	{
+		info.setParent( this );
+		children.add( info );
+	}
 
-   public String getName() {
-      return myName;
-   }
+	public void remove( DragDropObject info )
+	{
+		info.setParent( null );
+		children.remove( info );
+	}
 
-   public void add(DragDropObject info) {
-      info.setParent(this);
-      children.add(info);
-   }
+	public void setParent( DragDropObject someParent )
+	{
+		parent = someParent;
+	}
 
-   public void remove(DragDropObject info) {
-      info.setParent(null);
-      children.remove(info);
-   }
+	public Vector getChildren()
+	{
+		return children;
+	}
 
-   public void setParent(DragDropObject someParent) {
-      parent = someParent;
-   }
+	public DragDropObject getParent()
+	{
+		return parent;
+	}
 
-   public Vector getChildren() {
-      return children;
-   }
+	// Implementation of the Transferable interface
+	public DataFlavor[] getTransferDataFlavors()
+	{
+		// MFO: DataFlavor.stringFlavor is only added because dropping nodes would not work under Windows (NT) otherwise.
+		//      The same trick is used in the Gemini OT (from ot-0.6, in jsky.app.ot.viewer.SPDragDropObject)
+		return new DataFlavor[] { DATA_FLAVOR , DataFlavor.stringFlavor };
+	}
 
-   public DragDropObject getParent() {
-      return parent;
-   }
+	public boolean isDataFlavorSupported( DataFlavor fl )
+	{
+		return fl.equals( DATA_FLAVOR );
+	}
 
-//     /** Is more than one item being dragged? */
-//     public boolean isMultiDrag() {
-//        return (_spItemA.length > 1);
-//     }
-
-//     /** Get the first SpItem. */
-//     public SpItem getSpItem() {
-//        return getSpItem(0);
-//     }
-
-//     /** Get the nth SpItem. */
-//     SpItem getSpItem(int i) {
-//        return _spItemA[i];
-//     }
-
-//     /** Get the set of SpItems. */
-//     public SpItem[] getSpItems() {
-//        return _spItemA;
-//     }
-
-   // Implementation of the Transferable interface
-   public DataFlavor[] getTransferDataFlavors() {
-      // MFO: DataFlavor.stringFlavor is only added because dropping nodes would not work under Windows (NT) otherwise.
-      //      The same trick is used in the Gemini OT (from ot-0.6, in jsky.app.ot.viewer.SPDragDropObject)
-      return new DataFlavor[] { DATA_FLAVOR, DataFlavor.stringFlavor };
-   }
-
-   public boolean isDataFlavorSupported(DataFlavor fl) {
-      return fl.equals(DATA_FLAVOR);
-   }
-
-   public Object getTransferData(DataFlavor fl) throws UnsupportedFlavorException, IOException {
-      if (fl.equals(DATA_FLAVOR)) {
-	 return this;
-      }
-      else throw new UnsupportedFlavorException(fl);
-   }
+	public Object getTransferData( DataFlavor fl ) throws UnsupportedFlavorException , IOException
+	{
+		if( fl.equals( DATA_FLAVOR ) )
+			return this;
+		else
+			throw new UnsupportedFlavorException( fl );
+	}
 }

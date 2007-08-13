@@ -1,9 +1,9 @@
 package edu.jach.qt.djava;
 
-import au.gov.aao.drama.DramaMonitor ;
-import au.gov.aao.drama.DramaTask ;
-import au.gov.aao.drama.Arg ;
-import au.gov.aao.drama.DramaException ;
+import au.gov.aao.drama.DramaMonitor;
+import au.gov.aao.drama.DramaTask;
+import au.gov.aao.drama.Arg;
+import au.gov.aao.drama.DramaException;
 import edu.jach.qt.gui.TelescopeDataPanel;
 import ocs.utils.CommandReceiver;
 
@@ -15,18 +15,18 @@ import ocs.utils.CommandReceiver;
  * @author <a href="mailto:mrippa@jach.hawaii.edu">Mathew Rippa</a>
  * $Id$ 
  */
-public class QT_MonResponse extends MonitorResponse {
+public class QT_MonResponse extends MonitorResponse
+{
+	/**
+	 * Constructor.
+	 * @param cr      A CommandReceiver Object
+	 */
+	public QT_MonResponse( CommandReceiver cr )
+	{
+		super( cr );
+	}
 
-  
-    /**
-     * Constructor.
-     * @param cr      A CommandReceiver Object
-     */
-  public QT_MonResponse(CommandReceiver cr) {
-    super(cr);
-  }
-
-    /**
+	/**
 	 * This function is invoked when a monitored parameter changes.
 	 * This is the core of parameter monitoring.
 	 * @param monitor     A DramaMonoitor Object

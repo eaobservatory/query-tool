@@ -16,7 +16,6 @@ import java.util.TimeZone;
 
 public class LocalSiderealTime
 {
-
 	private Pal pal;
 	private int year;
 	private int month;
@@ -39,10 +38,10 @@ public class LocalSiderealTime
 	{
 		// file:///star/starjava/docs/pal/javadocs/uk/ac/starlink/pal/palTime.html
 
-		double radians = ut2lst() ;
-		palTime time = pal.Dr2tf( radians ) ;
-		String currentLST = time.toString( 2 ) ;
-		currentLST = currentLST.replace( ' ' , ':' ) ;
+		double radians = ut2lst();
+		palTime time = pal.Dr2tf( radians );
+		String currentLST = time.toString( 2 );
+		currentLST = currentLST.replace( ' ' , ':' );
 		return currentLST + " LST";
 	}
 
@@ -155,5 +154,4 @@ public class LocalSiderealTime
 	{
 		return "Telescope : " + observatory.getId() + " on " + calendar.getTime().toString() + " ( " + getMJD() + " )";
 	}
-
 }

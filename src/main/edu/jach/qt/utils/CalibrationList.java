@@ -1,36 +1,35 @@
 package edu.jach.qt.utils;
 
 /* Gemini imports */
-import gemini.sp.SpProg ;
-import gemini.sp.SpSurveyContainer ;
-import gemini.sp.SpAND ;
-import gemini.sp.SpMSB ;
-import gemini.sp.SpItem ;
-import gemini.sp.SpObs ;
+import gemini.sp.SpProg;
+import gemini.sp.SpSurveyContainer;
+import gemini.sp.SpAND;
+import gemini.sp.SpMSB;
+import gemini.sp.SpItem;
+import gemini.sp.SpObs;
 
 /* Standard imports */
-import java.io.File ;
-import java.io.FileWriter ;
-import java.io.IOException ;
-import java.io.StringWriter ;
-import java.util.TreeMap ;
-import javax.xml.parsers.DocumentBuilderFactory ;
-import javax.xml.parsers.DocumentBuilder ;
-import javax.xml.parsers.ParserConfigurationException ;
-import java.util.Enumeration ;
-
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.util.TreeMap;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.ParserConfigurationException;
+import java.util.Enumeration;
 
 /* Miscellaneous imports */
-import org.apache.xerces.dom.DocumentImpl ;
-import org.apache.xml.serialize.XMLSerializer ;
-import org.apache.xml.serialize.OutputFormat ;
-import org.w3c.dom.Document ;
-import org.w3c.dom.Element ;
-import org.xml.sax.SAXException;  
+import org.apache.xerces.dom.DocumentImpl;
+import org.apache.xml.serialize.XMLSerializer;
+import org.apache.xml.serialize.OutputFormat;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
 
 import orac.util.SpInputXML;
 import org.apache.log4j.Logger;
-import edu.jach.qt.gui.XmlUtils ;
+import edu.jach.qt.gui.XmlUtils;
 
 /**
  * This class returns a <code>Hashtable</code> of calibrations.  Each entry in the
@@ -44,88 +43,83 @@ import edu.jach.qt.gui.XmlUtils ;
  * @version  $Revision$
  */
 
-public class CalibrationList {
+public class CalibrationList
+{
+	private static final String ALL_DISABLED = "all";
+	public static final String ROOT_ELEMENT_TAG = "SpMSBSummary";
+	static Logger logger = Logger.getLogger( CalibrationList.class );
+	static TreeMap treeMap = null;
 
-    private static final String ALL_DISABLED           = "all";
-    public  static final String ROOT_ELEMENT_TAG = "SpMSBSummary";
+	/**
+	 * Constructor
+	 */
+	private CalibrationList(){}
 
-    static Logger logger = Logger.getLogger(CalibrationList.class);
+	public static OrderedMap getCalibrations()
+	{
+		OrderedMap orderedMap = new OrderedMap();
 
-    static TreeMap treeMap = null ;
-    
-    /**
-     * Constructor
-     */
-    private CalibrationList() {
-    }
+		try
+		{
+			String scienceProgramString = MsbClient.fetchCalibrationProgram();
+			SpItem spItem = ( new SpInputXML() ).xmlToSpItem( scienceProgramString );
+			SpProg scienceProgram = null;
+			if( spItem instanceof SpProg )
+				scienceProgram = ( SpProg )spItem;
+			if( scienceProgram != null )
+				orderedMap = pickApart( orderedMap , scienceProgram );
+		}
+		catch( Exception e )
+		{
+			System.out.println( e );
+		}
+		return orderedMap;
+	}
 
-    public static OrderedMap getCalibrations()
-    {
-    	OrderedMap orderedMap = new OrderedMap() ;
-    	
-    	try
-    	{
-    		String scienceProgramString = MsbClient.fetchCalibrationProgram() ;
-    		SpItem spItem = ( new SpInputXML() ).xmlToSpItem( scienceProgramString ) ;
-    		SpProg scienceProgram = null ;
-    		if( spItem instanceof SpProg )
-    			scienceProgram = ( SpProg )spItem ;
-    		if( scienceProgram != null )
-    			orderedMap = pickApart( orderedMap , scienceProgram ) ;
-    	}
-    	catch( Exception e )
-    	{
-    		System.out.println( e ) ;
-    	}    	
-    	return orderedMap ;
-    }
-    
-    private static OrderedMap pickApart( OrderedMap orderedMap , SpItem spItem )
-    {
-		Enumeration enumeration = spItem.children() ;
-		
-		String telescope = System.getProperty( "telescope" ) ;
-		
-		Object object ;
-		
+	private static OrderedMap pickApart( OrderedMap orderedMap , SpItem spItem )
+	{
+		Enumeration enumeration = spItem.children();
+		String telescope = System.getProperty( "telescope" );
+		Object object;
+
 		while( enumeration.hasMoreElements() )
 		{
-			object = enumeration.nextElement() ;
+			object = enumeration.nextElement();
 			if( object instanceof SpAND )
 			{
-				SpAND and = ( SpAND )object ;
-				String title = and.getTitle() ;
-				orderedMap.add( title , null ) ;
+				SpAND and = ( SpAND )object;
+				String title = and.getTitle();
+				orderedMap.add( title , null );
 			}
 			else if( object instanceof SpObs && "UKIRT".equalsIgnoreCase( telescope ) )
 			{
-				SpObs obs = ( SpObs )object ;
-				String title = obs.getTitleAttr() ;	
-				orderedMap.add( title , obs ) ;
-			}	
+				SpObs obs = ( SpObs )object;
+				String title = obs.getTitleAttr();
+				orderedMap.add( title , obs );
+			}
 			else if( object instanceof SpMSB && !( object instanceof SpObs ) )
 			{
-				SpMSB msb = ( SpMSB )object ;
-				String title = msb.getTitleAttr() ;
-				orderedMap.add( title , msb ) ;				
+				SpMSB msb = ( SpMSB )object;
+				String title = msb.getTitleAttr();
+				orderedMap.add( title , msb );
 			}
 			else if( object instanceof SpSurveyContainer )
 			{
-				continue ;
+				continue;
 			}
-			orderedMap = pickApart( orderedMap , ( SpItem )object ) ;
-		}    	   	
-    	return orderedMap ;
-    }
-    
-    /**
+			orderedMap = pickApart( orderedMap , ( SpItem )object );
+		}
+		return orderedMap;
+	}
+
+	/**
 	 * Get the list of calibration observations for a specified telescope.
 	 * 
 	 * @param telescope
 	 *            The name os the telescope.
 	 * @return A <code>TreeMap</code> of observations. If no observations are found then there will be zero entries in the table.
 	 */
-    public static TreeMap getCalibrations( String telescope )
+	public static TreeMap getCalibrations( String telescope )
 	{
 		TreeMap tree = new TreeMap();
 		Document doc = new DocumentImpl();
@@ -198,7 +192,7 @@ public class CalibrationList {
 				for( int node = 0 ; node < XmlUtils.getSize( doc , ROOT_ELEMENT_TAG ) ; node++ )
 				{
 					item = XmlUtils.getElement( doc , ROOT_ELEMENT_TAG , node );
-					tree.put( ( String ) XmlUtils.getValue( item , "title" ) , new Integer( item.getAttribute( "id" ) ) );
+					tree.put( ( String )XmlUtils.getValue( item , "title" ) , new Integer( item.getAttribute( "id" ) ) );
 				}
 			}
 			else
@@ -225,8 +219,8 @@ public class CalibrationList {
 			logger.error( "IO Error generated attempting to build Document" , ioe );
 		}
 
-		// return the hopefully populated hashtable. If no entries, we retirn
-		// the hashtable anyway and rely on the caller to realise that it is of zero size
+		// return the hopefully populated hashtable. 
+		// If no entries, we return the hashtable anyway and rely on the caller to realise that it is of zero size
 		return tree;
 	}
 }

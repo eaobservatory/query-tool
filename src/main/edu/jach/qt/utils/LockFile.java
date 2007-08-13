@@ -1,10 +1,7 @@
 package edu.jach.qt.utils;
 
-
-import java.io.*;
-import java.lang.*;
-import java.util.*;
-
+import java.io.File ;
+import java.io.IOException ;
 
 /**
  * Class to handle lock files in java.
@@ -17,83 +14,81 @@ import java.util.*;
  */
 public class LockFile
 {
+	private static boolean _exists;
+	private static String _owner;
+	private static String tmpFileDirName = File.separator + System.getProperty( "telescope" ) + "data" + File.separator + System.getProperty( "deferredDir" );
+	private static String lockFileDirName = tmpFileDirName.toLowerCase();
 
-    private static boolean _exists;
-    private static String  _owner;
-    private static String tmpFileDirName = 
-	File.separator +
-	System.getProperty("telescope") + 
-	"data" +
-	File.separator +
-	System.getProperty("deferredDir");
-    private static String lockFileDirName = tmpFileDirName.toLowerCase();
-    private static File lockFileDir = new File (lockFileDirName);
-
-    /**
-     * Constructor.
-     * Makes surew the directory exists or tries to create it if not. Loops
-     * through directory contents to make sure a lock does not already exist
-     * and warns the user if it does.
-     */
-    private LockFile()
-    {
-	_exists = false;
-	_owner  = "";
-	File lockFileDir = new File (lockFileDirName);
-	if (!lockFileDir.exists()) {
-	    lockFileDir.mkdir();
-	}
-	else if (lockFileDir.isDirectory() &&
-		 lockFileDir.canRead() ) {
-	    String [] fileList = lockFileDir.list();
-	    // Now loop over hidden files looking for one
-	    // starting with .lock
-	    for (int fileCounter=0; fileCounter<fileList.length; fileCounter++) {
-		if (fileList[fileCounter].startsWith(".lock")) {
-		    _exists = true;
-		    StringTokenizer st = new StringTokenizer(fileList[fileCounter],
-							     "_");
-		    while (st.hasMoreTokens()) {
-			_owner = st.nextToken();
-		    }
+	/**
+	 * Constructor.
+	 * Makes surew the directory exists or tries to create it if not. Loops
+	 * through directory contents to make sure a lock does not already exist
+	 * and warns the user if it does.
+	 */
+	private LockFile()
+	{
+		_exists = false;
+		_owner = "";
+		File lockFileDir = new File( lockFileDirName );
+		if( !lockFileDir.exists() )
+		{
+			lockFileDir.mkdir();
 		}
-	    }
+		else if( lockFileDir.isDirectory() && lockFileDir.canRead() )
+		{
+			String[] fileList = lockFileDir.list();
+			// Now loop over hidden files looking for one starting with .lock
+			for( int fileCounter = 0 ; fileCounter < fileList.length ; fileCounter++ )
+			{
+				if( fileList[ fileCounter ].startsWith( ".lock" ) )
+				{
+					_exists = true;
+					String[] split = fileList[ fileCounter ].split( "_" ) ;
+					int i = 0 ;
+					while( i < split.length )
+						_owner = split[ i ] ;
+				}
+			}
+		}
 	}
-    }
 
-    /**
-     * Checks whether a lockfile currently exists.
-     *
-     * @return       <code>true</code> if a lockfile exists; <code>false</code> otherwise.
-     */
-    public static boolean exists() {
-	LockFile l = new LockFile();
-	return l._exists;
-    }
-
-    /**
-     * Get the current owner of the lockfile.
-     *
-     * @returns     The username of the person currently holding the lock.
-     */
-    public static String owner() {
-	LockFile l = new LockFile();
-	return _owner;
-    }
-
-    /**
-     * Create a lockfile.  The lockfile name is of the form lock_<usermname>.
-     */
-    public static void createLock() {
-	String lockFileName = lockFileDirName+
-	    File.separator+
-	    ".lock_"+
-	    System.getProperty("user.name");
-	File lockFile = new File(lockFileName);
-	try {
-	    lockFile.createNewFile();
+	/**
+	 * Checks whether a lockfile currently exists.
+	 *
+	 * @return       <code>true</code> if a lockfile exists; <code>false</code> otherwise.
+	 */
+	public static boolean exists()
+	{
+		LockFile l = new LockFile();
+		return l._exists;
 	}
-	catch (IOException ioe) {System.out.println("Unable to create lock file "+lockFileName);}
-	lockFile.deleteOnExit();
-    }
+
+	/**
+	 * Get the current owner of the lockfile.
+	 *
+	 * @returns     The username of the person currently holding the lock.
+	 */
+	public static String owner()
+	{
+		LockFile l = new LockFile();
+		return _owner;
+	}
+
+	/**
+	 * Create a lockfile.  The lockfile name is of the form lock_<usermname>.
+	 */
+	public static void createLock()
+	{
+		String lockFileName = lockFileDirName + File.separator + ".lock_" + System.getProperty( "user.name" );
+		File lockFile = new File( lockFileName );
+		try
+		{
+			lockFile.createNewFile();
+		}
+		catch( IOException ioe )
+		{
+			System.out.println( "Unable to create lock file " + lockFileName );
+		}
+		lockFile.deleteOnExit();
+	}
 }

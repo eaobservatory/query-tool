@@ -1,39 +1,37 @@
 package edu.jach.qt.gui;
 
-
-import java.awt.GridBagConstraints ;
-import java.awt.GridBagLayout ;
-import java.awt.Color ;
-import java.awt.Font ;
-import java.awt.BorderLayout ;
-import java.awt.Component ;
-import java.util.Enumeration ;
-import java.util.ArrayList ;
-import java.util.Vector ;
-import javax.swing.JPanel ;
-import javax.swing.JTextPane ;
-import javax.swing.JScrollPane ;
-import javax.swing.BorderFactory ;
-import javax.swing.border.TitledBorder ;
-import javax.swing.border.Border ;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.util.Enumeration;
+import java.util.ArrayList;
+import java.util.Vector;
+import javax.swing.JPanel;
+import javax.swing.JTextPane;
+import javax.swing.JScrollPane;
+import javax.swing.BorderFactory;
+import javax.swing.border.TitledBorder;
+import javax.swing.border.Border;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 import javax.swing.text.Document;
 
-import gemini.sp.SpTreeMan ;
-import gemini.sp.SpItem ;
-import gemini.sp.SpNote ;
+import gemini.sp.SpTreeMan;
+import gemini.sp.SpItem;
+import gemini.sp.SpNote;
 
 /**
  * Constructs a scrollable text panel.
  * @author $Author$
  * @version $Id$
  */
-final public class NotePanel extends JPanel {
-
-    private GridBagConstraints gbc;
-
+final public class NotePanel extends JPanel
+{
+	private GridBagConstraints gbc;
 	private static JTextPane textPanel = new JTextPane();
 
 	/**
@@ -62,27 +60,27 @@ final public class NotePanel extends JPanel {
 		gbc.weighty = 100;
 		add( scrollPane , gbc , 0 , 0 , 2 , 1 );
 	}
-    
-  /**
-   * Add a compnent to the <code>GridBagConstraints</code>
-   *
-   * @param c a <code>Component</code> value
-   * @param gbc a <code>GridBagConstraints</code> value
-   * @param x an <code>int</code> value
-   * @param y an <code>int</code> value
-   * @param w an <code>int</code> value
-   * @param h an <code>int</code> value
-   */
-    public void add(Component c, GridBagConstraints gbc, 
-		    int x, int y, int w, int h) {
-	gbc.gridx = x;
-	gbc.gridy = y;
-	gbc.gridwidth = w;
-	gbc.gridheight = h;
-	add(c, gbc);      
-    }
 
-    /**
+	/**
+	 * Add a compnent to the <code>GridBagConstraints</code>
+	 *
+	 * @param c a <code>Component</code> value
+	 * @param gbc a <code>GridBagConstraints</code> value
+	 * @param x an <code>int</code> value
+	 * @param y an <code>int</code> value
+	 * @param w an <code>int</code> value
+	 * @param h an <code>int</code> value
+	 */
+	public void add( Component c , GridBagConstraints gbc , int x , int y , int w , int h )
+	{
+		gbc.gridx = x;
+		gbc.gridy = y;
+		gbc.gridwidth = w;
+		gbc.gridheight = h;
+		add( c , gbc );
+	}
+
+	/**
 	 * Sets the text in the panel. Uses <code>SpNote.isObserveInstruction() </code> to locate Observer Note.
 	 * 
 	 * @param sp
@@ -90,56 +88,55 @@ final public class NotePanel extends JPanel {
 	 */
 	public static void setNote( SpItem sp )
 	{
-		if( sp == null )
-			return;
-
-		// StringBuffer notes = new StringBuffer();
-		ArrayList notes = new ArrayList();
-		ArrayList styles = new ArrayList();
-
-		Vector noteVector = SpTreeMan.findAllItems( sp , "gemini.sp.SpNote" );
-		Enumeration e = noteVector.elements();
-		while( e.hasMoreElements() )
+		if( sp != null )
 		{
-			SpNote thisNote = ( SpNote ) e.nextElement();
-			if( thisNote.isObserveInstruction() )
+			ArrayList notes = new ArrayList();
+			ArrayList styles = new ArrayList();
+	
+			Vector noteVector = SpTreeMan.findAllItems( sp , "gemini.sp.SpNote" );
+			Enumeration e = noteVector.elements();
+			while( e.hasMoreElements() )
 			{
-				String[] instructions = thisNote.getInstructions();
-				if( instructions != null )
+				SpNote thisNote = ( SpNote )e.nextElement();
+				if( thisNote.isObserveInstruction() )
 				{
-					for( int i = 0 ; i < instructions.length ; i++ )
+					String[] instructions = thisNote.getInstructions();
+					if( instructions != null )
 					{
-						notes.add( instructions[ i ] + "\n" );
-						styles.add( "bold" );
+						for( int i = 0 ; i < instructions.length ; i++ )
+						{
+							notes.add( instructions[ i ] + "\n" );
+							styles.add( "bold" );
+						}
 					}
+					notes.add( "\n" + thisNote.getNote() + "\n" );
+					styles.add( "regular" );
 				}
-				notes.add( "\n" + thisNote.getNote() + "\n" );
-				styles.add( "regular" );
 			}
+			initStyles();
+	
+			Document doc = textPanel.getDocument();
+			try
+			{
+				doc.remove( 0 , doc.getLength() );
+				for( int i = 0 ; i < notes.size() ; i++ )
+					doc.insertString( doc.getLength() , ( String )notes.get( i ) , textPanel.getStyle( ( String )styles.get( i ) ) );
+			}
+			catch( Exception ex )
+			{
+				System.out.println( "Could not insert observer notes" );
+			}
+			textPanel.setCaretPosition( 0 );
+			textPanel.repaint();
 		}
-		initStyles();
-
-		Document doc = textPanel.getDocument();
-		try
-		{
-			doc.remove( 0 , doc.getLength() ) ;
-			for( int i = 0 ; i < notes.size() ; i++ )
-				doc.insertString( doc.getLength() , ( String ) notes.get( i ) , textPanel.getStyle( ( String ) styles.get( i ) ) );
-		}
-		catch( Exception ex )
-		{
-			System.out.println( "Could not insert observer notes" );
-		}
-		textPanel.setCaretPosition( 0 );
-		textPanel.repaint() ;
 	}
 
-    private static void initStyles()
+	private static void initStyles()
 	{
 		if( textPanel == null )
-			textPanel = new JTextPane() ;
-			
-    	StyleContext styleContext = StyleContext.getDefaultStyleContext() ;
+			textPanel = new JTextPane();
+
+		StyleContext styleContext = StyleContext.getDefaultStyleContext();
 		Style def = styleContext.getStyle( StyleContext.DEFAULT_STYLE );
 
 		Style regular = textPanel.addStyle( "regular" , def );
@@ -148,6 +145,4 @@ final public class NotePanel extends JPanel {
 		Style s = textPanel.addStyle( "bold" , regular );
 		StyleConstants.setBold( s , true );
 	}
-
-
 }

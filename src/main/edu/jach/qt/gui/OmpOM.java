@@ -1,27 +1,62 @@
 package edu.jach.qt.gui;
 
 /* Gemini imports */
-import gemini.sp.*;
-import gemini.sp.iter.*;
-import gemini.sp.obsComp.*;
+import gemini.sp.SpItem ;
+import gemini.sp.SpTreeMan ;
+import gemini.sp.SpMSB ;
+import gemini.sp.iter.SpIterChop ;
+import gemini.sp.iter.SpIterRepeat ;
+import gemini.sp.iter.SpIterOffset ;
+import gemini.sp.obsComp.SpSiteQualityObsComp ;
+import gemini.sp.obsComp.SpSchedConstObsComp ;
 
 /* JSKY imports */
-import jsky.app.ot.*;
+import jsky.app.ot.OtFileIO ;
 
 /* ORAC imports */
-import orac.ukirt.inst.*;
-import orac.ukirt.iter.*;
-import orac.jcmt.inst.*;
-import orac.jcmt.iter.*;
+import orac.ukirt.inst.SpInstUFTI ;
+import orac.ukirt.inst.SpInstCGS4 ;
+import orac.ukirt.inst.SpInstIRCAM3 ;
+import orac.ukirt.inst.SpInstUIST ;
+import orac.ukirt.inst.SpInstWFCAM ;
+import orac.ukirt.iter.SpIterBiasObs ;
+import orac.ukirt.iter.SpIterCGS4 ;
+import orac.ukirt.iter.SpIterCGS4CalUnit ;
+import orac.ukirt.iter.SpIterCGS4CalObs ;
+import orac.ukirt.iter.SpIterCalUnit ;
+import orac.ukirt.iter.SpIterDarkObs ;
+import orac.ukirt.iter.SpIterFP ;
+import orac.ukirt.iter.SpIterIRCAM3 ;
+import orac.ukirt.iter.SpIterIRPOL ;
+import orac.ukirt.iter.SpIterNod ;
+import orac.ukirt.iter.SpIterUFTI ;
+import orac.jcmt.inst.SpInstHeterodyne ;
+//import orac.jcmt.iter.*;
+import orac.jcmt.iter.SpIterFocusObs ;
+import orac.jcmt.iter.SpIterFrequency ;
+import orac.jcmt.iter.SpIterJiggleObs ;
+import orac.jcmt.iter.SpIterNoiseObs ;
+import orac.jcmt.iter.SpIterPOL ;
+import orac.jcmt.iter.SpIterPointingObs ;
+import orac.jcmt.iter.SpIterRasterObs ;
+import orac.jcmt.iter.SpIterSkydipObs ;
+import orac.jcmt.iter.SpIterStareObs ;
 
 /* QT imports */
-import edu.jach.qt.utils.*;
+import edu.jach.qt.utils.DragTreeCellRenderer ;
+import edu.jach.qt.utils.MyTreeCellRenderer ;
+import edu.jach.qt.utils.QtTools ;
 
 /* Standard imports */
-import java.awt.*;
-import java.io.*;
-import java.util.*;
-import javax.swing.*;
+import java.awt.Dimension ;
+import java.io.File ;
+import java.util.Hashtable ;
+import java.util.NoSuchElementException ;
+import java.util.Vector ;
+import java.util.Enumeration ;
+import javax.swing.JPanel ;
+import javax.swing.JSplitPane ;
+import javax.swing.JFrame ;
 
 /* Miscellaneous imports */
 import org.apache.log4j.Logger;
@@ -33,39 +68,35 @@ import org.apache.log4j.Logger;
  * @author <a href="mailto:mrippa@jach.hawaii.edu">Mathew Rippa</a>
  * $Id$
  */
-public class OmpOM extends JPanel{
+public class OmpOM extends JPanel
+{
+	static Logger logger = Logger.getLogger( OmpOM.class );
+	private ProgramTree ptree;
+	private File file;
+	private SpItem spItem;
+	private Hashtable ptreeHashtable;
+	private DeferredProgramList deferredList;
+	public NotePanel notes;
 
-  static Logger logger = Logger.getLogger(OmpOM.class);
+	/**
+	 * Creates a new <code>OmpOM</code> instance.
+	 *
+	 */
+	public OmpOM()
+	{
+		ptreeHashtable = new Hashtable();
 
-  private ProgramTree	      ptree;
-  private File		      file;
-  private SpItem	      spItem;
-  private Hashtable	      ptreeHashtable;
-  private DeferredProgramList deferredList;
-  public NotePanel notes ;
+		/* 
+		 * Need to construct UKIRT-specific items so that their SpTypes are
+		 * statically initialised.  Otherwise the sp classes won't know about 
+		 * their types.  AB 19-Apr-2000
+		 */
+		this.initSpItems( System.getProperty( "telescope" ) );
+		logger.info( "SpItems initialized" );
+		ptree = new ProgramTree();
+	}
 
-  /**
-   * Creates a new <code>OmpOM</code> instance.
-   *
-   */
-  public OmpOM (){
-    ptreeHashtable = new Hashtable();
-
-    //Load OM specific configs
-    //QtTools.loadConfig(new String(System.getProperty("omCfg")));
-
-    /* Need to construct UKIRT-specific items so that their SpTypes are
-     * statically initialised.  Otherwise the sp classes won't know about 
-     * their types.  AB 19-Apr-2000
-     */
-    this.initSpItems(System.getProperty("telescope"));
-
-    logger.info("SpItems initialized");
-    
-    ptree = new ProgramTree();
-  }
-
-    private void initSpItems( String telescope )
+	private void initSpItems( String telescope )
 	{
 		if( telescope.equalsIgnoreCase( "ukirt" ) )
 		{
@@ -124,124 +155,124 @@ public class OmpOM extends JPanel{
 		}
 	}
 
-    /**
+	/**
 	 * Set the Project Identifier. Set the projectID to that passed in.
 	 * 
 	 * @param projectID
 	 *            The value of the project id to set.
 	 */
-  public void setProjectID(String projectID) {
-    ptree.setProjectID(projectID);
-  }
+	public void setProjectID( String projectID )
+	{
+		ptree.setProjectID( projectID );
+	}
 
-    /**
-     * Set the Checksum.
-     * Set the projectID to that passed in.
-     * @param projectID   The value of the checksum to set.
-     */
-  public void setChecksum(String checksum) {
-    ptree.setChecksum(checksum);
-  }
+	/**
+	 * Set the Checksum.
+	 * Set the projectID to that passed in.
+	 * @param projectID   The value of the checksum to set.
+	 */
+	public void setChecksum( String checksum )
+	{
+		ptree.setChecksum( checksum );
+	}
 
-    /**
-     * Set the SpItem.
-     * Set the SpItem to that passed in.
-     * @param item   The value of the SpItem to set.
-     */
-  public void setSpItem(SpItem item) {
-    spItem = item;
-  }
+	/**
+	 * Set the SpItem.
+	 * Set the SpItem to that passed in.
+	 * @param item   The value of the SpItem to set.
+	 */
+	public void setSpItem( SpItem item )
+	{
+		spItem = item;
+	}
 
-    /** 
-     * Set whether the current SpItems can be executed.
-     * @param flag   <code>true</code> if items can be executed.
-     */
-    public void setExecutable (boolean flag) {
-	ptree.setExecutable(flag);
-    }
-  
-    /**
+	/** 
+	 * Set whether the current SpItems can be executed.
+	 * @param flag   <code>true</code> if items can be executed.
+	 */
+	public void setExecutable( boolean flag )
+	{
+		ptree.setExecutable( flag );
+	}
+
+	/**
 	 * Get the name of the program.
 	 * Gets the name of the program from Title field in the first observation.
 	 * @return The program name, <italic>'No Observations'</italic> if no program, or <italic>'Title Not Found'</italic> on error.
 	 */
 	public String getProgramName()
 	{
-		String returnString = "Title Not Found" ;
-		SpItem currentItem = ProgramTree.getCurrentItem() ;
+		String returnString = "Title Not Found";
+		SpItem currentItem = ProgramTree.getCurrentItem();
 		if( currentItem != null )
 		{
-			Vector progVector = SpTreeMan.findAllItems( currentItem , "gemini.sp.SpMSB" ) ;
+			Vector progVector = SpTreeMan.findAllItems( currentItem , "gemini.sp.SpMSB" );
 			if( progVector == null || progVector.size() == 0 )
-				progVector = SpTreeMan.findAllItems( currentItem , "gemini.sp.SpObs" ) ;
+				progVector = SpTreeMan.findAllItems( currentItem , "gemini.sp.SpObs" );
 			try
 			{
-					if( progVector != null && progVector.size() > 0 )
-					{
-						SpMSB spMsb = ( SpMSB )progVector.firstElement() ;
-						returnString = spMsb.getTitle() ;
-					}
+				if( progVector != null && progVector.size() > 0 )
+				{
+					SpMSB spMsb = ( SpMSB )progVector.firstElement();
+					returnString = spMsb.getTitle();
+				}
 			}
 			catch( NoSuchElementException nse )
 			{
-				logger.warn( returnString ) ;
-				nse.printStackTrace() ;
+				logger.warn( returnString );
+				nse.printStackTrace();
 			}
 		}
 		else
 		{
-			returnString = "No Observations" ;
+			returnString = "No Observations";
 		}
-		return returnString ;
+		return returnString;
 	}
 
+	/**
+	 * This adds a
+	 * <code>ProgramTree</code>, referrenced by the msbID, to the list
+	 * of trees.
+	 *
+	 * @param msbID an <code>int</code> value
+	 */
+	public void addNewTree( Integer msbID )
+	{
+		if( msbID == null )
+			ptree.addList( null );
+		else
+			ptree.addList( spItem );
 
-  /**
-   * This adds a
-   * <code>ProgramTree</code>, referrenced by the msbID, to the list
-   * of trees.
-   *
-   * @param msbID an <code>int</code> value
-   */
-  public void addNewTree(Integer msbID) {
+		ptree.setMinimumSize( new Dimension( 400 , 550 ) );
+	}
 
-      if (msbID == null) {
-	  ptree.addList(null);	  
-      }
-      else {
-	  ptree.addList(spItem);
-      }
-      ptree.setMinimumSize(new Dimension(400,550) );
-  }
+	/**
+	 * 
+	 * The method used for debugging.  It loads in a hard-wired MSB file
+	 * to use as the ProgramTree object.
+	 */
+	public void addNewTree()
+	{
+		file = new File( System.getProperty( "arrayTests" , "/home/mrippa/install/omp/QT/config/array_tests.xml" ) );
+		spItem = OtFileIO.fetchSp( file.getParent() , file.getName() );
 
-  /**
-   * 
-   * The method used for debugging.  It loads in a hard-wired MSB file
-   * to use as the ProgramTree object.
-   */
-  public void addNewTree() {
-    file = 
-      new File(System.getProperty("arrayTests", 
-				  "/home/mrippa/install/omp/QT/config/array_tests.xml"));
-    spItem = OtFileIO.fetchSp(file.getParent(), file.getName());
- 
-    //ptree.addTree(spItem);
-    ptree.addList(spItem);
-    ptree.setMinimumSize(new Dimension(400,550) );
+		ptree.addList( spItem );
+		ptree.setMinimumSize( new Dimension( 400 , 550 ) );
 
-    ptreeHashtable.put(new Integer(41), ptree);
-  }
+		ptreeHashtable.put( new Integer( 41 ) , ptree );
+	}
 
-    /**
-     * Reloads the current program.
-     */
-  public void resetTree() {
-    spItem = OtFileIO.fetchSp(file.getParent(), file.getName());
-    ptree.addList(spItem);
-  }
+	/**
+	 * Reloads the current program.
+	 */
+	public void resetTree()
+	{
+		spItem = OtFileIO.fetchSp( file.getParent() , file.getName() );
+		ptree.addList( spItem );
+	}
 
-
-    /**
+	/**
 	 * Construct the Staging Panel. Builds the deferred list and Observer Notes panel and displaays as a tabbed pane.
 	 * 
 	 * @return The <code>JSplitPanel</code> staging area.
@@ -249,109 +280,109 @@ public class OmpOM extends JPanel{
 	public JSplitPane getTreePanel()
 	{
 		deferredList = new DeferredProgramList();
-		notes = new NotePanel() ;
+		notes = new NotePanel();
 		JSplitPane dsp = new JSplitPane( JSplitPane.VERTICAL_SPLIT , deferredList , notes );
 		dsp.setDividerLocation( 150 );
 		JSplitPane splitPane = new JSplitPane( JSplitPane.HORIZONTAL_SPLIT , ptree , dsp );
 		if( ProgramTree.getCurrentItem() != null )
 			NotePanel.setNote( ProgramTree.getCurrentItem() );
 		else if( DeferredProgramList.getCurrentItem() != null )
-			NotePanel.setNote( DeferredProgramList.getCurrentItem() ) ;
+			NotePanel.setNote( DeferredProgramList.getCurrentItem() );
 		else
 			NotePanel.setNote( spItem );
 		return splitPane;
 	}
 
-    /**
+	/**
 	 * Constructs a drag tree panel.
 	 * 
 	 * @return The <code>JSplitPanel</code> staging area.
 	 * @deprected Not Replaced.
 	 */
-  public JSplitPane getDragTreePanel() {
-      
-    DragDropObject ddo = new DragDropObject(spItem);
-    MsbNode root = new MsbNode(ddo);
-    getItems(spItem, root);
+	public JSplitPane getDragTreePanel()
+	{
+		DragDropObject ddo = new DragDropObject( spItem );
+		MsbNode root = new MsbNode( ddo );
+		getItems( spItem , root );
 
-    DnDJTree ddt = new DnDJTree(root);
-    ddt.setCellRenderer(new DragTreeCellRenderer());
-    //JPanel p = new JPanel();
-    JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, 
-					  ptree, ddt);
+		DnDJTree ddt = new DnDJTree( root );
+		ddt.setCellRenderer( new DragTreeCellRenderer() );
+		JSplitPane splitPane = new JSplitPane( JSplitPane.HORIZONTAL_SPLIT , ptree , ddt );
 
-    return splitPane;
-  }
-
-    /**
-     * See if we can shutdown the QT.  Checks whether the program tree still has
-     * an MSB which requires actioning.
-     */
-    public boolean checkProgramTree() {
-	boolean safeToExit = true;
-	if (ptree != null) {
-	    safeToExit = ptree.shutDownRequest();
+		return splitPane;
 	}
-	return safeToExit;
-    }
 
-    /**
-     * Tests the display.
-     */
-  public void test() {
-      
-    JFrame f = new JFrame();
-    f.setSize(400,300);
-    DragDropObject ddo = new DragDropObject(spItem);
-    MsbNode root = new MsbNode(ddo);
-    getItems(spItem, root);
-    DnDJTree ddt = new DnDJTree(root);
-    ddt.setCellRenderer(new MyTreeCellRenderer());
-    f.getContentPane().add(ddt);
-    //f.pack();
-    f.show();
-  }
+	/**
+	 * See if we can shutdown the QT.  Checks whether the program tree still has
+	 * an MSB which requires actioning.
+	 */
+	public boolean checkProgramTree()
+	{
+		boolean safeToExit = true;
+		if( ptree != null )
+			safeToExit = ptree.shutDownRequest();
 
+		return safeToExit;
+	}
 
-  /** public void getItems (SpItem spItem,DefaultMutableTreeNode node)
-      is a public method to add ALL the items of a sp object into the
-      JTree *recursively*.
-      
-      @param SpItem spItem,DefaultMutableTreeNode node
-      @return  none
-      @throws none
-      
-  */
-  private void getItems (SpItem spItem, MsbNode node) {
-    Enumeration children = spItem.children();
-    while (children.hasMoreElements()) {
+	/**
+	 * Tests the display.
+	 */
+	public void test()
+	{
+		JFrame f = new JFrame();
+		f.setSize( 400 , 300 );
+		DragDropObject ddo = new DragDropObject( spItem );
+		MsbNode root = new MsbNode( ddo );
+		getItems( spItem , root );
+		DnDJTree ddt = new DnDJTree( root );
+		ddt.setCellRenderer( new MyTreeCellRenderer() );
+		f.getContentPane().add( ddt );
+		f.show();
+	}
+
+	/** public void getItems (SpItem spItem,DefaultMutableTreeNode node)
+	 is a public method to add ALL the items of a sp object into the
+	 JTree *recursively*.
 	 
-      SpItem  childNode = (SpItem) children.nextElement();
-      DragDropObject ddo = new DragDropObject(childNode);
-      MsbNode temp = new MsbNode(ddo);
-      node.add(temp);
-      getItems(childNode,temp);
-    }
-  }
+	 @param SpItem spItem,DefaultMutableTreeNode node
+	 @return  none
+	 @throws none
+	 
+	 */
+	private void getItems( SpItem spItem , MsbNode node )
+	{
+		Enumeration children = spItem.children();
+		while( children.hasMoreElements() )
+		{
+			SpItem childNode = ( SpItem )children.nextElement();
+			DragDropObject ddo = new DragDropObject( childNode );
+			MsbNode temp = new MsbNode( ddo );
+			node.add( temp );
+			getItems( childNode , temp );
+		}
+	}
 
-    public void updateDeferredList() {
-	deferredList.reload();
-    }
+	public void updateDeferredList()
+	{
+		deferredList.reload();
+	}
 
-    public void enableList(boolean flag) {
-	ptree.enableList(flag);
-    }
+	public void enableList( boolean flag )
+	{
+		ptree.enableList( flag );
+	}
 
+	public static void main( String[] args )
+	{
+		QtTools.loadConfig( System.getProperty( "qtConfig" ) );
+		QtTools.loadConfig( System.getProperty( "omConfig" ) );
 
-  public static void main(String[] args) {
-    QtTools.loadConfig(System.getProperty("qtConfig"));
-    QtTools.loadConfig(System.getProperty("omConfig"));
-
-    JFrame f = new JFrame();
-    OmpOM om = new OmpOM();
-    om.addNewTree();
-    f.getContentPane().add(om.getTreePanel());
-    f.setSize(400, 300);
-    f.setVisible(true);
-  }
+		JFrame f = new JFrame();
+		OmpOM om = new OmpOM();
+		om.addNewTree();
+		f.getContentPane().add( om.getTreePanel() );
+		f.setSize( 400 , 300 );
+		f.setVisible( true );
+	}
 }// OmpOM

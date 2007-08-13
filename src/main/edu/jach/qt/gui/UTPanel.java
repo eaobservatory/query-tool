@@ -1,10 +1,11 @@
 package edu.jach.qt.gui;
 
-import java.awt.*;
-import java.util.*;
-import java.awt.event.*;
-import javax.swing.*;
-import javax.swing.border.*;
+import java.awt.Color ;
+import java.util.Calendar ;
+import java.util.Date ;
+import java.util.TimeZone ;
+import javax.swing.JLabel ;
+import javax.swing.SwingConstants ;
 import java.text.SimpleDateFormat;
 
 /**
@@ -14,45 +15,36 @@ import java.text.SimpleDateFormat;
  * @version $Id$
  */
 
-public class UTPanel extends JLabel
-   implements TimerListener {
-   
-    /**
-     * Constructor.
-     * Starts a timer so that the display is updated once a second.
-     */
-   public UTPanel () {
-      setHorizontalAlignment(SwingConstants.CENTER);
+public class UTPanel extends JLabel implements TimerListener
+{
+	/**
+	 * Constructor.
+	 * Starts a timer so that the display is updated once a second.
+	 */
+	public UTPanel()
+	{
+		setHorizontalAlignment( SwingConstants.CENTER );
 
-      //MatteBorder matte = new MatteBorder(1,1,1,1,Color.white);
+		this.setOpaque( true );
+		Timer t = new Timer( 1000 );
+		t.addTimerListener( this );
+	}
 
-//       TitledBorder border = BorderFactory.createTitledBorder
-// 	(BorderFactory.createLineBorder(new Color(51, 134, 206)), "UTC",
-// 	 TitledBorder.CENTER, TitledBorder.DEFAULT_POSITION);
-//       setBorder(border);
-      
-      this.setOpaque(true);
-      Timer t = new Timer(1000);
-      t.addTimerListener(this);
-   }
-   
-    /**
-     * Implementation of TimeListener.
-     * Sets the date and time on the associated object once a second.
-     * @param evt  A timer event.
-     */
-   public void timeElapsed(TimerEvent evt) {
-      setBackground(Color.black);
-      setForeground(Color.green);
-      //Graphics g = getGraphics();
-      //g.setFont( g.getFont().deriveFont((float)16.0));
-      Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-      Date date = cal.getTime();
-//       DateFormat df = DateFormat.getTimeInstance(DateFormat.MEDIUM);
-      SimpleDateFormat df = new SimpleDateFormat("kk:mm:ss z");
-      df.setTimeZone(TimeZone.getTimeZone("UTC"));
-      String time = df.format(date);
-      setText(time);
-   }
-   
+	/**
+	 * Implementation of TimeListener.
+	 * Sets the date and time on the associated object once a second.
+	 * @param evt  A timer event.
+	 */
+	public void timeElapsed( TimerEvent evt )
+	{
+		setBackground( Color.black );
+		setForeground( Color.green );
+		Calendar cal = Calendar.getInstance( TimeZone.getTimeZone( "UTC" ) );
+		Date date = cal.getTime();
+		SimpleDateFormat df = new SimpleDateFormat( "kk:mm:ss z" );
+		df.setTimeZone( TimeZone.getTimeZone( "UTC" ) );
+		String time = df.format( date );
+		setText( time );
+	}
+
 }// TimePanel

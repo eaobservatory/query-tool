@@ -4,36 +4,36 @@ package edu.jach.qt.app;
 import gemini.sp.SpItem;
 
 /* QT imports */
-import edu.jach.qt.gui.WidgetDataBag ;
-import edu.jach.qt.gui.LabeledTextField ;
-import edu.jach.qt.gui.LabeledRangeTextField ;
-import edu.jach.qt.gui.WidgetPanel ;
-import edu.jach.qt.utils.NoSuchParameterException ;
-import edu.jach.qt.utils.MsbClient ;
-import edu.jach.qt.utils.SimpleMoon ;
-import edu.jach.qt.utils.TimeUtils ;
+import edu.jach.qt.gui.WidgetDataBag;
+import edu.jach.qt.gui.LabeledTextField;
+import edu.jach.qt.gui.LabeledRangeTextField;
+import edu.jach.qt.gui.WidgetPanel;
+import edu.jach.qt.utils.NoSuchParameterException;
+import edu.jach.qt.utils.MsbClient;
+import edu.jach.qt.utils.SimpleMoon;
+import edu.jach.qt.utils.TimeUtils;
 
 /* Standard imports */
 import java.awt.Color;
-import java.io.StringWriter ;
-import java.util.Hashtable ;
-import java.util.ListIterator ;
-import java.util.LinkedList ;
-import java.util.Enumeration ;
-import javax.swing.JToggleButton ;
-import javax.swing.JCheckBox ;
-import javax.swing.JRadioButton ;
-import javax.swing.JComboBox ;
+import java.io.StringWriter;
+import java.util.Hashtable;
+import java.util.ListIterator;
+import java.util.LinkedList;
+import java.util.Enumeration;
+import javax.swing.JToggleButton;
+import javax.swing.JCheckBox;
+import javax.swing.JRadioButton;
+import javax.swing.JComboBox;
 import java.util.StringTokenizer;
 
 /* Miscellaneous imports */
 import org.apache.log4j.Logger;
-import org.apache.xerces.dom.DocumentImpl ;
-import org.apache.xml.serialize.XMLSerializer ;
-import org.apache.xml.serialize.OutputFormat ;
-import org.w3c.dom.Document ;
-import org.w3c.dom.Element ;
-import org.w3c.dom.NodeList ;
+import org.apache.xerces.dom.DocumentImpl;
+import org.apache.xml.serialize.XMLSerializer;
+import org.apache.xml.serialize.OutputFormat;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 /**
  * The <code>Querytool</code> is main driver for the application side
@@ -52,104 +52,103 @@ import org.w3c.dom.NodeList ;
  *
  * @author <a href="mailto:mrippa@jach.hawaii.edu">Mathew Rippa</a>
  * @version 1.0 */
-public class Querytool implements Runnable, Observer {
+public class Querytool implements Runnable , Observer
+{
+	static Logger logger = Logger.getLogger( Querytool.class );
+	private String _xmlString;
+	private WidgetDataBag bag;
+	private final String OBSERVABILITY_DISABLED = "observability";
+	private final String REMAINING_DISABLED = "remaining";
+	private final String ALLOCATION_DISABLED = "allocation";
+	private final String ZONE_OF_AVOIDANCE_DISABLED = "zoa";
+	private boolean remaining , observability , allocation , _q , zoneofavoidance;
+	private String _queue;
+	private String DISABLE_CONSTRAINT = "disableconstraint";
 
-    static Logger logger = Logger.getLogger(Querytool.class);
+	/**
+	 * Creates a new <code>Querytool</code> instance.
+	 *
+	 * @param bag a <code>WidgetDataBag</code> value
+	 */
+	public Querytool( WidgetDataBag bag )
+	{
+		this.bag = bag;
+		bag.addObserver( this );
+	}
 
-    private String _xmlString;
-    private WidgetDataBag bag;
+	/**
+	 * Describe <code>setObservabilityConstraint</code> method here.
+	 *
+	 * @param flag a <code>boolean</code> value that sets the state of
+	 * the observability constraint.
+	 */
+	public void setObservabilityConstraint( boolean flag )
+	{
+		observability = flag;
+		buildXML( bag.getHash() );
+	}
 
-    private final String OBSERVABILITY_DISABLED = "observability";
-    private final String REMAINING_DISABLED     = "remaining";
-    private final String ALLOCATION_DISABLED    = "allocation";
-    private final String ZONE_OF_AVOIDANCE_DISABLED		= "zoa" ;
+	/**
+	 * Describe <code>setRemainingConstraint</code> method here.
+	 *
+	 * @param flag a <code>boolean</code> value that sets the state of
+	 * the remaining constraint.
+	 */
+	public void setRemainingConstraint( boolean flag )
+	{
+		remaining = flag;
+		buildXML( bag.getHash() );
+	}
 
-    private boolean remaining, observability, allocation,_q,zoneofavoidance;
-    private String _queue;
+	/**
+	 * Describe <code>setAllocationConstraint</code> method here.
+	 *
+	 * @param flag a <code>boolean</code> value that sets the state of
+	 * the allocation constraint.
+	 */
+	public void setAllocationConstraint( boolean flag )
+	{
+		allocation = flag;
+		buildXML( bag.getHash() );
+	}
 
-    private String DISABLE_CONSTRAINT = "disableconstraint" ;
-    
-    /**
-     * Creates a new <code>Querytool</code> instance.
-     *
-     * @param bag a <code>WidgetDataBag</code> value
-     */
-    public Querytool (WidgetDataBag bag) {
-        this.bag = bag;
-        bag.addObserver(this);
-    }
+	/**
+	 * Describe <code>setZoneOfAvoidanceConstraint</code> method here.
+	 *
+	 * @param flag a <code>boolean</code> value that sets the state of
+	 * the zone of avoidance constraint.
+	 */
+	public void setZoneOfAvoidanceConstraint( boolean flag )
+	{
+		zoneofavoidance = flag;
+		buildXML( bag.getHash() );
+	}
 
-    /**
-     * Describe <code>setObservabilityConstraint</code> method here.
-     *
-     * @param flag a <code>boolean</code> value that sets the state of
-     * the observability constraint.
-     */
-    public void setObservabilityConstraint(boolean flag) {
-        observability = flag;
-        buildXML(bag.getHash());
-    }
+	public void setQueue( String q )
+	{
+		_q = ( q != null && q != "" ) ;
+		if( _q )
+			_queue = q;
 
-    /**
-     * Describe <code>setRemainingConstraint</code> method here.
-     *
-     * @param flag a <code>boolean</code> value that sets the state of
-     * the remaining constraint.
-     */
-    public void setRemainingConstraint(boolean flag) {
-        remaining = flag;
-        buildXML(bag.getHash());
-    }
+		buildXML( bag.getHash() );
+		return;
+	}
 
-    /**
-     * Describe <code>setAllocationConstraint</code> method here.
-     *
-     * @param flag a <code>boolean</code> value that sets the state of
-     * the allocation constraint.
-     */
-    public void setAllocationConstraint(boolean flag) {
-        allocation = flag;
-        buildXML(bag.getHash());
-    }
+	/**
+	 * The <code>update</code> method is used to trigger
+	 * an action if a change is "Observed" in the "Subject".
+	 * This is the only method mandated by the Observer 
+	 * interface.
+	 *
+	 * @param o a <code>Subject</code> value
+	 */
+	public void update( Subject o )
+	{
+		if( o == bag )
+			buildXML( bag.getHash() );
+	}
 
-    /**
-     * Describe <code>setZoneOfAvoidanceConstraint</code> method here.
-     *
-     * @param flag a <code>boolean</code> value that sets the state of
-     * the zone of avoidance constraint.
-     */
-    public void setZoneOfAvoidanceConstraint(boolean flag) {
-        zoneofavoidance = flag;
-        buildXML(bag.getHash());
-    }
-    
-    public void setQueue(String q) {
-        if (q != null && q != "") {
-            _q = true;
-            _queue = q;
-        }
-        else {
-            _q = false;
-        }
-        buildXML(bag.getHash());
-        return;
-    }
-
-    /**
-     * The <code>update</code> method is used to trigger
-     * an action if a change is "Observed" in the "Subject".
-     * This is the only method mandated by the Observer 
-     * interface.
-     *
-     * @param o a <code>Subject</code> value
-     */
-    public void update(Subject o) {
-        if (o == bag) {
-            buildXML(bag.getHash());
-        }
-    }
-
-    /**
+	/**
 	 * The <code>buildXML</code> method is triggerd by any Subject update. If the gui state changes, this method rebuilds the _xmlString.
 	 * 
 	 * @param ht
@@ -207,13 +206,13 @@ public class Querytool implements Runnable, Observer {
 
 			for( final Enumeration e = ht.keys() ; e.hasMoreElements() ; )
 			{
-				next = ( ( String ) e.nextElement() );
+				next = ( ( String )e.nextElement() );
 
 				if( next.equalsIgnoreCase( "instruments" ) )
 				{
-					for( final ListIterator iter = ( ( LinkedList ) ( ht.get( next ) ) ).listIterator( 0 ) ; iter.hasNext() ; iter.nextIndex() )
+					for( final ListIterator iter = ( ( LinkedList )( ht.get( next ) ) ).listIterator( 0 ) ; iter.hasNext() ; iter.nextIndex() )
 					{
-						abstractButton = ( JCheckBox ) ( iter.next() );
+						abstractButton = ( JCheckBox )( iter.next() );
 						if( abstractButton.isSelected() )
 						{
 							item = doc.createElement( "instrument" );
@@ -227,9 +226,10 @@ public class Querytool implements Runnable, Observer {
 				}
 				else if( next.equalsIgnoreCase( "semesters" ) )
 				{
-					for( final ListIterator iter = ( ( LinkedList ) ( ht.get( next ) ) ).listIterator( 0 ) ; iter.hasNext() ; iter.nextIndex() )
+					final ListIterator iter = (( LinkedList )ht.get( next )).listIterator( 0 ) ;
+					for( ; iter.hasNext() ; iter.nextIndex() )
 					{
-						abstractButton = ( JCheckBox ) ( iter.next() );
+						abstractButton = ( JCheckBox )( iter.next() );
 						if( abstractButton.isSelected() )
 						{
 							item = doc.createElement( "semester" );
@@ -243,11 +243,11 @@ public class Querytool implements Runnable, Observer {
 				}
 				else if( next.equalsIgnoreCase( "Moon" ) )
 				{
-
 					item = doc.createElement( next );
-					for( final ListIterator iter = ( ( LinkedList ) ( ht.get( next ) ) ).listIterator( 0 ) ; iter.hasNext() ; iter.nextIndex() )
+					final ListIterator iter = (( LinkedList )ht.get( next )).listIterator( 0 ) ;
+					for( ; iter.hasNext() ; iter.nextIndex() )
 					{
-						abstractButton = ( JRadioButton ) ( iter.next() );
+						abstractButton = ( JRadioButton )( iter.next() );
 						if( abstractButton.isSelected() )
 						{
 							String tmpMoon = abstractButton.getText().trim();
@@ -266,30 +266,22 @@ public class Querytool implements Runnable, Observer {
 				else if( next.equalsIgnoreCase( "Clouds" ) )
 				{
 					item = doc.createElement( "cloud" );
-					for( final ListIterator iter = ( ( LinkedList ) ( ht.get( next ) ) ).listIterator( 0 ) ; iter.hasNext() ; iter.nextIndex() )
+					final ListIterator iter = (( LinkedList )ht.get( next )).listIterator( 0 ) ;
+					for( ; iter.hasNext() ; iter.nextIndex() )
 					{
-						abstractButton = ( JRadioButton ) ( iter.next() );
+						abstractButton = ( JRadioButton )( iter.next() );
 						if( abstractButton.isSelected() )
 						{
 							String tmpCloud = abstractButton.getText().trim();
 							String cloud = "";
 							if( tmpCloud.equals( "Clear" ) )
-							{
 								cloud = "0";
-							}
 							else if( tmpCloud.equals( "Thin" ) )
-							{
 								cloud = "20";
-							}
 							else if( tmpCloud.equals( "Thick" ) )
-							{
 								cloud = "100";
-							}
-
 							else
-							{
 								throw ( new NoSuchParameterException( "Clouds does not contain element " + tmpCloud ) );
-							}
 
 							item.appendChild( doc.createTextNode( cloud ) );
 						}
@@ -298,25 +290,20 @@ public class Querytool implements Runnable, Observer {
 				else if( next.equalsIgnoreCase( "Atmospheric Conditions" ) )
 				{
 					item = doc.createElement( next );
-					for( final ListIterator iter = ( ( LinkedList ) ( ht.get( next ) ) ).listIterator( 0 ) ; iter.hasNext() ; iter.nextIndex() )
-					{
-
-						logger.debug( "ATMOS: " + ( String ) iter.next() );
-
-					}
+					final ListIterator iter = (( LinkedList )ht.get( next )).listIterator( 0 ) ;
+					for( ; iter.hasNext() ; iter.nextIndex() )
+						logger.debug( "ATMOS: " + ( String )iter.next() );
 				}
 				else if( next.equalsIgnoreCase( "country" ) )
 				{
 					item = doc.createElement( next );
-					for( final ListIterator iter = ( ( LinkedList ) ( ht.get( next ) ) ).listIterator( 0 ) ; iter.hasNext() ; iter.nextIndex() )
+					final ListIterator iter = (( LinkedList )ht.get( next )).listIterator( 0 ) ;
+					for( ; iter.hasNext() ; iter.nextIndex() )
 					{
-						abstractButton = ( JRadioButton ) ( iter.next() );
+						abstractButton = ( JRadioButton )( iter.next() );
 						if( abstractButton.isSelected() )
 						{
-							if( abstractButton.getText().equalsIgnoreCase( "any" ) )
-							{
-							}
-							else
+							if( !abstractButton.getText().equalsIgnoreCase( "any" ) )
 							{
 								item.appendChild( doc.createTextNode( abstractButton.getText() ) );
 								root.appendChild( item );
@@ -327,17 +314,17 @@ public class Querytool implements Runnable, Observer {
 				else if( ht.get( next ) instanceof LinkedList )
 				{
 					item = doc.createElement( next );
-					for( final ListIterator iter = ( ( LinkedList ) ( ht.get( next ) ) ).listIterator( 0 ) ; iter.hasNext() ; iter.nextIndex() )
+					final ListIterator iter = (( LinkedList )ht.get( next )).listIterator( 0 ) ;
+					for( ; iter.hasNext() ; iter.nextIndex() )
 					{
-
 						obj = iter.next();
 						if( obj instanceof JComboBox )
 						{
-							String textField = ( String ) ( iter.next() );
-							obj = ( JComboBox ) obj;
+							String textField = ( String )( iter.next() );
+							obj = ( JComboBox )obj;
 							if( !textField.equals( "" ) )
 							{
-								sub = doc.createElement( ( String ) ( ( ( JComboBox ) obj ).getSelectedItem() ) );
+								sub = doc.createElement( ( String )(( JComboBox )obj).getSelectedItem() );
 								sub.appendChild( doc.createTextNode( textField ) );
 								item.appendChild( sub );
 							}
@@ -346,7 +333,7 @@ public class Querytool implements Runnable, Observer {
 				}
 				else if( ht.get( next ) instanceof LabeledTextField )
 				{
-					LabeledTextField ltf = ( LabeledTextField ) ( ht.get( next ) );
+					LabeledTextField ltf = ( LabeledTextField )ht.get( next ) ;
 					Enumeration n = ltf.getList().elements();
 					String tmpStr;
 
@@ -365,9 +352,9 @@ public class Querytool implements Runnable, Observer {
 						else if( next.equalsIgnoreCase( "brightness" ) )
 							item = doc.createElement( "sky" );
 						else
-							continue ;
-						
-						tmpStr = ( String ) n.nextElement();
+							continue;
+
+						tmpStr = ( String )n.nextElement();
 						item.appendChild( doc.createTextNode( tmpStr.trim() ) );
 						root.appendChild( item );
 					} // end of while ()
@@ -375,8 +362,7 @@ public class Querytool implements Runnable, Observer {
 
 				else if( ht.get( next ) instanceof LabeledRangeTextField )
 				{
-
-					LabeledRangeTextField lrtf = ( LabeledRangeTextField ) ( ht.get( next ) );
+					LabeledRangeTextField lrtf = ( LabeledRangeTextField )ht.get( next ) ;
 					String tmpStr;
 
 					// Temporary and very inefficient code fix.
@@ -433,71 +419,73 @@ public class Querytool implements Runnable, Observer {
 
 			_xmlString = stringOut.toString();
 		}
-
 		catch( Exception ex )
 		{
 			logger.error( ex.getMessage() , ex );
 		}
-
 	}
 
-    /**
+	/**
 	 * The <code>getXML</code> method returns the _xmlString.
 	 * 
 	 * @return a <code>String</code> value
 	 */
-    public String getXML() {
-        return _xmlString;
-    }
+	public String getXML()
+	{
+		return _xmlString;
+	}
 
-    /**
+	/**
 	 * The <code>printXML</code> method is a utility to the current _xmlString.
 	 */
-    public void printXML() {
-        logger.debug( _xmlString ); // Spit out DOM as a String
-    }
+	public void printXML()
+	{
+		logger.debug( _xmlString ); // Spit out DOM as a String
+	}
 
-    /**
+	/**
 	 * The <code>queryMSB</code> method starts the SOAP client. A successful query will write all MSB Summaries to file.
 	 */
-    public void run() {
-        MsbClient.queryMSB(_xmlString);
-    }
+	public void run()
+	{
+		MsbClient.queryMSB( _xmlString );
+	}
 
-    /**
+	/**
 	 * The <code>queryMSB</code> method starts the SOAP client. A successful query will write all MSB Summaries to file and return true.
 	 */
-    public boolean queryMSB() {
-        return MsbClient.queryMSB(_xmlString);
-    }
+	public boolean queryMSB()
+	{
+		return MsbClient.queryMSB( _xmlString );
+	}
 
-    /**
+	/**
 	 * The <code>fetchMSB</code> method starts the SOAP client. A successful fetch will start the lower level OMP-OM sequence.
 	 * 
 	 * @param i
 	 *            an <code>Integer</code> value
 	 */
-    public SpItem fetchMSB(Integer i) throws NullPointerException {
+	public SpItem fetchMSB( Integer i ) throws NullPointerException
+	{
+		SpItem spItem = MsbClient.fetchMSB( i );
 
-        SpItem spItem = MsbClient.fetchMSB(i);
+		if( spItem == null )
+			throw ( new NullPointerException() );
 
-        if ( spItem == null) {
-            throw (new NullPointerException());
-        } // end of if ()
+		return spItem;
+	}
 
-        return spItem;
-    }
-
-    /**
+	/**
 	 * <code>XMLisNull</code> is a test for a null _xmlString.
 	 * 
 	 * @return a <code>boolean</code> value
 	 */
-    public boolean XMLisNull() {
-        return (_xmlString == null);
-    }
+	public boolean XMLisNull()
+	{
+		return( _xmlString == null );
+	}
 
-    private Element processDate( LabeledRangeTextField lrtf , Document doc , Element root )
+	private Element processDate( LabeledRangeTextField lrtf , Document doc , Element root )
 	{
 		Element item;
 		String tmpStr;
@@ -528,15 +516,14 @@ public class Querytool implements Runnable, Observer {
 		{
 			// We will use the current date, so set execution to true
 		}
-		// Recalculate the moon if the user has not overridden the default,
-		// otherwise leave it as it is
+		// Recalculate the moon if the user has not overridden the default, otherwise leave it as it is
 		if( WidgetPanel.getMoonPanel() != null && WidgetPanel.getMoonPanel().getBackground() != Color.red )
 		{
-			SimpleMoon moon = SimpleMoon.getInstance() ;
+			SimpleMoon moon = SimpleMoon.getInstance();
 			if( lrtf.timerRunning() || !tu.isValidDate( tmpStr ) )
-				moon.reset() ;
+				moon.reset();
 			else
-				moon.set( tmpStr ) ;
+				moon.set( tmpStr );
 			double moonValue = 0;
 			if( moon.isUp() )
 				moonValue = moon.getIllumination() * 100;
@@ -550,5 +537,4 @@ public class Querytool implements Runnable, Observer {
 		}
 		return root;
 	}
-
 }// Querytool

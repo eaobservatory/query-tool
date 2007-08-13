@@ -1,22 +1,19 @@
-package edu.jach.qt.utils ;
+package edu.jach.qt.utils;
 
-import java.io.FilenameFilter ;
-import java.io.File ;
+import java.io.FilenameFilter;
+import java.io.File;
 
 public class FileGlobFilter implements FilenameFilter
 {
-
-	String filterExpression ;
+	String filterExpression;
 
 	public FileGlobFilter( String expression )
 	{
-		filterExpression = expression ;
+		filterExpression = expression;
 	}
 
 	public boolean accept( File dir , String name )
 	{
-		if( name.matches( filterExpression ) )
-			return true ;
-		return false ;
+		return ( name.matches( filterExpression ) ) ;
 	}
 }

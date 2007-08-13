@@ -1,27 +1,26 @@
 package edu.jach.qt.gui;
 
-import java.awt.GridBagConstraints ;
-import java.awt.GridBagLayout ;
-import java.awt.Color ;
-import java.awt.Component ;
-import java.awt.event.ActionListener ;
-import java.awt.event.ActionEvent ;
-import java.text.DecimalFormat ;
-import java.util.ListIterator ;
-import javax.swing.JPanel ;
-import javax.swing.JLabel ;
-import javax.swing.JButton ;
-import javax.swing.BorderFactory ;
-import javax.swing.JToggleButton ;
-import javax.swing.JRadioButton ;
-import javax.swing.border.TitledBorder ;
-import ocs.utils.HubImplementor ;
-import ocs.utils.DcHub ;
-import ocs.utils.ObeyNotRegisteredException ;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import java.text.DecimalFormat;
+import java.util.ListIterator;
+import javax.swing.JPanel;
+import javax.swing.JLabel;
+import javax.swing.JButton;
+import javax.swing.BorderFactory;
+import javax.swing.JToggleButton;
+import javax.swing.JRadioButton;
+import javax.swing.border.TitledBorder;
+import ocs.utils.HubImplementor;
+import ocs.utils.DcHub;
+import ocs.utils.ObeyNotRegisteredException;
 import org.apache.log4j.Logger;
-import edu.jach.qt.utils.SimpleMoon ;
-import javax.swing.JOptionPane ;
-
+import edu.jach.qt.utils.SimpleMoon;
+import javax.swing.JOptionPane;
 
 /**
  * A Data Panel on the QT.
@@ -37,26 +36,23 @@ import javax.swing.JOptionPane ;
 
 public class TelescopeDataPanel extends JPanel implements ActionListener
 {
+	static Logger logger = Logger.getLogger( TelescopeDataPanel.class );
+	public static boolean DRAMA_ENABLED = "true".equals( System.getProperty( "DRAMA_ENABLED" ) );
+	public static String tauString = "-----";
+	private static JLabel csoTauValue;
+	private static JLabel airmassValue;
+	private JLabel csoTau;
+	private JLabel seeing;
+	private JLabel seeingValue;
+	private JLabel airmass;
+	private JButton updateButton;
+	private InfoPanel infoPanel;
+	private DcHub hub;
+	private HubImplementor csomonHI , closeHI;
+	private static String lastCSOValue = "";
+	private static boolean acceptUpdates = true;
 
-  static Logger logger = Logger.getLogger(TelescopeDataPanel.class);
-   
-  public static boolean	DRAMA_ENABLED = "true".equals(System.getProperty("DRAMA_ENABLED"));
-  public static String	tauString = "-----";
-
-  private static JLabel csoTauValue;
-  private static JLabel airmassValue;
-  private JLabel csoTau;
-  private JLabel seeing;
-  private JLabel seeingValue;
-  private JLabel airmass;
-  private JButton updateButton;
-  private InfoPanel infoPanel;
-  private DcHub hub;
-  private HubImplementor csomonHI, closeHI; 
-  private static String lastCSOValue = "";
-  private static boolean acceptUpdates = true;
-
-    /**
+	/**
 	 * Constructor. This constructor does the following tasks:
 	 * <ul>
 	 * <li> Checks to see if the QT is locked and if so converts to scenario mode.
@@ -95,8 +91,8 @@ public class TelescopeDataPanel extends JPanel implements ActionListener
 		}
 		config();
 	}
-  
-    /**
+
+	/**
 	 * Set the Tau value on the appropriate <code>JLabel</code>
 	 * 
 	 * @param val
@@ -104,10 +100,9 @@ public class TelescopeDataPanel extends JPanel implements ActionListener
 	 */
 	public static void setTau( double val )
 	{
-
 		// The arg in the following constructor is a pattern for formating
 		DecimalFormat myFormatter = new DecimalFormat( "0.000" );
-		String output = myFormatter.format( val ) ;
+		String output = myFormatter.format( val );
 
 		if( acceptUpdates && !output.equals( tauString ) )
 		{
@@ -130,7 +125,7 @@ public class TelescopeDataPanel extends JPanel implements ActionListener
 		csoTauValue.setText( output );
 	}
 
-    /**
+	/**
 	 * Set the Airmass value on the appropriate <code>JLabel</code>
 	 * 
 	 * @param val
@@ -138,7 +133,6 @@ public class TelescopeDataPanel extends JPanel implements ActionListener
 	 */
 	public static void setAirmass( double val )
 	{
-
 		// The arg in the following constructor is a pattern for formating
 		DecimalFormat myFormatter = new DecimalFormat( "0.000" );
 		String output = myFormatter.format( val );
@@ -154,90 +148,70 @@ public class TelescopeDataPanel extends JPanel implements ActionListener
 			csoTauValue.setToolTipText( "Source = " + tip );
 	}
 
-    /**
-     * Builds the components of the interface.
-     * Adds buttons, labels and other panels.
-     */
-  public void config() {
-      
-    setBackground(Color.black);
+	/**
+	 * Builds the components of the interface.
+	 * Adds buttons, labels and other panels.
+	 */
+	public void config()
+	{
+		setBackground( Color.black );
 
-    /*
-    setBorder(BorderFactory.createTitledBorder
-	      (BorderFactory.createEtchedBorder(new Color(51, 134, 206), Color.black), "Current Info",
-	       TitledBorder.CENTER, TitledBorder.DEFAULT_POSITION));
-    */
+		TitledBorder border = BorderFactory.createTitledBorder( BorderFactory.createLineBorder( new Color( 51 , 134 , 206 ) ) , "Current Info" , TitledBorder.CENTER , TitledBorder.DEFAULT_POSITION );
+		border.setTitleColor( new Color( 51 , 134 , 206 ) );
+		setBorder( border );
 
-    TitledBorder border = BorderFactory.createTitledBorder (
-            BorderFactory.createLineBorder( new Color(51, 134, 206) ),
-            "Current Info",
-            TitledBorder.CENTER,
-            TitledBorder.DEFAULT_POSITION);
-    border.setTitleColor( new Color(51, 134, 206) );
-    setBorder(border);
-    
-    setLayout(new GridBagLayout());
-    GridBagConstraints gbc = new GridBagConstraints();
+		setLayout( new GridBagLayout() );
+		GridBagConstraints gbc = new GridBagConstraints();
 
-    csoTau.setForeground(java.awt.Color.white);
-//     csoTau.setFont(csoTau.getFont().deriveFont((float)2.0));
-    seeing.setForeground(java.awt.Color.white);
-    airmass.setForeground(java.awt.Color.white);
-    csoTauValue.setForeground(java.awt.Color.green);
-    seeingValue.setForeground(java.awt.Color.green);
-    airmassValue.setForeground(java.awt.Color.green);
+		csoTau.setForeground( java.awt.Color.white );
+		seeing.setForeground( java.awt.Color.white );
+		airmass.setForeground( java.awt.Color.white );
+		csoTauValue.setForeground( java.awt.Color.green );
+		seeingValue.setForeground( java.awt.Color.green );
+		airmassValue.setForeground( java.awt.Color.green );
 
-    updateButton.setBackground(java.awt.Color.gray);
-    updateButton.addActionListener(this);
+		updateButton.setBackground( java.awt.Color.gray );
+		updateButton.addActionListener( this );
 
-    gbc.fill = GridBagConstraints.NONE;
-    gbc.anchor = GridBagConstraints.NORTH;
-    gbc.insets.top = 2;
-    gbc.insets.bottom = 2;
-    gbc.insets.left = 5;
-    gbc.insets.right = 5;
-    gbc.weightx = 0;
-    gbc.weighty = 0;
+		gbc.fill = GridBagConstraints.NONE;
+		gbc.anchor = GridBagConstraints.NORTH;
+		gbc.insets.top = 2;
+		gbc.insets.bottom = 2;
+		gbc.insets.left = 5;
+		gbc.insets.right = 5;
+		gbc.weightx = 0;
+		gbc.weighty = 0;
 
-    add(csoTau, gbc, 0, 0, 1, 1);
-    add(csoTauValue, gbc, 1, 0, 1, 1);
+		add( csoTau , gbc , 0 , 0 , 1 , 1 );
+		add( csoTauValue , gbc , 1 , 0 , 1 , 1 );
 
-    add(seeing, gbc, 0, 1, 1, 1);
-    add(seeingValue, gbc, 1, 1, 1, 1);
+		add( seeing , gbc , 0 , 1 , 1 , 1 );
+		add( seeingValue , gbc , 1 , 1 , 1 , 1 );
 
-    add(airmass, gbc, 0, 2, 1, 1);
-    add(airmassValue, gbc, 1, 2, 1, 1);
+		add( airmass , gbc , 0 , 2 , 1 , 1 );
+		add( airmassValue , gbc , 1 , 2 , 1 , 1 );
 
-    add(updateButton, gbc, 0, 3, 2, 1);
-            
-  }
+		add( updateButton , gbc , 0 , 3 , 2 , 1 );
+	}
 
-    /**
-     * Returns the current DRAMA hub.
-     * @return  The current DRAMA hub created by the constructor.
-     */
-  public void closeHub() {
+	/**
+	 * Returns the current DRAMA hub.
+	 * @return  The current DRAMA hub created by the constructor.
+	 */
+	public void closeHub()
+	{
+		try
+		{
+			Thread hubThread = hub.getThread();
 
-    try {
-      Thread hubThread = hub.getThread();
+			hub.closeDcHub( closeHI );
+			hubThread.join();
+		}
+		catch( ObeyNotRegisteredException onr ){}
+		catch( InterruptedException ie ){}
+	}
 
-      hub.closeDcHub(closeHI);
-      hubThread.join();
-    } 
-    catch ( ObeyNotRegisteredException onr) {
-	  
-    }
-
-    catch (InterruptedException ie) {
-
-    }
-
-  }
-
-
-
-    
-    /**
+	/**
 	 * Gets the tau value currently displayed on this panel.
 	 * 
 	 * @return The current CSO tau value.
@@ -246,8 +220,8 @@ public class TelescopeDataPanel extends JPanel implements ActionListener
 	{
 		return csoTauValue.getText();
 	}
-   
-  /**
+
+	/**
 	 * Describe <code>add</code> method here.
 	 * 
 	 * @param c
@@ -263,18 +237,16 @@ public class TelescopeDataPanel extends JPanel implements ActionListener
 	 * @param h
 	 *            an <code>int</code> value
 	 */
-  public void add(Component c, GridBagConstraints gbc, 
-		  int x, int y, int w, int h) {
-    gbc.gridx = x;
-    gbc.gridy = y;
-    gbc.gridwidth = w;
-    gbc.gridheight = h;
-    add(c, gbc);      
-  }
+	public void add( Component c , GridBagConstraints gbc , int x , int y , int w , int h )
+	{
+		gbc.gridx = x;
+		gbc.gridy = y;
+		gbc.gridwidth = w;
+		gbc.gridheight = h;
+		add( c , gbc );
+	}
 
-  // implementation of java.awt.event.ActionListener interface
-
-  /**
+	/**
 	 * Implementation of java.awt.event.ActionListener interface.
 	 * This will update the following fields:
 	 * <ul>
@@ -297,8 +269,8 @@ public class TelescopeDataPanel extends JPanel implements ActionListener
 			WidgetPanel.getAtmospherePanel().setTextField( "tau:" , TelescopeDataPanel.csoTauValue.getText() );
 		}
 
-		SimpleMoon moon = SimpleMoon.getInstance() ;
-		moon.reset() ;
+		SimpleMoon moon = SimpleMoon.getInstance();
+		moon.reset();
 		boolean dark = false;
 		boolean grey = false;
 		boolean bright = false;
@@ -317,7 +289,7 @@ public class TelescopeDataPanel extends JPanel implements ActionListener
 			ListIterator iter = moonPanel.radioElems.listIterator( 0 );
 			while( iter.hasNext() )
 			{
-				JToggleButton abstractButton = ( JRadioButton ) iter.next();
+				JToggleButton abstractButton = ( JRadioButton )iter.next();
 				if( abstractButton.getText().equalsIgnoreCase( "dark" ) && dark == true )
 					abstractButton.setSelected( true );
 				else if( abstractButton.getText().equalsIgnoreCase( "Grey" ) && grey == true )
@@ -335,11 +307,11 @@ public class TelescopeDataPanel extends JPanel implements ActionListener
 		{
 			if( components[ i ] instanceof LabeledTextField )
 			{
-				( ( LabeledTextField ) components[ i ] ).setText( "" );
+				( ( LabeledTextField )components[ i ] ).setText( "" );
 			}
 			else if( components[ i ] instanceof LabeledRangeTextField )
 			{
-				LabeledRangeTextField lrtf = ( LabeledRangeTextField ) components[ i ];
+				LabeledRangeTextField lrtf = ( LabeledRangeTextField )components[ i ];
 				if( components[ i ].getName().equalsIgnoreCase( "airmass" ) )
 				{
 					if( !TelescopeDataPanel.airmassValue.getText().equals( tauString ) )
@@ -351,13 +323,13 @@ public class TelescopeDataPanel extends JPanel implements ActionListener
 							currentAirmass = new Double( zCurrentAirmass );
 							double upperLimit = currentAirmass.doubleValue();
 							upperLimit = upperLimit - 20. * upperLimit / 100.;
-							if( upperLimit < 1.0 )
-								upperLimit = 1.0;
+							if( upperLimit < 1. )
+								upperLimit = 1. ;
 
 							double lowerLimit = currentAirmass.doubleValue();
 							lowerLimit = lowerLimit + 20. * lowerLimit / 100.;
-							if( lowerLimit > 3.0 )
-								lowerLimit = 3.0;
+							if( lowerLimit > 3. )
+								lowerLimit = 3. ;
 
 							lrtf.setLowerText( new Double( upperLimit ) );
 							lrtf.setUpperText( new Double( lowerLimit ) );
@@ -400,13 +372,14 @@ public class TelescopeDataPanel extends JPanel implements ActionListener
 				}
 				else
 				{
-					( ( LabeledRangeTextField ) components[ i ] ).setLowerText( "" );
-					( ( LabeledRangeTextField ) components[ i ] ).setUpperText( "" );
+					LabeledRangeTextField temp = ( LabeledRangeTextField )components[ i ] ;
+					temp.setLowerText( "" );
+					temp.setUpperText( "" );
 				}
 			}
 		}
 		int runSearch = JOptionPane.showConfirmDialog( this , "Perform fresh search with defaults ?" , "Perform fresh search with defaults ?" , JOptionPane.YES_NO_OPTION );
 		if( runSearch == 0 )
-			InfoPanel.searchButton.doClick() ;
+			InfoPanel.searchButton.doClick();
 	}
 }

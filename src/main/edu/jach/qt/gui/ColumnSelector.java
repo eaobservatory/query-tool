@@ -1,19 +1,18 @@
 package edu.jach.qt.gui;
 
-import java.awt.event.ActionListener ;
-import java.awt.event.ActionEvent ;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
-import javax.swing.JFrame ;
-import javax.swing.JPanel ;
-import javax.swing.JCheckBox ;
-import javax.swing.JButton ;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JCheckBox;
+import javax.swing.JButton;
 
 import edu.jach.qt.utils.MsbClient;
 
-import edu.jach.qt.utils.MsbColumnInfo ;
-import edu.jach.qt.utils.MsbColumns ;
-
+import edu.jach.qt.utils.MsbColumnInfo;
+import edu.jach.qt.utils.MsbColumns;
 
 /**
  * This class is used to display a series of checkboxes which allow a
@@ -22,74 +21,73 @@ import edu.jach.qt.utils.MsbColumns ;
  * @author  $Author$
  * @version $Id$
  */
-public class ColumnSelector 
-    extends JFrame 
-    implements ActionListener {
+public class ColumnSelector extends JFrame implements ActionListener
+{
+	private JPanel columnPanel;
+	private QtFrame parent;
+	private MSBQueryTableModel _msbqtm;
 
-    private JPanel columnPanel;
-    private QtFrame parent;
-    private MSBQueryTableModel _msbqtm;
+	/**
+	 * Default constructor
+	 */
+	public ColumnSelector(){}
 
-    /**
-     * Default constructor
-     */
-    public ColumnSelector() {
-    }
+	/**
+	 * Normal constructor.  This should be used for all calls.
+	 * @param  frame  The parent <code>JFrame</code>
+	 */
+	public ColumnSelector( QtFrame frame )
+	{
+		parent = frame;
+		_msbqtm = parent.getModel();
+		this.setSize( 150 , 300 );
+		this.getContentPane().setLayout( new BorderLayout() );
+		this.addCheckBoxes();
+		this.addCloseButton();
+		this.setVisible( true );
+	}
 
-    /**
-     * Normal constructor.  This should be used for all calls.
-     * @param  frame  The parent <code>JFrame</code>
-     */
-    public ColumnSelector (QtFrame frame) {
-	parent = frame;
-	_msbqtm = parent.getModel();
-	this.setSize(150,300);
-	this.getContentPane().setLayout(new BorderLayout());
-	this.addCheckBoxes();
-	this.addCloseButton();
-	this.setVisible(true);
-    }
-    
+	/**
+	 * Alternate constructor.  This can be used in place of the standard
+	 * constructor, but the resulting table may be displayed incorrectly.
+	 * @param model    The model used to generate the table.
+	 */
+	public ColumnSelector( MSBQueryTableModel model )
+	{
+		// Disable the parent
+		_msbqtm = model;
+		this.setSize( 150 , 300 );
+		this.getContentPane().setLayout( new BorderLayout() );
+		this.addCheckBoxes();
+		this.addCloseButton();
+		this.setVisible( true );
+	}
 
-    /**
-     * Alternate constructor.  This can be used in place of the standard
-     * constructor, but the resulting table may be displayed incorrectly.
-     * @param model    The model used to generate the table.
-     */
-    public ColumnSelector (MSBQueryTableModel model) {
-	// Disable the parent
-	_msbqtm = model;
-	this.setSize(150,300);
-	this.getContentPane().setLayout(new BorderLayout());
-	this.addCheckBoxes();
-	this.addCloseButton();
-	this.setVisible(true);
-    }
-
-    private void addCheckBoxes()
+	private void addCheckBoxes()
 	{
 		columnPanel = new JPanel( new GridLayout( 0 , 1 ) );
 		final MsbColumns columns = MsbClient.getColumnInfo();
-		JCheckBox checkBox ; 
+		JCheckBox checkBox;
 		for( int i = 0 ; i < columns.size() ; i++ )
 		{
-			final MsbColumnInfo columnInfo = ( MsbColumnInfo )columns.find( i ) ;
+			final MsbColumnInfo columnInfo = ( MsbColumnInfo )columns.find( i );
 			checkBox = new JCheckBox( columnInfo.getName() );
 			if( columnInfo.getVisible() )
-				checkBox.setSelected( true ) ;
+				checkBox.setSelected( true );
 			columnPanel.add( checkBox );
 		}
 		this.getContentPane().add( columnPanel , BorderLayout.CENTER );
 	}
 
-    private void addCloseButton() {
-	JButton closeButton = new JButton ("Accept");
-	closeButton.setLocation(375, 275);
-	closeButton.addActionListener(this);
-	this.getContentPane().add(closeButton, BorderLayout.SOUTH);
-    }
+	private void addCloseButton()
+	{
+		JButton closeButton = new JButton( "Accept" );
+		closeButton.setLocation( 375 , 275 );
+		closeButton.addActionListener( this );
+		this.getContentPane().add( closeButton , BorderLayout.SOUTH );
+	}
 
-    /**
+	/**
 	 * <code>ActionEvent</code> handler.
 	 * This is run when the "Accept" button is selected.  It tells the model
 	 * to update its columns.  The selected columns are passed as a 
@@ -98,27 +96,23 @@ public class ColumnSelector
 	 */
 	public void actionPerformed( final ActionEvent evt )
 	{
-		final MsbColumns columns = MsbClient.getColumnInfo() ; 
+		final MsbColumns columns = MsbClient.getColumnInfo();
 		for( int i = 0 ; i < columnPanel.getComponentCount() ; i++ )
 		{
 			if( columnPanel.getComponent( i ) instanceof JCheckBox )
 			{
 				JCheckBox checkBox = ( JCheckBox )columnPanel.getComponent( i );
-				String name = checkBox.getText() ;
-				MsbColumnInfo columnInfo = columns.findName( name ) ;
+				String name = checkBox.getText();
+				MsbColumnInfo columnInfo = columns.findName( name );
 				if( columnInfo != null )
-				{
-					columnInfo.setVisible( checkBox.isSelected() ) ;
-				}
+					columnInfo.setVisible( checkBox.isSelected() );
 			}
 		}
 
 		_msbqtm.updateColumns();
 		_msbqtm.adjustColumnData();
 		if( parent != null )
-		{
 			parent.setTableToDefault();
-		}
 		this.dispose();
 	}
 }

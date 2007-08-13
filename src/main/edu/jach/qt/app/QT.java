@@ -2,9 +2,6 @@ package edu.jach.qt.app;
 
 /* JSKY imports */
 
-
-
-
 /* ORAC imports */
 /* QT imports */
 /* Standard imports */
@@ -14,10 +11,10 @@ import edu.jach.qt.utils.QtTools;
 
 /* Standard imports */
 
-import java.awt.Dimension ;
-import java.awt.Toolkit ;
-import java.awt.AWTError ;
-import jsky.app.ot.OtCfg ;
+import java.awt.Dimension;
+import java.awt.Toolkit;
+import java.awt.AWTError;
+import jsky.app.ot.OtCfg;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
@@ -35,11 +32,11 @@ import org.apache.log4j.PropertyConfigurator;
  *
  * $Id$
  */
-final public class QT {
+final public class QT
+{
+	static Logger logger = Logger.getLogger( QT.class );
 
-  static Logger logger = Logger.getLogger(QT.class);
-
-   /**
+	/**
 	 * Creates a new <code>QT</code> instance which starts a Querytool, the app itself, and a QtFrame, the user interface. The frame is also set be centered on the screen.
 	 */
 	public QT()
@@ -99,31 +96,35 @@ final public class QT {
 		qtf.setLocation( x , y );
 		qtf.validate();
 		qtf.setVisible( true );
-		
-		logger.info( "QT should now be visible" ) ;
+
+		logger.info( "QT should now be visible" );
 
 		String bigTelescope = System.getProperty( "TELESCOPE" );
 		if( bigTelescope == null || bigTelescope.equals( "" ) )
 			System.setProperty( "TELESCOPE" , System.getProperty( "telescope" ) );
 	}
-   
-   /**
+
+	/**
 	 * Currently we take no args at startup. Just get the LookAndFeel from the UIManager and start the Main QT class.
 	 * 
 	 * @param args
 	 *            a <code>String[]</code> value
 	 */
-   public static void main(String[] args) {
-       try {
-	   new QT();
-       }
-       catch (RuntimeException rte) {
-	   logger.fatal("Caught a run-time exception from main", rte);
-       }
-       catch (Exception e) {
-	   logger.fatal("Caught an unexpected exception in main", e);
-       }
-   }
+	public static void main( String[] args )
+	{
+		try
+		{
+			new QT();
+		}
+		catch( RuntimeException rte )
+		{
+			logger.fatal( "Caught a run-time exception from main" , rte );
+		}
+		catch( Exception e )
+		{
+			logger.fatal( "Caught an unexpected exception in main" , e );
+		}
+	}
 } // Omp
 
 /*

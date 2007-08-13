@@ -1,71 +1,70 @@
 package edu.jach.qt.gui;
 
 /* QT imports */
-import gemini.sp.SpItem ;
-
+import gemini.sp.SpItem;
 
 /* Miscellaneous imports */
 /* Standard imports */
-import edu.jach.qt.app.Querytool ;
-import edu.jach.qt.utils.CalibrationList ;
-import edu.jach.qt.utils.MsbClient ;
-import java.awt.GridBagConstraints ;
-import java.awt.GridBagLayout ;
-import java.awt.AWTEvent ;
-import java.awt.Dimension ;
-import java.awt.BorderLayout ;
-import java.awt.Component ;
-import java.awt.Color ;
-import java.awt.event.ActionListener ;
-import java.awt.event.ActionEvent ;
-import java.awt.event.WindowAdapter ;
-import java.awt.event.WindowEvent ;
-import java.awt.event.MouseAdapter ;
-import java.awt.event.MouseEvent ;
-import java.io.IOException ;
-import java.io.File ;
-import java.util.Hashtable ;
-import java.util.Vector ;
-import javax.swing.JFrame ;
-import javax.swing.JTable ;
-import javax.swing.JMenuItem ;
-import javax.swing.JCheckBoxMenuItem ;
-import javax.swing.JTabbedPane ;
-import javax.swing.JMenu ;
-import javax.swing.JPopupMenu ;
-import javax.swing.JOptionPane ;
-import javax.swing.JScrollPane ;
-import javax.swing.JDialog ;
-import javax.swing.JViewport ;
-import javax.swing.JSplitPane ;
-import javax.swing.ToolTipManager ;
-import javax.swing.ListSelectionModel ;
-import javax.swing.SwingUtilities ;
-import javax.swing.SwingConstants ;
-import javax.swing.ImageIcon ;
-import javax.swing.JMenuBar ;
-import javax.swing.JButton ;
+import edu.jach.qt.app.Querytool;
+import edu.jach.qt.utils.CalibrationList;
+import edu.jach.qt.utils.MsbClient;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.AWTEvent;
+import java.awt.Dimension;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Color;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.IOException;
+import java.io.File;
+import java.util.Hashtable;
+import java.util.Vector;
+import javax.swing.JFrame;
+import javax.swing.JTable;
+import javax.swing.JMenuItem;
+import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JTabbedPane;
+import javax.swing.JMenu;
+import javax.swing.JPopupMenu;
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JDialog;
+import javax.swing.JViewport;
+import javax.swing.JSplitPane;
+import javax.swing.ToolTipManager;
+import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
+import javax.swing.SwingConstants;
+import javax.swing.ImageIcon;
+import javax.swing.JMenuBar;
+import javax.swing.JButton;
 import javax.swing.event.ChangeEvent;
-import javax.swing.event.PopupMenuListener ; 
-import javax.swing.event.MenuListener ; 
-import javax.swing.event.ListSelectionListener ;
-import javax.swing.event.MenuEvent ;
-import javax.swing.event.PopupMenuEvent ;
-import javax.swing.event.ListSelectionEvent ;
+import javax.swing.event.PopupMenuListener;
+import javax.swing.event.MenuListener;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.event.MenuEvent;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.TableColumnModelEvent;
 import javax.swing.event.TableColumnModelListener;
-import javax.swing.table.TableColumnModel ;
-import javax.swing.table.TableColumn ;
+import javax.swing.table.TableColumnModel;
+import javax.swing.table.TableColumn;
 import org.apache.log4j.Logger;
-import sun.misc.Signal ;
-import sun.misc.SignalHandler ;
-import java.util.EventListener ;
-import edu.jach.qt.utils.Splash ;
+import sun.misc.Signal;
+import sun.misc.SignalHandler;
+import java.util.EventListener;
+import edu.jach.qt.utils.Splash;
 
-import edu.jach.qt.utils.MsbColumns ;
+import edu.jach.qt.utils.MsbColumns;
 
-import edu.jach.qt.utils.SpQueuedMap ;
-import edu.jach.qt.utils.OrderedMap ;
+import edu.jach.qt.utils.SpQueuedMap;
+import edu.jach.qt.utils.OrderedMap;
 
 /**
  * The <code>QtFrame</code> is responsible for how the main JFrame
@@ -79,45 +78,39 @@ import edu.jach.qt.utils.OrderedMap ;
  * @author <a href="mailto:mrippa@jach.hawaii.edu">Mathew Rippa</a>
  * $Id$
  */
-public class QtFrame 
-    extends JFrame 
-    implements PopupMenuListener, ActionListener, MenuListener, ListSelectionListener {
+public class QtFrame extends JFrame implements PopupMenuListener , ActionListener , MenuListener , ListSelectionListener
+{
+	private static final String WIDGET_CONFIG_FILE = System.getProperty( "widgetFile" );
+	static Logger logger = Logger.getLogger( QtFrame.class );
+	private MSBQueryTableModel msbQTM;
+	private JTable projectTable;
+	private QtTable table;
+	private int selRow;
+	private JMenuItem saveItem;
+	private JMenuItem saveAsItem;
+	private JMenuItem exitItem;
+	private JCheckBoxMenuItem disableAll;
+	private JCheckBoxMenuItem observability;
+	private JCheckBoxMenuItem remaining;
+	private JCheckBoxMenuItem allocation;
+	private JCheckBoxMenuItem zoneOfAvoidance;
+	private JTabbedPane tabbedPane;
+	private GridBagConstraints gbc;
+	private OmpOM om;
+	private WidgetDataBag widgetBag;
+	private Querytool localQuerytool;
+	private InfoPanel infoPanel;
+	private JPopupMenu popup;
+	private OrderedMap calibrationList = new OrderedMap();
+	private JMenu calibrationMenu = new JMenu( "Calibrations" );
+	private WidgetPanel _widgetPanel;
+	private int[] tableColumnSizes;
+	private boolean queryExpired = false;
+	private JScrollPane resultsPanel;
+	private JScrollPane projectPane;
+	SwingWorker msbWorker;
 
-  private static final String 
-    WIDGET_CONFIG_FILE = System.getProperty("widgetFile");
-
-  static Logger logger = Logger.getLogger(QtFrame.class);
-
-  private MSBQueryTableModel	msbQTM;
-  private JTable                projectTable;
-  private QtTable		table;
-  private int			selRow;
-  private JMenuItem		saveItem;
-  private JMenuItem		saveAsItem;
-  private JMenuItem		exitItem;
-  private JCheckBoxMenuItem     disableAll;
-  private JCheckBoxMenuItem	observability;
-  private JCheckBoxMenuItem	remaining;
-  private JCheckBoxMenuItem	allocation;
-  private JCheckBoxMenuItem	zoneOfAvoidance ;
-  private JTabbedPane		tabbedPane;
-  private GridBagConstraints gbc ;
-  private OmpOM			om;
-  private WidgetDataBag		widgetBag;
-  private Querytool		localQuerytool;
-  private InfoPanel		infoPanel;
-  private JPopupMenu		popup;
-  private OrderedMap calibrationList = new OrderedMap() ;
-  private JMenu                 calibrationMenu = new JMenu("Calibrations");
-  private WidgetPanel           _widgetPanel;
-  private int []                tableColumnSizes;
-  private boolean               queryExpired = false;
-  private JScrollPane resultsPanel ;
-  private JScrollPane projectPane ;
-
-  SwingWorker msbWorker;
-
-  /**
+	/**
 	 * Creates a new <code>QtFrame</code> instance.
 	 * 
 	 * @param wdb
@@ -162,75 +155,66 @@ public class QtFrame
 
 			compInit();
 			tabbedPane.setSelectedIndex( 0 );
-			logger.info( "Tree validated" ) ;
+			logger.info( "Tree validated" );
 		}
 		catch( Exception e )
 		{
 			e.printStackTrace();
 		}
-		logger.info( "Exiting QtFrame constructor" ) ;
+		logger.info( "Exiting QtFrame constructor" );
 	}
 
-  /**
+	/**
 	 * On exit, prompt the user if they want to save any deferred observation, then shutdown.
 	 */
-  public void exitQT() {
-      logger.info("QT shutdown by user");
-      boolean canExit = true;
-      // See if there are any outstanding observations and ask the user what to do with them...
-      if (om != null) {
-	  canExit = om.checkProgramTree();
-      }
-      if (!canExit) {
-	  JOptionPane.showMessageDialog ( this,
-					  "Can not exit the QT until the current MSB is accepted/rejected",
-					  "Can not exit QT",
-					  JOptionPane.WARNING_MESSAGE);
-	  return;
-      }
-      
-      if (DeferredProgramList.deferredFilesExist()) {
-	  Object [] options = {"Save", "Delete"};
-	  int selection = JOptionPane.showOptionDialog( this,
-							"Deferred observations currently exist. Save?",
-							"Deferred observations exist",
-							JOptionPane.DEFAULT_OPTION,
-							JOptionPane.QUESTION_MESSAGE,
-							null,
-							options,
-							options[0]
-							);
-	  if (selection == 1) {
-	      // This should be the delete option I think
-	      DeferredProgramList.deleteAllFiles();
-	  }
-      }
-      File cacheDir = new File ("/tmp/last_user");
-      if (cacheDir.exists() && cacheDir.isDirectory() ) {
-	  File [] files = cacheDir.listFiles();
-	  for (int i=0; i<files.length; i++) {
-	      if (files[i].isFile()) {
-		  files[i].delete();
-	      }
-	  }
-      }
-      setVisible(false);
-      dispose();
-      System.exit(0);
-  }
+	public void exitQT()
+	{
+		logger.info( "QT shutdown by user" );
+		boolean canExit = true;
+		// See if there are any outstanding observations and ask the user what to do with them...
+		if( om != null )
+			canExit = om.checkProgramTree();
 
-  /**
+		if( !canExit )
+		{
+			JOptionPane.showMessageDialog( this , "Can not exit the QT until the current MSB is accepted/rejected" , "Can not exit QT" , JOptionPane.WARNING_MESSAGE );
+			return;
+		}
+
+		if( DeferredProgramList.deferredFilesExist() )
+		{
+			Object[] options = { "Save" , "Delete" };
+			int selection = JOptionPane.showOptionDialog( this , "Deferred observations currently exist. Save?" , "Deferred observations exist" , JOptionPane.DEFAULT_OPTION , JOptionPane.QUESTION_MESSAGE , null , options , options[ 0 ] );
+			// This should be the delete option I think
+			if( selection == 1 )
+				DeferredProgramList.deleteAllFiles();
+		}
+		File cacheDir = new File( "/tmp/last_user" );
+		if( cacheDir.exists() && cacheDir.isDirectory() )
+		{
+			File[] files = cacheDir.listFiles();
+			for( int i = 0 ; i < files.length ; i++ )
+			{
+				if( files[ i ].isFile() )
+					files[ i ].delete();
+			}
+		}
+		setVisible( false );
+		dispose();
+		System.exit( 0 );
+	}
+
+	/**
 	 * Component initialization. Initialises all of the components on the frame.
 	 * 
 	 * @exception Exception
 	 *                on error.
 	 */
 	private void compInit() throws Exception
-	{	
+	{
 		gbc = new GridBagConstraints();
 
-		// Check whether deferred Observations currently exist and ask the user if he wants to
-		// use these. If they don't then delete the current files
+		// Check whether deferred Observations currently exist and ask the user if he wants to use these. If they don't then delete the current files
 		if( DeferredProgramList.obsExist() )
 		{
 			final JOptionPane pane = new JOptionPane( "Use current deferred Observations?" , JOptionPane.QUESTION_MESSAGE , JOptionPane.YES_NO_OPTION );
@@ -246,21 +230,14 @@ public class QtFrame
 			dialog.show();
 			int selection;
 			Object selectedValue = pane.getValue();
+			// User didn't make a choice so take the safe option and assume they didn't want to delete
 			if( selectedValue == null )
-			{
-				// User didn't make a choice so take the safe option and assume
-				// they didn't want to delete
 				selection = JOptionPane.YES_OPTION;
-			}
 			else
-			{
-				selection = ( ( Integer ) selectedValue ).intValue();
-			}
+				selection = ( ( Integer )selectedValue ).intValue();
 
 			if( selection == JOptionPane.NO_OPTION )
-			{
 				DeferredProgramList.deleteAllFiles();
-			}
 		}
 
 		// Input Panel Setup
@@ -268,7 +245,7 @@ public class QtFrame
 		_widgetPanel = inputPanel;
 		buildStagingPanel();
 		// Table setup
-		Splash splash = new Splash( this , "Waiting for database ..." ) ;
+		Splash splash = new Splash( this , "Waiting for database ..." );
 		try
 		{
 			msbQTM = new MSBQueryTableModel();
@@ -276,7 +253,7 @@ public class QtFrame
 		catch( Exception e )
 		{
 			logger.error( "Unable to create table model" , e );
-			e.printStackTrace() ;
+			e.printStackTrace();
 			exitQT();
 		}
 		infoPanel = new InfoPanel( msbQTM , localQuerytool , this );
@@ -284,10 +261,10 @@ public class QtFrame
 		ProjectTableModel ptm = new ProjectTableModel();
 		projectTableSetup( ptm );
 		tableSetup();
-		splash.done() ;
-		
-		logger.info( "Table setup" ) ;
-		
+		splash.done();
+
+		logger.info( "Table setup" );
+
 		resultsPanel = new JScrollPane( table );
 		resultsPanel.getViewport().setScrollMode( JViewport.BLIT_SCROLL_MODE );
 		projectPane = new JScrollPane( projectTable );
@@ -306,8 +283,8 @@ public class QtFrame
 
 		// Build Menu
 		buildMenu();
-		
-		logger.info( "Menu built" ) ;
+
+		logger.info( "Menu built" );
 
 		getContentPane().setLayout( new BorderLayout() );
 		getContentPane().add( topPanel , BorderLayout.NORTH );
@@ -322,25 +299,25 @@ public class QtFrame
 		{
 			logger.fatal( "Widget Panel Parse Failed" , e );
 		}
-		
-		logger.info( "Widget config parsed" ) ;
+
+		logger.info( "Widget config parsed" );
 	}
 
-    private void projectTableSetup(ProjectTableModel ptm) {
-	Vector columnNames = new Vector();
-	columnNames.add("projectid");
-	columnNames.add("priority");
-	projectTable = new JTable (ptm);
-	projectTable.setPreferredScrollableViewportSize( new Dimension (150, -1));
-	ToolTipManager.sharedInstance().unregisterComponent(projectTable);
-	ToolTipManager.sharedInstance().unregisterComponent(projectTable.getTableHeader());
-	projectTable.setAutoResizeMode(JTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
-	
-	projectTable.setSelectionModel(new ProjectTableSelectionModel(this));
+	private void projectTableSetup( ProjectTableModel ptm )
+	{
+		Vector columnNames = new Vector();
+		columnNames.add( "projectid" );
+		columnNames.add( "priority" );
+		projectTable = new JTable( ptm );
+		projectTable.setPreferredScrollableViewportSize( new Dimension( 150 , -1 ) );
+		ToolTipManager.sharedInstance().unregisterComponent( projectTable );
+		ToolTipManager.sharedInstance().unregisterComponent( projectTable.getTableHeader() );
+		projectTable.setAutoResizeMode( JTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS );
 
-	projectTable.setVisible(true);
-    }
+		projectTable.setSelectionModel( new ProjectTableSelectionModel( this ) );
 
+		projectTable.setVisible( true );
+	}
 
 	private void tableSetup()
 	{
@@ -351,7 +328,7 @@ public class QtFrame
 		sorter.addMouseListenerToHeaderInTable( table );
 		table.setAutoResizeMode( JTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS );
 		table.setMinimumSize( new Dimension( 770 , 275 ) );
-		
+
 		ListSelectionModel listMod = table.getSelectionModel();
 		listMod.setSelectionMode( ListSelectionModel.SINGLE_SELECTION );
 		listMod.addListSelectionListener( this );
@@ -369,9 +346,7 @@ public class QtFrame
 				msbWorker = new SwingWorker()
 				{
 					Boolean isStatusOK;
-
 					Integer msbID;
-
 					MsbColumns columns = MsbClient.getColumnInfo();
 
 					public Object construct()
@@ -386,22 +361,22 @@ public class QtFrame
 						try
 						{
 							int checksumIndex = columns.getIndexForName( "checksum" );
-							String checksum = ( String ) sorter.getValueAt( selRow , checksumIndex );
+							String checksum = ( String )sorter.getValueAt( selRow , checksumIndex );
 							if( remaining.isSelected() )
 							{
-								String time = SpQueuedMap.getSpQueuedMap().containsMsbChecksum( checksum ) ;
+								String time = SpQueuedMap.getSpQueuedMap().containsMsbChecksum( checksum );
 								if( time != null )
 								{
 									int rtn = JOptionPane.showOptionDialog( null , "This observation was sent to the queue " + time + ".\n Continue ?" , "Duplicate execution warning" , JOptionPane.YES_NO_OPTION , JOptionPane.WARNING_MESSAGE , null , null , null );
 									if( rtn == JOptionPane.NO_OPTION )
 									{
-										isStatusOK = new Boolean( false ) ;
-										return isStatusOK ;
+										isStatusOK = new Boolean( false );
+										return isStatusOK;
 									}
 								}
 							}
 							int msbIndex = columns.getIndexForName( "msbid" );
-							msbID = new Integer( ( String ) sorter.getValueAt( selRow , msbIndex ) );
+							msbID = new Integer( ( String )sorter.getValueAt( selRow , msbIndex ) );
 							om.setSpItem( localQuerytool.fetchMSB( msbID ) );
 							isStatusOK = new Boolean( true );
 						}
@@ -427,7 +402,7 @@ public class QtFrame
 						om.enableList( true );
 
 						int msbIndex = columns.getIndexForName( "msbid" );
-						msbID = new Integer( ( String ) sorter.getValueAt( selRow , msbIndex ) );
+						msbID = new Integer( ( String )sorter.getValueAt( selRow , msbIndex ) );
 
 						if( isStatusOK.booleanValue() )
 						{
@@ -435,9 +410,9 @@ public class QtFrame
 							buildStagingPanel();
 
 							int checksumIndex = columns.getIndexForName( "checksum" );
-							String checksum = ( String ) sorter.getValueAt( selRow , checksumIndex );
+							String checksum = ( String )sorter.getValueAt( selRow , checksumIndex );
 							int projectIndex = columns.getIndexForName( "projectid" );
-							String projectid = ( String ) sorter.getValueAt( selRow , projectIndex );
+							String projectid = ( String )sorter.getValueAt( selRow , projectIndex );
 
 							logger.info( "MSB " + msbID + " INFO is: " + projectid + ", " + checksum );
 							om.setProjectID( projectid );
@@ -460,92 +435,92 @@ public class QtFrame
 
 				else if( SwingUtilities.isRightMouseButton( e ) && e.getClickCount() == 1 )
 				{
-
 					logger.debug( "Right Mouse Hit" );
 					if( selRow != -1 )
-						popup.show( ( Component ) e.getSource() , e.getX() , e.getY() );
+						popup.show( ( Component )e.getSource() , e.getX() , e.getY() );
 				}
 			}
 
-			public void mousePressed( MouseEvent e )
-			{
-			}
+			public void mousePressed( MouseEvent e ){}
 
-			public void mouseReleased( MouseEvent e )
-			{
-			}
+			public void mouseReleased( MouseEvent e ){}
 
 		} );
-		
-		TableColumnModel tcm = table.getColumnModel() ;
+
+		TableColumnModel tcm = table.getColumnModel();
 		TableColumnModelListener mover = new TableColumnModelListener()
 		{
 			public void columnAdded( TableColumnModelEvent e ){}
+
 			public void columnMarginChanged( ChangeEvent e ){}
+
 			public void columnMoved( TableColumnModelEvent e )
 			{
-				MsbColumns columns = MsbClient.getColumnInfo() ;
-				int from = e.getFromIndex() ;
-				int to = e.getToIndex() ;
-				columns.move( from , to ) ;
+				MsbColumns columns = MsbClient.getColumnInfo();
+				int from = e.getFromIndex();
+				int to = e.getToIndex();
+				columns.move( from , to );
 			}
+
 			public void columnRemoved( TableColumnModelEvent e ){}
+
 			public void columnSelectionChanged( ListSelectionEvent e ){}
-		} ;
-		tcm.addColumnModelListener( mover ) ;
-		
+		};
+		tcm.addColumnModelListener( mover );
+
 		table.setVisible( true );
 	}
 
-    public void initProjectTable() {
-	projectTable.getSelectionModel().setSelectionInterval(0,0);
-    }
+	public void initProjectTable()
+	{
+		projectTable.getSelectionModel().setSelectionInterval( 0 , 0 );
+	}
 
-    public void resetScrollBars()
-    {
-    	if( resultsPanel != null )
-    		resultsPanel.getVerticalScrollBar().setValue( 0 ) ;
-    	if( projectPane != null )
-    		projectPane.getVerticalScrollBar().setValue( 0 ) ;
-    }
-    
-    public void updateColumnHeaders()
-    {
-		TableColumnModel tcm = table.getColumnModel() ;
-		MsbColumns columns = MsbClient.getColumnInfo() ;
-		for( int i=0 ; i < msbQTM.getColumnCount() ; i++ )
-			columns.move( ( String )tcm.getColumn( i ).getHeaderValue() , i ) ;   	
-    }
-    
-    /**
-     * Method used to set the current column sizes.  This should be called
-     * before each query.
-     */
-    public void updateColumnSizes()
+	public void resetScrollBars()
+	{
+		if( resultsPanel != null )
+			resultsPanel.getVerticalScrollBar().setValue( 0 );
+		if( projectPane != null )
+			projectPane.getVerticalScrollBar().setValue( 0 );
+	}
+
+	public void updateColumnHeaders()
+	{
+		TableColumnModel tcm = table.getColumnModel();
+		MsbColumns columns = MsbClient.getColumnInfo();
+		for( int i = 0 ; i < msbQTM.getColumnCount() ; i++ )
+			columns.move( ( String )tcm.getColumn( i ).getHeaderValue() , i );
+	}
+
+	/**
+	 * Method used to set the current column sizes.  This should be called
+	 * before each query.
+	 */
+	public void updateColumnSizes()
 	{
 		TableColumnModel tcm = table.getColumnModel();
 		tableColumnSizes = new int[ table.getColumnCount() ];
 		for( int i = 0 ; i < msbQTM.getColumnCount() ; i++ )
 		{
-			int width = tcm.getColumn( i ).getWidth() ; 
-			tableColumnSizes[ i ] = width ;
+			int width = tcm.getColumn( i ).getWidth();
+			tableColumnSizes[ i ] = width;
 		}
 	}
 
-    /**
+	/**
 	 * Method to set the column sizes following a query.
 	 */
 	public void setColumnSizes()
 	{
 		TableColumnModel tcm = table.getColumnModel();
 		if( tcm == null )
-			return ;
-		int columnCount = tcm.getColumnCount() ;
+			return;
+		int columnCount = tcm.getColumnCount();
 		for( int i = 0 ; i < tableColumnSizes.length ; i++ )
 		{
 			if( i >= columnCount )
-				break ;
-			TableColumn column = tcm.getColumn( i ) ;
+				break;
+			TableColumn column = tcm.getColumn( i );
 			if( column != null )
 				column.setPreferredWidth( tableColumnSizes[ i ] );
 		}
@@ -553,179 +528,172 @@ public class QtFrame
 		table.updateUI();
 	}
 
-    /**
-     * Method to redistribute the column widths to the default values.
-     */
-    public void setTableToDefault() {
-	TableColumnModel tcm = table.getColumnModel();
-	for (int i=0; i<msbQTM.getColumnCount(); i++) {
-	    tcm.getColumn(i).setPreferredWidth(-1);
+	/**
+	 * Method to redistribute the column widths to the default values.
+	 */
+	public void setTableToDefault()
+	{
+		TableColumnModel tcm = table.getColumnModel();
+		for( int i = 0 ; i < msbQTM.getColumnCount() ; i++ )
+			tcm.getColumn( i ).setPreferredWidth( -1 );
+
+		table.setColumnModel( tcm );
 	}
-	table.setColumnModel(tcm);
-    }
 
-    /**
-     * Method to get the current table model.
-     * @return   The current table model.
-     */
-    public MSBQueryTableModel getModel() {
-	return msbQTM;
-    }
-
-    public ProjectTableModel getProjectModel() {
-	return (ProjectTableModel)projectTable.getModel();
-    }
-
-
-  /**
-   * Sends the selected MSB to the Staging Area.
-   * The MSB must have frist been retriebed and selected from the results table 
-   * on the QT interface.
-   */
-  public void sendToStagingArea () {
-      if (queryExpired == true) {
-	  String [] options = {"Resubmit", "New Query"};
-	  int rtn = JOptionPane.showOptionDialog (this,
-						  "Query has Expired;\nNew Query Required",
-						  null,
-						  JOptionPane.YES_NO_OPTION,
-						  JOptionPane.WARNING_MESSAGE,
-						  null,
-						  options,
-						  options[0]
-						  );
-	  if (rtn == JOptionPane.YES_OPTION) {
-	      // Resubmit the existing query
-	      InfoPanel.searchButton.doClick();
-	      return;
-	  }
-	  else {
-	      // Reset the panel to the search panel
-	      tabbedPane.setSelectedIndex(0);
-	      // Clear the summary model
-	      msbQTM.clear();
-	      // Clear the project model
-	      ((ProjectTableModel)projectTable.getModel()).clear();
-	      initProjectTable();
-	      return;
-	  }
-      }				
-					
-
-    if (table.getSelectedRow() != -1) {
-
-      msbWorker.start();
-      om.updateDeferredList();
-    }
-
-    else {
-      JOptionPane.showMessageDialog(this, "Must select a project summary first!");
-
-    }
-    
-  }
-
-    /**
-     * Method to get the currently selected tab.
-     * @return  The integer value of the selected tab.
-     */
-    public int getSelectedTab() {
-	return tabbedPane.getSelectedIndex();
-    }
-
-    /**
-     * Method to set the selected tab.
-     * @param tab   The tab to select.
-     */
-    public void setSelectedTab(int tab) {
-	if ( (tabbedPane.getTabCount() - 1) >= tab) {
-	    tabbedPane.setSelectedIndex(tab);
+	/**
+	 * Method to get the current table model.
+	 * @return   The current table model.
+	 */
+	public MSBQueryTableModel getModel()
+	{
+		return msbQTM;
 	}
-    }
-   
 
-    /**
-     * Build the Staging Area GUI.
-     */
-  public void buildStagingPanel() {
-
-    if (tabbedPane == null) {
-      tabbedPane = new JTabbedPane(SwingConstants.TOP);
-      tabbedPane.addTab("Query", _widgetPanel);
-      tabbedPane.addTab(om.getProgramName(), om.getTreePanel());
-      validate();
-      tabbedPane.setVisible(true);
-    }
-    
-    else {
-      tabbedPane.remove(1);
-      tabbedPane.addTab(om.getProgramName(), om.getTreePanel());
-    }
-
-    tabbedPane.setSelectedIndex(1);
-  }
-
-
-    /**
-     *  Method to set the observational parameter to default.
-     */
-    public void setMenuDefault() {
-	if ( disableAll.isSelected() ) {
-	    disableAll.doClick();
+	public ProjectTableModel getProjectModel()
+	{
+		return ( ProjectTableModel )projectTable.getModel();
 	}
-	if ( !(observability.isSelected()) ) {
-	    observability.doClick();
-	}
-	if ( !(remaining.isSelected()) ) {
-	    remaining.doClick();
-	}
-	if ( !(allocation.isSelected()) ) {
-	    allocation.doClick();
-	}
-	if ( !(zoneOfAvoidance.isSelected()) ) {
-		zoneOfAvoidance.doClick();
-	}
-    }
 
-    public void setQueryExpired (boolean flag) {
-	queryExpired = flag;
-    }
+	/**
+	 * Sends the selected MSB to the Staging Area.
+	 * The MSB must have frist been retriebed and selected from the results table 
+	 * on the QT interface.
+	 */
+	public void sendToStagingArea()
+	{
+		if( queryExpired )
+		{
+			String[] options = { "Resubmit" , "New Query" };
+			int rtn = JOptionPane.showOptionDialog( this , "Query has Expired;\nNew Query Required" , null , JOptionPane.YES_NO_OPTION , JOptionPane.WARNING_MESSAGE , null , options , options[ 0 ] );
+			if( rtn == JOptionPane.YES_OPTION )
+			{
+				// Resubmit the existing query
+				InfoPanel.searchButton.doClick();
+				return;
+			}
+			else
+			{
+				// Reset the panel to the search panel
+				tabbedPane.setSelectedIndex( 0 );
+				// Clear the summary model
+				msbQTM.clear();
+				// Clear the project model
+				( ( ProjectTableModel )projectTable.getModel() ).clear();
+				initProjectTable();
+				return;
+			}
+		}
 
+		if( table.getSelectedRow() != -1 )
+		{
 
-  /**
-   * The <code>valueChanged</code> method is mandated by the 
-   * ListSelectionListener. Called whenever the value of 
-   * the selection changes.
-   *
-   * @param e a <code>ListSelectionEvent</code> value
-   */
-  public void valueChanged(ListSelectionEvent e) {
-    if (!e.getValueIsAdjusting()) {        
-      selRow = table.getSelectedRow();
-    }
-  }
+			msbWorker.start();
+			om.updateDeferredList();
+		}
+		else
+		{
+			JOptionPane.showMessageDialog( this , "Must select a project summary first!" );
+		}
 
-  /**
-   * This <code>add</code> method is a utility method to add
-   * the current Component to the grid bag.
-   *
-   * @param c a <code>Component</code> value
-   * @param gbc a <code>GridBagConstraints</code> value
-   * @param x an <code>int</code> value
-   * @param y an <code>int</code> value
-   * @param w an <code>int</code> value
-   * @param h an <code>int</code> value
-   */
-  public void add(Component c, GridBagConstraints gbc, 
-		  int x, int y, int w, int h) {
-    gbc.gridx = x;
-    gbc.gridy = y;
-    gbc.gridwidth = w;
-    gbc.gridheight = h;
-    getContentPane().add(c, gbc);      
-  }
-   
-  /**
+	}
+
+	/**
+	 * Method to get the currently selected tab.
+	 * @return  The integer value of the selected tab.
+	 */
+	public int getSelectedTab()
+	{
+		return tabbedPane.getSelectedIndex();
+	}
+
+	/**
+	 * Method to set the selected tab.
+	 * @param tab   The tab to select.
+	 */
+	public void setSelectedTab( int tab )
+	{
+		if( ( tabbedPane.getTabCount() - 1 ) >= tab )
+			tabbedPane.setSelectedIndex( tab );
+	}
+
+	/**
+	 * Build the Staging Area GUI.
+	 */
+	public void buildStagingPanel()
+	{
+		if( tabbedPane == null )
+		{
+			tabbedPane = new JTabbedPane( SwingConstants.TOP );
+			tabbedPane.addTab( "Query" , _widgetPanel );
+			tabbedPane.addTab( om.getProgramName() , om.getTreePanel() );
+			validate();
+			tabbedPane.setVisible( true );
+		}
+		else
+		{
+			tabbedPane.remove( 1 );
+			tabbedPane.addTab( om.getProgramName() , om.getTreePanel() );
+		}
+
+		tabbedPane.setSelectedIndex( 1 );
+	}
+
+	/**
+	 *  Method to set the observational parameter to default.
+	 */
+	public void setMenuDefault()
+	{
+		if( disableAll.isSelected() )
+			disableAll.doClick();
+		if( !( observability.isSelected() ) )
+			observability.doClick();
+		if( !( remaining.isSelected() ) )
+			remaining.doClick();
+		if( !( allocation.isSelected() ) )
+			allocation.doClick();
+		if( !( zoneOfAvoidance.isSelected() ) )
+			zoneOfAvoidance.doClick();
+	}
+
+	public void setQueryExpired( boolean flag )
+	{
+		queryExpired = flag;
+	}
+
+	/**
+	 * The <code>valueChanged</code> method is mandated by the 
+	 * ListSelectionListener. Called whenever the value of 
+	 * the selection changes.
+	 *
+	 * @param e a <code>ListSelectionEvent</code> value
+	 */
+	public void valueChanged( ListSelectionEvent e )
+	{
+		if( !e.getValueIsAdjusting() )
+			selRow = table.getSelectedRow();
+	}
+
+	/**
+	 * This <code>add</code> method is a utility method to add
+	 * the current Component to the grid bag.
+	 *
+	 * @param c a <code>Component</code> value
+	 * @param gbc a <code>GridBagConstraints</code> value
+	 * @param x an <code>int</code> value
+	 * @param y an <code>int</code> value
+	 * @param w an <code>int</code> value
+	 * @param h an <code>int</code> value
+	 */
+	public void add( Component c , GridBagConstraints gbc , int x , int y , int w , int h )
+	{
+		gbc.gridx = x;
+		gbc.gridy = y;
+		gbc.gridwidth = w;
+		gbc.gridheight = h;
+		getContentPane().add( c , gbc );
+	}
+
+	/**
 	 * The <code>buildMenu</code> method builds the menu system.
 	 * 
 	 */
@@ -747,8 +715,7 @@ public class QtFrame
 		saveAsItem.setEnabled( false );
 		exitItem = new JMenuItem( "Exit" );
 
-		mbar.add( makeMenu( fileMenu , new Object[]
-		{ newItem , openItem , null , saveItem , saveAsItem , null , exitItem } , this ) );
+		mbar.add( makeMenu( fileMenu , new Object[] { newItem , openItem , null , saveItem , saveAsItem , null , exitItem } , this ) );
 
 		JMenu viewMenu = new JMenu( "View" );
 		mbar.add( viewMenu );
@@ -770,14 +737,14 @@ public class QtFrame
 		observability = new JCheckBoxMenuItem( "Observability" , true );
 		remaining = new JCheckBoxMenuItem( "Remaining" , true );
 		allocation = new JCheckBoxMenuItem( "Allocation" , true );
-		
-		String ZOA = System.getProperty( "ZOA" , "true" ) ;
-		boolean tickZOA = true ;
+
+		String ZOA = System.getProperty( "ZOA" , "true" );
+		boolean tickZOA = true;
 		if( "false".equalsIgnoreCase( ZOA ) )
-			tickZOA = false ;
-		zoneOfAvoidance = new JCheckBoxMenuItem( "Zone of Avoidance" , tickZOA ) ;
+			tickZOA = false;
+		zoneOfAvoidance = new JCheckBoxMenuItem( "Zone of Avoidance" , tickZOA );
 		localQuerytool.setZoneOfAvoidanceConstraint( !tickZOA );
-		
+
 		disableAll = new JCheckBoxMenuItem( "Disable All" , false );
 		JMenuItem cutItem = new JMenuItem( "Cut" , new ImageIcon( "icons/cut.gif" ) );
 		cutItem.setEnabled( false );
@@ -786,15 +753,12 @@ public class QtFrame
 		JMenuItem pasteItem = new JMenuItem( "Paste" , new ImageIcon( "icons/paste.gif" ) );
 		pasteItem.setEnabled( false );
 
-		mbar.add( makeMenu( "Edit" , new Object[]
-		{ cutItem , copyItem , pasteItem , null , makeMenu( "Constraints" , new Object[]
-		{ observability , remaining , allocation , zoneOfAvoidance , null , disableAll } , this ) } , this ) );
+		mbar.add( makeMenu( "Edit" , new Object[] { cutItem , copyItem , pasteItem , null , makeMenu( "Constraints" , new Object[] { observability , remaining , allocation , zoneOfAvoidance , null , disableAll } , this ) } , this ) );
 
 		JMenu helpMenu = new JMenu( "Help" );
 		helpMenu.setMnemonic( 'H' );
 
-		mbar.add( makeMenu( helpMenu , new Object[]
-		{ new JMenuItem( "Index" , 'I' ) , new JMenuItem( "About" , 'A' ) } , this ) );
+		mbar.add( makeMenu( helpMenu , new Object[] { new JMenuItem( "Index" , 'I' ) , new JMenuItem( "About" , 'A' ) } , this ) );
 
 		calibrationMenu.setEnabled( false );
 		mbar.add( calibrationMenu );
@@ -802,52 +766,52 @@ public class QtFrame
 		calibrationThread.start();
 	}
 
-  /**
+	/**
 	 * <code>menuSelected</code> method is an action triggered when a menu is selected.
 	 * 
 	 * @param evt
 	 *            a <code>MenuEvent</code> value
 	 */
-  public void menuSelected(MenuEvent evt) {  
-      JMenu source = (JMenu)evt.getSource();
-      if (source.getText().equals("Calibrations")) {
-	  Component [] cals = calibrationMenu.getMenuComponents();
-      	  if ( tabbedPane != null ) {
-	      for (int iloop=0;iloop<cals.length; iloop++) {
-		  cals[iloop].setEnabled(true);
-	      }
-	  }
-	  else {
-	      for (int iloop=0;iloop<cals.length; iloop++) {
-		  cals[iloop].setEnabled(false);
-	      }
-	  }
-      }
-      else if (source.getText().equals("View...")) {
-	  ColumnSelector colSelector = new ColumnSelector(msbQTM);
-	  ((JMenuItem)source).setSelected(false);
-	  return;
-      }
-  }
+	public void menuSelected( MenuEvent evt )
+	{
+		JMenu source = ( JMenu )evt.getSource();
+		if( source.getText().equals( "Calibrations" ) )
+		{
+			Component[] cals = calibrationMenu.getMenuComponents();
+			if( tabbedPane != null )
+			{
+				for( int iloop = 0 ; iloop < cals.length ; iloop++ )
+					cals[ iloop ].setEnabled( true );
+			}
+			else
+			{
+				for( int iloop = 0 ; iloop < cals.length ; iloop++ )
+					cals[ iloop ].setEnabled( false );
+			}
+		}
+		else if( source.getText().equals( "View..." ) )
+		{
+			(( JMenuItem )source).setSelected( false );
+		}
+	}
 
+	/**
+	 * <code>menuDeselected</code> method is an action trggered when a 
+	 * menu is deselected.
+	 *
+	 * @param evt a <code>MenuEvent</code> value
+	 */
+	public void menuDeselected( MenuEvent evt ){}
 
-  /**
-   * <code>menuDeselected</code> method is an action trggered when a 
-   * menu is deselected.
-   *
-   * @param evt a <code>MenuEvent</code> value
-   */
-  public void menuDeselected( MenuEvent evt ){}
+	/**
+	 * The <code>menuCanceled</code> method is an action triggered when a 
+	 * menu is canceled.
+	 *
+	 * @param evt a <code>MenuEvent</code> value
+	 */
+	public void menuCanceled( MenuEvent evt ){}
 
-  /**
-   * The <code>menuCanceled</code> method is an action triggered when a 
-   * menu is canceled.
-   *
-   * @param evt a <code>MenuEvent</code> value
-   */
-  public void menuCanceled( MenuEvent evt ){}
-
-  /**
+	/**
 	 * Implementation of the ActionListener interface. Called on changing a Check Box, Selecting a Menu Item,or pressing a button.
 	 * 
 	 * @param evt
@@ -855,12 +819,11 @@ public class QtFrame
 	 */
 	public void actionPerformed( ActionEvent evt )
 	{
-
 		Object source = evt.getSource();
 
 		if( source instanceof JCheckBoxMenuItem )
 		{
-			if( ( JCheckBoxMenuItem ) source == disableAll )
+			if( ( JCheckBoxMenuItem )source == disableAll )
 			{
 				if( disableAll.isSelected() )
 				{
@@ -913,12 +876,12 @@ public class QtFrame
 
 		else if( source instanceof JMenuItem )
 		{
-			JMenuItem thisItem = ( JMenuItem ) source;
+			JMenuItem thisItem = ( JMenuItem )source;
 			// Check to see if this came from the calibration list
 			if( calibrationList.find( thisItem.getText() ) != null )
 			{
 				// Get the "MSB" that this represents
-				SpItem item = ( SpItem )calibrationList.find( thisItem.getText() ) ;
+				SpItem item = ( SpItem )calibrationList.find( thisItem.getText() );
 				// Add it to the deferred queue
 				DeferredProgramList.addCalibration( item );
 				// Set the tabbed pane to show the Staging Area
@@ -955,7 +918,7 @@ public class QtFrame
 		}
 		else if( source instanceof JButton )
 		{
-			JButton thisButton = ( JButton ) source;
+			JButton thisButton = ( JButton )source;
 
 			if( thisButton.getText().equals( "Exit" ) )
 			{
@@ -969,140 +932,149 @@ public class QtFrame
 		}
 	}
 
-  /**
-   * The <code>makeMenu</code> method is a blackbox to make a 
-   * generic menu.
-   *
-   * @param parent an <code>Object</code> value
-   * @param items an <code>Object[]</code> value
-   * @param target an <code>Object</code> value
-   * @return a <code>JMenu</code> value
-   */
-  public static JMenu makeMenu(Object parent, Object[] items, Object target) {
-    JMenu m = null;
-    if (parent instanceof JMenu)
-      m = (JMenu)parent;
-    else if (parent instanceof String)
-      m = new JMenu((String)parent);
-    else
-      return null;
-      
-    for (int i = 0; i < items.length; i++) {
-      if (items[i] == null)
-	m.addSeparator();
-      else
-	m.add(makeMenuItem(items[i], target));
-    }
+	/**
+	 * The <code>makeMenu</code> method is a blackbox to make a 
+	 * generic menu.
+	 *
+	 * @param parent an <code>Object</code> value
+	 * @param items an <code>Object[]</code> value
+	 * @param target an <code>Object</code> value
+	 * @return a <code>JMenu</code> value
+	 */
+	public static JMenu makeMenu( Object parent , Object[] items , Object target )
+	{
+		JMenu m = null;
+		if( parent instanceof JMenu )
+			m = ( JMenu )parent;
+		else if( parent instanceof String )
+			m = new JMenu( ( String )parent );
+		else
+			return null;
 
-    return m;
-  }
-
-  /**
-   * The <code>makeMenuItem</code> method is a blackbox for a 
-   * generic menu item.
-   *
-   * @param item an <code>Object</code> value
-   * @param target an <code>Object</code> value
-   * @return a <code>JMenuItem</code> value
-   */
-  public static JMenuItem makeMenuItem(Object item, Object target) {
-    JMenuItem r = null;
-    if (item instanceof String)
-      r = new JMenuItem((String)item);
-    else if (item instanceof JMenuItem)
-      r = (JMenuItem)item;
-    else return null;
-      
-    if (target instanceof ActionListener)
-      r.addActionListener((ActionListener)target);
-    return r;
-  }
-    /**
-     * Return the (code>WidgetPanel</code> from this frame.
-     */
-    public WidgetPanel getWidgets() {
-	return _widgetPanel;
-    }
-
-  // implementation of javax.swing.event.PopupMenuListener interface
-
-  /**
-   * Implementation of the PopupMenuListener interface.
-   *
-   * @param param1 <description>
-   */
-  public void popupMenuWillBecomeVisible(PopupMenuEvent param1) {
-    // TODO: implement this javax.swing.event.PopupMenuListener method
-  }
-
-  /**
-   * Implementation of the PopupMenuListener interface.
-   *
-   * @param param1 <description>
-   */
-  public void popupMenuWillBecomeInvisible(PopupMenuEvent param1) {
-    // TODO: implement this javax.swing.event.PopupMenuListener method
-  }
-
-  /**
-   * Implementation of the PopupMenuListener interface.
-   *
-   * @param param1 <description>
-   */
-  public void popupMenuCanceled(PopupMenuEvent param1) {
-    // TODO: implement this javax.swing.event.PopupMenuListener method
-  }
-
-
-    public void resetCurrentMSB() {
-	if (om != null) {
-	    om.addNewTree(null);
-	}
-    }
-
-    public class CalibrationThread extends Thread
-    {
-    	private EventListener listener = null ;
-    	public CalibrationThread( final EventListener listener )
-    	{
-    		this.listener = listener ;
-    		calibrationMenu.setToolTipText( "Waiting for database ..." ) ;
-    	}
-    	
-    	public void run()
+		for( int i = 0 ; i < items.length ; i++ )
 		{
-			calibrationList =  CalibrationList.getCalibrations() ;
-			JMenuItem item ;
-			JMenu nextMenu = calibrationMenu ;
-			int counter = 0 ;
-			String lastANDFolder = "" ;
-			int trimLength = "AND Folder:".length() ;
+			if( items[ i ] == null )
+				m.addSeparator();
+			else
+				m.add( makeMenuItem( items[ i ] , target ) );
+		}
+
+		return m;
+	}
+
+	/**
+	 * The <code>makeMenuItem</code> method is a blackbox for a 
+	 * generic menu item.
+	 *
+	 * @param item an <code>Object</code> value
+	 * @param target an <code>Object</code> value
+	 * @return a <code>JMenuItem</code> value
+	 */
+	public static JMenuItem makeMenuItem( Object item , Object target )
+	{
+		JMenuItem r = null;
+		if( item instanceof String )
+			r = new JMenuItem( ( String )item );
+		else if( item instanceof JMenuItem )
+			r = ( JMenuItem )item;
+		else
+			return null;
+
+		if( target instanceof ActionListener )
+			r.addActionListener( ( ActionListener )target );
+		return r;
+	}
+
+	/**
+	 * Return the (code>WidgetPanel</code> from this frame.
+	 */
+	public WidgetPanel getWidgets()
+	{
+		return _widgetPanel;
+	}
+
+	// implementation of javax.swing.event.PopupMenuListener interface
+
+	/**
+	 * Implementation of the PopupMenuListener interface.
+	 *
+	 * @param param1 <description>
+	 */
+	public void popupMenuWillBecomeVisible( PopupMenuEvent param1 )
+	{
+	// TODO: implement this javax.swing.event.PopupMenuListener method
+	}
+
+	/**
+	 * Implementation of the PopupMenuListener interface.
+	 *
+	 * @param param1 <description>
+	 */
+	public void popupMenuWillBecomeInvisible( PopupMenuEvent param1 )
+	{
+	// TODO: implement this javax.swing.event.PopupMenuListener method
+	}
+
+	/**
+	 * Implementation of the PopupMenuListener interface.
+	 *
+	 * @param param1 <description>
+	 */
+	public void popupMenuCanceled( PopupMenuEvent param1 )
+	{
+	// TODO: implement this javax.swing.event.PopupMenuListener method
+	}
+
+	public void resetCurrentMSB()
+	{
+		if( om != null )
+			om.addNewTree( null );
+	}
+
+	public class CalibrationThread extends Thread
+	{
+		private EventListener listener = null;
+
+		public CalibrationThread( final EventListener listener )
+		{
+			this.listener = listener;
+			calibrationMenu.setToolTipText( "Waiting for database ..." );
+		}
+
+		public void run()
+		{
+			calibrationList = CalibrationList.getCalibrations();
+			JMenuItem item;
+			JMenu nextMenu = calibrationMenu;
+			int counter = 0;
+			String lastANDFolder = "";
+			int trimLength = "AND Folder:".length();
 			for( int index = 0 ; index < calibrationList.size() ; index++ )
 			{
-				String key = ( String )calibrationList.getNameForIndex( index ) ;
+				String key = ( String )calibrationList.getNameForIndex( index );
 				if( key.startsWith( "AND" ) )
 				{
-					lastANDFolder = key.substring( trimLength ) ;
-					nextMenu = new JMenu( lastANDFolder ) ;
-					nextMenu.addMenuListener( ( MenuListener )listener ) ;
-					calibrationMenu.add( nextMenu ) ;
-					continue ;
+					lastANDFolder = key.substring( trimLength );
+					nextMenu = new JMenu( lastANDFolder );
+					nextMenu.addMenuListener( ( MenuListener )listener );
+					calibrationMenu.add( nextMenu );
+					continue;
 				}
-				item = new JMenuItem( key ) ;
-				item.addActionListener( ( ActionListener )listener ) ;
+				item = new JMenuItem( key );
+				item.addActionListener( ( ActionListener )listener );
 				if( counter++ > 50 )
 				{
-					nextMenu = new JMenu( lastANDFolder + " continued" ) ;
-					nextMenu.addMenuListener( ( MenuListener )listener ) ;
-					calibrationMenu.add( nextMenu ) ;
-					counter = 0 ;
+					nextMenu = new JMenu( lastANDFolder + " continued" );
+					nextMenu.addMenuListener( ( MenuListener )listener );
+					calibrationMenu.add( nextMenu );
+					counter = 0;
 				}
-				nextMenu.add( item ) ;
+				nextMenu.add( item );
 			}
-			calibrationMenu.addMenuListener( ( MenuListener )listener ) ;
-			calibrationMenu.setEnabled( true ) ;
-			calibrationMenu.setToolTipText( null ) ;
+			calibrationMenu.addMenuListener( ( MenuListener )listener );
+			calibrationMenu.setEnabled( true );
+			calibrationMenu.setToolTipText( null );
 		}
-    }
-    
+	}
+
 }//QtFrame
