@@ -74,7 +74,7 @@ public class ObsListCellRenderer extends DefaultListCellRenderer
 		int i = 0 ;
 		while( i < split.length )
 		{
-			if( split[ i ].equals( "done" ) )
+			if( split[ i++ ].equals( "done" ) )
 			{
 				isDone = true;
 				break;

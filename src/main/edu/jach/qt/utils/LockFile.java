@@ -46,7 +46,7 @@ public class LockFile
 					String[] split = fileList[ fileCounter ].split( "_" ) ;
 					int i = 0 ;
 					while( i < split.length )
-						_owner = split[ i ] ;
+						_owner = split[ i++ ] ;
 				}
 			}
 		}
