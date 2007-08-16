@@ -408,7 +408,6 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 
 		if( System.getProperty( "telescope" ).equalsIgnoreCase( "ukirt" ) )
 		{
-
 			if( isDeferred )
 			{
 				item = DeferredProgramList.getCurrentItem();
@@ -763,7 +762,7 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 		Vector obsV = SpTreeMan.findAllItems( _spItem , "gemini.sp.SpObs" );
 
 		int index = obsList.getSelectedIndex();
-		( ( DefaultListModel )obsList.getModel() ).removeElementAt( index );
+		(( DefaultListModel )obsList.getModel()).removeElementAt( index );
 
 		SpObs[] obsToDelete = null;
 		if( obsV.size() > index )
@@ -771,7 +770,7 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 
 		try
 		{
-			if( obsToDelete != null && SpTreeMan.evalExtract( obsToDelete ) == true )
+			if( obsToDelete != null && SpTreeMan.evalExtract( obsToDelete ) )
 				SpTreeMan.extract( obsToDelete );
 			else if( item == null )
 				JOptionPane.showMessageDialog( this , "No Observation to remove" , "Message" , JOptionPane.INFORMATION_MESSAGE );
@@ -1301,9 +1300,7 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 		public class PopUp extends Thread
 		{
 			private String _message;
-
 			private String _title;
-
 			private int _errLevel;
 
 			public PopUp( String title , String message , int errorLevel )
