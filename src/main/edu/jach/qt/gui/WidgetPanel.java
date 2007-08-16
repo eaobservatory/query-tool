@@ -20,7 +20,6 @@ import java.util.Enumeration;
 import java.util.ListIterator;
 import javax.swing.JPanel;
 import javax.swing.JCheckBox;
-import javax.swing.Box;
 import javax.swing.SwingConstants;
 import javax.swing.BoxLayout;
 import javax.swing.JToggleButton;
@@ -148,8 +147,6 @@ public class WidgetPanel extends JPanel implements ActionListener , MoonChangeLi
 				gbc.insets.right = 15;
 				addTextFields( "Range" , gbc );
 			}
-
-			//JCheckBox
 			else if( widget.equals( "JCheckBox" ) )
 			{
 				gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -199,7 +196,6 @@ public class WidgetPanel extends JPanel implements ActionListener , MoonChangeLi
 					gbc.weighty = 0;
 					if( info.getView() == BoxLayout.Y_AXIS )
 					{
-
 						if( info.getTitle().equalsIgnoreCase( "Clouds" ) )
 						{
 							add( panel , gbc , 2 , 20 , 1 , info.getSize() + 1 );
