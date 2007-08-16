@@ -96,7 +96,7 @@ public class LabeledTextField extends WidgetPanel implements KeyListener , Docum
 		int index = 0 ;
 		
 		while( index < split.length )
-			result.add( split[ index ] ) ;
+			result.add( split[ index++ ] ) ;
 		return result;
 	}
 
