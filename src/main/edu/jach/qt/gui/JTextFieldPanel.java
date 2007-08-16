@@ -4,7 +4,6 @@ import edu.jach.qt.gui.WidgetDataBag;
 import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.ListIterator;
-import javax.swing.JTextField ;
 import javax.swing.BoxLayout ;
 import javax.swing.BorderFactory ;
 import javax.swing.border.TitledBorder ;
