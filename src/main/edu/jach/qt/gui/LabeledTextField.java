@@ -8,7 +8,8 @@ import java.util.Vector ;
 import java.util.Hashtable ;
 import javax.swing.JTextField ;
 import javax.swing.JLabel ;
-import javax.swing.event.*;
+import javax.swing.event.DocumentListener ;
+import javax.swing.event.DocumentEvent ;
 
 /**
  * LabeledTextField.java
