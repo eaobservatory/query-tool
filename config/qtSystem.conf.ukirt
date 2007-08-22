@@ -117,7 +117,7 @@ hiddenColumns: msbid%checksum%disperser%obscount%remaining%type%pol%sky%moon%clo
 cacheFiles: orac_data
 
 # Zone of Avoidance constraint ticked
-#ZOA: false
+ZOA: true
 
 #
 #TASKNAME: UKIRT_QT
