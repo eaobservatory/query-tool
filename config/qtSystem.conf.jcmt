@@ -1,0 +1,123 @@
+#The widget config file
+#widgetFile:/jac_sw/omp/config/qtWidget.conf
+
+#The file describing the latest query
+msbSummary:/tmp/msbSummary.xml
+
+#The file describing the latest query
+msbSummaryTest:/jac_sw/omp/config/msbSummaryTest.xml
+
+#The current msb for the sequence Console
+msbFile:/tmp/msb.xml
+arrayTests:/home/mrippa/tmp/array_tests.xml
+
+#Dummy table data --used for testing
+dummyTable:/jac_sw/omp/config/querySet.txt
+
+#The QtLogo location
+qtLogo:file:/jac_sw/omp/QT/icons/QtLogo.png
+
+#Sat page
+#satellitePage:http://hokukea.soest.hawaii.edu/satellite/latest.cgi?dirname=ni4&geog=nep&anim=no&size=thumb
+
+#satelliteIRPage:http://hokukea.soest.hawaii.edu/satellite/still.cgi?chnl=ni4&geog=haw&anim=no&size=thumb
+#satelliteWVPage:http://hokukea.soest.hawaii.edu/satellite/still.cgi?chnl=nw8&geog=haw&anim=no&size=thumb
+satelliteIRPage:http://mkwc.ifa.hawaii.edu/satellite/still.cgi?chnl=ui4&domain=haw&anim=no&size=thumb&thumbs=on&satplat=goes10&overlay=off
+satelliteWVPage:http://mkwc.ifa.hawaii.edu/satellite/still.cgi?chnl=uw8&domain=haw&anim=no&size=thumb&thumbs=on&satplat=goes10&overlay=off
+#imagePrefix:http://hokukea.soest.hawaii.edu/
+imagePrefix:http://mkwc.ifa.hawaii.edu/
+
+#The QtLogo location
+binImage:/jac_sw/omp/QT/icons/waste.gif
+
+#The QtLogo location
+binSelectedImage:/jac_sw/omp/QT/icons/wasteSelected.gif
+
+#The om.cfg location
+omCfg:/jac_sw/omp/QT/config/om.cfg
+#omCfg:/home/dewitt/omp/QT/config/om.cfg
+
+#Location of soap server
+msbServer:http://omp-private.jach.hawaii.edu/cgi-bin/msbsrv.pl
+
+#Location of soap server
+spServer:http://omp.jach.hawaii.edu/cgi-bin/spsrv.pl
+
+# Generic location of deferred files: 
+# Always expected to be in a file named <telescope>data/<thisname>
+# eg jcmtdata/deferred
+deferredDir:orac_data/deferred
+
+# File descrinbing telescopes - expected to be in the current qtConfig dir
+telescopeConfig:telescopedata.xml
+
+# User preferred browser for viewing help file.  If left blank, then
+# the system will look for a suitable browser and use that.  Note that
+# IE is NOT supported - nor will it ever be if I have my way!
+Browser:/usr/bin/mozilla
+
+# JCMT translator
+#jcmtTranslator:/home/dewitt/bin/doTranslate.ksh
+#jcmtTranslator:/jac_sw/omp/msbserver/client/jcmttranslator.pl
+jcmtTranslator:/jcmt_sw/bin/jcmttranslator -log
+
+
+# EXEC_PATH: Where the sequences created by the translator will be written. 
+# This *MUST* be the same as where the OOS is expected to find them. The
+# equivalent path for the OOS is defined elsewhere, currently in the 
+# orac_env script
+EXEC_PATH:/ukirtdata/orac_data/sequences
+
+# CONF_PATH: Where the configs created by the translator will be written. 
+# This *MUST* be the same as where the instrument tasks are expected to 
+# find them. The equivalent path for the instrument tasks is defined 
+# elsewhere, currently in the orac_env script
+CONF_PATH:/ukirtdata/orac_data/configs
+
+# Location of Unix shell script that is used to load the Drama systems for
+# the instruments and do any initialisation.
+LOAD_DHSC:loadORAC
+
+# Allowed editable attributes on a per instrument basis. Separate by spaces.
+UFTI_ATTRIBS: exposureTime coadds
+CGS4_ATTRIBS: exposureTime coadds
+IRCAM3_ATTRIBS: exposureTime coadds
+Michelle_ATTRIBS: 
+UIST_ATTRIBS: expTimeOT exposureTime coadds
+
+# Specify which elements are iterators on a per instrument basis.
+# Separate by spaces.
+UFTI_ITERATORS: darkObs instUFTI 
+CGS4_ITERATORS: darkObs CGS4calUnitObs instCGS4
+IRCAM3_ITERATORS: darkObs instIRCAM3
+Michelle_ITERATORS:
+UIST_ITERATORS: darkObs UISTCalObs instUISTImaging instUIST instUISTSpecIFU
+
+# Specify the name of the attributes which correspond to exposure
+# times for each instrument
+UFTI_EXPTIME: exposureTime
+CGS4_EXPTIME: exposureTime
+IRCAM3_EXPTIME: exposureTime
+Michelle_EXPTIME: 
+UIST_EXPTIME: expTimeOT 
+
+# Query timeouts
+queryTimeout:15
+
+# Hidden columns ( `%` seperated ) default
+hiddenColumns: msbid%checksum
+
+# Hidden columns ( `%` seperated ) for WFCAM
+#hiddenColumns: msbid%checksum%disperser%obscount%remaining%type%pol%sky%moon%cloud%tau%coordstype%instrument%completion%schedpri
+
+# Hidden columns ( `%` seperated ) for Cass
+#hiddenColumns: msbid%checksum%obscount%remaining%sky%moon%cloud%coordstype%completion
+
+# Directory for caching
+cacheFiles: orac_data
+
+# Zone of Avoidance constraint ticked
+#ZOA: false
+
+#
+#TASKNAME: UKIRT_QT

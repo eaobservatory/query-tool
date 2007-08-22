@@ -146,13 +146,15 @@ while ($#argv != 0)
                 shift
                 breaksw
             case ukirt:
-                set widgetFile   = ..//config/qtUkirtWidget.conf
+		set qtConfig     = ../config/qtSystem.conf.ukirt
+                set widgetFile   = ../config/qtUkirtWidget.conf
                 set instConfigDir = ${baseOTConfigDir}/ukirt
                 set telescope	  = Ukirt
                 echo Telescope set to use ukirt widget set
                 shift
                 breaksw
             case jcmt:
+                set qtConfig     = ../config/qtSystem.conf.jcmt
                 set widgetFile   = ../config/qtJcmtWidget.conf
                 set instConfigDir = ${baseOTConfigDir}/jcmt
                 set telescope	  = Jcmt
