@@ -144,6 +144,8 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 	private final String msbDoneText = "Accept/Reject this MSB";
 	private boolean _useQueue = true;
 	
+	private boolean uistIrpol = false ;
+	
 	/** public programTree() is the constructor. The class
 	 has only one constructor so far.  a few thing are done during
 	 the construction. They are mainly about adding a run button and
@@ -425,7 +427,7 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 			if( instrumentContext instanceof SpInstUIST )
 			{
 				SpInstUIST uist = ( SpInstUIST )instrumentContext;
-				if( uist.isPolarimetry() )
+				if( uist.isPolarimetry() && !uistIrpol )
 				{
 					int result = JOptionPane.showConfirmDialog( null , "You are attempting to do a Polarimetry observation with UIST - is the IRPOL arm in the beam ?" , "Is IRPOL arm in beam ?" , JOptionPane.YES_NO_OPTION );
 					if( result == JOptionPane.NO_OPTION )
@@ -434,7 +436,16 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 						setExecutable( true );
 						return;
 					}
+					uistIrpol = true ;
 				}
+				else
+				{
+					uistIrpol = false ;
+				}
+			}
+			else
+			{
+				uistIrpol = false ;
 			}
 
 			try
