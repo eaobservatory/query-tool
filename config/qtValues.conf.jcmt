@@ -1,0 +1,54 @@
+# Component on a line by itself
+# value , alias
+# or
+# value
+#
+# blank line to separate components
+
+# instruments
+
+orac.jcmt.inst.SpDRRecipe
+
+orac.jcmt.inst.SpInstHeterodyne
+
+orac.jcmt.inst.SpInstSCUBA2
+
+# eyes
+
+orac.jcmt.iter.SpIterDREAMObs
+
+orac.jcmt.iter.SpIterFlatObs
+
+orac.jcmt.iter.SpIterFocusObs
+
+orac.jcmt.iter.SpIterJiggleObs
+
+orac.jcmt.iter.SpIterNoiseObs
+
+orac.jcmt.iter.SpIterPointingObs
+
+orac.jcmt.iter.SpIterPOL
+
+orac.jcmt.iter.SpIterRasterObs
+
+orac.jcmt.iter.SpIterSkydipObs
+
+orac.jcmt.iter.SpIterStareObs
+
+gemini.sp.iter.SpIterMicroStep
+Offset0
+Offset1
+Offset2
+Offset3
+PA , Position Angle
+pattern
+
+# general
+
+gemini.sp.SpObs
+msbid
+project , Project ID
+title , Title
+
+gemini.sp.SpNote
+

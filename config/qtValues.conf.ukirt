@@ -1,0 +1,153 @@
+# Component on a line by itself
+# value , alias
+# or
+# value
+#
+# blank line to separate components
+
+# instruments
+
+orac.ukirt.inst.SpInstWFCAM
+instPntgOffset , Pointing Offset
+coadds
+configType , Configuration Type
+exposureTime , Exposure Time
+filter
+instAper , Aperture
+instPort
+readMode
+
+
+orac.ukirt.inst.SpDRRecipe
+
+orac.ukirt.inst.SpInstCGS4
+acqMode , Aquisition Mode
+centralWavelength , Central Wavelength
+coadds
+cvfOffset
+cvfWavelength
+disperser
+exposureTime , Exposure Time
+filter
+instAper , Aperture
+instPort
+mask
+neutralDensity
+order
+polariser
+sampling
+sourceMag , Source Magnitude
+
+orac.ukirt.inst.SpInstMichelle
+
+orac.ukirt.inst.SpInstUFTI
+acqMode , Aquisition Mode
+exposureTime , Exposure Time
+filter
+readoutArea , Readout Area
+posAngle , Position Angle
+
+orac.ukirt.inst.SpInstUIST
+DAConf
+DAConfMinExpT
+DAConfMinExpTime
+arrayAngle
+biasDutyCycle
+biasIdlePeriod
+biasMustIdles
+biasNResets
+biasObsTime
+biasReadArea
+biasRefPixelX
+biasRefPixelY
+biasWaveform
+camera
+centralWavelength
+coadds
+configType
+darkFilter
+disperser
+dutyCycle
+expTimeOT
+exposureTime
+filter
+filterCategory
+focus
+idlePeriod
+imager
+instAper
+instPntgOffset
+instPort
+mask
+mode
+mustIdles
+nreads
+nresets
+nullReads
+obsTimeOT
+observationTime
+order
+pixelFOV
+pixelScale
+polarimetry
+posAngle
+pupil_imaging
+readArea
+readInterval
+readMode
+readout
+readoutOT
+refPixelL
+refPixelS
+refPixelX
+refPixelY
+resetDelay
+scienceArea
+source_mag
+spectralCoverage
+waveform
+
+# iter
+
+orac.ukirt.iter.SpIterSky
+
+orac.ukirt.iter.SpIterDarkObs
+repeatCount , Repeat Count
+
+orac.ukirt.iter.SpIterBiasObs
+
+orac.ukirt.iter.SpIterCalObs
+
+orac.ukirt.iter.SpIterCGS4CalObs
+
+orac.ukirt.iter.SpIterObserve
+repeatCount , Repeat Count
+
+gemini.sp.iter.SpIterOffset
+Offset0
+Offset1
+Offset2
+Offset3
+Offset4
+PA , Position Angle
+title , Title
+
+gemini.sp.iter.SpIterRepeat
+repeatCount , Repeat Count
+
+gemini.sp.iter.SpIterMicroStep
+Offset0
+Offset1
+Offset2
+Offset3
+PA , Position Angle
+pattern
+
+# general
+
+gemini.sp.SpObs
+msbid
+project , Project ID
+title , Title
+
+gemini.sp.SpNote
