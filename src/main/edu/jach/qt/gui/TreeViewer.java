@@ -228,7 +228,7 @@ class TreeViewer implements ActionListener
 		int lastSlash = buffer.lastIndexOf( java.io.File.separator ) ;
 		buffer.delete( lastSlash + 1 , buffer.length() ) ;
 		buffer.append( "qtValues.conf." ) ;
-		buffer.append( System.getProperty( "telescope" ) ) ;
+		buffer.append( System.getProperty( "telescope" ).toLowerCase() ) ;
 		
 		String fileName = buffer.toString() ;
 		

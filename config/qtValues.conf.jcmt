@@ -20,8 +20,22 @@ orac.jcmt.iter.SpIterDREAMObs
 orac.jcmt.iter.SpIterFlatObs
 
 orac.jcmt.iter.SpIterFocusObs
+autoTarget
+axis
+focusPoints
+steps
+switchingMode
 
 orac.jcmt.iter.SpIterJiggleObs
+continuumMode , Continuum ?
+jigglePa , Position Angle
+jigglePattern , Pattern
+jigglePerCycle , Jiggles per Cycle
+jiggleSystem , System
+scaleFactor
+secsPerCycle
+separateOffs
+switchingMode
 
 orac.jcmt.iter.SpIterNoiseObs
 
@@ -30,6 +44,18 @@ orac.jcmt.iter.SpIterPointingObs
 orac.jcmt.iter.SpIterPOL
 
 orac.jcmt.iter.SpIterRasterObs
+SCAN_AREA.AREA.PA , Position Angle
+SCAN_AREA.AREA:HEIGHT , Area Height
+SCAN_AREA.AREA:WIDTH , Area Width
+SCAN_AREA.SCAN:DY , Dy
+SCAN_AREA.SCAN:PA , Scan Angle
+SCAN_AREA.SCAN:SYSTEM , System
+SCAN_AREA.SCAN:VELOCITY , Velocity
+continuumMode
+rowsPerCal
+rowsPerRef
+sampleTime
+switchingMode
 
 orac.jcmt.iter.SpIterSkydipObs
 
@@ -43,12 +69,30 @@ Offset3
 PA , Position Angle
 pattern
 
+gemini.sp.iter.SpIterOffset
+PA , Position Angle
+
+gemini.sp.iter.SpIterRepeat
+repeatCount , Repeat Count
+
+gemini.sp.iter.SpIterChop
+PA , Position Angle
+SYSTEM , System
+THROW , Throw
+
 # general
 
 gemini.sp.SpObs
 msbid
 project , Project ID
 title , Title
+rq_maxcl
+rq_maxmn
+rq_mincl
+rq_minmn
+rq_mnsee
+rq_mntau
+rq_mxtau
 
 gemini.sp.SpNote
 
