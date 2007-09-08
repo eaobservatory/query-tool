@@ -10,6 +10,22 @@
 orac.jcmt.inst.SpDRRecipe
 
 orac.jcmt.inst.SpInstHeterodyne
+band , Sideband
+bandMode , Band Mode
+bandWidth , Bandwidth
+beName , Backend 
+centreFrequency
+channels
+feBandWidth , Frontend Bandwidth
+feIF , Frontend IF
+feName , Frontend
+mixers
+mode
+molecule
+overlap
+restFrequency
+skyFrequency
+transition
 
 orac.jcmt.inst.SpInstSCUBA2
 

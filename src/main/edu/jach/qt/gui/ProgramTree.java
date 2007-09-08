@@ -351,6 +351,14 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 				itemToXpand = DeferredProgramList.getCurrentItem();
 			else
 				itemToXpand = selectedItem;
+			
+			SpInstObsComp inst = SpTreeMan.findInstrumentInContext( itemToXpand ) ;
+			if( inst == null )
+			{
+				inst = SpTreeMan.findInstrument( itemToXpand ) ;
+				SpInsertData spid = SpTreeMan.evalInsertInside( inst , itemToXpand ) ;
+				SpTreeMan.insert( spid ) ;
+			}
 
 			if( tv == null )
 				tv = new TreeViewer( itemToXpand );
