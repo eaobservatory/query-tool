@@ -234,13 +234,15 @@ class TreeViewer implements ActionListener
 		
 		buffer.delete( 0 , buffer.length() ) ;
 		
+		int readLength = 0 ;
+		
 		try
 		{
 			FileReader file = new FileReader( fileName ) ;
 			while( !file.ready() )
 				;
-			while( file.read( chars ) != -1 )
-				buffer.append( chars ) ;
+			while( ( readLength = file.read( chars ) ) != -1 )
+				buffer.append( chars , 0 , readLength ) ;
 			file.close();
 			returnable = buffer.toString() ; 
 		}
