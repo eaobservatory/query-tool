@@ -188,18 +188,28 @@ public class Execute
 				{
 					inputLength = istream.read( stdout );
 					if( inputLength == -1 )
-						inputFinished = true;
+					{
+						inputFinished = true ;
+						istream.close() ;
+					}
 					else
-						inputBuffer.append( new String( stdout ).trim() );
+					{
+						inputBuffer.append( new String( stdout ).trim() , 0  , inputLength ) ;
+					}
 				}
 
 				if( !errorFinished )
 				{
 					errorLength = estream.read( stderr );
 					if( errorLength == -1 )
-						errorFinished = true;
+					{
+						errorFinished = true ;
+						estream.close() ;
+					}
 					else
-						errorBuffer.append( new String( stderr ).trim() );
+					{
+						errorBuffer.append( new String( stderr ).trim() , 0 , errorLength ) ;
+					}
 				}
 			}
 			p.waitFor();

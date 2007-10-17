@@ -172,9 +172,15 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 				try
 				{
 					FileReader reader = new FileReader( currentFile );
-					char[] buffer = new char[ ( int )currentFile.length() ];
-					reader.read( buffer );
-					SpItem currentSpItem = ( new SpInputXML() ).xmlToSpItem( String.valueOf( buffer ) );
+					char[] chars = new char[ 1024 ];
+					int readLength = 0 ;
+					StringBuffer buffer = new StringBuffer() ;
+					while( !reader.ready() )
+						;
+					while( ( readLength = reader.read( chars ) ) != -1 )
+						buffer.append( chars , 0 , readLength ) ;
+					reader.close();
+					SpItem currentSpItem = ( new SpInputXML() ).xmlToSpItem( buffer.toString() );
 					if( currentSpItem != null )
 					{
 						fileToObjectMap.put( currentSpItem , currentFileName );
@@ -196,7 +202,6 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 				}
 			}
 		}
-		return;
 	}
 
 	/**

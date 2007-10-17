@@ -57,9 +57,13 @@ public class TelescopeInformation
 		try
 		{
 			FileReader reader = new FileReader( dataFile );
-			char[] buffer = new char[ ( int )dataFile.length() ];
-			reader.read( buffer );
-			String buffer_z = new String( buffer );
+			char[] chars = new char[ 1024 ];
+			int readLength = 0 ;
+			StringBuffer buffer = new StringBuffer() ;
+			while( ( readLength = reader.read( chars ) ) != -1 )
+				buffer.append( chars , 0 , readLength ) ;
+			reader.close();
+			String buffer_z = buffer.toString() ;
 
 			DOMParser parser = new DOMParser();
 			parser.setFeature( "http://xml.org/sax/features/validation" , false );
