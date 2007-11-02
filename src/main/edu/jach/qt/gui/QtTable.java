@@ -17,6 +17,8 @@ public class QtTable extends JTable
 	private DefaultTableCellRenderer numberTableCellRenderer;
 	private MsbColumns columns = MsbClient.getColumnInfo();
 	private SpQueuedMap spQueuedMap = SpQueuedMap.getSpQueuedMap();
+	
+	private static final Color unintrusiveGrey = new Color( 0xE8 , 0xE8 , 0xE8 ) ;
 
 	public QtTable( TableModel model )
 	{
@@ -40,7 +42,7 @@ public class QtTable extends JTable
 		if( spQueuedMap.containsMsbChecksum( checksum ) != null )
 			colour = Color.orange;
 		else if( spQueuedMap.seen( checksum ) )
-			colour = Color.lightGray ;
+			colour = unintrusiveGrey ;
 		stringTableCellRenderer.setBackground( colour );
 		numberTableCellRenderer.setBackground( colour );
 		return object;
