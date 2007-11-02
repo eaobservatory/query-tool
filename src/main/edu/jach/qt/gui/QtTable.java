@@ -39,6 +39,8 @@ public class QtTable extends JTable
 		Color colour = Color.white;
 		if( spQueuedMap.containsMsbChecksum( checksum ) != null )
 			colour = Color.orange;
+		else if( spQueuedMap.seen( checksum ) )
+			colour = Color.lightGray ;
 		stringTableCellRenderer.setBackground( colour );
 		numberTableCellRenderer.setBackground( colour );
 		return object;

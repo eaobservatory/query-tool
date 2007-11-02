@@ -10,6 +10,8 @@ import java.util.Calendar;
 import java.util.TimeZone;
 import java.util.TreeMap;
 
+import java.util.TreeSet ;
+
 /**
  * 
  * SpQueuedMap is a map that handles the caching of SpItems sent to the queue.
@@ -21,10 +23,12 @@ public class SpQueuedMap
 {
 	private static SpQueuedMap queuedMap = null;
 	protected TreeMap treeMap = null;
+	protected TreeSet treeSet = null ;
 
 	private SpQueuedMap()
 	{
 		treeMap = new TreeMap();
+		treeSet = new TreeSet() ;
 	}
 
 	public static synchronized SpQueuedMap getSpQueuedMap()
@@ -46,8 +50,14 @@ public class SpQueuedMap
 			if( ( ( SpMSB )item ).getNumberRemaining() < 2 )
 				treeMap.put( checksum , "" + System.currentTimeMillis() );
 			writeChecksumToDisk( ( SpMSB )item );
+			treeSet.add( checksum ) ;
 		}
 		return replacement;
+	}
+	
+	public boolean seen( String checksum )
+	{
+		return treeSet.contains( checksum ) ;
 	}
 
 	public boolean containsSpItem( SpItem item )
@@ -296,7 +306,8 @@ public class SpQueuedMap
 		{
 			String[] split = directoryContents[ index ].split( "_" );
 			String checksum = split[ 0 ];
-			String timestamp = isChecksumOnDisk( split[ 0 ] );
+			treeSet.add( checksum ) ;
+			String timestamp = isChecksumOnDisk( checksum );
 			if( timestamp != null )
 				treeMap.put( checksum , timestamp );
 		}
