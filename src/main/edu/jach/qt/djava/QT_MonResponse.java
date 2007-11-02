@@ -52,6 +52,11 @@ public class QT_MonResponse extends MonitorResponse
 			logger.info( "AIRMASS update: " + value.RealValue( name ) );
 			TelescopeDataPanel.setAirmass( value.RealValue( name ) );
 		}
+		else if( name.equals( "EXIT" ) )
+		{
+			logger.info( "Received exit request" ) ;
+			System.exit( 0 ) ;
+		}
 		else
 		{
 			logger.debug( "Unhandled " + name + " update: " + value.RealValue( name ) );
