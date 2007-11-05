@@ -40,6 +40,19 @@ public class LabeledTextField extends WidgetPanel implements KeyListener , Docum
 		label = new JLabel( text + ": " , JLabel.LEADING );
 		setup();
 	}
+	
+	public LabeledTextField( Hashtable ht , WidgetDataBag wdb , String text , String toolTip )
+	{
+		super( ht , wdb );
+		textField = new JTextField( "" );
+		label = new JLabel( text + ": " , JLabel.LEADING );
+		if( toolTip != null && toolTip.trim().length() != 0 )
+		{
+			textField.setToolTipText( toolTip ) ;
+			label.setToolTipText( toolTip ) ;
+		}
+		setup();
+	}
 
 	private void setup()
 	{

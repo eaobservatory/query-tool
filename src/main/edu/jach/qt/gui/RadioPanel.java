@@ -71,8 +71,17 @@ public class RadioPanel extends WidgetPanel implements ActionListener
 		for( iterator.nextIndex() ; iterator.hasNext() ; iterator.nextIndex() )
 		{
 			next = ( String )iterator.next();
+			String toolTip = null ;
+			if( next.matches( ".*-.*" ) )
+			{
+				String[] split = next.split( "-" ) ;
+				next = split[ 0 ].trim() ;
+				toolTip = split[ 1 ].trim() ;
+			}
 			rb = new JRadioButton( next );
 			rb.addActionListener( this );
+			if( toolTip != null )
+				rb.setToolTipText( toolTip ) ;
 
 			add( rb );
 			rb.setAlignmentX( rb.LEFT_ALIGNMENT );

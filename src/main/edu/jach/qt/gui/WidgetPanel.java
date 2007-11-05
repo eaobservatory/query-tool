@@ -160,10 +160,23 @@ public class WidgetPanel extends JPanel implements ActionListener , MoonChangeLi
 					next = tr.readLine();
 					if( next.equals( "[EndSection]" ) )
 						break;
+					
+					String toolTip = null ;
+					if( next.matches( ".*-.*" ) )
+					{
+						String[] split = next.split( "-" ) ;
+						next = split[ 0 ].trim() ;
+						toolTip = split[ 1 ].trim() ;
+					}
+					
 					cb[ num ] = new JCheckBox( next );
 					cb[ num ].setHorizontalAlignment( SwingConstants.CENTER );
 
 					cb[ num ].addActionListener( this );
+					
+					if( toolTip != null )
+						cb[ num ].setToolTipText( toolTip ) ;
+					
 					add( cb[ num ] , gbc , 1 , num , 2 , 1 );
 					num++ ;
 					tmp = abbreviate( next );
@@ -348,15 +361,24 @@ public class WidgetPanel extends JPanel implements ActionListener , MoonChangeLi
 			next = tr.readLine();
 			if( next.equals( "[EndSection]" ) )
 				break;
+			
+			String toolTip = null ;
+			if( next.matches( ".*-.*" ) )
+			{
+				String[] split = next.split( "-" ) ;
+				next = split[ 0 ].trim() ;
+				toolTip = split[ 1 ].trim() ;
+			}
+			
 			tmp = abbreviate( next );
 			abbrevTable.put( next , tmp );
 
 			if( type.equals( "Labeled" ) )
-				add( new LabeledTextField( abbrevTable , widgetBag , next ) , gbc , 0 , numComponents , 1 , 1 );
+				add( new LabeledTextField( abbrevTable , widgetBag , next , toolTip ) , gbc , 0 , numComponents , 1 , 1 );
 			else if( type.equals( "MinMax" ) )
-				add( new LabeledMinMaxTextField( abbrevTable , widgetBag , next ) , gbc , 0 , numComponents , 1 , 1 );
+				add( new LabeledMinMaxTextField( abbrevTable , widgetBag , next , toolTip ) , gbc , 0 , numComponents , 1 , 1 );
 			else if( type.equals( "Range" ) )
-				add( new LabeledRangeTextField( abbrevTable , widgetBag , next ) , gbc , 0 , numComponents , 1 , 1 );
+				add( new LabeledRangeTextField( abbrevTable , widgetBag , next , toolTip ) , gbc , 0 , numComponents , 1 , 1 );
 		}
 		while( true );
 	}

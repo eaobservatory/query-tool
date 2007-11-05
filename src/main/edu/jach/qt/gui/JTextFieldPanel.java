@@ -63,7 +63,14 @@ public class JTextFieldPanel extends WidgetPanel implements DocumentListener
 		for( iterator.nextIndex() ; iterator.hasNext() ; iterator.nextIndex() )
 		{
 			next = ( String )iterator.next();
-			tf = new LabeledTextField( super.abbrevTable , super.widgetBag , next );
+			String toolTip = null ;
+			if( next.matches( ".*-.*" ) )
+			{
+				String[] split = next.split( "-" ) ;
+				next = split[ 0 ].trim() ;
+				toolTip = split[ 1 ].trim() ;
+			}
+			tf = new LabeledTextField( super.abbrevTable , super.widgetBag , next , toolTip );
 
 			add( tf );
 			fieldElems.add( tf );

@@ -40,6 +40,16 @@ public class LabeledMinMaxTextField extends LabeledTextField
 
 		setup();
 	}
+	
+	public LabeledMinMaxTextField( Hashtable ht , WidgetDataBag wdb , String text , String toolTip )
+	{
+		super( ht , wdb , text , toolTip );
+
+		valueList = new LinkedList();
+		rangeList = new JComboBox();
+
+		setup();
+	}
 
 	private void setup()
 	{

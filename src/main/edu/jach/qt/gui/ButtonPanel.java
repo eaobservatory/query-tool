@@ -49,10 +49,22 @@ public class ButtonPanel extends WidgetPanel
 		for( iterator.nextIndex() ; iterator.hasNext() ; iterator.nextIndex() )
 		{
 			next = ( String )iterator.next();
+			
+			String toolTip = null ;
+			if( next.matches( ".*-.*" ) )
+			{
+				String[] split = next.split( "-" ) ;
+				next = split[ 0 ].trim() ;
+				toolTip = split[ 1 ].trim() ;
+			}
+			
 			JCheckBox cb = new JCheckBox( next );
 			cb.addActionListener( this );
 			if( "WFCAM".equals( next ) )
 				wfcamTickBox = cb;
+			
+			if( toolTip != null )
+				cb.setToolTipText( toolTip ) ;
 
 			add( cb );
 			buttonList.add( cb );

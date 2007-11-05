@@ -53,11 +53,21 @@ public class LabeledRangeTextField extends WidgetPanel implements DocumentListen
 	 * @param ht  The <code>Hashtable</code> of widget names and abbreviations.
 	 * @param wdb The <code>WidgetDataBag</code> containing the widget information.
 	 * @param text The label of the current field.
-	 */
+	 */	
 	public LabeledRangeTextField( Hashtable ht , WidgetDataBag wdb , String text )
 	{
+		super( ht , wdb ) ;
+		init( text , null ) ;
+	}
+		
+	public LabeledRangeTextField( Hashtable ht , WidgetDataBag wdb , String text , String toolTip )
+	{
 		super( ht , wdb );
-
+		init( text , toolTip ) ;
+	}
+	
+	private void init( String text , String toolTip )
+	{
 		widgetLabel = new JLabel( text + ": " , JLabel.LEADING );
 		if( text.equalsIgnoreCase( obsFieldName ) )
 		{
@@ -72,6 +82,16 @@ public class LabeledRangeTextField extends WidgetPanel implements DocumentListen
 
 		upperBound = new JTextField();
 		lowerBound = new JTextField();
+		
+		if( toolTip != null && toolTip.trim().length() != 0 )
+		{
+			widgetLabel.setToolTipText( toolTip ) ;
+			lowerLabel.setToolTipText( toolTip ) ;
+			upperLabel.setToolTipText( toolTip ) ;
+			upperBound.setToolTipText( toolTip ) ;
+			lowerBound.setToolTipText( toolTip ) ;
+		}
+	
 		if( text.equalsIgnoreCase( obsFieldName ) )
 		{
 			TimeUtils time = new TimeUtils();
