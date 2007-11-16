@@ -7,7 +7,10 @@ import java.io.InputStreamReader;
 import java.lang.Exception;
 import java.net.URL;
 import java.util.StringTokenizer;
-import javax.swing.*;
+import javax.swing.JLabel ;
+import javax.swing.SwingConstants ;
+import javax.swing.BorderFactory ;
+import javax.swing.ImageIcon ;
 import javax.swing.border.TitledBorder;
 
 /**
