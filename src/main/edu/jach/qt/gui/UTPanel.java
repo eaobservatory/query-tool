@@ -8,6 +8,9 @@ import javax.swing.JLabel ;
 import javax.swing.SwingConstants ;
 import java.text.SimpleDateFormat;
 
+import edu.jach.qt.utils.OMPTimerListener ;
+import edu.jach.qt.utils.OMPTimer ;
+
 /**
  * Display the UTC time in a panel as a <code>JLabel</code>..
  *
@@ -15,7 +18,7 @@ import java.text.SimpleDateFormat;
  * @version $Id$
  */
 
-public class UTPanel extends JLabel implements TimerListener
+public class UTPanel extends JLabel implements OMPTimerListener
 {
 	/**
 	 * Constructor.
@@ -26,8 +29,7 @@ public class UTPanel extends JLabel implements TimerListener
 		setHorizontalAlignment( SwingConstants.CENTER );
 
 		this.setOpaque( true );
-		Timer t = new Timer( 1000 );
-		t.addTimerListener( this );
+		OMPTimer.getOMPTimer().setTimer( 1000 , this );
 	}
 
 	/**
@@ -35,7 +37,7 @@ public class UTPanel extends JLabel implements TimerListener
 	 * Sets the date and time on the associated object once a second.
 	 * @param evt  A timer event.
 	 */
-	public void timeElapsed( TimerEvent evt )
+	public void timeElapsed()
 	{
 		setBackground( Color.black );
 		setForeground( Color.green );

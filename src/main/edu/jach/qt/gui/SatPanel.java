@@ -13,6 +13,9 @@ import javax.swing.BorderFactory ;
 import javax.swing.ImageIcon ;
 import javax.swing.border.TitledBorder;
 
+import edu.jach.qt.utils.OMPTimer ;
+import edu.jach.qt.utils.OMPTimerListener ;
+
 /**
  * Associates an image with a label.
  *In this case, the image is a satelliet image derived from a configurable URL.
@@ -23,7 +26,7 @@ import javax.swing.border.TitledBorder;
  * @version $Id$
  */
 
-public class SatPanel extends JLabel implements TimerListener
+public class SatPanel extends JLabel implements OMPTimerListener
 {
 	private TitledBorder satBorder;
 	private static String currentWebPage;
@@ -47,17 +50,15 @@ public class SatPanel extends JLabel implements TimerListener
 
 		refreshIcon();
 
-		Timer timer = new Timer( 600000 ); //refresh every 10 minutes
-		timer.addTimerListener( this );
+		OMPTimer.getOMPTimer().setTimer( 600000 , this ); //refresh every 10 minutes
 	}
 
 	// implementation of edu.jach.qt.gui.TimerListener interface
 
 	/**
-	 * Implementation of edu.jach.qt.gui.TimerListener interface
-	 * @param param1 A <code>TimerEvent</code>
+	 * Implementation of edu.jach.qt.utils.OMPTimerListener interface
 	 */
-	public void timeElapsed( TimerEvent param1 )
+	public void timeElapsed()
 	{
 		refreshIcon();
 	}
