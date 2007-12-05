@@ -12,6 +12,9 @@ import java.text.SimpleDateFormat;
 
 import edu.jach.qt.utils.LocalSiderealTime;
 
+import edu.jach.qt.utils.OMPTimer;
+import edu.jach.qt.utils.OMPTimerListener ;
+
 /**
  * Class associateing local time with a label for display on an interface.
  *
@@ -22,7 +25,7 @@ import edu.jach.qt.utils.LocalSiderealTime;
  * @version $Id$
  */
 
-public class TimePanel extends JPanel implements TimerListener
+public class TimePanel extends JPanel implements OMPTimerListener
 {
 	JLabel local;
 	JLabel universal;
@@ -70,8 +73,7 @@ public class TimePanel extends JPanel implements TimerListener
 
 		localSiderealTime = new LocalSiderealTime( System.getProperty( "telescope" ).trim() );
 
-		Timer t = new Timer( 1000 );
-		t.addTimerListener( this );
+		OMPTimer.getOMPTimer().setTimer( 1000 , this );
 	}
 
 	/**
@@ -79,7 +81,7 @@ public class TimePanel extends JPanel implements TimerListener
 	 * Updates the associated label.
 	 * @param evt   the <code>TimerEvent</code> to consume.
 	 */
-	public void timeElapsed( TimerEvent evt )
+	public void timeElapsed()
 	{
 		Calendar cal = Calendar.getInstance();
 		Date date = cal.getTime();

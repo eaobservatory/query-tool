@@ -36,8 +36,16 @@ public class WidgetDataBag implements Subject
 	 */
 	public Object put( Object key , Object value )
 	{
-		Object o = table.put( key , value );
-		notifyObservers();
+		Object o = null ;
+		if( key != null )
+		{
+			o = table.put( key , value );
+			notifyObservers();
+		}
+		else
+		{
+			System.out.println( "" ) ;
+		}
 		return o;
 	}
 

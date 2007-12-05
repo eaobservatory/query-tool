@@ -590,7 +590,8 @@ public class WidgetPanel extends JPanel implements ActionListener , MoonChangeLi
 	 */
 	public void setAttribute( String key , Object obj )
 	{
-		widgetBag.put( abbrevTable.get( key ) , obj );
+		Object object = abbrevTable.get( key ) ;
+		widgetBag.put( object , obj );
 	}
 
 	/**

@@ -3,10 +3,6 @@ package edu.jach.qt.utils;
 import java.util.Calendar;
 import java.util.TimeZone;
 
-import edu.jach.qt.gui.Timer;
-import edu.jach.qt.gui.TimerEvent;
-import edu.jach.qt.gui.TimerListener;
-
 import java.util.HashSet;
 import java.util.Iterator;
 
@@ -18,7 +14,7 @@ import java.util.Iterator;
  * @version    $Revision$
  *
  */
-public class SimpleMoon implements TimerListener
+public class SimpleMoon implements OMPTimerListener
 {
 	// Set up some stuff we are going to use
 	private static final double JD2000 = 2451545.;
@@ -50,8 +46,7 @@ public class SimpleMoon implements TimerListener
 		latitude = ( ( Double )( ti.getValue( "latitude" ) ) ).doubleValue();
 		longitude = ( ( Double )( ti.getValue( "longitude" ) ) ).doubleValue();
 		getCurrentPosition();
-		Timer t = new Timer( 60 * 1000 );
-		t.addTimerListener( this );
+		OMPTimer.getOMPTimer().setTimer( 60 * 1000 , this );
 	}
 
 	public static synchronized SimpleMoon getInstance()
@@ -75,7 +70,7 @@ public class SimpleMoon implements TimerListener
 
 	private int wasIlluminated = 0;
 
-	public void timeElapsed( TimerEvent evt )
+	public void timeElapsed()
 	{
 		boolean tmpBool = isUp();
 		if( tmpBool != wasUp )
