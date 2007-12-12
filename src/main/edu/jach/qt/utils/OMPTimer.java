@@ -10,7 +10,7 @@ public class OMPTimer
 	
 	private OMPTimer()
 	{
-		timer = new Timer() ;
+		timer = new Timer( "OMPTimer" ) ;
 	}
 	
 	public static OMPTimer getOMPTimer()
@@ -18,23 +18,26 @@ public class OMPTimer
 		return omptimer ;
 	}
 	
-	public void setTimer( long interval , final OMPTimerListener listener )
+	public TimerTask setTimer( long interval , final OMPTimerListener listener )
 	{
-		setTimer( interval , listener , true ) ;
+		return setTimer( interval , listener , true ) ;
 	}
 	
-	public void setTimer( long interval , final OMPTimerListener listener , boolean repeat )
+	public TimerTask setTimer( long interval , final OMPTimerListener listener , boolean repeat )
 	{
 		TimerTask task = new TimerTask()
 		{ 
 			public void run()
 			{
-				listener.timeElapsed() ; 
+				listener.timeElapsed() ;
+				timer.purge() ;
 			} 
 		} ;
 		if( repeat )
 			timer.scheduleAtFixedRate( task , interval , interval ) ;
 		else
 			timer.schedule( task , interval , interval ) ;
+		
+		return task ;
 	}
 }
