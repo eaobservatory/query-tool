@@ -32,7 +32,7 @@ public class WidgetDataBag implements Subject
 	 *
 	 * @param key an <code>Object</code> value
 	 * @param value an <code>Object</code> value
-	 * @return an <code>Object</code> value
+	 * @return the previous <code>Object</code> value of the specified key, or null if it did not have one.
 	 */
 	public Object put( Object key , Object value )
 	{
