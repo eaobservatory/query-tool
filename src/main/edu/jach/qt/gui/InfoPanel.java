@@ -14,7 +14,8 @@ import java.awt.Insets;
 import java.awt.Component;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import java.util.Timer;
+import edu.jach.qt.utils.OMPTimer ;
+import edu.jach.qt.utils.OMPTimerListener ;
 import java.util.TimerTask;
 
 import javax.swing.JPanel;
@@ -37,7 +38,7 @@ import edu.jach.qt.utils.SpQueuedMap;
  * @author <a href="mailto:mrippa@jach.hawaii.edu">Mathew Rippa</a>
  * $Id$
  */
-public class InfoPanel extends JPanel implements ActionListener
+public class InfoPanel extends JPanel implements ActionListener , OMPTimerListener
 {
 	private static final Logger logger = Logger.getLogger( InfoPanel.class );
 
@@ -82,7 +83,8 @@ public class InfoPanel extends JPanel implements ActionListener
 	private QtFrame qtf;
 	private JButton exitButton;
 	private JButton fetchMSB;
-	private Timer queryExpiredTimer;
+	private TimerTask queryTask ;
+	final private InfoPanel infoPanel ;
 	final private Cursor busyCursor = new Cursor( Cursor.WAIT_CURSOR );
 	final private Cursor normalCursor = new Cursor( Cursor.DEFAULT_CURSOR );
 
@@ -99,6 +101,8 @@ public class InfoPanel extends JPanel implements ActionListener
 		localQuerytool = qt;
 		msb_qtm = msbQTM;
 		qtf = qtFrame;
+		
+		infoPanel = this ;
 
 		MatteBorder matte = new MatteBorder( 3 , 3 , 3 , 3 , Color.green );
 		GridBagLayout gbl = new GridBagLayout();
@@ -194,9 +198,8 @@ public class InfoPanel extends JPanel implements ActionListener
 							qtf.resetScrollBars();
 							logoPanel.stop();
 							qtf.setCursor( normalCursor );
-							if( queryExpiredTimer != null )
-								queryExpiredTimer.cancel();
-							queryExpiredTimer = new Timer();
+							if( queryTask != null )
+								queryTask.cancel() ;
 							qtf.setQueryExpired( false );
 							String queryTimeout = System.getProperty( "queryTimeout" );
 							System.out.println( "Query expiration: " + queryTimeout );
@@ -204,7 +207,7 @@ public class InfoPanel extends JPanel implements ActionListener
 							if( timeout.intValue() != 0 )
 							{
 								int delay = timeout.intValue() * 60 * 1000; // Conversion from minutes of milliseconds
-								queryExpiredTimer.schedule( new QueryExpiredTask() , delay );
+								queryTask = OMPTimer.getOMPTimer().setTimer( delay , infoPanel , false ) ;
 							}
 						}
 					}
@@ -342,14 +345,12 @@ public class InfoPanel extends JPanel implements ActionListener
 		}
 	}
 
-	public class QueryExpiredTask extends TimerTask
+	public void timeElapsed()
 	{
-		public void run()
-		{
-			System.out.println( "Query has expired" );
-			qtf.setQueryExpired( true );
-			cancel();
-		}
+			System.out.println( "Query has expired" ) ;
+			qtf.setQueryExpired( true ) ;
+			if( queryTask != null )
+				queryTask.cancel() ;
 	}
 
 	private void blinkIcon()
