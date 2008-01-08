@@ -194,7 +194,8 @@ public class Execute
 					}
 					else
 					{
-						inputBuffer.append( new String( stdout ).trim() , 0  , inputLength ) ;
+						String out = new String( stdout ).trim() ;
+						inputBuffer.append( out , 0  , out.length() ) ;
 					}
 				}
 
@@ -208,7 +209,8 @@ public class Execute
 					}
 					else
 					{
-						errorBuffer.append( new String( stderr ).trim() , 0 , errorLength ) ;
+						String err = new String( stderr ).trim() ;
+						errorBuffer.append( err , 0 , err.length() ) ;
 					}
 				}
 			}
