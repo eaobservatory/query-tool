@@ -44,6 +44,7 @@ public class LabeledRangeTextField extends WidgetPanel implements DocumentListen
 	private static Timer timer;
 	private String name;
 	private final String obsFieldName = "Observation Date";
+	private TimeUtils tu = new TimeUtils() ;
 
 	/**
 	 * Contructor.
@@ -272,7 +273,6 @@ public class LabeledRangeTextField extends WidgetPanel implements DocumentListen
 	 */
 	public void actionPerformed( ActionEvent e )
 	{
-		TimeUtils tu = new TimeUtils();
 		setUpperText( tu.getLocalTime() );
 		setLowerText( tu.getLocalDate() );
 	}
