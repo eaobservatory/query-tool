@@ -2,6 +2,7 @@ package edu.jach.qt.utils;
 
 import java.util.Calendar ;
 import java.util.Date ;
+import java.util.StringTokenizer ;
 import java.util.TimeZone ;
 import java.text.SimpleDateFormat ;
 import java.text.ParsePosition ;
@@ -17,8 +18,6 @@ public class TimeUtils
 	private final String dateFormat = "yyyy-MM-dd";
 	private final String timeFormat = "HH:mm:ss";
 	private final String isoFormat = "yyyy-MM-dd'T'HH:mm:ss";
-	private final SimpleDateFormat df = new SimpleDateFormat( dateFormat ) ;
-	private final SimpleDateFormat tf = new SimpleDateFormat( timeFormat ) ;
 
 	/**
 	 * Constructor.
@@ -31,7 +30,9 @@ public class TimeUtils
 	 */
 	public String getLocalDate()
 	{
-		return df.format( Calendar.getInstance().getTime() );
+		Calendar localCal = Calendar.getInstance();
+		SimpleDateFormat df = new SimpleDateFormat( dateFormat );
+		return df.format( localCal.getTime() );
 	}
 
 	/** 
@@ -41,7 +42,9 @@ public class TimeUtils
 	 */
 	public String getLocalTime()
 	{
-		return tf.format( Calendar.getInstance().getTime() );
+		Calendar localCal = Calendar.getInstance();
+		SimpleDateFormat df = new SimpleDateFormat( timeFormat );
+		return df.format( localCal.getTime() );
 	}
 
 	/**
@@ -71,13 +74,24 @@ public class TimeUtils
 		String convertedDate = null;
 		if( date != null )
 		{
-			Calendar cal = toCalendar( isoDate ) ;
-			
-			int hh = cal.get( Calendar.HOUR_OF_DAY ) ;
-			int mm = cal.get( Calendar.MINUTE ) ;
-			int ss = cal.get( Calendar.SECOND ) ;
+			// Break the string into tokens
+			StringTokenizer st = new StringTokenizer( isoDate , "-T:" );
+			String yyyy = st.nextToken();
+			String mn = st.nextToken();
+			String dd = st.nextToken();
+			String hh = st.nextToken();
+			String mm = st.nextToken();
+			String ss = st.nextToken();
 
-			int millsecondsOfDay = ( hh * 3600 + mm * 60 + ss ) * 1000;
+			int millsecondsOfDay = ( Integer.parseInt( hh ) * 3600 + Integer.parseInt( mm ) * 60 + Integer.parseInt( ss ) ) * 1000;
+
+			Calendar cal = Calendar.getInstance();
+			cal.set( Calendar.YEAR , Integer.parseInt( yyyy ) );
+			cal.set( Calendar.MONTH , Integer.parseInt( mn ) - 1 );
+			cal.set( Calendar.DAY_OF_MONTH , Integer.parseInt( dd ) );
+			cal.set( Calendar.HOUR_OF_DAY , Integer.parseInt( hh ) );
+			cal.set( Calendar.MINUTE , Integer.parseInt( mm ) );
+			cal.set( Calendar.SECOND , Integer.parseInt( ss ) );
 
 			TimeZone tz = TimeZone.getDefault();
 			int tzOffset = tz.getOffset( cal.get( Calendar.ERA ) , cal.get( Calendar.YEAR ) , cal.get( Calendar.MONTH ) , cal.get( Calendar.DAY_OF_MONTH ) , cal.get( Calendar.DAY_OF_WEEK ) , millsecondsOfDay );
@@ -103,25 +117,23 @@ public class TimeUtils
 		if( isValidDate( isoDateTime ) )
 		{
 			cal = Calendar.getInstance( TimeZone.getTimeZone( "UTC" ) );
-			String[] split = isoDateTime.split( "[-T:]" ) ;
-			
-			int yyyy = Integer.parseInt( split[ 0 ] ) ;
-			int mn = Integer.parseInt( split[ 1 ] ) ;
-			int dd = Integer.parseInt( split[ 2 ] ) ;
-			int hh = Integer.parseInt( split[ 3 ] ) ;
-			int mm = Integer.parseInt( split[ 4 ] ) ;
-			int ss = Integer.parseInt( split[ 5 ] ) ;
-			
-			cal.set( Calendar.YEAR , yyyy );
-			cal.set( Calendar.MONTH , mn - 1 );
-			cal.set( Calendar.DAY_OF_MONTH , dd );
-			cal.set( Calendar.HOUR_OF_DAY , hh );
-			cal.set( Calendar.MINUTE , mm );
-			cal.set( Calendar.SECOND , ss );
+			StringTokenizer st = new StringTokenizer( isoDateTime , "-:T" );
+			String yyyy = st.nextToken();
+			String mn = st.nextToken();
+			String dd = st.nextToken();
+			String hh = st.nextToken();
+			String mm = st.nextToken();
+			String ss = st.nextToken();
+			cal.set( Calendar.YEAR , Integer.parseInt( yyyy ) );
+			cal.set( Calendar.MONTH , Integer.parseInt( mn ) - 1 );
+			cal.set( Calendar.DAY_OF_MONTH , Integer.parseInt( dd ) );
+			cal.set( Calendar.HOUR_OF_DAY , Integer.parseInt( hh ) );
+			cal.set( Calendar.MINUTE , Integer.parseInt( mm ) );
+			cal.set( Calendar.SECOND , Integer.parseInt( ss ) );
 		}
 		return cal;
 	}
-	
+
 	/**
 	 * Convert a date/time string to a <code>Date</code> object.
 	 * date/time must be in ISO format.
