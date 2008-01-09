@@ -2,7 +2,6 @@ package edu.jach.qt.utils;
 
 import java.util.Calendar ;
 import java.util.Date ;
-import java.util.StringTokenizer ;
 import java.util.TimeZone ;
 import java.text.SimpleDateFormat ;
 import java.text.ParsePosition ;
@@ -18,6 +17,9 @@ public class TimeUtils
 	private final String dateFormat = "yyyy-MM-dd";
 	private final String timeFormat = "HH:mm:ss";
 	private final String isoFormat = "yyyy-MM-dd'T'HH:mm:ss";
+	private final SimpleDateFormat sdf = new SimpleDateFormat( dateFormat ) ;
+	private final SimpleDateFormat stf = new SimpleDateFormat( timeFormat ) ;
+	private final SimpleDateFormat sif = new SimpleDateFormat( isoFormat ) ;
 
 	/**
 	 * Constructor.
@@ -30,9 +32,7 @@ public class TimeUtils
 	 */
 	public String getLocalDate()
 	{
-		Calendar localCal = Calendar.getInstance();
-		SimpleDateFormat df = new SimpleDateFormat( dateFormat );
-		return df.format( localCal.getTime() );
+		return sdf.format( Calendar.getInstance().getTime() );
 	}
 
 	/** 
@@ -42,9 +42,7 @@ public class TimeUtils
 	 */
 	public String getLocalTime()
 	{
-		Calendar localCal = Calendar.getInstance();
-		SimpleDateFormat df = new SimpleDateFormat( timeFormat );
-		return df.format( localCal.getTime() );
+		return stf.format( Calendar.getInstance().getTime() );
 	}
 
 	/**
@@ -74,31 +72,19 @@ public class TimeUtils
 		String convertedDate = null;
 		if( date != null )
 		{
-			// Break the string into tokens
-			StringTokenizer st = new StringTokenizer( isoDate , "-T:" );
-			String yyyy = st.nextToken();
-			String mn = st.nextToken();
-			String dd = st.nextToken();
-			String hh = st.nextToken();
-			String mm = st.nextToken();
-			String ss = st.nextToken();
-
-			int millsecondsOfDay = ( Integer.parseInt( hh ) * 3600 + Integer.parseInt( mm ) * 60 + Integer.parseInt( ss ) ) * 1000;
-
-			Calendar cal = Calendar.getInstance();
-			cal.set( Calendar.YEAR , Integer.parseInt( yyyy ) );
-			cal.set( Calendar.MONTH , Integer.parseInt( mn ) - 1 );
-			cal.set( Calendar.DAY_OF_MONTH , Integer.parseInt( dd ) );
-			cal.set( Calendar.HOUR_OF_DAY , Integer.parseInt( hh ) );
-			cal.set( Calendar.MINUTE , Integer.parseInt( mm ) );
-			cal.set( Calendar.SECOND , Integer.parseInt( ss ) );
-
 			TimeZone tz = TimeZone.getDefault();
+			Calendar cal = toCalendar( isoDate , tz ) ;
+			
+			int hh = cal.get( Calendar.HOUR_OF_DAY ) ;
+			int mm = cal.get( Calendar.MINUTE ) ;
+			int ss = cal.get( Calendar.SECOND ) ;
+			
+			int millsecondsOfDay = ( hh * 3600 + mm * 60 + ss ) * 1000 ;
+			
 			int tzOffset = tz.getOffset( cal.get( Calendar.ERA ) , cal.get( Calendar.YEAR ) , cal.get( Calendar.MONTH ) , cal.get( Calendar.DAY_OF_MONTH ) , cal.get( Calendar.DAY_OF_WEEK ) , millsecondsOfDay );
 			cal.set( Calendar.MILLISECOND , cal.get( Calendar.MILLISECOND ) - tzOffset );
 
-			SimpleDateFormat df = new SimpleDateFormat( isoFormat );
-			convertedDate = df.format( cal.getTime() );
+			convertedDate = sif.format( cal.getTime() );
 		}
 		return convertedDate;
 	}
@@ -113,23 +99,38 @@ public class TimeUtils
 	 */
 	public Calendar toCalendar( String isoDateTime )
 	{
+		return toCalendar( isoDateTime , TimeZone.getTimeZone( "UTC" ) ) ;	
+	}
+	
+	/**
+	 * Convert an ISO format date/time string into a <code>Calendar</code>
+	 * object.
+	 * @see java.util.Calendar
+	 *
+	 * @param isoDateTime     Date/Time <code>String</code> is ISO format.
+	 * @param timeZone        <code>TimeZone</code>.
+	 * @return                Corrsponding <code>Calendar</code> object
+	 */
+	public Calendar toCalendar( String isoDateTime , TimeZone timeZone )
+	{
 		Calendar cal = null;
 		if( isValidDate( isoDateTime ) )
 		{
-			cal = Calendar.getInstance( TimeZone.getTimeZone( "UTC" ) );
-			StringTokenizer st = new StringTokenizer( isoDateTime , "-:T" );
-			String yyyy = st.nextToken();
-			String mn = st.nextToken();
-			String dd = st.nextToken();
-			String hh = st.nextToken();
-			String mm = st.nextToken();
-			String ss = st.nextToken();
-			cal.set( Calendar.YEAR , Integer.parseInt( yyyy ) );
-			cal.set( Calendar.MONTH , Integer.parseInt( mn ) - 1 );
-			cal.set( Calendar.DAY_OF_MONTH , Integer.parseInt( dd ) );
-			cal.set( Calendar.HOUR_OF_DAY , Integer.parseInt( hh ) );
-			cal.set( Calendar.MINUTE , Integer.parseInt( mm ) );
-			cal.set( Calendar.SECOND , Integer.parseInt( ss ) );
+			cal = Calendar.getInstance( timeZone );
+			String[] split = isoDateTime.split( "[-T:]" ) ;
+			
+			int yyyy = Integer.parseInt( split[ 0 ] ) ;
+			int mn = Integer.parseInt( split[ 1 ] ) ;
+			int dd = Integer.parseInt( split[ 2 ] ) ;
+			int hh = Integer.parseInt( split[ 3 ] ) ;
+			int mm = Integer.parseInt( split[ 4 ] ) ;
+			int ss = Integer.parseInt( split[ 5 ] ) ;
+			cal.set( Calendar.YEAR , yyyy );
+			cal.set( Calendar.MONTH , mn - 1 );
+			cal.set( Calendar.DAY_OF_MONTH , dd );
+			cal.set( Calendar.HOUR_OF_DAY , hh );
+			cal.set( Calendar.MINUTE , mm );
+			cal.set( Calendar.SECOND , ss );
 		}
 		return cal;
 	}
@@ -145,9 +146,8 @@ public class TimeUtils
 	private Date parseDate( String dateString )
 	{
 		ParsePosition p = new ParsePosition( 0 );
-		SimpleDateFormat df = new SimpleDateFormat( isoFormat );
-		df.setLenient( false );
-		Date date = df.parse( dateString , p );
+		sif.setLenient( false );
+		Date date = sif.parse( dateString , p );
 		return date;
 	}
 }
