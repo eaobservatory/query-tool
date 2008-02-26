@@ -18,13 +18,8 @@ dummyTable:/jac_sw/omp/config/querySet.txt
 qtLogo:file:/jac_sw/omp/QT/icons/QtLogo.png
 
 #Sat page
-#satellitePage:http://hokukea.soest.hawaii.edu/satellite/latest.cgi?dirname=ni4&geog=nep&anim=no&size=thumb
-
-#satelliteIRPage:http://hokukea.soest.hawaii.edu/satellite/still.cgi?chnl=ni4&geog=haw&anim=no&size=thumb
-#satelliteWVPage:http://hokukea.soest.hawaii.edu/satellite/still.cgi?chnl=nw8&geog=haw&anim=no&size=thumb
-satelliteIRPage:http://mkwc.ifa.hawaii.edu/satellite/still.cgi?chnl=ui4&domain=haw&anim=no&size=thumb&thumbs=on&satplat=goes10&overlay=off
-satelliteWVPage:http://mkwc.ifa.hawaii.edu/satellite/still.cgi?chnl=uw8&domain=haw&anim=no&size=thumb&thumbs=on&satplat=goes10&overlay=off
-#imagePrefix:http://hokukea.soest.hawaii.edu/
+satelliteIRPage:http://mkwc.ifa.hawaii.edu/satellite/still.cgi?res=4km&chnl=ir&domain=big&anim=no&size=large&thumbs=on&banner=mkwc&satplat=goeswest&overlay=off
+satelliteWVPage:http://mkwc.ifa.hawaii.edu/satellite/still.cgi?res=8km&chnl=wv&domain=big&anim=no&size=large&thumbs=on&banner=mkwc&satplat=goeswest&overlay=off
 imagePrefix:http://mkwc.ifa.hawaii.edu/
 
 #The QtLogo location
