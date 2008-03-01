@@ -181,14 +181,9 @@ public class QtFrame extends JFrame implements PopupMenuListener , ActionListene
 			return;
 		}
 
-		if( DeferredProgramList.deferredFilesExist() )
-		{
-			Object[] options = { "Save" , "Delete" };
-			int selection = JOptionPane.showOptionDialog( this , "Deferred observations currently exist. Save?" , "Deferred observations exist" , JOptionPane.DEFAULT_OPTION , JOptionPane.QUESTION_MESSAGE , null , options , options[ 0 ] );
-			// This should be the delete option I think
-			if( selection == 1 )
-				DeferredProgramList.deleteAllFiles();
-		}
+		// Run cleanup at shutdown just incase we crossed a UT date boundry
+		DeferredProgramList.cleanup() ;
+		
 		File cacheDir = new File( "/tmp/last_user" );
 		if( cacheDir.exists() && cacheDir.isDirectory() )
 		{
@@ -214,31 +209,8 @@ public class QtFrame extends JFrame implements PopupMenuListener , ActionListene
 	{
 		gbc = new GridBagConstraints();
 
-		// Check whether deferred Observations currently exist and ask the user if he wants to use these. If they don't then delete the current files
-		if( DeferredProgramList.obsExist() )
-		{
-			final JOptionPane pane = new JOptionPane( "Use current deferred Observations?" , JOptionPane.QUESTION_MESSAGE , JOptionPane.YES_NO_OPTION );
-
-			final JDialog dialog = pane.createDialog( this , "Deferred Observations Exist" );
-			dialog.addWindowListener( new WindowAdapter()
-			{
-				public void windowDeactivated( WindowEvent we )
-				{
-					dialog.toFront();
-				}
-			} );
-			dialog.show();
-			int selection;
-			Object selectedValue = pane.getValue();
-			// User didn't make a choice so take the safe option and assume they didn't want to delete
-			if( selectedValue == null )
-				selection = JOptionPane.YES_OPTION;
-			else
-				selection = ( ( Integer )selectedValue ).intValue();
-
-			if( selection == JOptionPane.NO_OPTION )
-				DeferredProgramList.deleteAllFiles();
-		}
+		// Clean up deferred observations from previous UT dates
+		DeferredProgramList.cleanup() ;
 
 		// Input Panel Setup
 		WidgetPanel inputPanel = new WidgetPanel( new Hashtable() , widgetBag );

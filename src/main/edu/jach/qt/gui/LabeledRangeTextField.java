@@ -44,7 +44,6 @@ public class LabeledRangeTextField extends WidgetPanel implements DocumentListen
 	private static Timer timer;
 	private String name;
 	private final String obsFieldName = "Observation Date";
-	private TimeUtils tu = new TimeUtils() ;
 
 	/**
 	 * Contructor.
@@ -95,9 +94,8 @@ public class LabeledRangeTextField extends WidgetPanel implements DocumentListen
 	
 		if( text.equalsIgnoreCase( obsFieldName ) )
 		{
-			TimeUtils time = new TimeUtils();
-			setLowerText( time.getLocalDate() );
-			setUpperText( time.getLocalTime() );
+			setLowerText( TimeUtils.getLocalDate() );
+			setUpperText( TimeUtils.getLocalTime() );
 			upperBound.addKeyListener( this );
 			lowerBound.addKeyListener( this );
 			timer = new Timer( 0 , this );
@@ -273,8 +271,8 @@ public class LabeledRangeTextField extends WidgetPanel implements DocumentListen
 	 */
 	public void actionPerformed( ActionEvent e )
 	{
-		setUpperText( tu.getLocalTime() );
-		setLowerText( tu.getLocalDate() );
+		setUpperText( TimeUtils.getLocalTime() );
+		setLowerText( TimeUtils.getLocalDate() );
 	}
 
 	/**
@@ -316,8 +314,7 @@ public class LabeledRangeTextField extends WidgetPanel implements DocumentListen
 		}
 
 		String dateTime = date + "T" + time;
-		TimeUtils tu = new TimeUtils();
-		dateTime = tu.convertLocalISODatetoUTC( dateTime );
+		dateTime = TimeUtils.convertLocalISODatetoUTC( dateTime );
 
 		// Recalculate moon
 		// Try to update the moon Panel

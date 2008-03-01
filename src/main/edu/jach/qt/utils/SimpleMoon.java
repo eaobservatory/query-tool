@@ -205,8 +205,7 @@ public class SimpleMoon implements OMPTimerListener
 	private void getCurrentPosition( String isoDateTime )
 	{
 		// Calculate the JD corresponding to the current UT
-		TimeUtils tu = new TimeUtils();
-		_cal = tu.toCalendar( isoDateTime );
+		_cal = TimeUtils.toCalendar( isoDateTime );
 		getCurrentPosition( _cal );
 	}
 

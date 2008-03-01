@@ -71,6 +71,8 @@ import orac.util.SpInputXML;
 /* QT imports */
 import edu.jach.qt.utils.ObsListCellRenderer;
 import edu.jach.qt.utils.ErrorBox;
+import edu.jach.qt.utils.TimeUtils ;
+import edu.jach.qt.utils.FileExtensionFilter ;
 
 /* Miscellaneous imports */
 
@@ -92,8 +94,15 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 	private JPopupMenu engMenu = new JPopupMenu();
 	private JMenuItem engItem = new JMenuItem( "Send for Engineering" );
 	private boolean _useQueue = true;
-	private static HashSet duplicatesVector = new HashSet();
+	private static HashSet duplicates = new HashSet();
 	static Logger logger = Logger.getLogger( DeferredProgramList.class );
+	
+	private static String knownUTCDate ;
+	private static String deferredDirName ;
+	private static String todaysDeferredDirName ;
+	private static File deferredDir ;
+	private static File todaysDeferredDir ;
+	private static final FileExtensionFilter xmlFilter = new FileExtensionFilter( ".xml" ) ;
 
 	/**
 	 * Constructor.
@@ -159,16 +168,15 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 		// parse through the xml files and add each one to the current list
 		for( int fileCounter = 0 ; fileCounter < deferredFiles.length ; fileCounter++ )
 		{
-			// Only look for files which are readable and have a .xml suffix
+			// Only look for files which are readable
 			String currentFileName = deferredFiles[ fileCounter ];
 			File currentFile = new File( currentFileName );
+			
 			if( currentFile.canRead() && // Make sure we can read it
 			currentFile.isFile() && // Dont bother with subdirs
 			currentFile.length() > 0 && // Make sure its worth bothering with
-			!( currentFile.isHidden() ) && // Make sure it is not a hidden file
-			currentFileName.endsWith( ".xml" ) )
-			{ // Make sure it is an XML file
-
+			!currentFile.isHidden() ) // Make sure it is not a hidden file
+			{
 				try
 				{
 					FileReader reader = new FileReader( currentFile );
@@ -234,13 +242,13 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 			thisObs.getTable().set( "msbid" , "CAL" );
 			thisObs.getTable().set( ":msb" , "true" );
 
-			if( !duplicatesVector.contains( thisObs ) )
+			if( !duplicates.contains( thisObs ) )
 			{
 				SpInstObsComp inst = SpTreeMan.findInstrument( thisObs );
 				SpInsertData insertable = SpTreeMan.evalInsertInside( inst , thisObs );
 				if( insertable != null )
 					SpTreeMan.insert( insertable );
-				duplicatesVector.add( thisObs );
+				duplicates.add( thisObs );
 			}
 
 			if( thisObs.getTitleAttr().equals( "Observation" ) )
@@ -380,7 +388,7 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 		String currentObsXML = obs.toXML();
 		for( int i = 0 ; i < ( ( DefaultListModel )obsList.getModel() ).size() ; i++ )
 		{
-			SpItem thisObs = ( SpItem )( ( ( DefaultListModel )obsList.getModel() ).elementAt( i ) );
+			SpItem thisObs = ( SpItem )(( DefaultListModel )obsList.getModel()).elementAt( i ) ;
 			String thisObsXML = thisObs.toXML();
 			if( thisObsXML.equals( currentObsXML ) )
 			{
@@ -420,10 +428,8 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 				// Reset _useQueue
 				_useQueue = true;
 				// Now check the result
-				String deferredDirectory = File.separator + System.getProperty( "telescope" ).toLowerCase() + "data" + File.separator;
-				deferredDirectory += System.getProperty( "deferredDir" ) + File.separator;
-				File failFile = new File( deferredDirectory + ".failure" );
-				File successFile = new File( deferredDirectory + ".success" );
+				File failFile = execute.failFile() ;
+				File successFile = execute.successFile() ;
 				if( failFile.exists() )
 				{
 					new ErrorBox( this , "Failed to Execute. Check messages." );
@@ -441,6 +447,12 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 					new ErrorBox( "Unable to determine success status - assuming failed." );
 					logger.error( "Unable to determine success status for observation." );
 				}
+				
+				// done with status files
+				if( failFile.exists() )
+					failFile.delete() ;
+				if( successFile.exists() )
+					successFile.delete() ;
 			}
 			catch( Exception e )
 			{
@@ -450,12 +462,10 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 					logger.error( "Last observation still seems to be running" );
 				}
 			}
-			return;
 		}
 		else if( System.getProperty( "telescope" ).equalsIgnoreCase( "jcmt" ) )
 		{
 			new ExecuteInThread( currentItem , true ).start();
-			return;
 		}
 	}
 
@@ -477,26 +487,105 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 		gbc.gridheight = h;
 		add( c , gbc );
 	}
-
-	private static String getDeferredDirectoryName()
+	
+	/**
+	 * @return The parent directory name for deferred observations as a String.
+	 */
+	public static String getDeferredDirectoryName()
 	{
-		String deferredDirName = File.separator + System.getProperty( "telescope" ) + "data" + File.separator + System.getProperty( "deferredDir" );
-		deferredDirName = deferredDirName.toLowerCase();
-		return deferredDirName;
+		if( deferredDirName == null )
+		{
+			StringBuffer buffer = new StringBuffer() ;
+			buffer.append( File.separator ) ;
+			buffer.append( System.getProperty( "telescope" ) ) ;
+			buffer.append( "data" ) ;
+			buffer.append( File.separator ) ;
+			buffer.append( System.getProperty( "deferredDir" ) ) ;
+			deferredDirName = buffer.toString() ;
+			buffer.delete( 0 , buffer.length() ) ;
+			buffer = null ;
+			deferredDirName = deferredDirName.toLowerCase() ;
+		}
+		return deferredDirName ;
 	}
-
+	
+	/**
+	 * @return The directory name of deferred observations for this UT date as a String.
+	 */
+	public static String getTodaysDeferredDirectoryName()
+	{
+		if( checkUTCDate() || todaysDeferredDirName == null )
+		{
+			StringBuffer buffer = new StringBuffer() ;
+			buffer.append( getDeferredDirectoryName() ) ;
+			buffer.append( File.separator ) ;
+			buffer.append( knownUTCDate ) ;
+			todaysDeferredDirName = buffer.toString() ;
+			buffer.delete( 0 , buffer.length() ) ;
+			buffer = null ;
+			todaysDeferredDirName = todaysDeferredDirName.toLowerCase() ;
+		}
+		return todaysDeferredDirName ;
+	}
+	
+	public static File getDeferredDirectory()
+	{
+		if( deferredDir == null )
+			deferredDir = createDirectory( getDeferredDirectoryName() ) ;
+		
+		return deferredDir ;
+	}
+	
+	public static File getTodaysDeferredDirectory()
+	{
+		if( checkUTCDate() || todaysDeferredDir == null )
+			todaysDeferredDir = createDirectory( getTodaysDeferredDirectoryName() ) ;
+		
+		return todaysDeferredDir ;
+	}
+	
+	private static File createDirectory( String fileName )
+	{
+		File dir = new File( fileName ) ;
+		if( !dir.exists() )
+		{
+			logger.info( "Creating deferred directory " + dir ) ;
+			if( !dir.mkdirs() )
+			{
+				logger.error( "Could not create directory " + dir ) ;
+				dir = null ;
+			}
+		}
+		else if( !dir.canRead() )
+		{
+			logger.error( "Unable to read deferred directory " + dir ) ;
+			dir = null ;
+		}
+		else if( !dir.isDirectory() )
+		{
+			logger.error( dir + " is not a directory, deleting." ) ;
+			dir.delete() ;
+			dir = null ;
+		}
+		return dir ;
+	}
+	
+	// check wether UTC date has changed
+	private static boolean checkUTCDate()
+	{
+		boolean changed = true ;
+		String UTCDate = TimeUtils.getUTCDate() ;
+		if( knownUTCDate == null  )
+			knownUTCDate = UTCDate ;
+		else if( knownUTCDate.equals( UTCDate ) )
+			changed = false ;
+		return changed ;
+	}
+	
 	private static void makePersistent( SpItem item )
 	{
 		// Stores this observation in it own unique file in the deferred directory. First make the filename
-		String dirName = getDeferredDirectoryName();
-
-		File deferredDir = new File( dirName );
-		if( !deferredDir.exists() )
-			logger.error( "Error writing file, directory " + dirName + " does not exist" , new FileNotFoundException() );
-		else if( !deferredDir.canWrite() )
-			logger.error( "Unable to write to directory " + dirName , new FileNotFoundException() );
-
-		String fName = dirName + File.separator + makeFilenameForThisItem( item );
+		String fName = makeFilenameForThisItem( item ) ;
 		FileWriter fw = null;
 		// Now create a new file write to write to this file
 		try
@@ -525,116 +614,103 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 
 	private static String makeFilenameForThisItem( SpItem item )
 	{
-		String fName = new String();
+		StringBuffer buffer = new StringBuffer() ;
+		buffer.append( getTodaysDeferredDirectoryName() ) ;
+		buffer.append( File.separator ) ;
 		Date now = new Date();
-		fName = now.getTime() + ".xml";
-		fName = fName.toLowerCase(); // unnecessary 
-		return fName;
-	}
-
-	/**
-	 * Check to see whether any deferre observations exist.
-	 * @return <code>true</code> if deferred observations exist; <code>false> otherwise.
-	 */
-	public static boolean deferredFilesExist()
-	{
-		boolean filesExist = true;
-
-		switch( getNumberOfDeferredItems() )
-		{
-			case 0 :
-				filesExist = false;
-				break;
-			default :
-				break;
-		}
-		return filesExist;
-	}
-
-	/**
-	 * Get the number of deferred observations.
-	 * @return  The number of deferred observations.
-	 */
-	private static int getNumberOfDeferredItems()
-	{
-		return fileToObjectMap.size();
+		buffer.append( now.getTime() ) ;
+		buffer.append( ".xml" ) ;
+		String fName = buffer.toString() ;
+		buffer.delete( 0 , buffer.length() ) ;
+		buffer = null ;
+		return fName.toLowerCase() ; // unnecessary 
 	}
 
 	/**
 	 * Checks whether any deferred observation files exist.
-	 * These do nat have to have been read into the current
+	 * These do not have to have been read into the current
 	 * list of displayed observations.
 	 * @return <code>true</code> if deferred observatio files exist; <code>false</code> otherwise.
 	 */
 	public static boolean obsExist()
 	{
-		boolean exists = false;
-
-		String[] deferredFiles = getFileList();
-		if( deferredFiles.length != 0 )
-		{
-			for( int fileCounter = 0 ; fileCounter < deferredFiles.length ; fileCounter++ )
-			{
-				if( deferredFiles[ fileCounter ].endsWith( ".xml" ) )
-				{
-					exists = true;
-					break;
-				}
-			}
-		}
-		return exists;
+		return getFileList().length != 0 ;
 	}
 
 	private static String[] getFileList()
 	{
-		// Assume we save deferred obs in <diferred file dir>/<telescope>
 		String deferredFiles[] = {};
-		String deferredDirName = getDeferredDirectoryName();
+		File deferredDir = getTodaysDeferredDirectory() ;
 
-		File deferredDir = new File( deferredDirName );
-		if( !deferredDir.exists() )
-		{
-			// Try to create the directory
-			logger.info( "Creating deferred directory " + deferredDirName );
-			if( !deferredDir.mkdirs() )
-				logger.info( "Could not create directory " + deferredDirName );
-			return deferredFiles;
-		}
-		else if( deferredDir.canRead() && deferredDir.isDirectory() )
-		{
-			deferredFiles = deferredDir.list();
-		}
+		deferredFiles = deferredDir.list( xmlFilter ) ;
+		
+		String currentFileName ;
 		
 		for( int i = 0 ; i < deferredFiles.length ; i++ )
-			deferredFiles[ i ] = deferredDirName + File.separator + deferredFiles[ i ];
+		{
+			currentFileName = deferredFiles[ i ] ;
+			if( !currentFileName.contains( File.separator ) )
+				deferredFiles[ i ] = todaysDeferredDirName + File.separator + currentFileName ;
+		}
 
 		return deferredFiles;
-
 	}
 
 	/**
-	 * Delete all deferred observation files and clear the contents of the
-	 * Deferred Program List.
+	 * Delete all deferred observation files and clear the contents of the Deferred Program List.
 	 */
-	public static void deleteAllFiles()
-	{
-		// Does not assume a current hashmap exists - get the directory and trawl through all the .xml files
-		String[] deferredFiles = getFileList();
-		if( deferredFiles.length != 0 )
+	public static void cleanup()
+	{		
+		File deferredParent = getDeferredDirectory() ;
+		File deferred = getTodaysDeferredDirectory() ;
+		
+		File[] files = deferredParent.listFiles() ;
+		for( int index = 0 ; index < files.length ; index++ )
 		{
-			for( int fileCounter = 0 ; fileCounter < deferredFiles.length ; fileCounter++ )
-			{
-				String currentFileName = deferredFiles[ fileCounter ];
-				if( currentFileName.endsWith( ".xml" ) )
-				{
-					File currentFile = new File( currentFileName );
-					currentFile.delete();
-				}
-			}
+			File file = files[ index ] ;
+			if( !delete( file , deferred ) )
+				logger.error( "Could not delete " + file.getName() ) ;
 		}
+		
 		// Now clear the hashmap, just for completeness
 		if( !fileToObjectMap.isEmpty() )
 			fileToObjectMap.clear();
+	}
+	
+	private static boolean delete( File file , File skip )
+	{
+		boolean success = true ;
+		
+		if( !file.equals( skip ) )
+		{
+			if( file.isDirectory() )
+			{
+				File[] files = file.listFiles() ;
+				for( int index = 0 ; index < files.length ; index++ )
+					delete( files[ index ] , skip ) ;
+			}
+			
+			if( !file.delete() )
+			{
+				String diagnostic = "" ;
+				if( !file.exists() )
+					diagnostic = "does not exist" ;
+				else if( !file.canWrite() )
+					diagnostic = "cannot be written to" ;
+				logger.error( "Could not delete " + file.getName() + " " + diagnostic + "." ) ;
+				success = false ;
+			}
+			else
+			{
+				logger.warn( "Deleted " + file.getName() ) ;
+			}
+		}
+		else
+		{
+			logger.warn( "Skipping " + file.getName() ) ;
+		}
+		
+		return success ;
 	}
 
 	/**
@@ -723,7 +799,7 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 		{
 			evt.acceptDrop( DnDConstants.ACTION_MOVE );
 			SpItem thisObs = ProgramTree.obsToDefer;
-			if( ( ( SpObs )thisObs ).isOptional() )
+			if( (( SpObs )thisObs).isOptional() )
 			{
 				appendItem( thisObs );
 				evt.getDropTargetContext().dropComplete( true );
@@ -889,24 +965,16 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 			execute.setDeferred( _isDeferred );
 			failed = execute.run();
 
-			File failFile = new File( "/jcmtdata/orac_data/deferred/.failure" );
-			File successFile = new File( "/jcmtdata/orac_data/deferred/.success" );
-			if( failFile.exists() )
+			if( failed )
 			{
 				new ErrorBox( "Failed to Execute. Check messages." );
 				logger.warn( "Failed to execute observation" );
 			}
-			else if( successFile.exists() )
+			else
 			{
 				// Mark this observation as having been done
 				markThisObservationAsDone( currentItem );
 				logger.info( "Observation executed successfully" );
-			}
-			else
-			{
-				// Neither file exists - report an error to the user
-				new ErrorBox( "Unable to determine success status - assuming failed." );
-				logger.error( "Unable to determine success status for observation." );
 			}
 		}
 	}

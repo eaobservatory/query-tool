@@ -14,12 +14,13 @@ import java.text.ParsePosition ;
  */
 public class TimeUtils
 {
-	private final String dateFormat = "yyyy-MM-dd";
-	private final String timeFormat = "HH:mm:ss";
-	private final String isoFormat = "yyyy-MM-dd'T'HH:mm:ss";
-	private final SimpleDateFormat sdf = new SimpleDateFormat( dateFormat ) ;
-	private final SimpleDateFormat stf = new SimpleDateFormat( timeFormat ) ;
-	private final SimpleDateFormat sif = new SimpleDateFormat( isoFormat ) ;
+	private final static String dateFormat = "yyyy-MM-dd";
+	private final static String timeFormat = "HH:mm:ss";
+	private final static String isoFormat = "yyyy-MM-dd'T'HH:mm:ss";
+	private final static SimpleDateFormat sdf = new SimpleDateFormat( dateFormat ) ;
+	private final static SimpleDateFormat stf = new SimpleDateFormat( timeFormat ) ;
+	private final static SimpleDateFormat sif = new SimpleDateFormat( isoFormat ) ;
+	private final static TimeZone UTC = TimeZone.getTimeZone( "UTC" ) ;
 
 	/**
 	 * Constructor.
@@ -30,9 +31,19 @@ public class TimeUtils
 	 * Get the current local date.
 	 * @return    Current date as yyyy-mm-dd
 	 */
-	public String getLocalDate()
+	public static String getLocalDate()
 	{
 		return sdf.format( Calendar.getInstance().getTime() );
+	}
+	
+	/**
+	 * Get the current UTC date.
+	 * @return    Current date as yyyy-mm-dd
+	 */
+	public static String getUTCDate()
+	{
+		sdf.setTimeZone( UTC ) ;
+		return sdf.format( Calendar.getInstance( UTC ).getTime() );
 	}
 
 	/** 
@@ -40,9 +51,20 @@ public class TimeUtils
 	 *
 	 * @return    Current time in HH:MM:SS format.
 	 */
-	public String getLocalTime()
+	public static String getLocalTime()
 	{
 		return stf.format( Calendar.getInstance().getTime() );
+	}
+	
+	/** 
+	 * Get the current UTC time.
+	 *
+	 * @return    Current time in HH:MM:SS format.
+	 */
+	public static String getUTCTime()
+	{
+		stf.setTimeZone( UTC );
+		return stf.format( Calendar.getInstance( UTC ).getTime() );
 	}
 
 	/**
@@ -53,7 +75,7 @@ public class TimeUtils
 	 * @param dateString    Date/Time string
 	 * @return              <code>true</code> if valid; <code>false</code> otherwise.
 	 */
-	public boolean isValidDate( String dateString )
+	public static boolean isValidDate( String dateString )
 	{
 		Date date = parseDate( dateString );
 		return ( date != null ) ;
@@ -65,7 +87,7 @@ public class TimeUtils
 	 * @param isoDate    Local Date/Time <code>String</code> in ISO format
 	 * @return           UTC in ISO format.
 	 */
-	public String convertLocalISODatetoUTC( String isoDate )
+	public static String convertLocalISODatetoUTC( String isoDate )
 	{
 		// Parse the date to get the local Date
 		Date date = parseDate( isoDate );
@@ -97,9 +119,9 @@ public class TimeUtils
 	 * @param isoDateTime     Date/Time <code>String</code> is ISO format.
 	 * @return                Corrsponding <code>Calendar</code> object
 	 */
-	public Calendar toCalendar( String isoDateTime )
+	public static Calendar toCalendar( String isoDateTime )
 	{
-		return toCalendar( isoDateTime , TimeZone.getTimeZone( "UTC" ) ) ;	
+		return toCalendar( isoDateTime , UTC ) ;	
 	}
 	
 	/**
@@ -111,7 +133,7 @@ public class TimeUtils
 	 * @param timeZone        <code>TimeZone</code>.
 	 * @return                Corrsponding <code>Calendar</code> object
 	 */
-	public Calendar toCalendar( String isoDateTime , TimeZone timeZone )
+	public static Calendar toCalendar( String isoDateTime , TimeZone timeZone )
 	{
 		Calendar cal = null;
 		if( isValidDate( isoDateTime ) )
@@ -126,7 +148,7 @@ public class TimeUtils
 			int mm = Integer.parseInt( split[ 4 ] ) ;
 			int ss = Integer.parseInt( split[ 5 ] ) ;
 			cal.set( Calendar.YEAR , yyyy );
-			cal.set( Calendar.MONTH , mn - 1 );
+			cal.set( Calendar.MONTH , mn - 1 ); // months are 0 based
 			cal.set( Calendar.DAY_OF_MONTH , dd );
 			cal.set( Calendar.HOUR_OF_DAY , hh );
 			cal.set( Calendar.MINUTE , mm );
@@ -143,7 +165,7 @@ public class TimeUtils
 	 * @return                 Corresponding <code>Date</code> object or
 	 *                         <code>null</code> on failure.
 	 */
-	private Date parseDate( String dateString )
+	private static Date parseDate( String dateString )
 	{
 		ParsePosition p = new ParsePosition( 0 );
 		sif.setLenient( false );

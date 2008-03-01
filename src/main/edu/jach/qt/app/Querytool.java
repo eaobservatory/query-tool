@@ -501,13 +501,12 @@ public class Querytool implements Runnable , Observer
 
 		tmpStr = lrtf.getLowerText() + "T" + time;
 
-		TimeUtils tu = new TimeUtils();
 		if( !lrtf.timerRunning() )
 		{
-			if( tu.isValidDate( tmpStr ) )
+			if( TimeUtils.isValidDate( tmpStr ) )
 			{
 				item = doc.createElement( "date" );
-				tmpStr = tu.convertLocalISODatetoUTC( tmpStr );
+				tmpStr = TimeUtils.convertLocalISODatetoUTC( tmpStr );
 				item.appendChild( doc.createTextNode( tmpStr.trim() ) );
 				root.appendChild( item );
 			}
@@ -520,7 +519,7 @@ public class Querytool implements Runnable , Observer
 		if( WidgetPanel.getMoonPanel() != null && WidgetPanel.getMoonPanel().getBackground() != Color.red )
 		{
 			SimpleMoon moon = SimpleMoon.getInstance();
-			if( lrtf.timerRunning() || !tu.isValidDate( tmpStr ) )
+			if( lrtf.timerRunning() || !TimeUtils.isValidDate( tmpStr ) )
 				moon.reset();
 			else
 				moon.set( tmpStr );
