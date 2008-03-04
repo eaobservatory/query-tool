@@ -103,6 +103,7 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 	private static File deferredDir ;
 	private static File todaysDeferredDir ;
 	private static final FileExtensionFilter xmlFilter = new FileExtensionFilter( ".xml" ) ;
+	private static boolean nodefer = false ;
 
 	/**
 	 * Constructor.
@@ -110,6 +111,8 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 	 */
 	public DeferredProgramList()
 	{
+		nodefer = System.getProperty( "NODEFER" ) != null ;
+		
 		Border border = BorderFactory.createMatteBorder( 2 , 2 , 2 , 2 , Color.white );
 		setBorder( new TitledBorder( border , "Deferred MSBs" , 0 , 0 , new Font( "Roman" , Font.BOLD , 12 ) , Color.black ) );
 		setLayout( new BorderLayout() );
@@ -158,55 +161,56 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 	}
 
 	/**
-	 * Gets the current set of deferred observations. These observations are stored on disk, and the directory is read looking for suitable observations.
+	 * Gets the current set of deferred observations. 
+	 * These observations are stored on disk, 
+	 * and the directory is read looking for suitable observations.
 	 */
 	public void getCurrentList()
 	{
-		// Assume we save deferred obs in <diferred file dir>/<telescope>
-		String[] deferredFiles = getFileList();
-
-		// parse through the xml files and add each one to the current list
-		for( int fileCounter = 0 ; fileCounter < deferredFiles.length ; fileCounter++ )
+		if( !nodefer )
 		{
-			// Only look for files which are readable
-			String currentFileName = deferredFiles[ fileCounter ];
-			File currentFile = new File( currentFileName );
-			
-			if( currentFile.canRead() && // Make sure we can read it
-			currentFile.isFile() && // Dont bother with subdirs
-			currentFile.length() > 0 && // Make sure its worth bothering with
-			!currentFile.isHidden() ) // Make sure it is not a hidden file
+			String[] deferredFiles = getFileList();
+	
+			// parse through the xml files and add each one to the current list
+			for( int fileCounter = 0 ; fileCounter < deferredFiles.length ; fileCounter++ )
 			{
-				try
+				// Only look for files which are readable
+				String currentFileName = deferredFiles[ fileCounter ];
+				File currentFile = new File( currentFileName );
+				
+				if( currentFile.canRead() && currentFile.isFile() && currentFile.length() > 0 && !currentFile.isHidden() )
 				{
-					FileReader reader = new FileReader( currentFile );
-					char[] chars = new char[ 1024 ];
-					int readLength = 0 ;
-					StringBuffer buffer = new StringBuffer() ;
-					while( !reader.ready() )
-						;
-					while( ( readLength = reader.read( chars ) ) != -1 )
-						buffer.append( chars , 0 , readLength ) ;
-					reader.close();
-					SpItem currentSpItem = ( new SpInputXML() ).xmlToSpItem( buffer.toString() );
-					if( currentSpItem != null )
+					try
 					{
-						fileToObjectMap.put( currentSpItem , currentFileName );
-						addElement( currentSpItem );
-						NotePanel.setNote( currentSpItem );
+						FileReader reader = new FileReader( currentFile );
+						char[] chars = new char[ 1024 ];
+						int readLength = 0 ;
+						StringBuffer buffer = new StringBuffer() ;
+						while( !reader.ready() )
+							;
+						while( ( readLength = reader.read( chars ) ) != -1 )
+							buffer.append( chars , 0 , readLength ) ;
+						reader.close();
+						SpItem currentSpItem = ( new SpInputXML() ).xmlToSpItem( buffer.toString() );
+						if( currentSpItem != null )
+						{
+							fileToObjectMap.put( currentSpItem , currentFileName );
+							addElement( currentSpItem );
+							NotePanel.setNote( currentSpItem );
+						}
 					}
-				}
-				catch( FileNotFoundException fnf )
-				{
-					logger.error( "File not found!" , fnf );
-				}
-				catch( IOException ioe )
-				{
-					logger.error( "File read error!" , ioe );
-				}
-				catch( Exception x )
-				{
-					logger.error( "Can not convert file!" , x );
+					catch( FileNotFoundException fnf )
+					{
+						logger.error( "File not found!" , fnf );
+					}
+					catch( IOException ioe )
+					{
+						logger.error( "File read error!" , ioe );
+					}
+					catch( Exception x )
+					{
+						logger.error( "Can not convert file!" , x );
+					}
 				}
 			}
 		}
@@ -225,8 +229,7 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 	/**
 	 * Add a calibration observation from the Calibrations Menu to the list.
 	 * 
-	 * @param cal
-	 *            The calibration observation to add.
+	 * @param cal The calibration observation to add.
 	 */
 	public static void addCalibration( SpItem cal )
 	{
@@ -287,7 +290,7 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 		obsList = new JList( model );
 		obsList.setCellRenderer( new ObsListCellRenderer() );
 
-		/* Make this list and drag source and drop target */
+		// Make this list and drag source and drop target
 		obsList.setDropTarget( dropTarget );
 		dragSource.createDefaultDragGestureRecognizer( obsList , DnDConstants.ACTION_MOVE , this );
 
@@ -342,8 +345,7 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 	/**
 	 * Append a new observation to the current list.
 	 * 
-	 * @param obs
-	 *            The observation to append.
+	 * @param obs The observation to append.
 	 */
 	public void appendItem( SpItem obs )
 	{
@@ -358,27 +360,27 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 		}
 	}
 
+	/**
+	 * This a fix to get over historical problems with XML
+	 * @param current SpItem
+	 * @return same SpItem, without associated problems.
+	 */
 	private static SpItem makeNewObs( SpItem current )
 	{
-		// The is a fix to get over historical problems with XML
 		SpItem newItem = current;
 		try
 		{
 			String xmlString = current.toXML();
 			newItem = ( new SpInputXML() ).xmlToSpItem( xmlString );
 		}
-		catch( Exception e )
-		{
-			return current;
-		}
+		catch( Exception e ){}
 		return newItem;
 	}
 
 	/**
 	 * Check whether the current observation is already in the deferred list.
 	 * 
-	 * @param obs
-	 *            The observation to compare.
+	 * @param obs The observation to compare.
 	 * @return <code>true</code> is the observation already exists; <code>false</code> otherwise.
 	 */
 	public static boolean isDuplicate( SpItem obs )
@@ -400,77 +402,78 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 	}
 
 	/*
-	 * This more or less mimics the doExecute() method the ProgramTree.java. Its real purpose is to let users do calibrations even if the "Send for Execution" button is disabled.
+	 * This more or less mimics the doExecute() method the ProgramTree.java. 
+	 * Its real purpose is to let users do calibrations even if the "Send for Execution" button is disabled.
 	 */
 	private void execute()
 	{
 		Thread t = null;
 
-		// If we have nothing selected. don't bother doing anything
-		if( currentItem == null )
-			return;
-
-		// If we have items selected on both the ProgramList and Deferred List the let the execute method handle the problem.
-
-		// Call the appropriate Execute method
-		if( System.getProperty( "telescope" ).equalsIgnoreCase( "ukirt" ) )
+		if( currentItem != null )
 		{
-			try
+			/*
+			 * If we have items selected on both the ProgramList and Deferred List 
+			 * let the execute method handle the problem.
+			 */
+			if( System.getProperty( "telescope" ).equalsIgnoreCase( "ukirt" ) )
 			{
-				logger.info( "Sending observation " + currentItem.getTitle() + " for execution." );
-				ExecuteUKIRT execute = new ExecuteUKIRT( _useQueue );
-				execute.setDeferred( true );
-				t = new Thread( execute , "UKIRT Execution Thread" );
-
-				// Start the process and wait for it to complete
-				t.start();
-				t.join();
-				// Reset _useQueue
-				_useQueue = true;
-				// Now check the result
-				File failFile = execute.failFile() ;
-				File successFile = execute.successFile() ;
-				if( failFile.exists() )
+				try
 				{
-					new ErrorBox( this , "Failed to Execute. Check messages." );
-					logger.warn( "Failed to execute observation" );
+					logger.info( "Sending observation " + currentItem.getTitle() + " for execution." );
+					ExecuteUKIRT execute = new ExecuteUKIRT( _useQueue );
+					execute.setDeferred( true );
+					t = new Thread( execute , "UKIRT Execution Thread" );
+	
+					// Start the process and wait for it to complete
+					t.start();
+					t.join();
+					// Reset _useQueue
+					_useQueue = true;
+					// Now check the result
+					File failFile = execute.failFile() ;
+					File successFile = execute.successFile() ;
+					if( failFile.exists() )
+					{
+						new ErrorBox( this , "Failed to Execute. Check messages." );
+						logger.warn( "Failed to execute observation" );
+					}
+					else if( successFile.exists() )
+					{
+						// Mark this observation as having been done
+						markThisObservationAsDone( currentItem );
+						logger.info( "Observation executed successfully" );
+					}
+					else
+					{
+						// Neither file exists - report an error to the user
+						new ErrorBox( "Unable to determine success status - assuming failed." );
+						logger.error( "Unable to determine success status for observation." );
+					}
+					
+					// done with status files
+					if( failFile.exists() )
+						failFile.delete() ;
+					if( successFile.exists() )
+						successFile.delete() ;
 				}
-				else if( successFile.exists() )
+				catch( Exception e )
 				{
-					// Mark this observation as having been done
-					markThisObservationAsDone( currentItem );
-					logger.info( "Observation executed successfully" );
+					logger.error( "Failed to execute thread." , e );
+					if( t != null && t.isAlive() )
+					{
+						logger.error( "Last observation still seems to be running" );
+					}
 				}
-				else
-				{
-					// Neither file exists - report an error to the user
-					new ErrorBox( "Unable to determine success status - assuming failed." );
-					logger.error( "Unable to determine success status for observation." );
-				}
-				
-				// done with status files
-				if( failFile.exists() )
-					failFile.delete() ;
-				if( successFile.exists() )
-					successFile.delete() ;
 			}
-			catch( Exception e )
+			else if( System.getProperty( "telescope" ).equalsIgnoreCase( "jcmt" ) )
 			{
-				logger.error( "Failed to execute thread." , e );
-				if( t != null && t.isAlive() )
-				{
-					logger.error( "Last observation still seems to be running" );
-				}
+				new ExecuteInThread( currentItem , true ).start();
 			}
-		}
-		else if( System.getProperty( "telescope" ).equalsIgnoreCase( "jcmt" ) )
-		{
-			new ExecuteInThread( currentItem , true ).start();
 		}
 	}
 
 	/**
-	 * Add a compnent to the <code>GridBagConstraints</code>
+	 * Add a component to the <code>GridBagConstraints</code>
 	 *
 	 * @param c a <code>Component</code> value
 	 * @param gbc a <code>GridBagConstraints</code> value
@@ -544,33 +547,45 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 		return todaysDeferredDir ;
 	}
 	
+	/**
+	 * Create a directory
+	 * @param fileName to create
+	 * @return directory created.
+	 */
 	private static File createDirectory( String fileName )
 	{
-		File dir = new File( fileName ) ;
-		if( !dir.exists() )
+		File dir = null ;
+		if( fileName != null )
 		{
-			logger.info( "Creating deferred directory " + dir ) ;
-			if( !dir.mkdirs() )
+			dir = new File( fileName ) ;
+			if( !dir.exists() )
 			{
-				logger.error( "Could not create directory " + dir ) ;
+				logger.info( "Creating deferred directory " + dir ) ;
+				if( !dir.mkdirs() )
+				{
+					logger.error( "Could not create directory " + dir ) ;
+					dir = null ;
+				}
+			}
+			else if( !dir.canRead() )
+			{
+				logger.error( "Unable to read deferred directory " + dir ) ;
 				dir = null ;
 			}
-		}
-		else if( !dir.canRead() )
-		{
-			logger.error( "Unable to read deferred directory " + dir ) ;
-			dir = null ;
-		}
-		else if( !dir.isDirectory() )
-		{
-			logger.error( dir + " is not a directory, deleting." ) ;
-			dir.delete() ;
-			dir = null ;
+			else if( !dir.isDirectory() )
+			{
+				logger.error( dir + " is not a directory, deleting." ) ;
+				dir.delete() ;
+				dir = null ;
+			}
 		}
 		return dir ;
 	}
 	
-	// check wether UTC date has changed
+	/**
+	 * Check wether UTC date has changed
+	 * @return boolean indicating a change
+	 */
 	private static boolean checkUTCDate()
 	{
 		boolean changed = true ;
@@ -582,37 +597,46 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 		return changed ;
 	}
 	
+	/**
+	 * Stores this observation in it own unique file in the deferred directory.
+	 * @param item
+	 */
 	private static void makePersistent( SpItem item )
 	{
-		// Stores this observation in it own unique file in the deferred directory. First make the filename
-		String fName = makeFilenameForThisItem( item ) ;
-		FileWriter fw = null;
-		// Now create a new file write to write to this file
-		try
+		if( !nodefer )
 		{
-			fw = new FileWriter( fName );
-			fw.write( item.toXML() );
-			fw.flush();
-		}
-		catch( IOException ioe )
-		{
-			logger.error( "Error writing file " + fName , ioe );
-		}
-		finally
-		{
-			if( fw != null )
+			String fName = makeFilenameForDeferredObservation() ;
+			FileWriter fw = null;
+			try
 			{
-				try
-				{
-					fw.close();
-				}
-				catch( IOException ioe ){}
+				fw = new FileWriter( fName );
+				fw.write( item.toXML() );
+				fw.flush();
 			}
+			catch( IOException ioe )
+			{
+				logger.error( "Error writing file " + fName , ioe );
+			}
+			finally
+			{
+				if( fw != null )
+				{
+					try
+					{
+						fw.close();
+					}
+					catch( IOException ioe ){}
+				}
+			}
+			fileToObjectMap.put( item , fName );
 		}
-		fileToObjectMap.put( item , fName );
 	}
 
-	private static String makeFilenameForThisItem( SpItem item )
+	/**
+	 * Create a full-path-name for a deferred observation.
+	 * @return fullpath name for an observation as a String.
+	 */
+	private static String makeFilenameForDeferredObservation()
 	{
 		StringBuffer buffer = new StringBuffer() ;
 		buffer.append( getTodaysDeferredDirectoryName() ) ;
@@ -623,36 +647,31 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 		String fName = buffer.toString() ;
 		buffer.delete( 0 , buffer.length() ) ;
 		buffer = null ;
-		return fName.toLowerCase() ; // unnecessary 
+		return fName ;
 	}
 
 	/**
-	 * Checks whether any deferred observation files exist.
-	 * These do not have to have been read into the current
-	 * list of displayed observations.
-	 * @return <code>true</code> if deferred observatio files exist; <code>false</code> otherwise.
+	 * Return a String array of full-path-names for deferred observations.
 	 */
-	public static boolean obsExist()
-	{
-		return getFileList().length != 0 ;
-	}
-
 	private static String[] getFileList()
 	{
-		String deferredFiles[] = {};
+		String deferredFiles[] = {} ;
 		File deferredDir = getTodaysDeferredDirectory() ;
-
-		deferredFiles = deferredDir.list( xmlFilter ) ;
-		
-		String currentFileName ;
-		
-		for( int i = 0 ; i < deferredFiles.length ; i++ )
+		if( deferredDir != null )
 		{
-			currentFileName = deferredFiles[ i ] ;
-			if( !currentFileName.contains( File.separator ) )
-				deferredFiles[ i ] = todaysDeferredDirName + File.separator + currentFileName ;
+			String[] directoryContents = deferredDir.list( xmlFilter ) ;
+			if( directoryContents != null )
+				deferredFiles = directoryContents ;
+			
+			String currentFileName ;
+			
+			for( int i = 0 ; i < deferredFiles.length ; i++ )
+			{
+				currentFileName = deferredFiles[ i ] ;
+				if( !currentFileName.contains( File.separator ) )
+					deferredFiles[ i ] = todaysDeferredDirName + File.separator + currentFileName ;
+			}
 		}
-
 		return deferredFiles;
 	}
 
@@ -660,23 +679,31 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 	 * Delete all deferred observation files and clear the contents of the Deferred Program List.
 	 */
 	public static void cleanup()
-	{		
+	{
 		File deferredParent = getDeferredDirectory() ;
 		File deferred = getTodaysDeferredDirectory() ;
 		
-		File[] files = deferredParent.listFiles() ;
-		for( int index = 0 ; index < files.length ; index++ )
+		if( deferredParent != null )
 		{
-			File file = files[ index ] ;
-			if( !delete( file , deferred ) )
-				logger.error( "Could not delete " + file.getName() ) ;
+			File[] files = deferredParent.listFiles() ;
+			for( int index = 0 ; index < files.length ; index++ )
+			{
+				File file = files[ index ] ;
+				if( !delete( file , deferred ) )
+					logger.error( "Could not delete " + file.getName() ) ;
+			}
 		}
-		
 		// Now clear the hashmap, just for completeness
 		if( !fileToObjectMap.isEmpty() )
 			fileToObjectMap.clear();
 	}
 	
+	/**
+	 * Recursive file deletion method 
+	 * @param file to delete
+	 * @param skip, file to skip
+	 * @return boolean indicating if deletion was successful 
+	 */
 	private static boolean delete( File file , File skip )
 	{
 		boolean success = true ;
@@ -755,43 +782,16 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 	 * Add the event listeners
 	 */
 	/* DROP TARGET EVENTS */
-	/**
-	 * Implementation of <code>DropTargetListener</code> interface.
-	 * 
-	 * @param evt
-	 *            A <code>DropTargetDragEvent</code> object.
-	 */
 	public void dragEnter( DropTargetDragEvent evt ){}
-
-	/**
-	 * Implementation of <code>DropTargetListener</code> interface.
-	 * 
-	 * @param evt
-	 *            A <code>DropTargetEvent</code> object.
-	 */
 	public void dragExit( DropTargetEvent evt ){}
-
-	/**
-	 * Implementation of <code>DropTargetListener</code> interface.
-	 * 
-	 * @param evt
-	 *            A <code>DropTargetDragEvent</code> object.
-	 */
 	public void dragOver( DropTargetDragEvent evt ){}
-
-	/**
-	 * Implementation of <code>DropTargetListener</code> interface.
-	 * 
-	 * @param evt
-	 *            A <code>DropTargetDragEvent</code> object.
-	 */
 	public void dropActionChanged( DropTargetDragEvent evt ){}
 
 	/**
-	 * Implementation of <code>DropTargetListener</code> interface. Adds the currently selected item from the Program List to the deferred list.
+	 * Implementation of <code>DropTargetListener</code> interface. 
+	 * Adds the currently selected item from the Program List to the deferred list.
 	 * 
-	 * @param evt
-	 *            A <code>DropTargetDropEvent</code> object.
+	 * @param evt A <code>DropTargetDropEvent</code> object.
 	 */
 	public void drop( DropTargetDropEvent evt )
 	{
@@ -817,28 +817,6 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 		}
 	}
 
-	/**
-	 * Deletes an observation from the current list.
-	 * 
-	 * @param thisObservation
-	 *            The observation to remove.
-	 */
-	public static void removeThisObservation( SpItem thisObservation )
-	{
-		String fileToRemove = ( String )fileToObjectMap.get( obsList.getSelectedValue() );
-		// Delete the file
-		File f = new File( fileToRemove );
-		f.delete();
-
-		// Delete the entry from the map
-		fileToObjectMap.remove( obsList.getSelectedValue() );
-
-		// Remove the entry from the list
-		int index = obsList.getSelectedIndex();
-		if( index > -1 )
-			( ( DefaultListModel )obsList.getModel() ).removeElementAt( index );
-	}
-
 	/* DRAG SOURCE EVENTS */
 	/**
 	 * Implementation of the <code>DragSourceListener</code> interface.
@@ -849,10 +827,13 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 	{
 		if( evt.getDropSuccess() )
 		{
-			String fileToRemove = ( String )fileToObjectMap.get( obsList.getSelectedValue() );
 			// Delete the file
-			File f = new File( fileToRemove );
-			f.delete();
+			String fileToRemove = ( String )fileToObjectMap.get( obsList.getSelectedValue() ) ;
+			if( fileToRemove != null )
+			{
+				File f = new File( fileToRemove ) ;
+				f.delete() ;
+			}
 
 			// Delete the entry from the map
 			fileToObjectMap.remove( obsList.getSelectedValue() );
@@ -868,29 +849,13 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 		this.dropTarget.setActive( true );
 	}
 
-	/**
-	 * Implementation of the <code>DragSourceListener</code> interface.
-	 * 
-	 * @param evt
-	 *            A <code>DragSourceDragEvent</code> object.
-	 */
 	public void dragEnter( DragSourceDragEvent evt ){}
 
-	/**
-	 * Implementation of the <code>DragSourceListener</code> interface.
-	 * 
-	 * @param evt
-	 *            A <code>DragSourceEvent</code> object.
-	 */
 	public void dragExit( DragSourceEvent evt )
 	{
 		evt.getDragSourceContext().setCursor( DragSource.DefaultMoveNoDrop );
 	}
 
-	/**
-	 * Implementation of the <code>DragSourceListener</code> interface.
-	 * @param evt  A <code>DragSourceDragEvent</code> object.
-	 */
 	public void dragOver( DragSourceDragEvent evt )
 	{
 		evt.getDragSourceContext().setCursor( DragSource.DefaultMoveDrop );
@@ -899,16 +864,14 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 	/**
 	 * Implementation of the <code>DragSourceListener</code> interface.
 	 * 
-	 * @param evt
-	 *            A <code>DragSourceDragEvent</code> object.
+	 * @param evt A <code>DragSourceDragEvent</code> object.
 	 */
 	public void dropActionChanged( DragSourceDragEvent evt ){}
 
 	/**
 	 * Implementation of the <code>DragGestureListener</code> interface. Disables the current list from being a drop target temporarily so that we cant drop items from the list back on to the list.
 	 * 
-	 * @param event
-	 *            A <code>DragGestureEvent</code> object.
+	 * @param event A <code>DragGestureEvent</code> object.
 	 */
 	public void dragGestureRecognized( DragGestureEvent event )
 	{
@@ -972,7 +935,6 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 			}
 			else
 			{
-				// Mark this observation as having been done
 				markThisObservationAsDone( currentItem );
 				logger.info( "Observation executed successfully" );
 			}
