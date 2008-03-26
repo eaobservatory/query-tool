@@ -34,7 +34,6 @@ import javax.swing.JMenu;
 import javax.swing.JPopupMenu;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
-import javax.swing.JDialog;
 import javax.swing.JViewport;
 import javax.swing.JSplitPane;
 import javax.swing.ToolTipManager;
