@@ -12,6 +12,8 @@ import javax.swing.JOptionPane;
 
 import org.apache.log4j.Logger;
 
+import edu.jach.qt.utils.FileUtils ;
+
 /**
  * This class is a base class and should be extended to execute MSBs for
  * each telescope.  It basically is used to decide whether the project
@@ -27,7 +29,6 @@ public class Execute
 	 */
 	protected boolean isDeferred = false;
 	private static Random random = new Random();
-	private static String deferredDirPath = null;
 	private static final Logger logger = Logger.getLogger( Execute.class );
 
 	/**
@@ -57,44 +58,6 @@ public class Execute
 		isDeferred = deferred;
 	}
 
-	protected boolean chmod( File file )
-	{
-		boolean success = true;
-		try
-		{
-			StringBuffer buffer = new StringBuffer();
-			buffer.append( "chmod 666" );
-			buffer.append( " " );
-			buffer.append( file.getAbsolutePath() );
-			String command = buffer.toString();
-			Runtime.getRuntime().exec( command );
-			buffer = null;
-		}
-		catch( IOException ioe )
-		{
-			logger.error( "Unable to change file access permissions " + file.getAbsolutePath() );
-			success = false;
-		}
-		return success;
-	}
-
-	public static String deferredDirPath()
-	{
-		if( deferredDirPath == null )
-		{
-			StringBuffer buffer = new StringBuffer();
-			buffer.append( File.separator );
-			buffer.append( System.getProperty( "telescope" ).toLowerCase() );
-			buffer.append( "data" );
-			buffer.append( File.separator );
-			buffer.append( System.getProperty( "deferredDir" ) );
-			buffer.append( File.separator );
-			deferredDirPath = buffer.toString();
-			buffer = null;
-		}
-		return deferredDirPath;
-	}
-
 	private static File successFile = null;
 
 	public File successFile()
@@ -102,7 +65,7 @@ public class Execute
 		if( successFile == null )
 		{
 			StringBuffer buffer = new StringBuffer();
-			buffer.append( deferredDirPath() );
+			buffer.append( FileUtils.getDeferredDirectoryName() );
 			buffer.append( ".success-" );
 			buffer.append( nextRandom() );
 			String filename = buffer.toString();
@@ -118,7 +81,7 @@ public class Execute
 				if( !parent.canWrite() )
 					logger.warn( "Don't appear to be able to write to " + parent.getAbsolutePath() );
 				successFile.createNewFile();
-				chmod( successFile );
+				FileUtils.chmod( successFile );
 			}
 			catch( IOException ioe )
 			{
@@ -135,7 +98,7 @@ public class Execute
 		if( failFile == null )
 		{
 			StringBuffer buffer = new StringBuffer();
-			buffer.append( deferredDirPath() );
+			buffer.append( FileUtils.getDeferredDirectoryName() );
 			buffer.append( ".failure-" );
 			buffer.append( nextRandom() );
 			String filename = buffer.toString();
@@ -151,7 +114,7 @@ public class Execute
 				if( !parent.canWrite() )
 					logger.warn( "Don't appear to be able to write to " + parent.getAbsolutePath() );
 				failFile.createNewFile();
-				chmod( failFile );
+				FileUtils.chmod( failFile );
 			}
 			catch( IOException ioe )
 			{
@@ -237,7 +200,7 @@ public class Execute
 
 		return rtn;
 	}
-
+	
 	protected long nextRandom()
 	{
 		return Math.abs( random.nextLong() );

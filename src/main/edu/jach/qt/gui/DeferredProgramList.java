@@ -71,8 +71,8 @@ import orac.util.SpInputXML;
 /* QT imports */
 import edu.jach.qt.utils.ObsListCellRenderer;
 import edu.jach.qt.utils.ErrorBox;
-import edu.jach.qt.utils.TimeUtils ;
 import edu.jach.qt.utils.FileExtensionFilter ;
+import edu.jach.qt.utils.FileUtils ;
 
 /* Miscellaneous imports */
 
@@ -97,11 +97,6 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 	private static HashSet duplicates = new HashSet();
 	static Logger logger = Logger.getLogger( DeferredProgramList.class );
 	
-	private static String knownUTCDate ;
-	private static String deferredDirName ;
-	private static String todaysDeferredDirName ;
-	private static File deferredDir ;
-	private static File todaysDeferredDir ;
 	private static final FileExtensionFilter xmlFilter = new FileExtensionFilter( ".xml" ) ;
 	private static boolean nodefer = false ;
 
@@ -422,16 +417,16 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 					logger.info( "Sending observation " + currentItem.getTitle() + " for execution." );
 					ExecuteUKIRT execute = new ExecuteUKIRT( _useQueue );
 					execute.setDeferred( true );
+					File failFile = execute.failFile() ;
+					File successFile = execute.successFile() ;
 					t = new Thread( execute , "UKIRT Execution Thread" );
-	
+					
 					// Start the process and wait for it to complete
 					t.start();
 					t.join();
 					// Reset _useQueue
 					_useQueue = true;
 					// Now check the result
-					File failFile = execute.failFile() ;
-					File successFile = execute.successFile() ;
 					if( failFile.exists() )
 					{
 						new ErrorBox( this , "Failed to Execute. Check messages." );
@@ -492,112 +487,6 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 	}
 	
 	/**
-	 * @return The parent directory name for deferred observations as a String.
-	 */
-	public static String getDeferredDirectoryName()
-	{
-		if( deferredDirName == null )
-		{
-			StringBuffer buffer = new StringBuffer() ;
-			buffer.append( File.separator ) ;
-			buffer.append( System.getProperty( "telescope" ) ) ;
-			buffer.append( "data" ) ;
-			buffer.append( File.separator ) ;
-			buffer.append( System.getProperty( "deferredDir" ) ) ;
-			deferredDirName = buffer.toString() ;
-			buffer.delete( 0 , buffer.length() ) ;
-			buffer = null ;
-			deferredDirName = deferredDirName.toLowerCase() ;
-		}
-		return deferredDirName ;
-	}
-	
-	/**
-	 * @return The directory name of deferred observations for this UT date as a String.
-	 */
-	public static String getTodaysDeferredDirectoryName()
-	{
-		if( checkUTCDate() || todaysDeferredDirName == null )
-		{
-			StringBuffer buffer = new StringBuffer() ;
-			buffer.append( getDeferredDirectoryName() ) ;
-			buffer.append( File.separator ) ;
-			buffer.append( knownUTCDate ) ;
-			todaysDeferredDirName = buffer.toString() ;
-			buffer.delete( 0 , buffer.length() ) ;
-			buffer = null ;
-			todaysDeferredDirName = todaysDeferredDirName.toLowerCase() ;
-		}
-		return todaysDeferredDirName ;
-	}
-	
-	public static File getDeferredDirectory()
-	{
-		if( deferredDir == null )
-			deferredDir = createDirectory( getDeferredDirectoryName() ) ;
-		
-		return deferredDir ;
-	}
-	
-	public static File getTodaysDeferredDirectory()
-	{
-		if( checkUTCDate() || todaysDeferredDir == null )
-			todaysDeferredDir = createDirectory( getTodaysDeferredDirectoryName() ) ;
-		
-		return todaysDeferredDir ;
-	}
-	
-	/**
-	 * Create a directory
-	 * @param fileName to create
-	 * @return directory created.
-	 */
-	private static File createDirectory( String fileName )
-	{
-		File dir = null ;
-		if( fileName != null )
-		{
-			dir = new File( fileName ) ;
-			if( !dir.exists() )
-			{
-				logger.info( "Creating deferred directory " + dir ) ;
-				if( !dir.mkdirs() )
-				{
-					logger.error( "Could not create directory " + dir ) ;
-					dir = null ;
-				}
-			}
-			else if( !dir.canRead() )
-			{
-				logger.error( "Unable to read deferred directory " + dir ) ;
-				dir = null ;
-			}
-			else if( !dir.isDirectory() )
-			{
-				logger.error( dir + " is not a directory, deleting." ) ;
-				dir.delete() ;
-				dir = null ;
-			}
-		}
-		return dir ;
-	}
-	
-	/**
-	 * Check wether UTC date has changed
-	 * @return boolean indicating a change
-	 */
-	private static boolean checkUTCDate()
-	{
-		boolean changed = true ;
-		String UTCDate = TimeUtils.getUTCDate() ;
-		if( knownUTCDate == null  )
-			knownUTCDate = UTCDate ;
-		else if( knownUTCDate.equals( UTCDate ) )
-			changed = false ;
-		return changed ;
-	}
-	
-	/**
 	 * Stores this observation in it own unique file in the deferred directory.
 	 * @param item
 	 */
@@ -639,7 +528,7 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 	private static String makeFilenameForDeferredObservation()
 	{
 		StringBuffer buffer = new StringBuffer() ;
-		buffer.append( getTodaysDeferredDirectoryName() ) ;
+		buffer.append( FileUtils.getTodaysDeferredDirectoryName() ) ;
 		buffer.append( File.separator ) ;
 		Date now = new Date();
 		buffer.append( now.getTime() ) ;
@@ -656,7 +545,8 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 	private static String[] getFileList()
 	{
 		String deferredFiles[] = {} ;
-		File deferredDir = getTodaysDeferredDirectory() ;
+		File deferredDir = FileUtils.getTodaysDeferredDirectory() ;
+		String todaysDeferredDirName = FileUtils.getTodaysDeferredDirectoryName() ;
 		if( deferredDir != null )
 		{
 			String[] directoryContents = deferredDir.list( xmlFilter ) ;
@@ -680,8 +570,8 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 	 */
 	public static void cleanup()
 	{
-		File deferredParent = getDeferredDirectory() ;
-		File deferred = getTodaysDeferredDirectory() ;
+		File deferredParent = FileUtils.getDeferredDirectory() ;
+		File deferred = FileUtils.getTodaysDeferredDirectory() ;
 		
 		if( deferredParent != null )
 		{
@@ -689,55 +579,13 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 			for( int index = 0 ; index < files.length ; index++ )
 			{
 				File file = files[ index ] ;
-				if( !delete( file , deferred ) )
+				if( !FileUtils.delete( file , deferred ) )
 					logger.error( "Could not delete " + file.getName() ) ;
 			}
 		}
 		// Now clear the hashmap, just for completeness
 		if( !fileToObjectMap.isEmpty() )
 			fileToObjectMap.clear();
-	}
-	
-	/**
-	 * Recursive file deletion method 
-	 * @param file to delete
-	 * @param skip, file to skip
-	 * @return boolean indicating if deletion was successful 
-	 */
-	private static boolean delete( File file , File skip )
-	{
-		boolean success = true ;
-		
-		if( !file.equals( skip ) )
-		{
-			if( file.isDirectory() )
-			{
-				File[] files = file.listFiles() ;
-				for( int index = 0 ; index < files.length ; index++ )
-					delete( files[ index ] , skip ) ;
-			}
-			
-			if( !file.delete() )
-			{
-				String diagnostic = "" ;
-				if( !file.exists() )
-					diagnostic = "does not exist" ;
-				else if( !file.canWrite() )
-					diagnostic = "cannot be written to" ;
-				logger.error( "Could not delete " + file.getName() + " " + diagnostic + "." ) ;
-				success = false ;
-			}
-			else
-			{
-				logger.warn( "Deleted " + file.getName() ) ;
-			}
-		}
-		else
-		{
-			logger.warn( "Skipping " + file.getName() ) ;
-		}
-		
-		return success ;
 	}
 
 	/**

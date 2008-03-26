@@ -10,6 +10,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.FileWriter;
 import java.io.InputStreamReader;
+import java.io.File;
 
 import java.util.Properties;
 import java.util.Calendar;
@@ -107,7 +108,6 @@ public class QtTools
 	 */
 	public static int execute( String[] cmd , boolean wait , boolean output )
 	{
-
 		ExecDtask task = new ExecDtask( cmd );
 		task.setWaitFor( wait );
 
@@ -153,7 +153,7 @@ public class QtTools
 		SimpleDateFormat sdf = new SimpleDateFormat( "yyyyMMdd'T'HHmmss" );
 		StringBuffer fileName = new StringBuffer( sdf.format( cal.getTime() ) );
 		fileName.append( ".xml" );
-		fileName.insert( 0 , "/" );
+		fileName.insert( 0 , File.separatorChar );
 		fileName.insert( 0 , opDir );
 		System.out.println( "QUEUE filename is " + fileName.toString() );
 
@@ -175,8 +175,8 @@ public class QtTools
 				fw.write( "  <Entry totalDuration=\"" + time + "\"  instrument=\"" + inst + "\">\n" );
 				// if we are using the old translator, we need to add the exec path, otherwise we don't
 				String tName = translate( ( SpItem )currentObs , inst );
-				if( tName != null && tName.indexOf( System.getProperty( "EXEC_PATH" ) ) == -1 )
-					fw.write( "    " + System.getProperty( "EXEC_PATH" ) + "/" + tName + "\n" );
+				if( tName != null && tName.indexOf( opDir ) == -1 )
+					fw.write( "    " + opDir + File.separatorChar + tName + "\n" );
 				else
 					fw.write( "    " + tName + "\n" );
 
@@ -197,7 +197,9 @@ public class QtTools
 	}
 
 	/**
-	 * String trans (SpItem observation) is a private method to translate an observation java object into an exec string and write it into a ascii file where is located in "EXEC_PATH" directory and has a name stored in "execFilename"
+	 * String trans (SpItem observation) is a private method to translate an observation java object 
+	 * into an exec string and write it into a ascii file where is located in "EXEC_PATH" directory 
+	 * and has a name stored in "execFilename"
 	 * 
 	 * @param SpItem
 	 *            observation
@@ -233,6 +235,13 @@ public class QtTools
 				throw new NullPointerException( "Observation passed to translate() not translatable" );
 
 			spObs.translate( new Vector() );
+			
+			tname = ConfigWriter.getCurrentInstance().getExecName();
+			logger.debug( "Translated file set to: " + tname );
+			String fileProperty = new String( inst + "ExecFilename" );
+			Properties properties = System.getProperties();
+			properties.put( fileProperty , tname );
+			logger.debug( "System property " + fileProperty + " now set to " + tname ) ;
 		}
 		catch( NullPointerException e )
 		{
@@ -242,50 +251,7 @@ public class QtTools
 		{
 			logger.fatal( "Translation failed! " + sptnse );
 		}
-		FileWriter fw = null;
-		try
-		{
-			tname = ConfigWriter.getCurrentInstance().getExecName();
-			logger.debug( "Translated file set to: " + tname );
-			String fileProperty = new String( inst + "ExecFilename" );
-			Properties properties = System.getProperties();
-			properties.put( fileProperty , tname );
-			logger.debug( "System property " + fileProperty + " now set to " + tname );
-			String tel = null;
-			if( properties.get( "telescope" ).equals( "Ukirt" ) )
-				tel = "/ukirtdata";
-			else
-				tel = "/jcmtdata";
-			fw = new FileWriter( tel + "/epics_data/smLogs/transFile" );
-			fw.write( tname );
-			fw.flush();
-		}
-		catch( IOException ioe )
-		{
-			logger.fatal( "Writing translated file name to transFile failed " , ioe );
-		}
-		catch( Exception e )
-		{
-			logger.fatal( "Translation failed!, exception was " + e , e );
-		}
-		finally
-		{
-			if( fw != null )
-			{
-				try
-				{
-					fw.close();
-				}
-				catch( IOException ioe )
-				{
-					logger.fatal( "Error closing file writer " , ioe );
-				}
-			}
-			else
-			{
-				System.out.println( "File handle was null" );
-			}
-		}
+		
 		return tname;
 	}
 

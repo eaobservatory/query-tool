@@ -12,6 +12,8 @@ import org.apache.log4j.Logger;
 
 import gemini.sp.SpMSB;
 import edu.jach.qt.utils.SpQueuedMap;
+import edu.jach.qt.utils.FileUtils ;
+import edu.jach.qt.utils.QtTools ;
 
 /**
  * Implements the executable method for JCMT.  It simply sends either a 
@@ -183,7 +185,7 @@ public class ExecuteJCMT extends Execute
 			writer.write( _itemToExecute.toXML() );
 			writer.flush();
 			writer.close();
-			chmod( file );
+			FileUtils.chmod( file );
 		}
 		catch( IOException ioe )
 		{
