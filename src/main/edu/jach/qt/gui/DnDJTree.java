@@ -20,7 +20,6 @@ import javax.swing.SwingUtilities ;
 import javax.swing.JOptionPane ;
 import javax.swing.event.TreeSelectionListener ;
 import javax.swing.event.TreeSelectionEvent ;
-import javax.swing.plaf.metal.MetalTreeUI ;
 import javax.swing.tree.TreePath ;
 import javax.swing.tree.DefaultTreeModel ;
 
@@ -35,10 +34,8 @@ import java.awt.dnd.DragGestureEvent ;
 import java.awt.dnd.DropTargetEvent ;
 import java.awt.dnd.DragSourceEvent ;
 import java.awt.dnd.DragSource ;
-import java.awt.dnd.DragSourceContext ;
 import java.awt.dnd.DragGestureRecognizer ;
 import java.awt.dnd.DnDConstants ;
-import java.awt.dnd.DropTarget ;
 import java.awt.dnd.DragSourceDropEvent ;
 import java.awt.dnd.DragSourceDragEvent ;
 import java.awt.dnd.DropTargetDropEvent ;
