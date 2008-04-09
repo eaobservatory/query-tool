@@ -45,11 +45,6 @@ public class UkirtTranslator
 		getObservations( _root );
 	}
 
-	private SpRootItem fetchSp( Reader rdr ) throws Exception
-	{
-		return ( SpRootItem )( new SpInputXML() ).xmlToSpItem( rdr );
-	}
-
 	private void getObservations( SpItem root )
 	{
 		Enumeration children = root.children();
