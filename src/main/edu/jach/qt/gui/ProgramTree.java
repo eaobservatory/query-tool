@@ -126,8 +126,6 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 	private TrashCan trash = null;
 	private static SpItem selectedItem = null;
 	public static SpItem obsToDefer;
-	private SpItem instrumentContext;
-	private Vector targetContext;
 	private final String editText = "Edit Attribute...";
 	private final String scaleText = "Scale Exposure Times...";
 	private String rescaleText = "Re-do Scale Exposure Times";
@@ -437,7 +435,7 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 					item = ProgramTree.getSelectedItem();
 			}
 
-			getContext( item );
+			SpInstObsComp instrumentContext = getContext( item );
 
 			if( instrumentContext instanceof SpInstUIST )
 			{
@@ -634,13 +632,13 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 	public void addList( SpItem sp )
 	{
 		// Check if there is already an existing model and whether it still has observations to perform
+		SpInstObsComp instrumentContext = getContext( sp ) ;
 		if( instrumentContext instanceof SpInstHeterodyne && HTMLViewer.visible() )
 			return;
 
 		// If we get here we should reinitialise with the new argument
 		_spItem = sp;
 
-		getContext( sp );
 		model = new DefaultListModel();
 
 		if( _spItem == null )
@@ -943,91 +941,17 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 		}
 	}
 
-	private void getContext( SpItem item )
+	private SpInstObsComp getContext( SpItem item )
 	{
-		if( item == null )
-		{
-			instrumentContext = null;
-			targetContext = null;
-		}
-		else
+		SpInstObsComp instrumentContext = null;
+
+		if( item != null )
 		{
 			Vector obs = SpTreeMan.findAllItems( item , "gemini.sp.SpObs" );
 			instrumentContext = SpTreeMan.findInstrument( ( SpObs )obs.firstElement() );
-			targetContext = SpTreeMan.findAllItems( item , "gemini.sp.obsComp.SpTelescopeObsComp" );
 		}
-	}
-
-	/**
-	 * Convert eacg observation in an SpMSB to a standalone thing.
-	 * @param xmlString  The SpProg as an XML string.
-	 * @return           The translated SpProg, or the original input on failure.
-	 */
-	public static SpItem convertObs( SpItem item )
-	{
-		/*
-		 * Get all of the observation, instrument and target fields
-		 */
-		SpItem _item = item;
-		SpItem msb = ( ( SpItem )SpTreeMan.findAllItems( _item , "gemini.sp.SpObs" ).firstElement() ).parent();
-		Vector obs = SpTreeMan.findAllItems( _item , "gemini.sp.SpObs" );
-		Vector targ = SpTreeMan.findAllItems( _item , "gemini.sp.obsComp.SpTelescopeObsComp" );
-		Vector iter = SpTreeMan.findAllItems( msb , "gemini.sp.iter.SpIterFolder" );
-		if( msb == null )
-		{
-			logger.warn( "Current Tree does not seem to contain an observation context!" );
-			return item;
-		}
-		SpItem inst = SpTreeMan.findInstrument( ( SpObs )obs.firstElement() );
-		if( inst == null )
-		{
-			logger.warn( "Current Tree does not seem to contain an instrument!" );
-			return item;
-		}
-
-		SpInsertData spid;
-		Object[] objArray = obs.toArray();
-		SpObs[] newObs = new SpObs[ obs.size() ];
-		for( int i = 0 ; i < obs.size() ; i++ )
-			newObs[ i ] = ( SpObs )objArray[ i ];
-
-		SpItem[] iterator = new SpItem[ iter.size() ];
-		objArray = iter.toArray();
-		for( int i = 0 ; i < iter.size() ; i++ )
-			iterator[ i ] = ( SpItem )objArray[ i ];
-
-		SpTreeMan.extract( ( SpItem[] )newObs );
-		SpTreeMan.extract( ( SpItem )msb );
-		SpTreeMan.extract( iterator );
-		for( int i = 0 ; i < obs.size() ; i++ )
-		{
-			if( SpTreeMan.findInstrumentInContext( ( SpObs )newObs[ i ] ) == null )
-			{
-				/*
-				 * The current observation does not contain an instrument so add the already found one.
-				 */
-				spid = SpTreeMan.evalInsertInside( inst , ( SpObs )newObs[ i ] );
-				SpTreeMan.insert( spid );
-			}
-			if( SpTreeMan.findTargetListInContext( ( SpObs )newObs[ i ] ) == null )
-			{
-				/*
-				 * The current observation does not contain a target so add the already found one.
-				 */
-				spid = SpTreeMan.evalInsertInside( ( SpItem )targ.firstElement() , ( SpObs )newObs[ i ] );
-				SpTreeMan.insert( spid );
-			}
-			/*
-			 * Now we have updated all of the obs, try and replace the obs in the tree
-			 */
-			if( SpTreeMan.evalExtract( item ) == true )
-			{
-				spid = SpTreeMan.evalInsertInside( newObs[ i ] , ( SpItem )msb );
-				SpTreeMan.insert( spid );
-			}
-		}
-
-		return item;
+		
+		return instrumentContext ;
 	}
 
 	class PopupListener extends MouseAdapter
