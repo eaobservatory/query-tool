@@ -337,7 +337,7 @@ public class OmpOM extends JPanel
 		getItems( spItem , root );
 		DnDJTree ddt = new DnDJTree( root );
 		ddt.setCellRenderer( new MyTreeCellRenderer() );
-		f.getContentPane().add( ddt );
+		f.add( ddt );
 		f.show();
 	}
 
@@ -381,7 +381,7 @@ public class OmpOM extends JPanel
 		JFrame f = new JFrame();
 		OmpOM om = new OmpOM();
 		om.addNewTree();
-		f.getContentPane().add( om.getTreePanel() );
+		f.add( om.getTreePanel() );
 		f.setSize( 400 , 300 );
 		f.setVisible( true );
 	}

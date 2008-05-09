@@ -71,7 +71,7 @@ class TreeViewer implements ActionListener
 		
 		JTabbedPane tabs = new JTabbedPane() ;
 		
-		frame.getContentPane().add( tabs ) ;
+		frame.add( tabs ) ;
 		
 		scrollTree = new JScrollPane();
 		scrollValues = new JScrollPane();

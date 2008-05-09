@@ -124,7 +124,7 @@ public class QtFrame extends JFrame implements PopupMenuListener , ActionListene
 
 		enableEvents( AWTEvent.WINDOW_EVENT_MASK );
 		GridBagLayout layout = new GridBagLayout();
-		getContentPane().setLayout( layout );
+		setLayout( layout );
 		this.setDefaultCloseOperation( DO_NOTHING_ON_CLOSE );
 		this.addWindowListener( new WindowAdapter()
 		{
@@ -257,9 +257,9 @@ public class QtFrame extends JFrame implements PopupMenuListener , ActionListene
 
 		logger.info( "Menu built" );
 
-		getContentPane().setLayout( new BorderLayout() );
-		getContentPane().add( topPanel , BorderLayout.NORTH );
-		getContentPane().add( tablePanel , BorderLayout.CENTER );
+		setLayout( new BorderLayout() );
+		add( topPanel , BorderLayout.NORTH );
+		add( tablePanel , BorderLayout.CENTER );
 
 		// Read the config to determine the widgets
 		try
@@ -661,7 +661,7 @@ public class QtFrame extends JFrame implements PopupMenuListener , ActionListene
 		gbc.gridy = y;
 		gbc.gridwidth = w;
 		gbc.gridheight = h;
-		getContentPane().add( c , gbc );
+		add( c , gbc );
 	}
 
 	/**

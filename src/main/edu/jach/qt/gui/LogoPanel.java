@@ -149,9 +149,9 @@ public class LogoPanel extends JLabel implements Runnable , ActionListener
 			}
 		} );
 
-		f.getContentPane().add( logoPanel );
+		f.add( logoPanel );
 		f.setVisible( true );
-		f.getContentPane().add( b , "South" );
+		f.add( b , "South" );
 
 		b.addActionListener( new ActionListener()
 		{

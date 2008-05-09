@@ -56,10 +56,10 @@ public class LogViewer
 	 */
 	private void makeWindow()
 	{
-		baseFrame.getContentPane().setLayout( new BorderLayout() );
+		baseFrame.setLayout( new BorderLayout() );
 
 		JToolBar tb = makeToolBar();
-		baseFrame.getContentPane().add( tb , BorderLayout.NORTH );
+		baseFrame.add( tb , BorderLayout.NORTH );
 
 		dispArea.setLineWrap( true );
 		dispArea.setWrapStyleWord( true );
@@ -68,7 +68,7 @@ public class LogViewer
 		srollPane.setVerticalScrollBarPolicy( JScrollPane.VERTICAL_SCROLLBAR_ALWAYS );
 		srollPane.setHorizontalScrollBarPolicy( JScrollPane.HORIZONTAL_SCROLLBAR_NEVER );
 
-		baseFrame.getContentPane().add( srollPane , BorderLayout.CENTER );
+		baseFrame.add( srollPane , BorderLayout.CENTER );
 	}
 
 	/*

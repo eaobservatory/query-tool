@@ -41,7 +41,7 @@ public class ColumnSelector extends JFrame implements ActionListener
 		parent = frame;
 		_msbqtm = parent.getModel();
 		this.setSize( 150 , 300 );
-		this.getContentPane().setLayout( new BorderLayout() );
+		this.setLayout( new BorderLayout() );
 		this.addCheckBoxes();
 		this.addCloseButton();
 		this.setVisible( true );
@@ -57,7 +57,7 @@ public class ColumnSelector extends JFrame implements ActionListener
 		// Disable the parent
 		_msbqtm = model;
 		this.setSize( 150 , 300 );
-		this.getContentPane().setLayout( new BorderLayout() );
+		this.setLayout( new BorderLayout() );
 		this.addCheckBoxes();
 		this.addCloseButton();
 		this.setVisible( true );
@@ -76,7 +76,7 @@ public class ColumnSelector extends JFrame implements ActionListener
 				checkBox.setSelected( true );
 			columnPanel.add( checkBox );
 		}
-		this.getContentPane().add( columnPanel , BorderLayout.CENTER );
+		this.add( columnPanel , BorderLayout.CENTER );
 	}
 
 	private void addCloseButton()
@@ -84,7 +84,7 @@ public class ColumnSelector extends JFrame implements ActionListener
 		JButton closeButton = new JButton( "Accept" );
 		closeButton.setLocation( 375 , 275 );
 		closeButton.addActionListener( this );
-		this.getContentPane().add( closeButton , BorderLayout.SOUTH );
+		this.add( closeButton , BorderLayout.SOUTH );
 	}
 
 	/**
