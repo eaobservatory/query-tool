@@ -37,14 +37,24 @@ public class FileUtils
 			buffer.append( " " ) ;
 			buffer.append( file.getAbsolutePath() ) ;
 			String command = buffer.toString() ;
-			Runtime.getRuntime().exec( command ) ;
+			Process process = Runtime.getRuntime().exec( command ) ;
+			process.waitFor() ;
+			int exitCode = process.exitValue() ;
+			if( exitCode != 0 )
+				success = false ;
 			buffer = null ;
 		}
 		catch( IOException ioe )
 		{
-			logger.error( "Unable to change file access permissions " + file.getAbsolutePath() ) ;
 			success = false ;
 		}
+		catch( InterruptedException ie )
+		{
+			success = false ;
+		}
+		if( !success )
+			logger.error( "Unable to change file access permissions " + file.getAbsolutePath() ) ;
+		
 		return success ;
 	}	
 	
