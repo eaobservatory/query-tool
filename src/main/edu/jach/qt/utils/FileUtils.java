@@ -142,10 +142,10 @@ public class FileUtils
 			dir = new File( fileName ) ;
 			if( !dir.exists() )
 			{
-				logger.info( "Creating deferred directory " + dir ) ;
+				logger.info( "Creating deferred directory " + fileName ) ;
 				if( !dir.mkdirs() )
 				{
-					logger.error( "Could not create directory " + dir ) ;
+					logger.error( "Could not create directory " + fileName ) ;
 					dir = null ;
 				}
 				else if( !chmod( dir ) )
@@ -155,12 +155,12 @@ public class FileUtils
 			}
 			else if( !dir.canRead() )
 			{
-				logger.error( "Unable to read deferred directory " + dir ) ;
+				logger.error( "Unable to read deferred directory " + fileName ) ;
 				dir = null ;
 			}
 			else if( !dir.isDirectory() )
 			{
-				logger.error( dir + " is not a directory, deleting." ) ;
+				logger.error( fileName + " is not a directory, deleting." ) ;
 				dir.delete() ;
 				dir = null ;
 			}
