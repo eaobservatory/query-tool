@@ -555,6 +555,7 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 				if( e.getClickCount() == 2 )
 				{
 					_useQueue = true ;
+					Selection.setSelection( ( SpItem )obsList.getSelectedValue() , false ) ;
 					doExecute() ;
 				}
 				else if( e.getClickCount() == 1 && ( e.getModifiers() & InputEvent.BUTTON1_MASK ) == InputEvent.BUTTON1_MASK )
