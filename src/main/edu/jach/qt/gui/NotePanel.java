@@ -31,34 +31,34 @@ import gemini.sp.SpNote;
  */
 final public class NotePanel extends JPanel
 {
-	private GridBagConstraints gbc;
-	private static JTextPane textPanel = new JTextPane();
+	private GridBagConstraints gbc ;
+	private static JTextPane textPanel = new JTextPane() ;
 
 	/**
 	 * Constructs a scrollable non-editable text panel. Sets the label of "Observer Notes", and the line wrapping convention.
 	 */
 	public NotePanel()
 	{
-		Border border = BorderFactory.createMatteBorder( 2 , 2 , 2 , 2 , Color.white );
-		setBorder( new TitledBorder( border , "Observer Notes" , 0 , 0 , new Font( "Roman" , Font.BOLD , 12 ) , Color.black ) );
-		setLayout( new BorderLayout() );
+		Border border = BorderFactory.createMatteBorder( 2 , 2 , 2 , 2 , Color.white ) ;
+		setBorder( new TitledBorder( border , "Observer Notes" , 0 , 0 , new Font( "Roman" , Font.BOLD , 12 ) , Color.black ) ) ;
+		setLayout( new BorderLayout() ) ;
 
-		GridBagLayout gbl = new GridBagLayout();
-		setLayout( gbl );
-		gbc = new GridBagConstraints();
+		GridBagLayout gbl = new GridBagLayout() ;
+		setLayout( gbl ) ;
+		gbc = new GridBagConstraints() ;
 
-		textPanel.setEditable( false );
+		textPanel.setEditable( false ) ;
 
-		JScrollPane scrollPane = new JScrollPane( textPanel );
-		scrollPane.setVerticalScrollBarPolicy( JScrollPane.VERTICAL_SCROLLBAR_ALWAYS );
+		JScrollPane scrollPane = new JScrollPane( textPanel ) ;
+		scrollPane.setVerticalScrollBarPolicy( JScrollPane.VERTICAL_SCROLLBAR_ALWAYS ) ;
 
-		gbc.fill = GridBagConstraints.BOTH;
-		gbc.insets.bottom = 5;
-		gbc.insets.left = 10;
-		gbc.insets.right = 5;
-		gbc.weightx = 100;
-		gbc.weighty = 100;
-		add( scrollPane , gbc , 0 , 0 , 2 , 1 );
+		gbc.fill = GridBagConstraints.BOTH ;
+		gbc.insets.bottom = 5 ;
+		gbc.insets.left = 10 ;
+		gbc.insets.right = 5 ;
+		gbc.weightx = 100 ;
+		gbc.weighty = 100 ;
+		add( scrollPane , gbc , 0 , 0 , 2 , 1 ) ;
 	}
 
 	/**
@@ -73,11 +73,11 @@ final public class NotePanel extends JPanel
 	 */
 	public void add( Component c , GridBagConstraints gbc , int x , int y , int w , int h )
 	{
-		gbc.gridx = x;
-		gbc.gridy = y;
-		gbc.gridwidth = w;
-		gbc.gridheight = h;
-		add( c , gbc );
+		gbc.gridx = x ;
+		gbc.gridy = y ;
+		gbc.gridwidth = w ;
+		gbc.gridheight = h ;
+		add( c , gbc ) ;
 	}
 
 	/**
@@ -90,44 +90,44 @@ final public class NotePanel extends JPanel
 	{
 		if( sp != null )
 		{
-			ArrayList notes = new ArrayList();
-			ArrayList styles = new ArrayList();
+			ArrayList notes = new ArrayList() ;
+			ArrayList styles = new ArrayList() ;
 	
-			Vector noteVector = SpTreeMan.findAllItems( sp , "gemini.sp.SpNote" );
-			Enumeration e = noteVector.elements();
+			Vector noteVector = SpTreeMan.findAllItems( sp , SpNote.class.getName() ) ;
+			Enumeration e = noteVector.elements() ;
 			while( e.hasMoreElements() )
 			{
-				SpNote thisNote = ( SpNote )e.nextElement();
+				SpNote thisNote = ( SpNote )e.nextElement() ;
 				if( thisNote.isObserveInstruction() )
 				{
-					String[] instructions = thisNote.getInstructions();
+					String[] instructions = thisNote.getInstructions() ;
 					if( instructions != null )
 					{
-						for( int i = 0 ; i < instructions.length ; i++ )
+						for( String instruction : instructions )
 						{
-							notes.add( instructions[ i ] + "\n" );
-							styles.add( "bold" );
+							notes.add( instruction + "\n" ) ;
+							styles.add( "bold" ) ;
 						}
 					}
-					notes.add( "\n" + thisNote.getNote() + "\n" );
-					styles.add( "regular" );
+					notes.add( "\n" + thisNote.getNote() + "\n" ) ;
+					styles.add( "regular" ) ;
 				}
 			}
-			initStyles();
+			initStyles() ;
 	
-			Document doc = textPanel.getDocument();
+			Document doc = textPanel.getDocument() ;
 			try
 			{
-				doc.remove( 0 , doc.getLength() );
+				doc.remove( 0 , doc.getLength() ) ;
 				for( int i = 0 ; i < notes.size() ; i++ )
-					doc.insertString( doc.getLength() , ( String )notes.get( i ) , textPanel.getStyle( ( String )styles.get( i ) ) );
+					doc.insertString( doc.getLength() , ( String )notes.get( i ) , textPanel.getStyle( ( String )styles.get( i ) ) ) ;
 			}
 			catch( Exception ex )
 			{
-				System.out.println( "Could not insert observer notes" );
+				System.out.println( "Could not insert observer notes" ) ;
 			}
-			textPanel.setCaretPosition( 0 );
-			textPanel.repaint();
+			textPanel.setCaretPosition( 0 ) ;
+			textPanel.repaint() ;
 		}
 	}
 

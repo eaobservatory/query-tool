@@ -1,99 +1,97 @@
-package edu.jach.qt.gui;
+package edu.jach.qt.gui ;
 
 /* Gemini imports */
-import gemini.sp.SpItem;
-import gemini.sp.SpProg;
-import gemini.sp.SpObs;
-import gemini.sp.SpTreeMan;
-import gemini.sp.SpType;
-import gemini.sp.SpInsertData;
-import gemini.sp.SpFactory;
-import gemini.sp.obsComp.SpInstObsComp;
+import gemini.sp.SpItem ;
+import gemini.sp.SpProg ;
+import gemini.sp.SpObs ;
+import gemini.sp.SpTreeMan ;
+import gemini.sp.SpType ;
+import gemini.sp.SpInsertData ;
+import gemini.sp.SpFactory ;
+import gemini.sp.obsComp.SpInstObsComp ;
 
 /* JSKY imports */
 
 /* ORAC imports */
-import orac.jcmt.inst.SpInstHeterodyne;
-import orac.ukirt.inst.SpInstUIST;
+import orac.jcmt.inst.SpInstHeterodyne ;
+import orac.ukirt.inst.SpInstUIST ;
 
 /* ORAC-OM imports */
 
 /* QT imports */
-import edu.jach.qt.utils.ErrorBox;
-import edu.jach.qt.utils.HTMLViewer;
-import edu.jach.qt.utils.MyTreeCellRenderer;
-import edu.jach.qt.utils.ObsListCellRenderer;
+import edu.jach.qt.utils.ErrorBox ;
+import edu.jach.qt.utils.HTMLViewer ;
+import edu.jach.qt.utils.ObsListCellRenderer ;
 
 /* Standard imports */
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.BorderLayout;
-import java.awt.Font;
-import java.awt.Color;
-import java.awt.Insets;
-import java.awt.Component;
+import java.awt.GridBagConstraints ;
+import java.awt.GridBagLayout ;
+import java.awt.BorderLayout ;
+import java.awt.Font ;
+import java.awt.Color ;
+import java.awt.Insets ;
+import java.awt.Component ;
 
-import java.awt.dnd.DragSourceListener;
-import java.awt.dnd.DropTargetListener;
-import java.awt.dnd.DragGestureListener;
-import java.awt.dnd.DragSource;
-import java.awt.dnd.DropTarget;
-import java.awt.dnd.DnDConstants;
-import java.awt.dnd.DropTargetDropEvent;
-import java.awt.dnd.DropTargetDragEvent;
-import java.awt.dnd.DropTargetEvent;
-import java.awt.dnd.DragSourceDropEvent;
-import java.awt.dnd.DragSourceDragEvent;
-import java.awt.dnd.DragSourceEvent;
-import java.awt.dnd.DragGestureEvent;
-import java.awt.datatransfer.StringSelection;
+import java.awt.dnd.DragSourceListener ;
+import java.awt.dnd.DropTargetListener ;
+import java.awt.dnd.DragGestureListener ;
+import java.awt.dnd.DragSource ;
+import java.awt.dnd.DropTarget ;
+import java.awt.dnd.DnDConstants ;
+import java.awt.dnd.DropTargetDropEvent ;
+import java.awt.dnd.DropTargetDragEvent ;
+import java.awt.dnd.DropTargetEvent ;
+import java.awt.dnd.DragSourceDropEvent ;
+import java.awt.dnd.DragSourceDragEvent ;
+import java.awt.dnd.DragSourceEvent ;
+import java.awt.dnd.DragGestureEvent ;
+import java.awt.datatransfer.StringSelection ;
 
-import java.awt.event.ActionListener;
-import java.awt.event.KeyListener;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.InputEvent;
+import java.awt.event.ActionListener ;
+import java.awt.event.KeyListener ;
+import java.awt.event.ActionEvent ;
+import java.awt.event.KeyEvent ;
+import java.awt.event.MouseListener ;
+import java.awt.event.MouseAdapter ;
+import java.awt.event.MouseEvent ;
+import java.awt.event.InputEvent ;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.File;
-import java.io.IOException;
+import java.io.BufferedReader ;
+import java.io.FileReader ;
+import java.io.File ;
+import java.io.IOException ;
 
-import java.net.URL;
+import java.net.URL ;
 
-import java.util.Vector;
-import java.util.Enumeration;
-import java.util.TooManyListenersException;
+import java.util.Vector ;
+import java.util.Enumeration ;
+import java.util.TooManyListenersException ;
 
-import javax.swing.JPanel;
-import javax.swing.DefaultListModel;
-import javax.swing.JButton;
-import javax.swing.JTree;
-import javax.swing.JList;
-import javax.swing.JScrollPane;
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
-import javax.swing.BorderFactory;
-import javax.swing.ToolTipManager;
-import javax.swing.JLabel;
-import javax.swing.ImageIcon;
-import javax.swing.JOptionPane;
+import javax.swing.JPanel ;
+import javax.swing.DefaultListModel ;
+import javax.swing.JButton ;
+import javax.swing.JTree ;
+import javax.swing.JList ;
+import javax.swing.JScrollPane ;
+import javax.swing.JMenuItem ;
+import javax.swing.JPopupMenu ;
+import javax.swing.BorderFactory ;
+import javax.swing.ToolTipManager ;
+import javax.swing.JLabel ;
+import javax.swing.ImageIcon ;
+import javax.swing.JOptionPane ;
 
-import javax.swing.border.TitledBorder;
-import javax.swing.border.Border;
+import javax.swing.border.TitledBorder ;
+import javax.swing.border.Border ;
 
-import javax.swing.event.TreeSelectionListener;
-import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener ;
+import javax.swing.event.TreeSelectionEvent ;
 
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.TreePath;
+import javax.swing.tree.DefaultMutableTreeNode ;
+import javax.swing.tree.TreePath ;
 
 /* Miscellaneous imports */
-import org.apache.log4j.Logger;
+import org.apache.log4j.Logger ;
 
 /**
  final public class programTree is a panel to select
@@ -104,43 +102,37 @@ import org.apache.log4j.Logger;
  */
 final public class ProgramTree extends JPanel implements TreeSelectionListener , ActionListener , KeyListener , DragSourceListener , DragGestureListener , DropTargetListener
 {
-	static Logger logger = Logger.getLogger( ProgramTree.class );
-	public static final String BIN_IMAGE = System.getProperty( "binImage" );
-	public static final String BIN_SEL_IMAGE = System.getProperty( "binImage" );
-	private GridBagConstraints gbc;
-	private static JButton engButton;
-	private JButton xpand;
-	private JTree tree;
-	private static JList obsList;
-	private DefaultListModel model;
-	private JScrollPane scrollPane = new JScrollPane();;
-	private static SpItem _spItem;
-	private DefaultMutableTreeNode root;
-	private DefaultTreeModel treeModel;
-	private TreeViewer tv = null;
-	private TreePath path;
-	private String projectID = null;
-	private String checkSum = null;
-	private DropTarget dropTarget = null;
-	private DragSource dragSource = null;
-	private TrashCan trash = null;
-	private static SpItem selectedItem = null;
-	public static SpItem obsToDefer;
-	private final String editText = "Edit Attribute...";
-	private final String scaleText = "Scale Exposure Times...";
-	private String rescaleText = "Re-do Scale Exposure Times";
-	private final String engString = "Send for Engineering";
-	private Vector haveScaled = new Vector();
-	private Vector scaleFactors = new Vector();
-	private JMenuItem edit;
-	private JMenuItem scale;
-	private JMenuItem scaleAgain;
-	private JMenuItem sendToEng;
-	private JPopupMenu scalePopup;
-	private JPopupMenu msbDonePopup;
-	private JMenuItem msbDoneMenuItem;
-	private final String msbDoneText = "Accept/Reject this MSB";
-	private boolean _useQueue = true;
+	static Logger logger = Logger.getLogger( ProgramTree.class ) ;
+	public static final String BIN_IMAGE = System.getProperty( "binImage" ) ;
+	public static final String BIN_SEL_IMAGE = System.getProperty( "binImage" ) ;
+	private GridBagConstraints gbc ;
+	private static JButton engButton ;
+	private JButton xpand ;
+	private JTree tree ;
+	private static JList obsList ;
+	private DefaultListModel model ;
+	private JScrollPane scrollPane = new JScrollPane() ;
+	private TreeViewer tv = null ;
+	private TreePath path ;
+	private DropTarget dropTarget = null ;
+	private DragSource dragSource = null ;
+	private TrashCan trash = null ;
+	public static SpItem obsToDefer ;
+	private final String editText = "Edit Attribute..." ;
+	private final String scaleText = "Scale Exposure Times..." ;
+	private String rescaleText = "Re-do Scale Exposure Times" ;
+	private final String engString = "Send for Engineering" ;
+	private Vector haveScaled = new Vector() ;
+	private Vector scaleFactors = new Vector() ;
+	private JMenuItem edit ;
+	private JMenuItem scale ;
+	private JMenuItem scaleAgain ;
+	private JMenuItem sendToEng ;
+	private JPopupMenu scalePopup ;
+	private JPopupMenu msbDonePopup ;
+	private JMenuItem msbDoneMenuItem ;
+	private final String msbDoneText = "Accept/Reject this MSB" ;
+	private boolean _useQueue = true ;
 	
 	private boolean uistIrpol = false ;
 	
@@ -155,122 +147,83 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 	 */
 	public ProgramTree()
 	{
-		// Ensure nothing is selected 
-		selectedItem = null;
+		Border border = BorderFactory.createMatteBorder( 2 , 2 , 2 , 2 , Color.white ) ;
+		setBorder( new TitledBorder( border , "Retrieved MSBs" , 0 , 0 , new Font( "Roman" , Font.BOLD , 12 ) , Color.black ) ) ;
+		setLayout( new BorderLayout() ) ;
 
-		Border border = BorderFactory.createMatteBorder( 2 , 2 , 2 , 2 , Color.white );
-		setBorder( new TitledBorder( border , "Retrieved MSBs" , 0 , 0 , new Font( "Roman" , Font.BOLD , 12 ) , Color.black ) );
-		setLayout( new BorderLayout() );
+		GridBagLayout gbl = new GridBagLayout() ;
+		setLayout( gbl ) ;
+		gbc = new GridBagConstraints() ;
 
-		GridBagLayout gbl = new GridBagLayout();
-		setLayout( gbl );
-		gbc = new GridBagConstraints();
+		engButton = new JButton( "Send to Queue" ) ;
+		engButton.setMargin( new Insets( 5 , 10 , 5 , 10 ) ) ;
+		engButton.setEnabled( true ) ;
+		engButton.addActionListener( this ) ;
 
-		engButton = new JButton( "Send to Queue" );
-		engButton.setMargin( new Insets( 5 , 10 , 5 , 10 ) );
-		engButton.setEnabled( true );
-		engButton.addActionListener( this );
+		xpand = new JButton( "Expand Observation" ) ;
+		xpand.setMargin( new Insets( 5 , 10 , 5 , 10 ) ) ;
+		xpand.addActionListener( this ) ;
 
-		xpand = new JButton( "Expand Observation" );
-		xpand.setMargin( new Insets( 5 , 10 , 5 , 10 ) );
-		xpand.addActionListener( this );
-
-		dropTarget = new DropTarget();
+		dropTarget = new DropTarget() ;
 		try
 		{
-			dropTarget.addDropTargetListener( this );
+			dropTarget.addDropTargetListener( this ) ;
 		}
 		catch( TooManyListenersException tmle )
 		{
-			logger.error( "Too many drop target listeners" , tmle );
+			logger.error( "Too many drop target listeners" , tmle ) ;
 		}
 
-		trash = new TrashCan();
-		trash.setDropTarget( dropTarget );
+		trash = new TrashCan() ;
+		trash.setDropTarget( dropTarget ) ;
 
-		dragSource = new DragSource();
+		dragSource = new DragSource() ;
 
 		// Create a popup menu 
-		scalePopup = new JPopupMenu();
-		edit = new JMenuItem( editText );
-		edit.addActionListener( this );
-		scalePopup.add( edit );
-		scale = new JMenuItem( scaleText );
-		scale.setEnabled( false );
-		scale.addActionListener( this );
-		scalePopup.add( scale );
-		scaleAgain = new JMenuItem( rescaleText );
-		scaleAgain.addActionListener( this );
-		scaleAgain.setEnabled( false );
-		scalePopup.add( scaleAgain );
-		sendToEng = new JMenuItem( engString );
-		sendToEng.addActionListener( this );
-		scalePopup.add( sendToEng );
+		scalePopup = new JPopupMenu() ;
+		edit = new JMenuItem( editText ) ;
+		edit.addActionListener( this ) ;
+		scalePopup.add( edit ) ;
+		scale = new JMenuItem( scaleText ) ;
+		scale.setEnabled( false ) ;
+		scale.addActionListener( this ) ;
+		scalePopup.add( scale ) ;
+		scaleAgain = new JMenuItem( rescaleText ) ;
+		scaleAgain.addActionListener( this ) ;
+		scaleAgain.setEnabled( false ) ;
+		scalePopup.add( scaleAgain ) ;
+		sendToEng = new JMenuItem( engString ) ;
+		sendToEng.addActionListener( this ) ;
+		scalePopup.add( sendToEng ) ;
 
-		msbDonePopup = new JPopupMenu();
-		msbDoneMenuItem = new JMenuItem( msbDoneText );
-		msbDoneMenuItem.addActionListener( this );
-		msbDonePopup.add( msbDoneMenuItem );
+		msbDonePopup = new JPopupMenu() ;
+		msbDoneMenuItem = new JMenuItem( msbDoneText ) ;
+		msbDoneMenuItem.addActionListener( this ) ;
+		msbDonePopup.add( msbDoneMenuItem ) ;
 
-		gbc.fill = GridBagConstraints.NONE;
-		gbc.anchor = GridBagConstraints.CENTER;
-		gbc.weightx = 100;
-		gbc.weighty = 0;
-		gbc.insets.left = 10;
-		gbc.insets.right = 0;
-		add( trash , gbc , 1 , 1 , 1 , 1 );
+		gbc.fill = GridBagConstraints.NONE ;
+		gbc.anchor = GridBagConstraints.CENTER ;
+		gbc.weightx = 100 ;
+		gbc.weighty = 0 ;
+		gbc.insets.left = 10 ;
+		gbc.insets.right = 0 ;
+		add( trash , gbc , 1 , 1 , 1 , 1 ) ;
 
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.weightx = 100;
-		gbc.weighty = 0;
-		gbc.insets.left = 0;
-		gbc.insets.right = 0;
-		gbc.insets.bottom = 20;
-		add( engButton , gbc , 0 , 1 , 1 , 1 );
+		gbc.fill = GridBagConstraints.HORIZONTAL ;
+		gbc.weightx = 100 ;
+		gbc.weighty = 0 ;
+		gbc.insets.left = 0 ;
+		gbc.insets.right = 0 ;
+		gbc.insets.bottom = 20 ;
+		add( engButton , gbc , 0 , 1 , 1 , 1 ) ;
 
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.weightx = 100;
-		gbc.weighty = 0;
-		gbc.insets.left = 0;
-		gbc.insets.right = 0;
-		gbc.insets.bottom = 20;
-		add( xpand , gbc , 0 , 2 , 1 , 1 );
-	}
-
-	public static synchronized SpItem getSelectedItem()
-	{
-		return selectedItem;
-	}
-
-	/**
-	 * Set the <code>projectID</code> to a specified value.
-	 * 
-	 * @param projectID
-	 *                The value to set.
-	 */
-	public void setProjectID( String projectID )
-	{
-		this.projectID = ( ( SpProg )_spItem ).getProjectID();
-		if( this.projectID == null )
-			this.projectID = projectID;
-	}
-
-	public static SpItem getCurrentItem()
-	{
-		return _spItem;
-	}
-
-	/**
-	 * Set the <code>checkSum</code> to a specified value.
-	 * 
-	 * @param checksum
-	 *                The value to set.
-	 */
-	public void setChecksum( String checksum )
-	{
-		this.checkSum = XmlUtils.getChecksum( _spItem.toXML() );
-		if( this.checkSum == null )
-			this.checkSum = checksum;
+		gbc.fill = GridBagConstraints.HORIZONTAL ;
+		gbc.weightx = 100 ;
+		gbc.weighty = 0 ;
+		gbc.insets.left = 0 ;
+		gbc.insets.right = 0 ;
+		gbc.insets.bottom = 20 ;
+		add( xpand , gbc , 0 , 2 , 1 , 1 ) ;
 	}
 
 	/**
@@ -281,16 +234,16 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 	 */
 	public static void setExecutable( boolean flag )
 	{
-		logger.debug( "In ProgramTree.setExecutable(); setting run.enabled to " + flag );
-		engButton.setEnabled( flag );
+		logger.debug( "In ProgramTree.setExecutable() ; setting run.enabled to " + flag ) ;
+		engButton.setEnabled( flag ) ;
 		if( flag == false )
 		{
-			engButton.setToolTipText( "Disabled due to edited time constraint" );
-			ToolTipManager.sharedInstance().setInitialDelay( 250 );
+			engButton.setToolTipText( "Disabled due to edited time constraint" ) ;
+			ToolTipManager.sharedInstance().setInitialDelay( 250 ) ;
 		}
 		else
 		{
-			engButton.setToolTipText( null );
+			engButton.setToolTipText( null ) ;
 		}
 	}
 
@@ -301,11 +254,11 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 	 */
 	public void setImage( JLabel label ) throws Exception
 	{
-		URL url = new URL( "file://" + BIN_IMAGE );
+		URL url = new URL( "file://" + BIN_IMAGE ) ;
 		if( url != null )
-			label.setIcon( new ImageIcon( url ) );
+			label.setIcon( new ImageIcon( url ) ) ;
 		else
-			label.setIcon( new ImageIcon( ProgramTree.class.getResource( "file://" + BIN_IMAGE ) ) );
+			label.setIcon( new ImageIcon( ProgramTree.class.getResource( "file://" + BIN_IMAGE ) ) ) ;
 	}
 
 	/**
@@ -320,11 +273,11 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 	 */
 	public void add( Component c , GridBagConstraints gbc , int x , int y , int w , int h )
 	{
-		gbc.gridx = x;
-		gbc.gridy = y;
-		gbc.gridwidth = w;
-		gbc.gridheight = h;
-		add( c , gbc );
+		gbc.gridx = x ;
+		gbc.gridy = y ;
+		gbc.gridwidth = w ;
+		gbc.gridheight = h ;
+		add( c , gbc ) ;
 	}
 
 	/**
@@ -339,115 +292,98 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 	 */
 	public void actionPerformed( ActionEvent evt )
 	{
-		Object source = evt.getSource();
+		Object source = evt.getSource() ;
 		if( source == xpand )
 		{
-			SpItem itemToXpand;
-			if( selectedItem == null && DeferredProgramList.getCurrentItem() == null )
-				return;
-			else if( selectedItem == null )
-				itemToXpand = DeferredProgramList.getCurrentItem();
+			SpItem itemToXpand ;
+			if( Selection.selection() == null )
+				return ;
 			else
-				itemToXpand = selectedItem;
+				itemToXpand = Selection.selection() ;
 						
-			SpItem temp = itemToXpand.deepCopy();
+			SpItem temp = itemToXpand.deepCopy() ;
 			
 			SpInstObsComp inst = SpTreeMan.findInstrumentInContext( itemToXpand ) ;
 
 			if( inst == null )
 			{
 				inst = SpTreeMan.findInstrument( itemToXpand ) ;
-				SpInstObsComp clonedInst = ( SpInstObsComp )inst.deepCopy();
-				SpInsertData spid = SpTreeMan.evalInsertInside( clonedInst , temp );
+				SpInstObsComp clonedInst = ( SpInstObsComp )inst.deepCopy() ;
+				SpInsertData spid = SpTreeMan.evalInsertInside( clonedInst , temp ) ;
 				if( spid != null )
-					SpTreeMan.insert( spid );
+					SpTreeMan.insert( spid ) ;
 			}
 			
 			itemToXpand = temp ;
 
 			if( tv == null )
-				tv = new TreeViewer( itemToXpand );
+				tv = new TreeViewer( itemToXpand ) ;
 			else
-				tv.update( itemToXpand );
+				tv.update( itemToXpand ) ;
 		}
 		else if( source == engButton )
 		{
-			_useQueue = true;
-			doExecute();
+			_useQueue = true ;
+			doExecute() ;
 		}
 
 		if( source instanceof JMenuItem )
 		{
-			JMenuItem thisItem = ( JMenuItem )source;
+			JMenuItem thisItem = ( JMenuItem )source ;
 			if( thisItem.getText().equals( editText ) )
 			{
-				editAttributes();
+				editAttributes() ;
 			}
 			else if( thisItem.getText().equals( scaleText ) )
 			{
-				scaleAttributes();
+				scaleAttributes() ;
 			}
 			else if( thisItem.getText().equals( rescaleText ) )
 			{
-				rescaleAttributes();
+				rescaleAttributes() ;
 			}
 			else if( thisItem.getText().equals( engString ) )
 			{
-				_useQueue = false;
-				doExecute();
+				_useQueue = false ;
+				doExecute() ;
 			}
 		}
 	}
 
 	public void doExecute()
 	{
-		SpItem item = null;
-		boolean isDeferred = false;
-		boolean failed = false;
+		SpItem item = null ;
+		boolean isDeferred = Selection.deferred() == Selection.DEFERRED ;
+		boolean failed = false ;
 
-		Thread t = null;
+		Thread t = null ;
 
-		if( obsList.getSelectedValue() == null && DeferredProgramList.getCurrentItem() == null )
+		if( Selection.selection() == null )
 		{
-			JOptionPane.showMessageDialog( null , "You have not selected an observation!" , "Please select an observation." , JOptionPane.ERROR_MESSAGE );
-			return;
-		}
-		else if( obsList.getSelectedValue() == null )
-		{
-			isDeferred = true;
-			item = DeferredProgramList.getCurrentItem();
+			JOptionPane.showMessageDialog( null , "You have not selected an observation!" , "Please select an observation." , JOptionPane.ERROR_MESSAGE ) ;
+			return ;
 		}
 
-		setExecutable( false );
-		engButton.setToolTipText( "Run button disabled during execution" );
+		setExecutable( false ) ;
+		engButton.setToolTipText( "Run button disabled during execution" ) ;
 
 		if( System.getProperty( "telescope" ).equalsIgnoreCase( "ukirt" ) )
 		{
-			if( isDeferred )
-			{
-				item = DeferredProgramList.getCurrentItem();
-			}
-			else
-			{
-				if( _useQueue )
-					item = ProgramTree.getCurrentItem();
-				else
-					item = ProgramTree.getSelectedItem();
-			}
+			item = Selection.selection() ;
 
-			SpInstObsComp instrumentContext = getContext( item );
+			SpInstObsComp instrumentContext = getContext( item ) ;
 
 			if( instrumentContext instanceof SpInstUIST )
 			{
-				SpInstUIST uist = ( SpInstUIST )instrumentContext;
+				SpInstUIST uist = ( SpInstUIST )instrumentContext ;
 				if( uist.isPolarimetry() && !uistIrpol )
 				{
-					int result = JOptionPane.showConfirmDialog( null , "You are attempting to do a Polarimetry observation with UIST - is the IRPOL arm in the beam ?" , "Is IRPOL arm in beam ?" , JOptionPane.YES_NO_OPTION );
+					int result = JOptionPane.showConfirmDialog( null , "You are attempting to do a Polarimetry observation with UIST - is the IRPOL arm in the beam ?" , "Is IRPOL arm in beam ?" , JOptionPane.YES_NO_OPTION ) ;
 					if( result == JOptionPane.NO_OPTION )
 					{
-						JOptionPane.showMessageDialog( null , "Queue submission cancelled." , "Queue submission cancelled." , JOptionPane.INFORMATION_MESSAGE );
-						setExecutable( true );
-						return;
+						JOptionPane.showMessageDialog( null , "Queue submission cancelled." , "Queue submission cancelled." , JOptionPane.INFORMATION_MESSAGE ) ;
+						setExecutable( true ) ;
+						return ;
 					}
 					uistIrpol = true ;
 				}
@@ -463,96 +399,94 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 
 			try
 			{
-				ExecuteUKIRT execute = new ExecuteUKIRT( _useQueue );
-				execute.setDeferred( isDeferred );
+				ExecuteUKIRT execute = new ExecuteUKIRT( _useQueue ) ;
 
-				File failFile = execute.failFile();
-				File successFile = execute.successFile();
+				File failFile = execute.failFile() ;
+				File successFile = execute.successFile() ;
 
-				t = new Thread( execute );
-				t.start();
-				t.join();
+				t = new Thread( execute ) ;
+				t.start() ;
+				t.join() ;
 
 				if( failFile.exists() )
 				{
-					failed = true;
+					failed = true ;
 					if( failFile.length() > 0 )
 					{
-						StringBuffer error = new StringBuffer();
+						StringBuffer error = new StringBuffer() ;
 						try
 						{
 							// Read the information from the filure file
-							BufferedReader rdr = new BufferedReader( new FileReader( failFile ) );
-							String line;
+							BufferedReader rdr = new BufferedReader( new FileReader( failFile ) ) ;
+							String line ;
 							while( ( line = rdr.readLine() ) != null )
 							{
-								error.append( line );
-								error.append( '\n' );
+								error.append( line ) ;
+								error.append( '\n' ) ;
 							}
-							new ErrorBox( this , "Failed to Execute. Error was \n" + error.toString() );
+							new ErrorBox( this , "Failed to Execute. Error was \n" + error.toString() ) ;
 						}
 						catch( IOException ioe )
 						{
 							// If we failed, output a default error message and reset the error buffer
-							new ErrorBox( this , "Failed to Execute. Check log using View>Log menu button." );
+							new ErrorBox( this , "Failed to Execute. Check log using View>Log menu button." ) ;
 						}
 					}
 					else
 					{
-						new ErrorBox( this , "Failed to Execute. Check log using View>Log menu button." );
+						new ErrorBox( this , "Failed to Execute. Check log using View>Log menu button." ) ;
 					}
 				}
 				if( !_useQueue )
 				{
 					if( !isDeferred && !failed )
-						markAsDone( obsList.getSelectedIndex() );
+						markAsDone( obsList.getSelectedIndex() ) ;
 					else if( !failed )
-						DeferredProgramList.markThisObservationAsDone( item );
+						DeferredProgramList.markThisObservationAsDone( item ) ;
 				}
 
 				// done with status files
 				if( failFile.exists() )
-					failFile.delete();
+					failFile.delete() ;
 				if( successFile.exists() )
-					successFile.delete();
+					successFile.delete() ;
 			}
 			catch( Exception e )
 			{
-				logger.error( "Failed to execute" , e );
+				logger.error( "Failed to execute" , e ) ;
 				if( t != null && t.isAlive() )
-					logger.info( "Last execution still running" );
+					logger.info( "Last execution still running" ) ;
 			}
-			setExecutable( true );
+			setExecutable( true ) ;
 			if( !isDeferred && !failed )
 			{
-				obsList.setListData( new Vector() );
-				obsList.clearSelection();
+				obsList.setListData( new Vector() ) ;
+				obsList.clearSelection() ;
 			}
 		}
 		else if( System.getProperty( "telescope" ).equalsIgnoreCase( "jcmt" ) )
 		{
 			if( ExecuteJCMT.isRunning() )
 			{
-				setExecutable( false );
-				logger.debug( "Disabling run button since ExecuteJCMT is still running" );
-				engButton.setToolTipText( "Button disabled during execution" );
-				return;
+				setExecutable( false ) ;
+				logger.debug( "Disabling run button since ExecuteJCMT is still running" ) ;
+				engButton.setToolTipText( "Button disabled during execution" ) ;
+				return ;
 			}
 			else
 			{
 				try
 				{
-					ExecuteInThread ein;
-					if( isDeferred )
-						ein = new ExecuteInThread( item , isDeferred );
-					else
-						ein = new ExecuteInThread( _spItem , isDeferred );
-					ein.start();
+					if( Selection.deferred() != Selection.NOTSET )
+					{
+						ExecuteInThread ein = new ExecuteInThread( Selection.selection() , isDeferred ) ;
+						ein.start() ;
+					}
 				}
 				catch( Exception e )
 				{
-					logger.error( "Error running task" , e );
-					setExecutable( true );
+					logger.error( "Error running task" , e ) ;
+					setExecutable( true ) ;
 				}
 			}
 		}
@@ -560,67 +494,22 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 
 	private void markAsDone( int index )
 	{
-		SpObs obs = ( SpObs )model.getElementAt( index );
-		String title = obs.getTitle();
+		SpObs obs = ( SpObs )model.getElementAt( index ) ;
+		String title = obs.getTitle() ;
 		// Search through and see if we have a remaining of the form "(nX)"
 		if( title.endsWith( "X)" ) )
 		{
 			// Find the index of the last space character
-			int lastSpace = title.lastIndexOf( " " );
-			title = title.substring( 0 , lastSpace );
+			int lastSpace = title.lastIndexOf( " " ) ;
+			title = title.substring( 0 , lastSpace ) ;
 		}
 
 		if( !( title.endsWith( "*" ) ) )
 		{
-			title = title + "*";
-			obs.setTitleAttr( title );
-			model.setElementAt( obs , index );
+			title = title + "*" ;
+			obs.setTitleAttr( title ) ;
+			model.setElementAt( obs , index ) ;
 		}
-	}
-
-	/**
-	 * public void addTree(String title,SpItem sp) is a public method to set
-	 * up a JTree GUI bit for a science program object in the panel and to
-	 * set up a listener too
-	 * 
-	 * @param String
-	 *                title and SpItem sp
-	 * @return none
-	 * @throws none
-	 * @deprecated Replaced by {@link #addList(SpItem)}
-	 * 
-	 */
-	public void addTree( SpItem sp )
-	{
-		_spItem = sp;
-
-		getItems( sp , root );
-
-		// Create a new tree control
-		treeModel = new DefaultTreeModel( root );
-		tree = new JTree( treeModel );
-
-		MyTreeCellRenderer tcr = new MyTreeCellRenderer();
-		// Tell the tree it is being rendered by our application
-		tree.setCellRenderer( tcr );
-		tree.addTreeSelectionListener( this );
-		tree.addKeyListener( this );
-
-		// Add the listbox to a scrolling pane
-		scrollPane.getViewport().removeAll();
-		scrollPane.getViewport().add( tree );
-		scrollPane.getViewport().setOpaque( false );
-
-		gbc.fill = GridBagConstraints.BOTH;
-		gbc.insets.bottom = 5;
-		gbc.insets.left = 10;
-		gbc.insets.right = 5;
-		gbc.weightx = 100;
-		gbc.weighty = 100;
-		add( scrollPane , gbc , 0 , 0 , 2 , 1 );
-
-		this.repaint();
-		this.validate();
 	}
 
 	/**
@@ -634,62 +523,62 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 		// Check if there is already an existing model and whether it still has observations to perform
 		SpInstObsComp instrumentContext = getContext( sp ) ;
 		if( instrumentContext instanceof SpInstHeterodyne && HTMLViewer.visible() )
-			return;
+			return ;
 
 		// If we get here we should reinitialise with the new argument
-		_spItem = sp;
+		Selection.setSelection( sp , false ) ;
 
-		model = new DefaultListModel();
+		model = new DefaultListModel() ;
 
-		if( _spItem == null )
+		if( sp == null )
 		{
-			model.clear();
+			model.clear() ;
 		}
 		else
 		{
-			Vector obsVector = SpTreeMan.findAllItems( sp , "gemini.sp.SpObs" );
+			Vector obsVector = SpTreeMan.findAllItems( sp , SpObs.class.getName() ) ;
 
-			Enumeration e = obsVector.elements();
+			Enumeration e = obsVector.elements() ;
 			while( e.hasMoreElements() )
-				model.addElement( e.nextElement() );
+				model.addElement( e.nextElement() ) ;
 		}
 
-		obsList = new JList( model );
-		ToolTipManager.sharedInstance().registerComponent( obsList );
-		ToolTipManager.sharedInstance().setDismissDelay( 3000 );
-		obsList.setCellRenderer( new ObsListCellRenderer() );
-		obsList.setToolTipText( "<html>Optional observations are shown in GREEN<br>Calibrations which have been done are shown in BLUE<br>Suspended MSBs are shown in RED</html>" );
+		obsList = new JList( model ) ;
+		ToolTipManager.sharedInstance().registerComponent( obsList ) ;
+		ToolTipManager.sharedInstance().setDismissDelay( 3000 ) ;
+		obsList.setCellRenderer( new ObsListCellRenderer() ) ;
+		obsList.setToolTipText( "<html>Optional observations are shown in GREEN<br>Calibrations which have been done are shown in BLUE<br>Suspended MSBs are shown in RED</html>" ) ;
 		MouseListener ml = new MouseAdapter()
 		{
 			public void mouseClicked( MouseEvent e )
 			{
 				if( e.getClickCount() == 2 )
 				{
-					_useQueue = true;
-					doExecute();
+					_useQueue = true ;
+					doExecute() ;
 				}
 				else if( e.getClickCount() == 1 && ( e.getModifiers() & InputEvent.BUTTON1_MASK ) == InputEvent.BUTTON1_MASK )
 				{
-					if( selectedItem != obsList.getSelectedValue() )
+					if( Selection.selection() != obsList.getSelectedValue() )
 					{
 						// Select the new item
-						selectedItem = ( SpItem )obsList.getSelectedValue();
-						DeferredProgramList.clearSelection();
-						NotePanel.setNote( ProgramTree.getCurrentItem() );
+						Selection.setSelection( ( SpItem )obsList.getSelectedValue() , false ) ;
+						DeferredProgramList.clearSelection() ;
+						NotePanel.setNote( Selection.selection() ) ;
 					}
 					else if( e.getClickCount() == 1 )
 					{
-						if( selectedItem != obsList.getSelectedValue() )
+						if( Selection.selection() != obsList.getSelectedValue() )
 						{
 							// Select the new item
-							selectedItem = ( SpItem )obsList.getSelectedValue();
-							DeferredProgramList.clearSelection();
-							NotePanel.setNote( ProgramTree.getCurrentItem() );
+							Selection.setSelection( ( SpItem )obsList.getSelectedValue() , false ) ;
+							DeferredProgramList.clearSelection() ;
+							NotePanel.setNote( Selection.selection() ) ;
 						}
 						else
 						{
-							obsList.clearSelection();
-							selectedItem = null;
+							obsList.clearSelection() ;
+							Selection.clear() ;
 						}
 					}
 				}
@@ -697,37 +586,37 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 
 			public void mousePressed( MouseEvent e )
 			{
-				DeferredProgramList.clearSelection();
-				enableList( false );
+				DeferredProgramList.clearSelection() ;
+				enableList( false ) ;
 			}
 
 			public void mouseReleased( MouseEvent e )
 			{
-				enableList( true );
+				enableList( true ) ;
 			}
-		};
-		obsList.addMouseListener( ml );
-		MouseListener popupListener = new PopupListener();
-		obsList.addMouseListener( popupListener );
+		} ;
+		obsList.addMouseListener( ml ) ;
+		MouseListener popupListener = new PopupListener() ;
+		obsList.addMouseListener( popupListener ) ;
 		if( model.size() > 0 )
 		{
-			obsList.setSelectedIndex( 0 );
-			selectedItem = ( SpItem )obsList.getSelectedValue();
+			obsList.setSelectedIndex( 0 ) ;
+			Selection.setSelection( ( SpItem )obsList.getSelectedValue() , false ) ;
 		}
 
-		dragSource.createDefaultDragGestureRecognizer( obsList , DnDConstants.ACTION_MOVE , this );
+		dragSource.createDefaultDragGestureRecognizer( obsList , DnDConstants.ACTION_MOVE , this ) ;
 		// Add the listbox to a scrolling pane
-		scrollPane.getViewport().removeAll();
-		scrollPane.getViewport().add( obsList );
-		scrollPane.getViewport().setOpaque( false );
+		scrollPane.getViewport().removeAll() ;
+		scrollPane.getViewport().add( obsList ) ;
+		scrollPane.getViewport().setOpaque( false ) ;
 
-		gbc.fill = GridBagConstraints.BOTH;
-		gbc.insets.bottom = 5;
-		gbc.insets.left = 10;
-		gbc.insets.right = 5;
-		gbc.weightx = 100;
-		gbc.weighty = 100;
-		add( scrollPane , gbc , 0 , 0 , 2 , 1 );
+		gbc.fill = GridBagConstraints.BOTH ;
+		gbc.insets.bottom = 5 ;
+		gbc.insets.left = 10 ;
+		gbc.insets.right = 5 ;
+		gbc.weightx = 100 ;
+		gbc.weighty = 100 ;
+		add( scrollPane , gbc , 0 , 0 , 2 , 1 ) ;
 	}
 
 	/**
@@ -735,8 +624,7 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 	 */
 	public static void clearSelection()
 	{
-		obsList.clearSelection();
-		selectedItem = null;
+		obsList.clearSelection() ;
 	}
 
 	/**
@@ -753,7 +641,7 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 	{
 		// Display the full selection path
 		if( event.getSource() == tree )
-			path = tree.getSelectionPath();
+			path = tree.getSelectionPath() ;
 	}
 
 	/**
@@ -763,7 +651,7 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 	public void keyPressed( KeyEvent e )
 	{
 		if( ( e.getKeyCode() == KeyEvent.VK_DELETE ) )
-			removeCurrentNode();
+			removeCurrentNode() ;
 	}
 
 	/**
@@ -781,27 +669,27 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 	 */
 	public void removeCurrentNode()
 	{
-		SpObs item = ( SpObs )obsList.getSelectedValue();
+		SpObs item = ( SpObs )obsList.getSelectedValue() ;
 
-		Vector obsV = SpTreeMan.findAllItems( _spItem , "gemini.sp.SpObs" );
+		Vector obsV = SpTreeMan.findAllItems( Selection.selection() , SpObs.class.getName() ) ;
 
-		int index = obsList.getSelectedIndex();
-		(( DefaultListModel )obsList.getModel()).removeElementAt( index );
+		int index = obsList.getSelectedIndex() ;
+		(( DefaultListModel )obsList.getModel()).removeElementAt( index ) ;
 
-		SpObs[] obsToDelete = null;
+		SpObs[] obsToDelete = null ;
 		if( obsV.size() > index )
-			obsToDelete = new SpObs[] { ( SpObs )obsV.elementAt( index ) };
+			obsToDelete = new SpObs[] { ( SpObs )obsV.elementAt( index ) } ;
 
 		try
 		{
 			if( obsToDelete != null && SpTreeMan.evalExtract( obsToDelete ) )
-				SpTreeMan.extract( obsToDelete );
+				SpTreeMan.extract( obsToDelete ) ;
 			else if( item == null )
-				JOptionPane.showMessageDialog( this , "No Observation to remove" , "Message" , JOptionPane.INFORMATION_MESSAGE );
+				JOptionPane.showMessageDialog( this , "No Observation to remove" , "Message" , JOptionPane.INFORMATION_MESSAGE ) ;
 		}
 		catch( Exception e )
 		{
-			logger.error( "Exception encountered while deleting observation" , e );
+			logger.error( "Exception encountered while deleting observation" , e ) ;
 		}
 	}
 
@@ -817,15 +705,15 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 	 */
 	private void getItems( SpItem spItem , DefaultMutableTreeNode node )
 	{
-		Enumeration children = spItem.children();
+		Enumeration children = spItem.children() ;
 		while( children.hasMoreElements() )
 		{
-			SpItem child = ( SpItem )children.nextElement();
+			SpItem child = ( SpItem )children.nextElement() ;
 
-			DefaultMutableTreeNode temp = new DefaultMutableTreeNode( child );
+			DefaultMutableTreeNode temp = new DefaultMutableTreeNode( child ) ;
 
-			node.add( temp );
-			getItems( child , temp );
+			node.add( temp ) ;
+			getItems( child , temp ) ;
 		}
 	}
 
@@ -837,26 +725,26 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 	private void editAttributes()
 	{
 		// Recheck that this is an observation
-		if( selectedItem.type() == SpType.OBSERVATION )
+		if( Selection.selection().type() == SpType.OBSERVATION )
 		{
-			setExecutable( false );
+			setExecutable( false ) ;
 
-			SpObs observation = ( SpObs )selectedItem;
+			SpObs observation = ( SpObs )Selection.selection() ;
 
 			try
 			{
 				if( !observation.equals( null ) )
-					new AttributeEditor( observation , new javax.swing.JFrame() , true ).show();
+					new AttributeEditor( observation , new javax.swing.JFrame() , true ).show() ;
 				else
-					JOptionPane.showMessageDialog( this , "Current selection is not an observation." , "Not an Obs!" , JOptionPane.INFORMATION_MESSAGE );
+					JOptionPane.showMessageDialog( this , "Current selection is not an observation." , "Not an Obs!" , JOptionPane.INFORMATION_MESSAGE ) ;
 			}
 			catch( Exception e )
 			{
-				logger.error( "Error instantiating AttributeEditor" , e );
+				logger.error( "Error instantiating AttributeEditor" , e ) ;
 			}
 			finally
 			{
-				setExecutable( true );
+				setExecutable( true ) ;
 			}
 		}
 	}
@@ -869,29 +757,29 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 	 **/
 	private void scaleAttributes()
 	{
-		if( selectedItem != null && selectedItem.type() == SpType.OBSERVATION )
+		if( Selection.selection() != null && Selection.selection().type() == SpType.OBSERVATION )
 		{
-			setExecutable( false );
+			setExecutable( false ) ;
 	
-			SpObs observation = ( SpObs )selectedItem;
+			SpObs observation = ( SpObs )Selection.selection() ;
 			if( !observation.equals( null ) )
 			{
-				new AttributeEditor( observation , new javax.swing.JFrame() , true , "EXPTIME" , haveScaled.contains( observation ) , lastScaleFactor() , false ).show();
-				double sf = AttributeEditor.scaleFactorUsed();
+				new AttributeEditor( observation , new javax.swing.JFrame() , true , "EXPTIME" , haveScaled.contains( observation ) , lastScaleFactor() , false ).show() ;
+				double sf = AttributeEditor.scaleFactorUsed() ;
 				if( sf > 0 )
 				{
-					haveScaled.addElement( observation );
-					scaleFactors.addElement( new Double( sf ) );
-					scaleAgain.setEnabled( true );
-					rescaleText = "Re-do Scale Exposure Times (x" + sf + ")";
-					scaleAgain.setText( rescaleText );
+					haveScaled.addElement( observation ) ;
+					scaleFactors.addElement( new Double( sf ) ) ;
+					scaleAgain.setEnabled( true ) ;
+					rescaleText = "Re-do Scale Exposure Times (x" + sf + ")" ;
+					scaleAgain.setText( rescaleText ) ;
 				}
 			}
 			else
 			{
-				JOptionPane.showMessageDialog( this , "Current selection is not an observation." , "Not an Obs!" , JOptionPane.INFORMATION_MESSAGE );
+				JOptionPane.showMessageDialog( this , "Current selection is not an observation." , "Not an Obs!" , JOptionPane.INFORMATION_MESSAGE ) ;
 			}
-			setExecutable( true );
+			setExecutable( true ) ;
 		}
 	}
 
@@ -903,26 +791,26 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 	 **/
 	private void rescaleAttributes()
 	{
-		if( selectedItem == null || selectedItem.type() != SpType.OBSERVATION )
+		if( Selection.selection() == null || Selection.selection().type() != SpType.OBSERVATION )
 		{
-			setExecutable( false );
+			setExecutable( false ) ;
 	
-			SpObs observation = ( SpObs )selectedItem;
+			SpObs observation = ( SpObs )Selection.selection() ;
 			if( !observation.equals( null ) )
 			{
-				new AttributeEditor( observation , new javax.swing.JFrame() , true , "EXPTIME" , haveScaled.contains( observation ) , lastScaleFactor() , true ).show();
-				double sf = AttributeEditor.scaleFactorUsed();
+				new AttributeEditor( observation , new javax.swing.JFrame() , true , "EXPTIME" , haveScaled.contains( observation ) , lastScaleFactor() , true ).show() ;
+				double sf = AttributeEditor.scaleFactorUsed() ;
 				if( sf > 0 )
 				{
-					haveScaled.addElement( observation );
-					scaleFactors.addElement( new Double( sf ) );
+					haveScaled.addElement( observation ) ;
+					scaleFactors.addElement( new Double( sf ) ) ;
 				}
 			}
 			else
 			{
-				JOptionPane.showMessageDialog( this , "Current selection is not an observation." , "Not an Obs!" , JOptionPane.INFORMATION_MESSAGE );
+				JOptionPane.showMessageDialog( this , "Current selection is not an observation." , "Not an Obs!" , JOptionPane.INFORMATION_MESSAGE ) ;
 			}
-			setExecutable( true );
+			setExecutable( true ) ;
 		}
 	}
 
@@ -931,24 +819,24 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 		if( scaleFactors.size() == 0 )
 		{
 			if( AttributeEditor.scaleFactorUsed() > 0 )
-				return new Double( AttributeEditor.scaleFactorUsed() );
+				return new Double( AttributeEditor.scaleFactorUsed() ) ;
 			else
-				return new Double( 1. );
+				return new Double( 1. ) ;
 		}
 		else
 		{
-			return ( Double )scaleFactors.elementAt( scaleFactors.size() - 1 );
+			return ( Double )scaleFactors.elementAt( scaleFactors.size() - 1 ) ;
 		}
 	}
 
 	private SpInstObsComp getContext( SpItem item )
 	{
-		SpInstObsComp instrumentContext = null;
+		SpInstObsComp instrumentContext = null ;
 
 		if( item != null )
 		{
-			Vector obs = SpTreeMan.findAllItems( item , "gemini.sp.SpObs" );
-			instrumentContext = SpTreeMan.findInstrument( ( SpObs )obs.firstElement() );
+			Vector obs = SpTreeMan.findAllItems( item , SpObs.class.getName() ) ;
+			instrumentContext = SpTreeMan.findInstrument( ( SpObs )obs.firstElement() ) ;
 		}
 		
 		return instrumentContext ;
@@ -960,11 +848,11 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 		{
 			// If this was not the right button just return immediately.
 			if( !e.isPopupTrigger() )
-				return;
+				return ;
 
 			// If this is an observation then show the popup
-			if( selectedItem != null && selectedItem.type() == SpType.OBSERVATION )
-				scalePopup.show( e.getComponent() , e.getX() , e.getY() );
+			if( Selection.selection() != null && Selection.selection().type() == SpType.OBSERVATION )
+				scalePopup.show( e.getComponent() , e.getX() , e.getY() ) ;
 		}
 	}
 
@@ -992,20 +880,18 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 	 */
 	public void drop( DropTargetDropEvent evt )
 	{
-		SpObs itemForDrop;
-		if( selectedItem != null )
-			itemForDrop = ( SpObs )selectedItem;
-		else
-			itemForDrop = ( SpObs )DeferredProgramList.getCurrentItem();
+		SpObs itemForDrop = null ;
+		if( Selection.selection() != null )
+			itemForDrop = ( SpObs )Selection.selection() ;
 
 		if( itemForDrop != null && !itemForDrop.isOptional() )
 		{
-			JOptionPane.showMessageDialog( this , "Can not delete a mandatory observation!" );
+			JOptionPane.showMessageDialog( this , "Can not delete a mandatory observation!" ) ;
 		}
 		else
 		{
-			evt.acceptDrop( DnDConstants.ACTION_MOVE );
-			evt.getDropTargetContext().dropComplete( true );
+			evt.acceptDrop( DnDConstants.ACTION_MOVE ) ;
+			evt.getDropTargetContext().dropComplete( true ) ;
 		}
 	}
 
@@ -1023,38 +909,38 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 
 	public void dragGestureRecognized( DragGestureEvent event )
 	{
-		InputEvent ipe = event.getTriggerEvent();
+		InputEvent ipe = event.getTriggerEvent() ;
 		if( ipe.getModifiers() == ipe.BUTTON1_MASK )
 		{
-			Object selected = obsList.getSelectedValue();
-			enableList( false );
-			DeferredProgramList.clearSelection();
-			selectedItem = ( SpItem )selected;
+			Object selected = obsList.getSelectedValue() ;
+			enableList( false ) ;
+			DeferredProgramList.clearSelection() ;
+			Selection.setSelection( ( SpItem )selected , false ) ;
 	
 			if( selected != null )
 			{
-				obsToDefer = selectedItem.deepCopy();
+				obsToDefer = Selection.selection().deepCopy() ;
 	
-				SpInstObsComp inst = SpTreeMan.findInstrument( obsToDefer );
+				SpInstObsComp inst = SpTreeMan.findInstrument( obsToDefer ) ;
 	
 				// we are expecting the instrument to be null
 				if( inst == null )
 				{
-					inst = SpTreeMan.findInstrument( selectedItem );
-					SpInstObsComp clonedInst = ( SpInstObsComp )inst.deepCopy();
-					SpInsertData insertable = SpTreeMan.evalInsertInside( clonedInst , obsToDefer );
+					inst = SpTreeMan.findInstrument( Selection.selection() ) ;
+					SpInstObsComp clonedInst = ( SpInstObsComp )inst.deepCopy() ;
+					SpInsertData insertable = SpTreeMan.evalInsertInside( clonedInst , obsToDefer ) ;
 					if( insertable != null )
-						SpTreeMan.insert( insertable );
+						SpTreeMan.insert( insertable ) ;
 				}
 	
-				StringSelection text = new StringSelection( obsToDefer.toString() );
+				StringSelection text = new StringSelection( obsToDefer.toString() ) ;
 	
 				// as the name suggests, starts the dragging
-				dragSource.startDrag( event , DragSource.DefaultMoveNoDrop , text , this );
+				dragSource.startDrag( event , DragSource.DefaultMoveNoDrop , text , this ) ;
 			}
 			else
 			{
-				logger.warn( "nothing was selected to drag" );
+				logger.warn( "nothing was selected to drag" ) ;
 			}
 		}
 	}
@@ -1074,7 +960,7 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 	 */
 	public void dragOver( DragSourceDragEvent evt )
 	{
-		evt.getDragSourceContext().setCursor( DragSource.DefaultMoveDrop );
+		evt.getDragSourceContext().setCursor( DragSource.DefaultMoveDrop ) ;
 	}
 
 	/**
@@ -1084,7 +970,7 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 	 */
 	public void dragExit( DragSourceEvent evt )
 	{
-		evt.getDragSourceContext().setCursor( DragSource.DefaultMoveNoDrop );
+		evt.getDragSourceContext().setCursor( DragSource.DefaultMoveNoDrop ) ;
 	}
 
 	/**
@@ -1103,17 +989,14 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 	{
 		if( evt.getDropSuccess() == true )
 		{
-			SpObs obs = ( SpObs )obsList.getSelectedValue();
+			SpObs obs = ( SpObs )obsList.getSelectedValue() ;
 			if( obs != null )
 			{
 				if( obs.isOptional() )
-				{
-					removeCurrentNode();
-					selectedItem = null;
-				}
+					removeCurrentNode() ;
 			}
 		}
-		enableList( true );
+		enableList( true ) ;
 	}
 
 	/**
@@ -1123,147 +1006,145 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 	 */
 	public boolean shutDownRequest()
 	{
-		return true; // We can safely exit
+		return true ; // We can safely exit
 	}
 
 	public void enableList( boolean flag )
 	{
-		obsList.setEnabled( flag );
-		repaint();
+		obsList.setEnabled( flag ) ;
+		repaint() ;
 	}
 
 	public JButton getRunButton()
 	{
-		return engButton;
+		return engButton ;
 	}
 
 	public class ExecuteInThread extends Thread
 	{
-		private SpItem _item;
-		private SpItem _deferredItem;
-		private boolean _isDeferred;
+		private SpItem _item ;
+		private SpItem _deferredItem ;
+		private boolean _isDeferred ;
 
 		public ExecuteInThread( SpItem item , boolean deferred )
 		{
-			super();
+			super() ;
 			// if this is a deferred observation, then we need to convert the supplied item, which is an SpObs into an SpProg
 			if( deferred )
 			{
-				SpProg root = ( SpProg )SpFactory.create( SpType.SCIENCE_PROGRAM );
-				root.setPI( "observer" );
-				root.setCountry( "JAC" );
-				root.setProjectID( "CAL" );
-				root.setTelescope();
-				root.setTitleAttr( item.getTitleAttr() );
-				SpInsertData spID = SpTreeMan.evalInsertInside( item , root );
+				SpProg root = ( SpProg )SpFactory.create( SpType.SCIENCE_PROGRAM ) ;
+				root.setPI( "observer" ) ;
+				root.setCountry( "JAC" ) ;
+				root.setProjectID( "CAL" ) ;
+				root.setTelescope() ;
+				root.setTitleAttr( item.getTitleAttr() ) ;
+				SpInsertData spID = SpTreeMan.evalInsertInside( item , root ) ;
 				if( spID != null )
-					SpTreeMan.insert( spID );
+					SpTreeMan.insert( spID ) ;
 
-				_deferredItem = item;
-				_item = ( SpItem )root;
+				_deferredItem = item ;
+				_item = ( SpItem )root ;
 			}
 			else
 			{
-				_item = item;
+				_item = item ;
 			}
-			_isDeferred = deferred;
+			_isDeferred = deferred ;
 		}
 
 		public void run()
 		{
-			ExecuteJCMT execute;
-			boolean failed = false;
+			ExecuteJCMT execute ;
+			boolean failed = false ;
 
-			execute = ExecuteJCMT.getInstance( _item );
+			execute = ExecuteJCMT.getInstance( _item ) ;
 			if( execute == null )
 			{
-				JOptionPane.showMessageDialog( null , "Please Wait. ExecuteJCMT already running." , "Already running" , JOptionPane.INFORMATION_MESSAGE );
-				return;
+				JOptionPane.showMessageDialog( null , "Please Wait. ExecuteJCMT already running." , "Already running" , JOptionPane.INFORMATION_MESSAGE ) ;
+				return ;
 			}
 
-			File failFile = execute.failFile();
-			File successFile = execute.successFile();
+			File failFile = execute.failFile() ;
+			File successFile = execute.successFile() ;
 
-			execute.setDeferred( _isDeferred );
-			failed = execute.run();
+			failed = execute.run() ;
 
 			if( failFile.exists() )
 			{
-				logger.info( "Execution failed - Check log messages" );
+				logger.info( "Execution failed - Check log messages" ) ;
 				if( failFile.length() > 0 )
 				{
-					StringBuffer error = new StringBuffer();
+					StringBuffer error = new StringBuffer() ;
 					try
 					{
 						// Read the information from the filure file
-						BufferedReader rdr = new BufferedReader( new FileReader( failFile ) );
-						String line;
+						BufferedReader rdr = new BufferedReader( new FileReader( failFile ) ) ;
+						String line ;
 						while( ( line = rdr.readLine() ) != null )
 						{
-							error.append( line );
-							error.append( '\n' );
+							error.append( line ) ;
+							error.append( '\n' ) ;
 						}
-						new PopUp( "JCMT Execution Failed" , "Failed to send project for execution; Error was \n" + error.toString() , JOptionPane.ERROR_MESSAGE ).start();
+						new PopUp( "JCMT Execution Failed" , "Failed to send project for execution ; Error was \n" + error.toString() , JOptionPane.ERROR_MESSAGE ).start() ;
 					}
 					catch( IOException ioe )
 					{
 						// If we failed, output a default error message and reset the error buffer
-						new PopUp( "JCMT Execution Failed" , "Failed to send project for execution; check log entries using the View>Log button" , JOptionPane.ERROR_MESSAGE ).start();
+						new PopUp( "JCMT Execution Failed" , "Failed to send project for execution ; check log entries using the View>Log button" , JOptionPane.ERROR_MESSAGE ).start() ;
 					}
 				}
 				else
 				{
-					new PopUp( "JCMT Execution Failed" , "Failed to send project for execution; check log entries using the View>Log button" , JOptionPane.ERROR_MESSAGE ).start();
+					new PopUp( "JCMT Execution Failed" , "Failed to send project for execution ; check log entries using the View>Log button" , JOptionPane.ERROR_MESSAGE ).start() ;
 				}
-				failed = true;
+				failed = true ;
 			}
 			if( !failed )
 			{
 				if( !_isDeferred )
 				{
-					model.clear();
-					_spItem = null;
-					selectedItem = null;
+					model.clear() ;
+					Selection.clear() ;
 				}
 				else
 				{
-					DeferredProgramList.markThisObservationAsDone( _deferredItem );
+					DeferredProgramList.markThisObservationAsDone( _deferredItem ) ;
 				}
 			}
-			_deferredItem = null;
-			setExecutable( true );
+			_deferredItem = null ;
+			setExecutable( true ) ;
 			if( !_isDeferred && !failed )
 			{
-				obsList.setListData( new Vector() );
-				obsList.clearSelection();
+				obsList.setListData( new Vector() ) ;
+				obsList.clearSelection() ;
 			}
 
 			// done with status files
 			if( failFile.exists() )
-				failFile.delete();
+				failFile.delete() ;
 			if( successFile.exists() )
-				successFile.delete();
+				successFile.delete() ;
 
-			logger.debug( "Enabling run button since the ExecuteJCMT task has completed" );
+			logger.debug( "Enabling run button since the ExecuteJCMT task has completed" ) ;
 		}
 
 		public class PopUp extends Thread
 		{
-			private String _message;
-			private String _title;
-			private int _errLevel;
+			private String _message ;
+			private String _title ;
+			private int _errLevel ;
 
 			public PopUp( String title , String message , int errorLevel )
 			{
-				super();
-				_message = message;
-				_title = title;
-				_errLevel = errorLevel;
+				super() ;
+				_message = message ;
+				_title = title ;
+				_errLevel = errorLevel ;
 			}
 
 			public void run()
 			{
-				JOptionPane.showMessageDialog( null , _message , _title , _errLevel );
+				JOptionPane.showMessageDialog( null , _message , _title , _errLevel ) ;
 			}
 		}
 	}

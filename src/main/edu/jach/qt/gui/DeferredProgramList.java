@@ -1,76 +1,76 @@
-package edu.jach.qt.gui;
+package edu.jach.qt.gui ;
 
 /* System imports */
-import javax.swing.JList;
-import javax.swing.JScrollPane;
-import javax.swing.JPopupMenu;
-import javax.swing.JMenuItem;
-import javax.swing.DefaultListModel;
-import javax.swing.BorderFactory;
-import javax.swing.JPanel;
-import javax.swing.JOptionPane;
-import javax.swing.border.TitledBorder;
-import javax.swing.border.Border;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Font;
-import java.awt.Color;
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.dnd.DropTargetListener;
-import java.awt.dnd.DragSourceListener;
-import java.awt.dnd.DragGestureListener;
-import java.awt.dnd.DropTarget;
-import java.awt.dnd.DragSource;
-import java.awt.dnd.DnDConstants;
-import java.awt.dnd.DropTargetDragEvent;
-import java.awt.dnd.DropTargetDropEvent;
-import java.awt.dnd.DragGestureEvent;
-import java.awt.dnd.DragSourceDragEvent;
-import java.awt.dnd.DragSourceDropEvent;
-import java.awt.dnd.DropTargetEvent;
-import java.awt.dnd.DragSourceEvent;
-import java.awt.datatransfer.StringSelection;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseAdapter;
-import java.util.Vector;
-import java.util.HashMap;
-import java.util.TooManyListenersException;
-import java.util.Date;
-import java.util.Calendar;
-import java.util.TimeZone;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.text.SimpleDateFormat;
+import javax.swing.JList ;
+import javax.swing.JScrollPane ;
+import javax.swing.JPopupMenu ;
+import javax.swing.JMenuItem ;
+import javax.swing.DefaultListModel ;
+import javax.swing.BorderFactory ;
+import javax.swing.JPanel ;
+import javax.swing.JOptionPane ;
+import javax.swing.border.TitledBorder ;
+import javax.swing.border.Border ;
+import java.awt.GridBagConstraints ;
+import java.awt.GridBagLayout ;
+import java.awt.Font ;
+import java.awt.Color ;
+import java.awt.BorderLayout ;
+import java.awt.Component ;
+import java.awt.dnd.DropTargetListener ;
+import java.awt.dnd.DragSourceListener ;
+import java.awt.dnd.DragGestureListener ;
+import java.awt.dnd.DropTarget ;
+import java.awt.dnd.DragSource ;
+import java.awt.dnd.DnDConstants ;
+import java.awt.dnd.DropTargetDragEvent ;
+import java.awt.dnd.DropTargetDropEvent ;
+import java.awt.dnd.DragGestureEvent ;
+import java.awt.dnd.DragSourceDragEvent ;
+import java.awt.dnd.DragSourceDropEvent ;
+import java.awt.dnd.DropTargetEvent ;
+import java.awt.dnd.DragSourceEvent ;
+import java.awt.datatransfer.StringSelection ;
+import java.awt.event.ActionListener ;
+import java.awt.event.ActionEvent ;
+import java.awt.event.MouseListener ;
+import java.awt.event.MouseEvent ;
+import java.awt.event.MouseAdapter ;
+import java.util.Vector ;
+import java.util.HashMap ;
+import java.util.TooManyListenersException ;
+import java.util.Date ;
+import java.util.Calendar ;
+import java.util.TimeZone ;
+import java.io.File ;
+import java.io.FileWriter ;
+import java.io.IOException ;
+import java.io.FileNotFoundException ;
+import java.io.FileReader ;
+import java.text.SimpleDateFormat ;
 
-import org.apache.log4j.Logger;
+import org.apache.log4j.Logger ;
 
-import java.util.HashSet;
+import java.util.HashSet ;
 
 /* Gemini imports */
-import gemini.sp.SpItem;
-import gemini.sp.SpTreeMan;
-import gemini.sp.SpObs;
-import gemini.sp.SpInsertData;
-import gemini.sp.SpProg;
-import gemini.sp.SpFactory;
-import gemini.sp.SpType;
-import gemini.sp.obsComp.SpInstObsComp;
+import gemini.sp.SpItem ;
+import gemini.sp.SpTreeMan ;
+import gemini.sp.SpObs ;
+import gemini.sp.SpInsertData ;
+import gemini.sp.SpProg ;
+import gemini.sp.SpFactory ;
+import gemini.sp.SpType ;
+import gemini.sp.obsComp.SpInstObsComp ;
 
 /* ORAC imports */
-import orac.util.SpInputXML;
+import orac.util.SpInputXML ;
 
 /* ORAC-OM imports */
 
 /* QT imports */
-import edu.jach.qt.utils.ObsListCellRenderer;
-import edu.jach.qt.utils.ErrorBox;
+import edu.jach.qt.utils.ObsListCellRenderer ;
+import edu.jach.qt.utils.ErrorBox ;
 import edu.jach.qt.utils.FileExtensionFilter ;
 import edu.jach.qt.utils.FileUtils ;
 
@@ -83,19 +83,18 @@ import edu.jach.qt.utils.FileUtils ;
  */
 final public class DeferredProgramList extends JPanel implements DropTargetListener , DragSourceListener , DragGestureListener , ActionListener
 {
-	private DropTarget dropTarget = null;
-	private DragSource dragSource = null;
-	private static JList obsList;
-	private GridBagConstraints gbc;
-	private JScrollPane scrollPane = new JScrollPane();
-	private DefaultListModel model;
-	private static SpItem currentItem;
-	private static HashMap fileToObjectMap = new HashMap();
-	private JPopupMenu engMenu = new JPopupMenu();
-	private JMenuItem engItem = new JMenuItem( "Send for Engineering" );
-	private boolean _useQueue = true;
-	private static HashSet duplicates = new HashSet();
-	static Logger logger = Logger.getLogger( DeferredProgramList.class );
+	private DropTarget dropTarget = null ;
+	private DragSource dragSource = null ;
+	private static JList obsList ;
+	private GridBagConstraints gbc ;
+	private JScrollPane scrollPane = new JScrollPane() ;
+	private DefaultListModel model ;
+	private static HashMap fileToObjectMap = new HashMap() ;
+	private JPopupMenu engMenu = new JPopupMenu() ;
+	private JMenuItem engItem = new JMenuItem( "Send for Engineering" ) ;
+	private boolean _useQueue = true ;
+	private static HashSet duplicates = new HashSet() ;
+	static Logger logger = Logger.getLogger( DeferredProgramList.class ) ;
 	
 	private static final FileExtensionFilter xmlFilter = new FileExtensionFilter( ".xml" ) ;
 	private static boolean nodefer = false ;
@@ -108,40 +107,34 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 	{
 		nodefer = System.getProperty( "NODEFER" ) != null ;
 		
-		Border border = BorderFactory.createMatteBorder( 2 , 2 , 2 , 2 , Color.white );
-		setBorder( new TitledBorder( border , "Deferred MSBs" , 0 , 0 , new Font( "Roman" , Font.BOLD , 12 ) , Color.black ) );
-		setLayout( new BorderLayout() );
+		Border border = BorderFactory.createMatteBorder( 2 , 2 , 2 , 2 , Color.white ) ;
+		setBorder( new TitledBorder( border , "Deferred MSBs" , 0 , 0 , new Font( "Roman" , Font.BOLD , 12 ) , Color.black ) ) ;
+		setLayout( new BorderLayout() ) ;
 
-		GridBagLayout gbl = new GridBagLayout();
-		setLayout( gbl );
-		gbc = new GridBagConstraints();
+		GridBagLayout gbl = new GridBagLayout() ;
+		setLayout( gbl ) ;
+		gbc = new GridBagConstraints() ;
 
-		model = new DefaultListModel();
-		currentItem = null;
+		model = new DefaultListModel() ;
 
-		dropTarget = new DropTarget();
+		dropTarget = new DropTarget() ;
 		try
 		{
-			dropTarget.addDropTargetListener( this );
+			dropTarget.addDropTargetListener( this ) ;
 		}
 		catch( TooManyListenersException tmle )
 		{
-			logger.error( "Too many drop target listeners" , tmle );
+			logger.error( "Too many drop target listeners" , tmle ) ;
 		}
-		dragSource = new DragSource();
+		dragSource = new DragSource() ;
 
-		engMenu.add( engItem );
-		engItem.addActionListener( this );
+		engMenu.add( engItem ) ;
+		engItem.addActionListener( this ) ;
 
 		// Set up the initial drop target
-		scrollPane.getViewport().setDropTarget( dropTarget );
-		getCurrentList();
-		displayList();
-	}
-
-	public static synchronized SpItem getCurrentItem()
-	{
-		return currentItem;
+		scrollPane.getViewport().setDropTarget( dropTarget ) ;
+		getCurrentList() ;
+		displayList() ;
 	}
 
 	/**
@@ -149,10 +142,10 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 	 */
 	public void reload()
 	{
-		fileToObjectMap.clear();
-		model.clear();
-		getCurrentList();
-		displayList();
+		fileToObjectMap.clear() ;
+		model.clear() ;
+		getCurrentList() ;
+		displayList() ;
 	}
 
 	/**
@@ -164,47 +157,47 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 	{
 		if( !nodefer )
 		{
-			String[] deferredFiles = getFileList();
+			String[] deferredFiles = getFileList() ;
 	
 			// parse through the xml files and add each one to the current list
 			for( int fileCounter = 0 ; fileCounter < deferredFiles.length ; fileCounter++ )
 			{
 				// Only look for files which are readable
-				String currentFileName = deferredFiles[ fileCounter ];
-				File currentFile = new File( currentFileName );
+				String currentFileName = deferredFiles[ fileCounter ] ;
+				File currentFile = new File( currentFileName ) ;
 				
 				if( currentFile.canRead() && currentFile.isFile() && currentFile.length() > 0 && !currentFile.isHidden() )
 				{
 					try
 					{
-						FileReader reader = new FileReader( currentFile );
-						char[] chars = new char[ 1024 ];
+						FileReader reader = new FileReader( currentFile ) ;
+						char[] chars = new char[ 1024 ] ;
 						int readLength = 0 ;
 						StringBuffer buffer = new StringBuffer() ;
 						while( !reader.ready() )
 							;
 						while( ( readLength = reader.read( chars ) ) != -1 )
 							buffer.append( chars , 0 , readLength ) ;
-						reader.close();
-						SpItem currentSpItem = ( new SpInputXML() ).xmlToSpItem( buffer.toString() );
+						reader.close() ;
+						SpItem currentSpItem = ( new SpInputXML() ).xmlToSpItem( buffer.toString() ) ;
 						if( currentSpItem != null )
 						{
-							fileToObjectMap.put( currentSpItem , currentFileName );
-							addElement( currentSpItem );
-							NotePanel.setNote( currentSpItem );
+							fileToObjectMap.put( currentSpItem , currentFileName ) ;
+							addElement( currentSpItem ) ;
+							NotePanel.setNote( currentSpItem ) ;
 						}
 					}
 					catch( FileNotFoundException fnf )
 					{
-						logger.error( "File not found!" , fnf );
+						logger.error( "File not found!" , fnf ) ;
 					}
 					catch( IOException ioe )
 					{
-						logger.error( "File read error!" , ioe );
+						logger.error( "File read error!" , ioe ) ;
 					}
 					catch( Exception x )
 					{
-						logger.error( "Can not convert file!" , x );
+						logger.error( "Can not convert file!" , x ) ;
 					}
 				}
 			}
@@ -217,8 +210,8 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 	 */
 	public void addElement( SpItem obs )
 	{
-		model.addElement( obs );
-		displayList();
+		model.addElement( obs ) ;
+		displayList() ;
 	}
 
 	/**
@@ -228,44 +221,44 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 	 */
 	public static void addCalibration( SpItem cal )
 	{
-		cal.getTable().set( "project" , "CAL" );
-		cal.getTable().set( "msbid" , "CAL" );
-		cal.getTable().set( ":msb" , "true" );
+		cal.getTable().set( "project" , "CAL" ) ;
+		cal.getTable().set( "msbid" , "CAL" ) ;
+		cal.getTable().set( ":msb" , "true" ) ;
 		// A calibration observation is an SpProg - need to convert to an SpObs
-		Vector theseObs = SpTreeMan.findAllItems( cal , "gemini.sp.SpObs" );
-		SpItem thisObs = ( SpItem )theseObs.firstElement();
+		Vector theseObs = SpTreeMan.findAllItems( cal , "gemini.sp.SpObs" ) ;
+		SpItem thisObs = ( SpItem )theseObs.firstElement() ;
 		if( thisObs != cal )
 		{
-			thisObs.getTable().set( "project" , "CAL" );
-			thisObs.getTable().set( "msbid" , "CAL" );
-			thisObs.getTable().set( ":msb" , "true" );
+			thisObs.getTable().set( "project" , "CAL" ) ;
+			thisObs.getTable().set( "msbid" , "CAL" ) ;
+			thisObs.getTable().set( ":msb" , "true" ) ;
 
 			if( !duplicates.contains( thisObs ) )
 			{
-				SpInstObsComp inst = SpTreeMan.findInstrument( thisObs );
-				SpInsertData insertable = SpTreeMan.evalInsertInside( inst , thisObs );
+				SpInstObsComp inst = SpTreeMan.findInstrument( thisObs ) ;
+				SpInsertData insertable = SpTreeMan.evalInsertInside( inst , thisObs ) ;
 				if( insertable != null )
-					SpTreeMan.insert( insertable );
-				duplicates.add( thisObs );
+					SpTreeMan.insert( insertable ) ;
+				duplicates.add( thisObs ) ;
 			}
 
 			if( thisObs.getTitleAttr().equals( "Observation" ) )
-				thisObs.setTitleAttr( cal.getTitleAttr() );
+				thisObs.setTitleAttr( cal.getTitleAttr() ) ;
 		}
 
-		( ( SpObs )thisObs ).setOptional( true );
+		( ( SpObs )thisObs ).setOptional( true ) ;
 
 		if( !isDuplicate( thisObs ) )
 		{
-			makePersistent( thisObs );
-			( ( DefaultListModel )obsList.getModel() ).addElement( thisObs );
+			makePersistent( thisObs ) ;
+			( ( DefaultListModel )obsList.getModel() ).addElement( thisObs ) ;
 		}
 		// This is a hack to fix fault [20021030.002]. It shouldn't happen but hopefully this will make sure...
-		obsList.setEnabled( true );
-		obsList.setSelectedIndex( obsList.getModel().getSize() - 1 );
-		currentItem = ( SpItem )obsList.getSelectedValue();
-		NotePanel.setNote( currentItem );
-		ProgramTree.clearSelection();
+		obsList.setEnabled( true ) ;
+		obsList.setSelectedIndex( obsList.getModel().getSize() - 1 ) ;
+		Selection.setSelection( ( SpItem )obsList.getSelectedValue() , true ) ;
+		NotePanel.setNote( Selection.selection() ) ;
+		ProgramTree.clearSelection() ;
 	}
 
 	/**
@@ -273,8 +266,7 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 	 */
 	public static void clearSelection()
 	{
-		obsList.clearSelection();
-		currentItem = null;
+		obsList.clearSelection() ;
 	}
 
 	/**
@@ -282,12 +274,12 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 	 */
 	public void displayList()
 	{
-		obsList = new JList( model );
-		obsList.setCellRenderer( new ObsListCellRenderer() );
+		obsList = new JList( model ) ;
+		obsList.setCellRenderer( new ObsListCellRenderer() ) ;
 
 		// Make this list and drag source and drop target
-		obsList.setDropTarget( dropTarget );
-		dragSource.createDefaultDragGestureRecognizer( obsList , DnDConstants.ACTION_MOVE , this );
+		obsList.setDropTarget( dropTarget ) ;
+		dragSource.createDefaultDragGestureRecognizer( obsList , DnDConstants.ACTION_MOVE , this ) ;
 
 		MouseListener ml = new MouseAdapter()
 		{
@@ -295,46 +287,46 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 			{
 				if( e.getClickCount() == 2 )
 				{
-					execute();
+					execute() ;
 				}
 				else
 				{
-					if( currentItem != obsList.getSelectedValue() )
+					if( Selection.selection() != obsList.getSelectedValue() )
 					{
 						// Select the new item
-						currentItem = ( SpItem )obsList.getSelectedValue();
-						NotePanel.setNote( currentItem );
-						ProgramTree.clearSelection();
+						Selection.setSelection( ( SpItem )obsList.getSelectedValue() , true ) ;
+						NotePanel.setNote( Selection.selection() ) ;
+						ProgramTree.clearSelection() ;
 					}
 					else
 					{
-						obsList.clearSelection();
-						currentItem = null;
+						obsList.clearSelection() ;
+						Selection.clear() ;
 					}
 				}
 			}
 
 			public void mousePressed( MouseEvent e )
 			{
-				if( e.isPopupTrigger() && currentItem != null )
-					engMenu.show( e.getComponent() , e.getX() , e.getY() );
+				if( e.isPopupTrigger() && Selection.deferred() == Selection.DEFERRED )
+					engMenu.show( e.getComponent() , e.getX() , e.getY() ) ;
 				else
-					ProgramTree.clearSelection();
+					ProgramTree.clearSelection() ;
 			}
-		};
-		obsList.addMouseListener( ml );
+		} ;
+		obsList.addMouseListener( ml ) ;
 		// Add the listbox to a scrolling pane
-		scrollPane.getViewport().removeAll();
-		scrollPane.getViewport().add( obsList );
-		scrollPane.getViewport().setOpaque( true );
+		scrollPane.getViewport().removeAll() ;
+		scrollPane.getViewport().add( obsList ) ;
+		scrollPane.getViewport().setOpaque( true ) ;
 
-		gbc.fill = GridBagConstraints.BOTH;
-		gbc.insets.bottom = 5;
-		gbc.insets.left = 10;
-		gbc.insets.right = 5;
-		gbc.weightx = 100;
-		gbc.weighty = 100;
-		add( scrollPane , gbc , 0 , 0 , 2 , 1 );
+		gbc.fill = GridBagConstraints.BOTH ;
+		gbc.insets.bottom = 5 ;
+		gbc.insets.left = 10 ;
+		gbc.insets.right = 5 ;
+		gbc.weightx = 100 ;
+		gbc.weighty = 100 ;
+		add( scrollPane , gbc , 0 , 0 , 2 , 1 ) ;
 	}
 
 	/**
@@ -344,14 +336,16 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 	 */
 	public void appendItem( SpItem obs )
 	{
-		obs.getTable().set( "project" , "CAL" );
-		obs.getTable().set( "msbid" , "CAL" );
-		obs.getTable().set( ":msb" , "true" );
-		obs = makeNewObs( obs );
+		obs.getTable().set( "project" , "CAL" ) ;
+		obs.getTable().set( "msbid" , "CAL" ) ;
+		obs.getTable().set( ":msb" , "true" ) ;
+		obs = makeNewObs( obs ) ;
 		if( isDuplicate( obs ) == false )
 		{
-			makePersistent( obs );
-			addElement( obs );
+			makePersistent( obs ) ;
+			addElement( obs ) ;
+			obsList.setSelectedValue( obs , true ) ;
+			Selection.setSelection( obs , true ) ;
 		}
 	}
 
@@ -362,38 +356,38 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 	 */
 	private static SpItem makeNewObs( SpItem current )
 	{
-		SpItem newItem = current;
+		SpItem newItem = current ;
 		try
 		{
-			String xmlString = current.toXML();
-			newItem = ( new SpInputXML() ).xmlToSpItem( xmlString );
+			String xmlString = current.toXML() ;
+			newItem = ( new SpInputXML() ).xmlToSpItem( xmlString ) ;
 		}
 		catch( Exception e ){}
-		return newItem;
+		return newItem ;
 	}
 
 	/**
 	 * Check whether the current observation is already in the deferred list.
 	 * 
 	 * @param obs The observation to compare.
-	 * @return <code>true</code> is the observation already exists; <code>false</code> otherwise.
+	 * @return <code>true</code> is the observation already exists ; <code>false</code> otherwise.
 	 */
 	public static boolean isDuplicate( SpItem obs )
 	{
-		boolean isDuplicate = false;
+		boolean isDuplicate = false ;
 
-		String currentObsXML = obs.toXML();
+		String currentObsXML = obs.toXML() ;
 		for( int i = 0 ; i < ( ( DefaultListModel )obsList.getModel() ).size() ; i++ )
 		{
 			SpItem thisObs = ( SpItem )(( DefaultListModel )obsList.getModel()).elementAt( i ) ;
-			String thisObsXML = thisObs.toXML();
+			String thisObsXML = thisObs.toXML() ;
 			if( thisObsXML.equals( currentObsXML ) )
 			{
-				isDuplicate = true;
-				break;
+				isDuplicate = true ;
+				break ;
 			}
 		}
-		return isDuplicate;
+		return isDuplicate ;
 	}
 
 	/*
@@ -402,9 +396,9 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 	 */
 	private void execute()
 	{
-		Thread t = null;
+		Thread t = null ;
 
-		if( currentItem != null )
+		if( Selection.selection() != null )
 		{
 			/*
 			 * If we have items selected on both the ProgramList and Deferred List 
@@ -414,35 +408,34 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 			{
 				try
 				{
-					logger.info( "Sending observation " + currentItem.getTitle() + " for execution." );
-					ExecuteUKIRT execute = new ExecuteUKIRT( _useQueue );
-					execute.setDeferred( true );
+					logger.info( "Sending observation " + Selection.selection().getTitle() + " for execution." ) ;
+					ExecuteUKIRT execute = new ExecuteUKIRT( _useQueue ) ;
 					File failFile = execute.failFile() ;
 					File successFile = execute.successFile() ;
-					t = new Thread( execute , "UKIRT Execution Thread" );
+					t = new Thread( execute , "UKIRT Execution Thread" ) ;
 					
 					// Start the process and wait for it to complete
-					t.start();
-					t.join();
+					t.start() ;
+					t.join() ;
 					// Reset _useQueue
-					_useQueue = true;
+					_useQueue = true ;
 					// Now check the result
 					if( failFile.exists() )
 					{
-						new ErrorBox( this , "Failed to Execute. Check messages." );
-						logger.warn( "Failed to execute observation" );
+						new ErrorBox( this , "Failed to Execute. Check messages." ) ;
+						logger.warn( "Failed to execute observation" ) ;
 					}
 					else if( successFile.exists() )
 					{
 						// Mark this observation as having been done
-						markThisObservationAsDone( currentItem );
-						logger.info( "Observation executed successfully" );
+						markThisObservationAsDone( Selection.selection() ) ;
+						logger.info( "Observation executed successfully" ) ;
 					}
 					else
 					{
 						// Neither file exists - report an error to the user
-						new ErrorBox( "Unable to determine success status - assuming failed." );
-						logger.error( "Unable to determine success status for observation." );
+						new ErrorBox( "Unable to determine success status - assuming failed." ) ;
+						logger.error( "Unable to determine success status for observation." ) ;
 					}
 					
 					// done with status files
@@ -453,16 +446,16 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 				}
 				catch( Exception e )
 				{
-					logger.error( "Failed to execute thread." , e );
+					logger.error( "Failed to execute thread." , e ) ;
 					if( t != null && t.isAlive() )
 					{
-						logger.error( "Last observation still seems to be running" );
+						logger.error( "Last observation still seems to be running" ) ;
 					}
 				}
 			}
 			else if( System.getProperty( "telescope" ).equalsIgnoreCase( "jcmt" ) )
 			{
-				new ExecuteInThread( currentItem , true ).start();
+				new ExecuteInThread( Selection.selection() , true ).start() ;
 			}
 		}
 	}
@@ -479,11 +472,11 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 	 */
 	public void add( Component c , GridBagConstraints gbc , int x , int y , int w , int h )
 	{
-		gbc.gridx = x;
-		gbc.gridy = y;
-		gbc.gridwidth = w;
-		gbc.gridheight = h;
-		add( c , gbc );
+		gbc.gridx = x ;
+		gbc.gridy = y ;
+		gbc.gridwidth = w ;
+		gbc.gridheight = h ;
+		add( c , gbc ) ;
 	}
 	
 	/**
@@ -495,16 +488,16 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 		if( !nodefer )
 		{
 			String fName = makeFilenameForDeferredObservation() ;
-			FileWriter fw = null;
+			FileWriter fw = null ;
 			try
 			{
-				fw = new FileWriter( fName );
-				fw.write( item.toXML() );
-				fw.flush();
+				fw = new FileWriter( fName ) ;
+				fw.write( item.toXML() ) ;
+				fw.flush() ;
 			}
 			catch( IOException ioe )
 			{
-				logger.error( "Error writing file " + fName , ioe );
+				logger.error( "Error writing file " + fName , ioe ) ;
 			}
 			finally
 			{
@@ -512,12 +505,12 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 				{
 					try
 					{
-						fw.close();
+						fw.close() ;
 					}
 					catch( IOException ioe ){}
 				}
 			}
-			fileToObjectMap.put( item , fName );
+			fileToObjectMap.put( item , fName ) ;
 		}
 	}
 
@@ -530,7 +523,7 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 		StringBuffer buffer = new StringBuffer() ;
 		buffer.append( FileUtils.getTodaysDeferredDirectoryName() ) ;
 		buffer.append( File.separator ) ;
-		Date now = new Date();
+		Date now = new Date() ;
 		buffer.append( now.getTime() ) ;
 		buffer.append( ".xml" ) ;
 		String fName = buffer.toString() ;
@@ -562,7 +555,7 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 					deferredFiles[ i ] = todaysDeferredDirName + File.separator + currentFileName ;
 			}
 		}
-		return deferredFiles;
+		return deferredFiles ;
 	}
 
 	/**
@@ -585,7 +578,7 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 		}
 		// Now clear the hashmap, just for completeness
 		if( !fileToObjectMap.isEmpty() )
-			fileToObjectMap.clear();
+			fileToObjectMap.clear() ;
 	}
 
 	/**
@@ -594,36 +587,39 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 	public static void markThisObservationAsDone( SpItem thisObservation )
 	{
 		// Add a dat-time stamp to the title
-		String currentTitle = thisObservation.getTitle();
-		String[] split = currentTitle.split( "_" );
-		String baseName = "";
+		String currentTitle = thisObservation.getTitle() ;
+		String[] split = currentTitle.split( "_" ) ;
+		String baseName = "" ;
 		for( int index = 0 ; index < split.length ; index++ )
 		{
-			String subStr = split[ index ];
+			String subStr = split[ index ] ;
 			if( subStr.equals( "done" ) )
-				break;
-			baseName += subStr;
+				break ;
+			baseName += subStr ;
 		}
-		currentTitle = baseName;
-		SimpleDateFormat df = new SimpleDateFormat( "yyyyMMdd'T'HHmmss" );
-		Calendar cal = Calendar.getInstance( TimeZone.getTimeZone( "UTC" ) );
-		String observationTime = df.format( cal.getTime() );
-		String newTitle = currentTitle + "_done_" + observationTime;
-		thisObservation.setTitleAttr( newTitle );
+		currentTitle = baseName ;
+		SimpleDateFormat df = new SimpleDateFormat( "yyyyMMdd'T'HHmmss" ) ;
+		Calendar cal = Calendar.getInstance( TimeZone.getTimeZone( "UTC" ) ) ;
+		String observationTime = df.format( cal.getTime() ) ;
+		String newTitle = currentTitle + "_done_" + observationTime ;
+		thisObservation.setTitleAttr( newTitle ) ;
 
 		// Delete the old entry and replace by the current
-		String fileToRemove = ( String )fileToObjectMap.get( obsList.getSelectedValue() );
-		File f = new File( fileToRemove );
-		f.delete();
-		fileToObjectMap.remove( obsList.getSelectedValue() );
-		int index = obsList.getSelectedIndex();
+		String fileToRemove = ( String )fileToObjectMap.get( obsList.getSelectedValue() ) ;
+		if( fileToRemove != null )
+		{
+			File f = new File( fileToRemove ) ;
+			f.delete() ;
+			fileToObjectMap.remove( obsList.getSelectedValue() ) ;
+		}
+		int index = obsList.getSelectedIndex() ;
 		if( index > -1 )
-			( ( DefaultListModel )obsList.getModel() ).removeElementAt( index );
-		currentItem = null;
+			( ( DefaultListModel )obsList.getModel() ).removeElementAt( index ) ;
+		Selection.clear() ;
 
-		makePersistent( thisObservation );
+		makePersistent( thisObservation ) ;
 
-		(( DefaultListModel )obsList.getModel()).addElement( thisObservation );
+		(( DefaultListModel )obsList.getModel()).addElement( thisObservation ) ;
 	}
 
 	/*
@@ -645,23 +641,23 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 	{
 		if( this.dropTarget.isActive() )
 		{
-			evt.acceptDrop( DnDConstants.ACTION_MOVE );
-			SpItem thisObs = ProgramTree.obsToDefer;
+			evt.acceptDrop( DnDConstants.ACTION_MOVE ) ;
+			SpItem thisObs = ProgramTree.obsToDefer ;
 			if( (( SpObs )thisObs).isOptional() )
 			{
-				appendItem( thisObs );
-				evt.getDropTargetContext().dropComplete( true );
+				appendItem( thisObs ) ;
+				evt.getDropTargetContext().dropComplete( true ) ;
 			}
 			else
 			{
-				JOptionPane.showMessageDialog( this , "Can not defer mandatory observations!" );
-				evt.getDropTargetContext().dropComplete( false );
+				JOptionPane.showMessageDialog( this , "Can not defer mandatory observations!" ) ;
+				evt.getDropTargetContext().dropComplete( false ) ;
 			}
 		}
 		else
 		{
-			evt.rejectDrop();
-			evt.dropComplete( false );
+			evt.rejectDrop() ;
+			evt.dropComplete( false ) ;
 		}
 	}
 
@@ -684,29 +680,29 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 			}
 
 			// Delete the entry from the map
-			fileToObjectMap.remove( obsList.getSelectedValue() );
+			fileToObjectMap.remove( obsList.getSelectedValue() ) ;
 
 			// Remove the entry from the list
-			int index = obsList.getSelectedIndex();
+			int index = obsList.getSelectedIndex() ;
 			if( index > -1 )
-				( ( DefaultListModel )obsList.getModel() ).removeElementAt( index );
+				( ( DefaultListModel )obsList.getModel() ).removeElementAt( index ) ;
 
-			currentItem = null;
+			Selection.clear() ;
 		}
-		obsList.setEnabled( true );
-		this.dropTarget.setActive( true );
+		obsList.setEnabled( true ) ;
+		this.dropTarget.setActive( true ) ;
 	}
 
 	public void dragEnter( DragSourceDragEvent evt ){}
 
 	public void dragExit( DragSourceEvent evt )
 	{
-		evt.getDragSourceContext().setCursor( DragSource.DefaultMoveNoDrop );
+		evt.getDragSourceContext().setCursor( DragSource.DefaultMoveNoDrop ) ;
 	}
 
 	public void dragOver( DragSourceDragEvent evt )
 	{
-		evt.getDragSourceContext().setCursor( DragSource.DefaultMoveDrop );
+		evt.getDragSourceContext().setCursor( DragSource.DefaultMoveDrop ) ;
 	}
 
 	/**
@@ -723,15 +719,16 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 	 */
 	public void dragGestureRecognized( DragGestureEvent event )
 	{
-		SpItem selected = ( SpItem )obsList.getSelectedValue();
-		ProgramTree.clearSelection();
-		obsList.setEnabled( false );
+		SpItem selected = ( SpItem )obsList.getSelectedValue() ;
+		ProgramTree.clearSelection() ;
+		obsList.setEnabled( false ) ;
 		if( selected != null )
 		{
-			StringSelection text = new StringSelection( selected.toString() );
+			Selection.setSelection( selected , true ) ;
+			StringSelection text = new StringSelection( selected.toString() ) ;
 			// Disable dropping on this window
-			this.dropTarget.setActive( false );
-			dragSource.startDrag( event , DragSource.DefaultMoveNoDrop , text , this );
+			this.dropTarget.setActive( false ) ;
+			dragSource.startDrag( event , DragSource.DefaultMoveNoDrop , text , this ) ;
 		}
 	}
 
@@ -739,52 +736,51 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 	{
 		if( e.getSource() == engItem )
 		{
-			_useQueue = false;
-			execute();
+			_useQueue = false ;
+			execute() ;
 		}
 	}
 
 	public class ExecuteInThread extends Thread
 	{
-		SpProg _item = ( SpProg )SpFactory.create( SpType.SCIENCE_PROGRAM );
+		SpProg _item = ( SpProg )SpFactory.create( SpType.SCIENCE_PROGRAM ) ;
 
-		boolean _isDeferred;
+		boolean _isDeferred ;
 
 		public ExecuteInThread( SpItem item , boolean deferred )
 		{
 			// Make the obs into an SpProg
-			_item.setPI( "observer" );
-			_item.setCountry( "JAC" );
-			_item.setTelescope();
+			_item.setPI( "observer" ) ;
+			_item.setCountry( "JAC" ) ;
+			_item.setTelescope() ;
 			if( _item.getProjectID() == null || _item.getProjectID().equals( "" ) )
-				_item.setProjectID( "CAL" );
-			_item.setTitleAttr( item.getTitleAttr() );
-			SpInsertData spID = SpTreeMan.evalInsertInside( item , _item );
+				_item.setProjectID( "CAL" ) ;
+			_item.setTitleAttr( item.getTitleAttr() ) ;
+			SpInsertData spID = SpTreeMan.evalInsertInside( item , _item ) ;
 			if( spID != null )
-				SpTreeMan.insert( spID );
-			_isDeferred = deferred;
+				SpTreeMan.insert( spID ) ;
+			_isDeferred = deferred ;
 		}
 
 		public void run()
 		{
-			ExecuteJCMT execute = null;
-			boolean failed = false;
+			ExecuteJCMT execute = null ;
+			boolean failed = false ;
 
-			execute = ExecuteJCMT.getInstance( _item );
+			execute = ExecuteJCMT.getInstance( _item ) ;
 			if( execute == null )
-				return;
-			execute.setDeferred( _isDeferred );
-			failed = execute.run();
+				return ;
+			failed = execute.run() ;
 
 			if( failed )
 			{
-				new ErrorBox( "Failed to Execute. Check messages." );
-				logger.warn( "Failed to execute observation" );
+				new ErrorBox( "Failed to Execute. Check messages." ) ;
+				logger.warn( "Failed to execute observation" ) ;
 			}
 			else
 			{
-				markThisObservationAsDone( currentItem );
-				logger.info( "Observation executed successfully" );
+				markThisObservationAsDone( Selection.selection() ) ;
+				logger.info( "Observation executed successfully" ) ;
 			}
 		}
 	}

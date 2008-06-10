@@ -21,29 +21,24 @@ public class ExecuteUKIRT extends Execute implements Runnable
 
 	public void run()
 	{
-		System.out.println( "Starting execution..." );
+		System.out.println( "Starting execution..." ) ;
 
-		SpItem itemToExecute;
-		if( isDeferred )
-		{
-			itemToExecute = DeferredProgramList.getCurrentItem();
-			logger.info( "Executing observation from deferred list" );
-		}
-		else
-		{
-			if( _useQueue )
-				itemToExecute = ProgramTree.getCurrentItem();
-			else
-				itemToExecute = ProgramTree.getSelectedItem();
-			logger.info( "Executing observation from Program List" );
-		}
+		SpItem itemToExecute ;
+
+		itemToExecute = Selection.selection() ;
+		
+		String isDeferred = "Deferred" ;
+		if( Selection.deferred() != Selection.DEFERRED )
+			isDeferred = "Program" ;
+
+		logger.info( "Executing observation from " + isDeferred + " list" ) ;
 
 		if( itemToExecute != null )
 		{
-			SpItem obs = itemToExecute;
-			SpItem child = itemToExecute.child();
+			SpItem obs = itemToExecute ;
+			SpItem child = itemToExecute.child() ;
 			if( child instanceof SpMSB )
-				obs = child;
+				obs = child ;
 			SpQueuedMap.getSpQueuedMap().putSpItem( obs );
 		}
 

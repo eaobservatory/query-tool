@@ -1,9 +1,10 @@
-package edu.jach.qt.gui;
+package edu.jach.qt.gui ;
 
 /* Gemini imports */
 import gemini.sp.SpItem ;
 import gemini.sp.SpTreeMan ;
 import gemini.sp.SpMSB ;
+import gemini.sp.SpObs ;
 import gemini.sp.iter.SpIterChop ;
 import gemini.sp.iter.SpIterRepeat ;
 import gemini.sp.iter.SpIterOffset ;
@@ -31,7 +32,7 @@ import orac.ukirt.iter.SpIterIRPOL ;
 import orac.ukirt.iter.SpIterNod ;
 import orac.ukirt.iter.SpIterUFTI ;
 import orac.jcmt.inst.SpInstHeterodyne ;
-//import orac.jcmt.iter.*;
+//import orac.jcmt.iter.* ;
 import orac.jcmt.iter.SpIterFocusObs ;
 import orac.jcmt.iter.SpIterFrequency ;
 import orac.jcmt.iter.SpIterJiggleObs ;
@@ -59,7 +60,7 @@ import javax.swing.JSplitPane ;
 import javax.swing.JFrame ;
 
 /* Miscellaneous imports */
-import org.apache.log4j.Logger;
+import org.apache.log4j.Logger ;
 
 /**
  * This is the top most class of the OMP-OM.  This 
@@ -70,13 +71,13 @@ import org.apache.log4j.Logger;
  */
 public class OmpOM extends JPanel
 {
-	static Logger logger = Logger.getLogger( OmpOM.class );
-	private ProgramTree ptree;
-	private File file;
-	private SpItem spItem;
-	private Hashtable ptreeHashtable;
-	private DeferredProgramList deferredList;
-	public NotePanel notes;
+	static Logger logger = Logger.getLogger( OmpOM.class ) ;
+	private ProgramTree ptree ;
+	private File file ;
+	private SpItem spItem ;
+	private Hashtable ptreeHashtable ;
+	private DeferredProgramList deferredList ;
+	public NotePanel notes ;
 
 	/**
 	 * Creates a new <code>OmpOM</code> instance.
@@ -84,16 +85,16 @@ public class OmpOM extends JPanel
 	 */
 	public OmpOM()
 	{
-		ptreeHashtable = new Hashtable();
+		ptreeHashtable = new Hashtable() ;
 
 		/* 
 		 * Need to construct UKIRT-specific items so that their SpTypes are
 		 * statically initialised.  Otherwise the sp classes won't know about 
 		 * their types.  AB 19-Apr-2000
 		 */
-		this.initSpItems( System.getProperty( "telescope" ) );
-		logger.info( "SpItems initialized" );
-		ptree = new ProgramTree();
+		this.initSpItems( System.getProperty( "telescope" ) ) ;
+		logger.info( "SpItems initialized" ) ;
+		ptree = new ProgramTree() ;
 	}
 
 	private void initSpItems( String telescope )
@@ -101,79 +102,58 @@ public class OmpOM extends JPanel
 		if( telescope.equalsIgnoreCase( "ukirt" ) )
 		{
 			/* Init UKIRT Instruments */
-			SpItem spItem = new SpInstUFTI();
-			spItem = new SpInstCGS4();
-			spItem = new SpInstIRCAM3();
-			spItem = new SpInstUIST();
-			spItem = new SpInstWFCAM();
-			spItem = new orac.ukirt.inst.SpDRRecipe();
+			SpItem spItem = new SpInstUFTI() ;
+			spItem = new SpInstCGS4() ;
+			spItem = new SpInstIRCAM3() ;
+			spItem = new SpInstUIST() ;
+			spItem = new SpInstWFCAM() ;
+			spItem = new orac.ukirt.inst.SpDRRecipe() ;
 
 			/* OMP Specific */
-			spItem = new SpIterChop();
+			spItem = new SpIterChop() ;
 
 			/* Init UKIRT SpTypes */
-			spItem = new SpIterBiasObs();
-			spItem = new SpIterBiasObs();
-			spItem = new SpIterCGS4();
-			spItem = new SpIterCGS4CalUnit();
-			spItem = new SpIterCGS4CalObs();
-			spItem = new SpIterCalUnit();
-			spItem = new SpIterDarkObs();
-			spItem = new SpIterFP();
-			spItem = new SpIterIRCAM3();
-			spItem = new SpIterIRPOL();
-			spItem = new SpIterNod();
-			spItem = new SpIterUFTI();
+			spItem = new SpIterBiasObs() ;
+			spItem = new SpIterBiasObs() ;
+			spItem = new SpIterCGS4() ;
+			spItem = new SpIterCGS4CalUnit() ;
+			spItem = new SpIterCGS4CalObs() ;
+			spItem = new SpIterCalUnit() ;
+			spItem = new SpIterDarkObs() ;
+			spItem = new SpIterFP() ;
+			spItem = new SpIterIRCAM3() ;
+			spItem = new SpIterIRPOL() ;
+			spItem = new SpIterNod() ;
+			spItem = new SpIterUFTI() ;
 
 			/* Init GEMINI Miscellaneous */
-			spItem = new SpIterRepeat();
-			spItem = new SpIterOffset();
-			spItem = new orac.ukirt.iter.SpIterObserve();
-			spItem = new orac.ukirt.iter.SpIterSky();
-			spItem = new SpSchedConstObsComp();
-			spItem = new SpSiteQualityObsComp();
+			spItem = new SpIterRepeat() ;
+			spItem = new SpIterOffset() ;
+			spItem = new orac.ukirt.iter.SpIterObserve() ;
+			spItem = new orac.ukirt.iter.SpIterSky() ;
+			spItem = new SpSchedConstObsComp() ;
+			spItem = new SpSiteQualityObsComp() ;
 		}
 		else if( telescope.equalsIgnoreCase( "jcmt" ) )
 		{
 			/* Init JCMT Instruments */
-			SpItem spItem = new SpInstHeterodyne();
+			SpItem spItem = new SpInstHeterodyne() ;
 
 			/* Init JCMT SpTypes */
-			spItem = new SpIterChop();
-			spItem = new orac.jcmt.inst.SpDRRecipe();
-			spItem = new SpIterFocusObs();
-			spItem = new SpIterFrequency();
-			spItem = new SpIterJiggleObs();
-			spItem = new SpIterNoiseObs();
-			spItem = new SpIterPOL();
-			spItem = new SpIterPointingObs();
-			spItem = new SpIterRasterObs();
-			spItem = new SpIterSkydipObs();
-			spItem = new SpIterStareObs();
+			spItem = new SpIterChop() ;
+			spItem = new orac.jcmt.inst.SpDRRecipe() ;
+			spItem = new SpIterFocusObs() ;
+			spItem = new SpIterFrequency() ;
+			spItem = new SpIterJiggleObs() ;
+			spItem = new SpIterNoiseObs() ;
+			spItem = new SpIterPOL() ;
+			spItem = new SpIterPointingObs() ;
+			spItem = new SpIterRasterObs() ;
+			spItem = new SpIterSkydipObs() ;
+			spItem = new SpIterStareObs() ;
 			/* Init JCMT Miscellaneous */
-			spItem = new orac.jcmt.obsComp.SpSiteQualityObsComp();
+			spItem = new orac.jcmt.obsComp.SpSiteQualityObsComp() ;
 		}
-	}
-
-	/**
-	 * Set the Project Identifier. Set the projectID to that passed in.
-	 * 
-	 * @param projectID
-	 *            The value of the project id to set.
-	 */
-	public void setProjectID( String projectID )
-	{
-		ptree.setProjectID( projectID );
-	}
-
-	/**
-	 * Set the Checksum.
-	 * Set the projectID to that passed in.
-	 * @param projectID   The value of the checksum to set.
-	 */
-	public void setChecksum( String checksum )
-	{
-		ptree.setChecksum( checksum );
 	}
 
 	/**
@@ -183,7 +163,7 @@ public class OmpOM extends JPanel
 	 */
 	public void setSpItem( SpItem item )
 	{
-		spItem = item;
+		spItem = item ;
 	}
 
 	/** 
@@ -192,7 +172,7 @@ public class OmpOM extends JPanel
 	 */
 	public void setExecutable( boolean flag )
 	{
-		ptree.setExecutable( flag );
+		ptree.setExecutable( flag ) ;
 	}
 
 	/**
@@ -202,32 +182,32 @@ public class OmpOM extends JPanel
 	 */
 	public String getProgramName()
 	{
-		String returnString = "Title Not Found";
-		SpItem currentItem = ProgramTree.getCurrentItem();
+		String returnString = "Title Not Found" ;
+		SpItem currentItem = Selection.selection() ;
 		if( currentItem != null )
 		{
-			Vector progVector = SpTreeMan.findAllItems( currentItem , "gemini.sp.SpMSB" );
+			Vector progVector = SpTreeMan.findAllItems( currentItem , SpMSB.class.getName() ) ;
 			if( progVector == null || progVector.size() == 0 )
-				progVector = SpTreeMan.findAllItems( currentItem , "gemini.sp.SpObs" );
+				progVector = SpTreeMan.findAllItems( currentItem , SpObs.class.getName() ) ;
 			try
 			{
 				if( progVector != null && progVector.size() > 0 )
 				{
-					SpMSB spMsb = ( SpMSB )progVector.firstElement();
-					returnString = spMsb.getTitle();
+					SpMSB spMsb = ( SpMSB )progVector.firstElement() ;
+					returnString = spMsb.getTitle() ;
 				}
 			}
 			catch( NoSuchElementException nse )
 			{
-				logger.warn( returnString );
-				nse.printStackTrace();
+				logger.warn( returnString ) ;
+				nse.printStackTrace() ;
 			}
 		}
 		else
 		{
-			returnString = "No Observations";
+			returnString = "No Observations" ;
 		}
-		return returnString;
+		return returnString ;
 	}
 
 	/**
@@ -240,11 +220,11 @@ public class OmpOM extends JPanel
 	public void addNewTree( Integer msbID )
 	{
 		if( msbID == null )
-			ptree.addList( null );
+			ptree.addList( null ) ;
 		else
-			ptree.addList( spItem );
+			ptree.addList( spItem ) ;
 
-		ptree.setMinimumSize( new Dimension( 400 , 550 ) );
+		ptree.setMinimumSize( new Dimension( 400 , 550 ) ) ;
 	}
 
 	/**
@@ -254,13 +234,13 @@ public class OmpOM extends JPanel
 	 */
 	public void addNewTree()
 	{
-		file = new File( System.getProperty( "arrayTests" , "/home/mrippa/install/omp/QT/config/array_tests.xml" ) );
-		spItem = OtFileIO.fetchSp( file.getParent() , file.getName() );
+		file = new File( System.getProperty( "arrayTests" , "/home/mrippa/install/omp/QT/config/array_tests.xml" ) ) ;
+		spItem = OtFileIO.fetchSp( file.getParent() , file.getName() ) ;
 
-		ptree.addList( spItem );
-		ptree.setMinimumSize( new Dimension( 400 , 550 ) );
+		ptree.addList( spItem ) ;
+		ptree.setMinimumSize( new Dimension( 400 , 550 ) ) ;
 
-		ptreeHashtable.put( new Integer( 41 ) , ptree );
+		ptreeHashtable.put( new Integer( 41 ) , ptree ) ;
 	}
 
 	/**
@@ -268,8 +248,8 @@ public class OmpOM extends JPanel
 	 */
 	public void resetTree()
 	{
-		spItem = OtFileIO.fetchSp( file.getParent() , file.getName() );
-		ptree.addList( spItem );
+		spItem = OtFileIO.fetchSp( file.getParent() , file.getName() ) ;
+		ptree.addList( spItem ) ;
 	}
 
 	/**
@@ -279,18 +259,16 @@ public class OmpOM extends JPanel
 	 */
 	public JSplitPane getTreePanel()
 	{
-		deferredList = new DeferredProgramList();
-		notes = new NotePanel();
-		JSplitPane dsp = new JSplitPane( JSplitPane.VERTICAL_SPLIT , deferredList , notes );
-		dsp.setDividerLocation( 150 );
-		JSplitPane splitPane = new JSplitPane( JSplitPane.HORIZONTAL_SPLIT , ptree , dsp );
-		if( ProgramTree.getCurrentItem() != null )
-			NotePanel.setNote( ProgramTree.getCurrentItem() );
-		else if( DeferredProgramList.getCurrentItem() != null )
-			NotePanel.setNote( DeferredProgramList.getCurrentItem() );
+		deferredList = new DeferredProgramList() ;
+		notes = new NotePanel() ;
+		JSplitPane dsp = new JSplitPane( JSplitPane.VERTICAL_SPLIT , deferredList , notes ) ;
+		dsp.setDividerLocation( 150 ) ;
+		JSplitPane splitPane = new JSplitPane( JSplitPane.HORIZONTAL_SPLIT , ptree , dsp ) ;
+		if( Selection.deferred() != Selection.NOTSET )
+			NotePanel.setNote( Selection.selection() ) ;
 		else
-			NotePanel.setNote( spItem );
-		return splitPane;
+			NotePanel.setNote( spItem ) ;
+		return splitPane ;
 	}
 
 	/**
@@ -301,15 +279,15 @@ public class OmpOM extends JPanel
 	 */
 	public JSplitPane getDragTreePanel()
 	{
-		DragDropObject ddo = new DragDropObject( spItem );
-		MsbNode root = new MsbNode( ddo );
-		getItems( spItem , root );
+		DragDropObject ddo = new DragDropObject( spItem ) ;
+		MsbNode root = new MsbNode( ddo ) ;
+		getItems( spItem , root ) ;
 
-		DnDJTree ddt = new DnDJTree( root );
-		ddt.setCellRenderer( new DragTreeCellRenderer() );
-		JSplitPane splitPane = new JSplitPane( JSplitPane.HORIZONTAL_SPLIT , ptree , ddt );
+		DnDJTree ddt = new DnDJTree( root ) ;
+		ddt.setCellRenderer( new DragTreeCellRenderer() ) ;
+		JSplitPane splitPane = new JSplitPane( JSplitPane.HORIZONTAL_SPLIT , ptree , ddt ) ;
 
-		return splitPane;
+		return splitPane ;
 	}
 
 	/**
@@ -318,11 +296,11 @@ public class OmpOM extends JPanel
 	 */
 	public boolean checkProgramTree()
 	{
-		boolean safeToExit = true;
+		boolean safeToExit = true ;
 		if( ptree != null )
-			safeToExit = ptree.shutDownRequest();
+			safeToExit = ptree.shutDownRequest() ;
 
-		return safeToExit;
+		return safeToExit ;
 	}
 
 	/**
@@ -330,15 +308,15 @@ public class OmpOM extends JPanel
 	 */
 	public void test()
 	{
-		JFrame f = new JFrame();
-		f.setSize( 400 , 300 );
-		DragDropObject ddo = new DragDropObject( spItem );
-		MsbNode root = new MsbNode( ddo );
-		getItems( spItem , root );
-		DnDJTree ddt = new DnDJTree( root );
-		ddt.setCellRenderer( new MyTreeCellRenderer() );
-		f.add( ddt );
-		f.show();
+		JFrame f = new JFrame() ;
+		f.setSize( 400 , 300 ) ;
+		DragDropObject ddo = new DragDropObject( spItem ) ;
+		MsbNode root = new MsbNode( ddo ) ;
+		getItems( spItem , root ) ;
+		DnDJTree ddt = new DnDJTree( root ) ;
+		ddt.setCellRenderer( new MyTreeCellRenderer() ) ;
+		f.add( ddt ) ;
+		f.show() ;
 	}
 
 	/** public void getItems (SpItem spItem,DefaultMutableTreeNode node)
@@ -352,37 +330,37 @@ public class OmpOM extends JPanel
 	 */
 	private void getItems( SpItem spItem , MsbNode node )
 	{
-		Enumeration children = spItem.children();
+		Enumeration children = spItem.children() ;
 		while( children.hasMoreElements() )
 		{
-			SpItem childNode = ( SpItem )children.nextElement();
-			DragDropObject ddo = new DragDropObject( childNode );
-			MsbNode temp = new MsbNode( ddo );
-			node.add( temp );
-			getItems( childNode , temp );
+			SpItem childNode = ( SpItem )children.nextElement() ;
+			DragDropObject ddo = new DragDropObject( childNode ) ;
+			MsbNode temp = new MsbNode( ddo ) ;
+			node.add( temp ) ;
+			getItems( childNode , temp ) ;
 		}
 	}
 
 	public void updateDeferredList()
 	{
-		deferredList.reload();
+		deferredList.reload() ;
 	}
 
 	public void enableList( boolean flag )
 	{
-		ptree.enableList( flag );
+		ptree.enableList( flag ) ;
 	}
 
 	public static void main( String[] args )
 	{
-		QtTools.loadConfig( System.getProperty( "qtConfig" ) );
-		QtTools.loadConfig( System.getProperty( "omConfig" ) );
+		QtTools.loadConfig( System.getProperty( "qtConfig" ) ) ;
+		QtTools.loadConfig( System.getProperty( "omConfig" ) ) ;
 
-		JFrame f = new JFrame();
-		OmpOM om = new OmpOM();
-		om.addNewTree();
-		f.add( om.getTreePanel() );
-		f.setSize( 400 , 300 );
-		f.setVisible( true );
+		JFrame f = new JFrame() ;
+		OmpOM om = new OmpOM() ;
+		om.addNewTree() ;
+		f.add( om.getTreePanel() ) ;
+		f.setSize( 400 , 300 ) ;
+		f.setVisible( true ) ;
 	}
 }// OmpOM
