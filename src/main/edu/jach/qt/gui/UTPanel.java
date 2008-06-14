@@ -1,4 +1,4 @@
-package edu.jach.qt.gui;
+package edu.jach.qt.gui ;
 
 import java.awt.Color ;
 import java.util.Calendar ;
@@ -6,7 +6,7 @@ import java.util.Date ;
 import java.util.TimeZone ;
 import javax.swing.JLabel ;
 import javax.swing.SwingConstants ;
-import java.text.SimpleDateFormat;
+import java.text.SimpleDateFormat ;
 
 import edu.jach.qt.utils.OMPTimerListener ;
 import edu.jach.qt.utils.OMPTimer ;
@@ -26,10 +26,10 @@ public class UTPanel extends JLabel implements OMPTimerListener
 	 */
 	public UTPanel()
 	{
-		setHorizontalAlignment( SwingConstants.CENTER );
+		setHorizontalAlignment( SwingConstants.CENTER ) ;
 
-		this.setOpaque( true );
-		OMPTimer.getOMPTimer().setTimer( 1000 , this );
+		this.setOpaque( true ) ;
+		OMPTimer.getOMPTimer().setTimer( 1000 , this ) ;
 	}
 
 	/**
@@ -39,14 +39,14 @@ public class UTPanel extends JLabel implements OMPTimerListener
 	 */
 	public void timeElapsed()
 	{
-		setBackground( Color.black );
-		setForeground( Color.green );
-		Calendar cal = Calendar.getInstance( TimeZone.getTimeZone( "UTC" ) );
-		Date date = cal.getTime();
-		SimpleDateFormat df = new SimpleDateFormat( "kk:mm:ss z" );
-		df.setTimeZone( TimeZone.getTimeZone( "UTC" ) );
-		String time = df.format( date );
-		setText( time );
+		setBackground( Color.black ) ;
+		setForeground( Color.green ) ;
+		Calendar cal = Calendar.getInstance( TimeZone.getTimeZone( "UTC" ) ) ;
+		Date date = cal.getTime() ;
+		SimpleDateFormat df = new SimpleDateFormat( "kk:mm:ss z" ) ;
+		df.setTimeZone( TimeZone.getTimeZone( "UTC" ) ) ;
+		String time = df.format( date ) ;
+		setText( time ) ;
 	}
 
 }// TimePanel

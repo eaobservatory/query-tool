@@ -1,74 +1,74 @@
-package edu.jach.qt.gui;
+package edu.jach.qt.gui ;
 
-import java.util.Vector;
+import java.util.Vector ;
 import javax.swing.event.TableModelListener ;
 import javax.swing.event.TableModelEvent ;
 import javax.swing.table.AbstractTableModel ;
 
-import org.apache.log4j.Logger;
+import org.apache.log4j.Logger ;
 
 public class ProjectTableModel extends AbstractTableModel implements Runnable , TableModelListener
 {
-	static Logger logger = Logger.getLogger( ProjectTableModel.class );
-	private static String[] colName = { "projectid" , "priority" };
-	private static Class[] colClass = { String.class , Integer.class };
-	private Vector projectIds = new Vector();
-	private Vector priorities = new Vector();
+	static Logger logger = Logger.getLogger( ProjectTableModel.class ) ;
+	private static String[] colName = { "projectid" , "priority" } ;
+	private static Class[] colClass = { String.class , Integer.class } ;
+	private Vector projectIds = new Vector() ;
+	private Vector priorities = new Vector() ;
 
 	public ProjectTableModel()
 	{
-		addTableModelListener( this );
+		addTableModelListener( this ) ;
 	}
 
 	public void run()
 	{
 
-		fireTableChanged( null );
+		fireTableChanged( null ) ;
 	}
 
 	public int getColumnCount()
 	{
-		return colName.length;
+		return colName.length ;
 	}
 
 	public Class getColumnClass( int index )
 	{
-		return colClass[ index ];
+		return colClass[ index ] ;
 	}
 
 	public String getColumnName( int index )
 	{
-		return colName[ index ];
+		return colName[ index ] ;
 	}
 
 	public int getRowCount()
 	{
-		return projectIds.size();
+		return projectIds.size() ;
 	}
 
 	public Object getValueAt( int r , int c )
 	{
 		if( r < 0 || projectIds.size() == 0 )
-			return "----";
+			return "----" ;
 		if( colName[ c ].equalsIgnoreCase( "projectid" ) )
-			return projectIds.elementAt( r );
+			return projectIds.elementAt( r ) ;
 		else if( colName[ c ].equalsIgnoreCase( "priority" ) )
-			return priorities.elementAt( r );
+			return priorities.elementAt( r ) ;
 		else
-			return "---";
+			return "---" ;
 	}
 
 	public void setValueAt( Object value , int r , int c ){}
 
 	public void tableChanged( TableModelEvent evt )
 	{
-		projectIds.clear();
-		priorities.clear();
-		Vector[] data = XmlUtils.getProjectData();
+		projectIds.clear() ;
+		priorities.clear() ;
+		Vector[] data = XmlUtils.getProjectData() ;
 		if( data != null )
 		{
-			projectIds = data[ 0 ];
-			priorities = data[ 1 ];
+			projectIds = data[ 0 ] ;
+			priorities = data[ 1 ] ;
 		}
 	}
 
@@ -76,10 +76,10 @@ public class ProjectTableModel extends AbstractTableModel implements Runnable , 
 	{
 		if( projectIds.size() != 0 )
 		{
-			projectIds.clear();
-			priorities.clear();
-			XmlUtils.clearProjectData();
-			fireTableChanged( null );
+			projectIds.clear() ;
+			priorities.clear() ;
+			XmlUtils.clearProjectData() ;
+			fireTableChanged( null ) ;
 		}
 	}
 }

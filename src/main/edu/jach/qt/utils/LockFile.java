@@ -1,4 +1,4 @@
-package edu.jach.qt.utils;
+package edu.jach.qt.utils ;
 
 import java.io.File ;
 import java.io.IOException ;
@@ -14,10 +14,10 @@ import java.io.IOException ;
  */
 public class LockFile
 {
-	private static boolean _exists;
-	private static String _owner;
-	private static String tmpFileDirName = File.separator + System.getProperty( "telescope" ) + "data" + File.separator + System.getProperty( "deferredDir" );
-	private static String lockFileDirName = tmpFileDirName.toLowerCase();
+	private static boolean _exists ;
+	private static String _owner ;
+	private static String tmpFileDirName = File.separator + System.getProperty( "telescope" ) + "data" + File.separator + System.getProperty( "deferredDir" ) ;
+	private static String lockFileDirName = tmpFileDirName.toLowerCase() ;
 
 	/**
 	 * Constructor.
@@ -27,22 +27,22 @@ public class LockFile
 	 */
 	private LockFile()
 	{
-		_exists = false;
-		_owner = "";
-		File lockFileDir = new File( lockFileDirName );
+		_exists = false ;
+		_owner = "" ;
+		File lockFileDir = new File( lockFileDirName ) ;
 		if( !lockFileDir.exists() )
 		{
-			lockFileDir.mkdir();
+			lockFileDir.mkdir() ;
 		}
 		else if( lockFileDir.isDirectory() && lockFileDir.canRead() )
 		{
-			String[] fileList = lockFileDir.list();
+			String[] fileList = lockFileDir.list() ;
 			// Now loop over hidden files looking for one starting with .lock
 			for( int fileCounter = 0 ; fileCounter < fileList.length ; fileCounter++ )
 			{
 				if( fileList[ fileCounter ].startsWith( ".lock" ) )
 				{
-					_exists = true;
+					_exists = true ;
 					String[] split = fileList[ fileCounter ].split( "_" ) ;
 					int i = 0 ;
 					while( i < split.length )
@@ -55,12 +55,11 @@ public class LockFile
 	/**
 	 * Checks whether a lockfile currently exists.
 	 *
-	 * @return       <code>true</code> if a lockfile exists; <code>false</code> otherwise.
+	 * @return       <code>true</code> if a lockfile exists ; <code>false</code> otherwise.
 	 */
 	public static boolean exists()
 	{
-		LockFile l = new LockFile();
-		return l._exists;
+		return LockFile._exists ;
 	}
 
 	/**
@@ -70,8 +69,7 @@ public class LockFile
 	 */
 	public static String owner()
 	{
-		LockFile l = new LockFile();
-		return _owner;
+		return _owner ;
 	}
 
 	/**
@@ -79,16 +77,16 @@ public class LockFile
 	 */
 	public static void createLock()
 	{
-		String lockFileName = lockFileDirName + File.separator + ".lock_" + System.getProperty( "user.name" );
-		File lockFile = new File( lockFileName );
+		String lockFileName = lockFileDirName + File.separator + ".lock_" + System.getProperty( "user.name" ) ;
+		File lockFile = new File( lockFileName ) ;
 		try
 		{
-			lockFile.createNewFile();
+			lockFile.createNewFile() ;
 		}
 		catch( IOException ioe )
 		{
-			System.out.println( "Unable to create lock file " + lockFileName );
+			System.out.println( "Unable to create lock file " + lockFileName ) ;
 		}
-		lockFile.deleteOnExit();
+		lockFile.deleteOnExit() ;
 	}
 }

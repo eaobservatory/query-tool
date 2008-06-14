@@ -1,10 +1,10 @@
-package edu.jach.qt.gui;
+package edu.jach.qt.gui ;
 
-import java.util.Hashtable;
-import edu.jach.qt.app.Subject;
-import edu.jach.qt.app.Observer;
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.Hashtable ;
+import edu.jach.qt.app.Subject ;
+import edu.jach.qt.app.Observer ;
+import java.util.ArrayList ;
+import java.util.Iterator ;
 
 /**
  * WidgetDataBag.java
@@ -23,8 +23,8 @@ import java.util.Iterator;
  */
 public class WidgetDataBag implements Subject
 {
-	private Hashtable table = new Hashtable();
-	private ArrayList observers = new ArrayList();
+	private Hashtable table = new Hashtable() ;
+	private ArrayList<Observer> observers = new ArrayList<Observer>() ;
 
 	/**
 	 * The <code>put</code> method adds the key value pair to the
@@ -39,10 +39,10 @@ public class WidgetDataBag implements Subject
 		Object o = null ;
 		if( key != null )
 		{
-			o = table.put( key , value );
-			notifyObservers();
+			o = table.put( key , value ) ;
+			notifyObservers() ;
 		}
-		return o;
+		return o ;
 	}
 
 	/**
@@ -54,7 +54,7 @@ public class WidgetDataBag implements Subject
 	 */
 	public String toString()
 	{
-		return table.toString();
+		return table.toString() ;
 	}
 
 	/**
@@ -64,7 +64,7 @@ public class WidgetDataBag implements Subject
 	 */
 	public Hashtable getHash()
 	{
-		return table;
+		return table ;
 	}
 
 	/**
@@ -78,11 +78,11 @@ public class WidgetDataBag implements Subject
 	{
 		if( table.containsKey( key ) )
 		{
-			String s = ( String )table.remove( key );
-			notifyObservers();
-			return s;
+			String s = ( String )table.remove( key ) ;
+			notifyObservers() ;
+			return s ;
 		}
-		return null;
+		return null ;
 	}
 
 	/**
@@ -93,7 +93,7 @@ public class WidgetDataBag implements Subject
 	 */
 	public void addObserver( Observer o )
 	{
-		observers.add( o );
+		observers.add( o ) ;
 	}
 
 	/**
@@ -104,17 +104,17 @@ public class WidgetDataBag implements Subject
 	 */
 	public void removeObserver( Observer o )
 	{
-		observers.remove( o );
+		observers.remove( o ) ;
 	}
 
 	private void notifyObservers()
 	{
 		// loop through and notify each observer 
-		Iterator i = observers.iterator();
+		Iterator i = observers.iterator() ;
 		while( i.hasNext() )
 		{
-			Observer o = ( Observer )i.next();
-			o.update( this );
+			Observer o = ( Observer )i.next() ;
+			o.update( this ) ;
 		}
 	}
 

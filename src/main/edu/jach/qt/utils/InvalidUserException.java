@@ -1,4 +1,4 @@
-package edu.jach.qt.utils;
+package edu.jach.qt.utils ;
 
 /**
  * This exception is thrown when the user specifies an invalid
@@ -12,6 +12,6 @@ public class InvalidUserException extends Exception
 {
 	InvalidUserException( String message )
 	{
-		super( message );
+		super( message ) ;
 	}
 }

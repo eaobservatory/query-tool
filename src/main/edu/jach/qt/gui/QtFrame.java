@@ -214,7 +214,7 @@ public class QtFrame extends JFrame implements PopupMenuListener , ActionListene
 		DeferredProgramList.cleanup() ;
 
 		// Input Panel Setup
-		WidgetPanel inputPanel = new WidgetPanel( new Hashtable() , widgetBag ) ;
+		WidgetPanel inputPanel = new WidgetPanel( new Hashtable<String,String>() , widgetBag ) ;
 		_widgetPanel = inputPanel ;
 		buildStagingPanel() ;
 		// Table setup
@@ -278,7 +278,7 @@ public class QtFrame extends JFrame implements PopupMenuListener , ActionListene
 
 	private void projectTableSetup( ProjectTableModel ptm )
 	{
-		Vector columnNames = new Vector() ;
+		Vector<String> columnNames = new Vector<String>() ;
 		columnNames.add( "projectid" ) ;
 		columnNames.add( "priority" ) ;
 		projectTable = new JTable( ptm ) ;

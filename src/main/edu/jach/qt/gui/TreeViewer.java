@@ -1,8 +1,8 @@
-package edu.jach.qt.gui;
+package edu.jach.qt.gui ;
 
-import java.util.Enumeration;
+import java.util.Enumeration ;
 import java.util.EventListener ;
-import java.util.Iterator;
+import java.util.Iterator ;
 import java.awt.event.KeyListener ;
 import javax.swing.JFrame ;
 import javax.swing.JScrollPane ;
@@ -67,14 +67,14 @@ class TreeViewer implements ActionListener
 	private void init()
 	{
 		frame = new JFrame() ;
-		frame.setSize( 600 , 300 );
+		frame.setSize( 600 , 300 ) ;
 		
 		JTabbedPane tabs = new JTabbedPane() ;
 		
 		frame.add( tabs ) ;
 		
-		scrollTree = new JScrollPane();
-		scrollValues = new JScrollPane();
+		scrollTree = new JScrollPane() ;
+		scrollValues = new JScrollPane() ;
 		
 		JPanel panel = new JPanel() ;
 		
@@ -113,10 +113,10 @@ class TreeViewer implements ActionListener
 		scrollValues.getViewport().removeAll() ;
 		scrollValues.getViewport().add( values ) ;
 		
-		frame.setTitle( item.getTitle() );
-		frame.setVisible( true );
-		frame.requestFocus();
-		frame.repaint();
+		frame.setTitle( item.getTitle() ) ;
+		frame.setVisible( true ) ;
+		frame.requestFocus() ;
+		frame.repaint() ;
 	}
 	
 	private SpItem item()
@@ -127,18 +127,18 @@ class TreeViewer implements ActionListener
 	private OtTreeWidget makeTree( SpItem item )
 	{
 		// Construct a new tree
-		OtTreeWidget otTree = new OtTreeWidget();
-		SpItem[] itemArray = { item };
+		OtTreeWidget otTree = new OtTreeWidget() ;
+		SpItem[] itemArray = { item } ;
 
 		// Create a science program to insert this into.
-		SpItem root = SpFactory.create( SpType.SCIENCE_PROGRAM );
-		otTree.resetProg( ( SpRootItem )root );
-		otTree.spItemsAdded( root , itemArray , ( SpItem )null );
-		EventListener[] listeners = otTree.getTree().getListeners( KeyListener.class );
+		SpItem root = SpFactory.create( SpType.SCIENCE_PROGRAM ) ;
+		otTree.resetProg( ( SpRootItem )root ) ;
+		otTree.spItemsAdded( root , itemArray , ( SpItem )null ) ;
+		EventListener[] listeners = otTree.getTree().getListeners( KeyListener.class ) ;
 		for( int i = 0 ; i < listeners.length ; i++ )
-			otTree.getTree().removeKeyListener( ( KeyListener )listeners[ i ] );
+			otTree.getTree().removeKeyListener( ( KeyListener )listeners[ i ] ) ;
 
-		return otTree;
+		return otTree ;
 	}
 	
 	private JTextPane drawTree( SpItem item )
@@ -199,8 +199,8 @@ class TreeViewer implements ActionListener
 
 		textPane.setText( buffer.toString() ) ;
 		
-		textPane.setCaretPosition( 0 );
-		textPane.repaint();
+		textPane.setCaretPosition( 0 ) ;
+		textPane.repaint() ;
 		
 		return textPane ;
 	}
@@ -243,7 +243,7 @@ class TreeViewer implements ActionListener
 				;
 			while( ( readLength = file.read( chars ) ) != -1 )
 				buffer.append( chars , 0 , readLength ) ;
-			file.close();
+			file.close() ;
 			returnable = buffer.toString() ; 
 		}
 		catch( FileNotFoundException fnfe ){}

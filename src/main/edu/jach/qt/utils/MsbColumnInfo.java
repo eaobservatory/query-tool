@@ -1,39 +1,39 @@
-package edu.jach.qt.utils;
+package edu.jach.qt.utils ;
 
 public class MsbColumnInfo
 {
-	private String name;
-	private Class klass;
-	private boolean visible = true;
+	private String name ;
+	private Class klass ;
+	private boolean visible = true ;
 
 	public MsbColumnInfo( String name , String klassType )
 	{
-		this.name = name;
+		this.name = name ;
 		if( klassType.equalsIgnoreCase( "Integer" ) )
-			klass = Integer.class;
+			klass = Integer.class ;
 		else if( klassType.equalsIgnoreCase( "Float" ) )
-			klass = Number.class;
+			klass = Number.class ;
 		else
-			klass = String.class;
+			klass = String.class ;
 	}
 
 	public String getName()
 	{
-		return name;
+		return name ;
 	}
 
 	public Class getClassType()
 	{
-		return klass;
+		return klass ;
 	}
 
 	public void setVisible( boolean visible )
 	{
-		this.visible = visible;
+		this.visible = visible ;
 	}
 
 	public boolean getVisible()
 	{
-		return visible;
+		return visible ;
 	}
 }

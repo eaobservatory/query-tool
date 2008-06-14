@@ -1,14 +1,14 @@
-package edu.jach.qt.gui;
+package edu.jach.qt.gui ;
 
 import java.awt.GridLayout ;
 import java.awt.event.ActionEvent ;
 import javax.swing.BorderFactory ;
 import javax.swing.JCheckBox ;
 import java.util.ListIterator ;
-import java.util.LinkedList;
+import java.util.LinkedList ;
 import javax.swing.border.TitledBorder ;
-import java.util.Hashtable;
-import edu.jach.qt.gui.WidgetDataBag;
+import java.util.Hashtable ;
+import edu.jach.qt.gui.WidgetDataBag ;
 
 /**
  * ButtonPanel.java
@@ -24,9 +24,9 @@ import edu.jach.qt.gui.WidgetDataBag;
 
 public class ButtonPanel extends WidgetPanel
 {
-	LinkedList buttonList;
-	ListIterator iterator;
-	private String next , myTitle;
+	LinkedList buttonList ;
+	ListIterator iterator ;
+	private String next , myTitle ;
 
 	/**
 	 * Creates a new <code>ButtonPanel</code> instance.
@@ -35,20 +35,20 @@ public class ButtonPanel extends WidgetPanel
 	 * @param title a <code>String</code> value
 	 * @param options a <code>LinkedList</code> value
 	 */
-	public ButtonPanel( Hashtable ht , WidgetDataBag wdb , CompInfo info )
+	public ButtonPanel( Hashtable<String,String> ht , WidgetDataBag wdb , CompInfo info )
 	{
-		super( ht , wdb );
-		myTitle = info.getTitle();
-		iterator = info.getList().listIterator( 0 );
+		super( ht , wdb ) ;
+		myTitle = info.getTitle() ;
+		iterator = info.getList().listIterator( 0 ) ;
 
-		setBorder( BorderFactory.createTitledBorder( BorderFactory.createEtchedBorder() , myTitle , TitledBorder.CENTER , TitledBorder.DEFAULT_POSITION ) );
-		buttonList = new LinkedList();
+		setBorder( BorderFactory.createTitledBorder( BorderFactory.createEtchedBorder() , myTitle , TitledBorder.CENTER , TitledBorder.DEFAULT_POSITION ) ) ;
+		buttonList = new LinkedList() ;
 
-		setLayout( new GridLayout( 3 , info.getSize() / 2 ) );
-		JCheckBox wfcamTickBox = null;
+		setLayout( new GridLayout( 3 , info.getSize() / 2 ) ) ;
+		JCheckBox wfcamTickBox = null ;
 		for( iterator.nextIndex() ; iterator.hasNext() ; iterator.nextIndex() )
 		{
-			next = ( String )iterator.next();
+			next = ( String )iterator.next() ;
 			
 			String toolTip = null ;
 			if( next.matches( ".*-.*" ) )
@@ -58,16 +58,16 @@ public class ButtonPanel extends WidgetPanel
 				toolTip = split[ 1 ].trim() ;
 			}
 			
-			JCheckBox cb = new JCheckBox( next );
-			cb.addActionListener( this );
+			JCheckBox cb = new JCheckBox( next ) ;
+			cb.addActionListener( this ) ;
 			if( "WFCAM".equals( next ) )
-				wfcamTickBox = cb;
+				wfcamTickBox = cb ;
 			
 			if( toolTip != null )
 				cb.setToolTipText( toolTip ) ;
 
-			add( cb );
-			buttonList.add( cb );
+			add( cb ) ;
+			buttonList.add( cb ) ;
 		}
 	}
 
@@ -79,12 +79,12 @@ public class ButtonPanel extends WidgetPanel
 	 */
 	public void setEnabled( boolean booleanFlag )
 	{
-		JCheckBox next;
+		JCheckBox next ;
 		for( ListIterator iter = buttonList.listIterator() ; iter.hasNext() ; iter.nextIndex() )
 		{
-			next = ( JCheckBox )iter.next();
+			next = ( JCheckBox )iter.next() ;
 			if( !next.getText().equals( "Any Instrument" ) && !next.getText().equals( "Any Heterodyne" ) && !next.getText().equals( "current" ) )
-				next.setEnabled( booleanFlag );
+				next.setEnabled( booleanFlag ) ;
 		}
 	}
 
@@ -96,38 +96,38 @@ public class ButtonPanel extends WidgetPanel
 	 */
 	public void setSelected( boolean flag )
 	{
-		JCheckBox next;
+		JCheckBox next ;
 		for( ListIterator iter = buttonList.listIterator() ; iter.hasNext() ; iter.nextIndex() )
 		{
-			next = ( JCheckBox )iter.next();
+			next = ( JCheckBox )iter.next() ;
 			if( !next.getText().equals( "Any Instrument" ) && !next.getText().equals( "Any Heterodyne" ) && !next.getText().equals( "current" ) )
 			{
-				next.setSelected( flag );
-				setAttribute( myTitle , buttonList );
+				next.setSelected( flag ) ;
+				setAttribute( myTitle , buttonList ) ;
 			}
 		}
 	}
 
 	private void wfcamSelected( boolean selected )
 	{
-		JCheckBox next;
+		JCheckBox next ;
 		for( ListIterator iter = buttonList.listIterator() ; iter.hasNext() ; iter.nextIndex() )
 		{
-			next = ( JCheckBox )iter.next();
+			next = ( JCheckBox )iter.next() ;
 			// If flag is true, we need to deselect everything else and disable the
 			if( selected )
 			{
 				boolean wfcam = ( next.getText().equals( "WFCAM" ) ) ;
-				next.setSelected( wfcam );
-				next.setEnabled( wfcam );
+				next.setSelected( wfcam ) ;
+				next.setEnabled( wfcam ) ;
 			}
 			else
 			{
 				// WFCAM is deselected.  Just enable all other buttons
-				next.setEnabled( !selected );
+				next.setEnabled( !selected ) ;
 			}
 		}
-		setAttribute( myTitle , buttonList );
+		setAttribute( myTitle , buttonList ) ;
 	}
 
 	/**
@@ -138,31 +138,31 @@ public class ButtonPanel extends WidgetPanel
 	 */
 	public void actionPerformed( ActionEvent evt )
 	{
-		Object source = evt.getSource();
-		JCheckBox temp = ( JCheckBox )source;
+		Object source = evt.getSource() ;
+		JCheckBox temp = ( JCheckBox )source ;
 
 		if( temp.getText().equals( "WFCAM" ) )
 		{
 			wfcamSelected( temp.isSelected() ) ;
-			return;
+			return ;
 		}
 		if( temp.getText().equals( "Any Instrument" ) || temp.getText().equals( "Any Heterodyne" ) || temp.getText().equals( "current" ) )
 		{
 			if( temp.isSelected() )
 			{
-				setSelected( false );
-				setEnabled( false );
+				setSelected( false ) ;
+				setEnabled( false ) ;
 			}
 			else
 			{
-				setEnabled( true );
-				setSelected( false );
+				setEnabled( true ) ;
+				setSelected( false ) ;
 			}
 		}
 
 		else
 		{
-			setAttribute( myTitle , buttonList );
+			setAttribute( myTitle , buttonList ) ;
 		}
 	}
 }// ButtonPanel

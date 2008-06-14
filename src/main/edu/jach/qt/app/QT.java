@@ -1,22 +1,22 @@
-package edu.jach.qt.app;
+package edu.jach.qt.app ;
 
 /* JSKY imports */
 
 /* ORAC imports */
 /* QT imports */
 /* Standard imports */
-import edu.jach.qt.gui.QtFrame;
-import edu.jach.qt.gui.WidgetDataBag;
-import edu.jach.qt.utils.QtTools;
+import edu.jach.qt.gui.QtFrame ;
+import edu.jach.qt.gui.WidgetDataBag ;
+import edu.jach.qt.utils.QtTools ;
 
 /* Standard imports */
 
-import java.awt.Dimension;
-import java.awt.Toolkit;
-import java.awt.AWTError;
-import jsky.app.ot.OtCfg;
-import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
+import java.awt.Dimension ;
+import java.awt.Toolkit ;
+import java.awt.AWTError ;
+import jsky.app.ot.OtCfg ;
+import org.apache.log4j.Logger ;
+import org.apache.log4j.PropertyConfigurator ;
 
 /**
  * This is the top most OMP-QT class.  Upon init it instantiates 
@@ -34,7 +34,7 @@ import org.apache.log4j.PropertyConfigurator;
  */
 final public class QT
 {
-	static Logger logger = Logger.getLogger( QT.class );
+	static Logger logger = Logger.getLogger( QT.class ) ;
 
 	/**
 	 * Creates a new <code>QT</code> instance which starts a Querytool, the app itself, and a QtFrame, the user interface. The frame is also set be centered on the screen.
@@ -42,66 +42,66 @@ final public class QT
 	public QT()
 	{
 		if( System.getProperty( "QT_LOG_DIR" ) == null || System.getProperty( "QT_LOG_DIR" ).equals( "" ) )
-			PropertyConfigurator.configure( "../../config/nolog4j.properties" );
+			PropertyConfigurator.configure( "../../config/nolog4j.properties" ) ;
 		else
-			PropertyConfigurator.configure( "../config/log4j.properties" );
+			PropertyConfigurator.configure( "../config/log4j.properties" ) ;
 
-		logger.info( "-------WELCOME TO THE QT----------" );
+		logger.info( "-------WELCOME TO THE QT----------" ) ;
 
 		try
 		{
-			OtCfg.init();
+			OtCfg.init() ;
 		}
 		catch( Exception e )
 		{
-			logger.fatal( "PreTranslator error starting the QT" , e );
-			System.exit( 1 );
+			logger.fatal( "PreTranslator error starting the QT" , e ) ;
+			System.exit( 1 ) ;
 		}
 		catch( ClassCircularityError cce )
 		{
-			logger.fatal( "Talk to SHAUN!!!: PreTranslator ClassCircularityError starting the QT" , cce );
-			System.exit( 1 );
+			logger.fatal( "Talk to SHAUN!!!: PreTranslator ClassCircularityError starting the QT" , cce ) ;
+			System.exit( 1 ) ;
 		}
 
-		QtTools.loadConfig( System.getProperty( "qtConfig" ) );
+		QtTools.loadConfig( System.getProperty( "qtConfig" ) ) ;
 
-		WidgetDataBag wdb = new WidgetDataBag();
-		Querytool qt = new Querytool( wdb );
-		QtFrame qtf = new QtFrame( wdb , qt );
+		WidgetDataBag wdb = new WidgetDataBag() ;
+		Querytool qt = new Querytool( wdb ) ;
+		QtFrame qtf = new QtFrame( wdb , qt ) ;
 
-		qtf.setSize( 1150 , 620 );
-		qtf.setTitle( "OMP Query Tool Observation Manager" );
+		qtf.setSize( 1150 , 620 ) ;
+		qtf.setTitle( "OMP Query Tool Observation Manager" ) ;
 
-		Dimension screenSize;
+		Dimension screenSize ;
 		try
 		{
-			Toolkit tk = Toolkit.getDefaultToolkit();
-			screenSize = tk.getScreenSize();
+			Toolkit tk = Toolkit.getDefaultToolkit() ;
+			screenSize = tk.getScreenSize() ;
 		}
 		catch( AWTError awe )
 		{
-			screenSize = new Dimension( 640 , 480 );
+			screenSize = new Dimension( 640 , 480 ) ;
 		}
-		Dimension frameSize = qtf.getSize();
+		Dimension frameSize = qtf.getSize() ;
 
 		/* Fill screen if the screen is smaller that qtfSize. */
 		if( frameSize.height > screenSize.height )
-			frameSize.height = screenSize.height;
+			frameSize.height = screenSize.height ;
 		if( frameSize.width > screenSize.width )
-			frameSize.width = screenSize.width;
+			frameSize.width = screenSize.width ;
 
 		/* Center the screen */
-		int x = screenSize.width / 2 - frameSize.width / 2;
-		int y = screenSize.height / 2 - frameSize.height / 2;
-		qtf.setLocation( x , y );
-		qtf.validate();
-		qtf.setVisible( true );
+		int x = screenSize.width / 2 - frameSize.width / 2 ;
+		int y = screenSize.height / 2 - frameSize.height / 2 ;
+		qtf.setLocation( x , y ) ;
+		qtf.validate() ;
+		qtf.setVisible( true ) ;
 
-		logger.info( "QT should now be visible" );
+		logger.info( "QT should now be visible" ) ;
 
-		String bigTelescope = System.getProperty( "TELESCOPE" );
+		String bigTelescope = System.getProperty( "TELESCOPE" ) ;
 		if( bigTelescope == null || bigTelescope.equals( "" ) )
-			System.setProperty( "TELESCOPE" , System.getProperty( "telescope" ) );
+			System.setProperty( "TELESCOPE" , System.getProperty( "telescope" ) ) ;
 	}
 
 	/**
@@ -114,15 +114,15 @@ final public class QT
 	{
 		try
 		{
-			new QT();
+			new QT() ;
 		}
 		catch( RuntimeException rte )
 		{
-			logger.fatal( "Caught a run-time exception from main" , rte );
+			logger.fatal( "Caught a run-time exception from main" , rte ) ;
 		}
 		catch( Exception e )
 		{
-			logger.fatal( "Caught an unexpected exception in main" , e );
+			logger.fatal( "Caught an unexpected exception in main" , e ) ;
 		}
 	}
 } // Omp
@@ -217,7 +217,7 @@ final public class QT
  * Frame centers on screen.
  *
  * Revision 1.4  2001/09/20 01:58:07  mrippa
- * Added QtTools.loadConfig("config.qt.conf"); which loads
+ * Added QtTools.loadConfig("config.qt.conf") ; which loads
  * the main config file for the QT.
  *
  * Revision 1.3  2001/09/18 21:53:39  mrippa

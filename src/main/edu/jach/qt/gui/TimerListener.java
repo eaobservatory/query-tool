@@ -1,4 +1,4 @@
-package edu.jach.qt.gui;
+package edu.jach.qt.gui ;
 
 import java.util.EventListener ;
 
@@ -9,5 +9,5 @@ import java.util.EventListener ;
  */
 public interface TimerListener extends EventListener
 {
-	public void timeElapsed( TimerEvent evt );
+	public void timeElapsed( TimerEvent evt ) ;
 }

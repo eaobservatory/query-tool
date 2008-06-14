@@ -1,18 +1,18 @@
-package edu.jach.qt.gui;
+package edu.jach.qt.gui ;
 
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import java.awt.BorderLayout;
-import java.awt.GridLayout;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JCheckBox;
-import javax.swing.JButton;
+import java.awt.event.ActionListener ;
+import java.awt.event.ActionEvent ;
+import java.awt.BorderLayout ;
+import java.awt.GridLayout ;
+import javax.swing.JFrame ;
+import javax.swing.JPanel ;
+import javax.swing.JCheckBox ;
+import javax.swing.JButton ;
 
-import edu.jach.qt.utils.MsbClient;
+import edu.jach.qt.utils.MsbClient ;
 
-import edu.jach.qt.utils.MsbColumnInfo;
-import edu.jach.qt.utils.MsbColumns;
+import edu.jach.qt.utils.MsbColumnInfo ;
+import edu.jach.qt.utils.MsbColumns ;
 
 /**
  * This class is used to display a series of checkboxes which allow a
@@ -23,9 +23,9 @@ import edu.jach.qt.utils.MsbColumns;
  */
 public class ColumnSelector extends JFrame implements ActionListener
 {
-	private JPanel columnPanel;
-	private QtFrame parent;
-	private MSBQueryTableModel _msbqtm;
+	private JPanel columnPanel ;
+	private QtFrame parent ;
+	private MSBQueryTableModel _msbqtm ;
 
 	/**
 	 * Default constructor
@@ -38,13 +38,13 @@ public class ColumnSelector extends JFrame implements ActionListener
 	 */
 	public ColumnSelector( QtFrame frame )
 	{
-		parent = frame;
-		_msbqtm = parent.getModel();
-		this.setSize( 150 , 300 );
-		this.setLayout( new BorderLayout() );
-		this.addCheckBoxes();
-		this.addCloseButton();
-		this.setVisible( true );
+		parent = frame ;
+		_msbqtm = parent.getModel() ;
+		this.setSize( 150 , 300 ) ;
+		this.setLayout( new BorderLayout() ) ;
+		this.addCheckBoxes() ;
+		this.addCloseButton() ;
+		this.setVisible( true ) ;
 	}
 
 	/**
@@ -55,36 +55,36 @@ public class ColumnSelector extends JFrame implements ActionListener
 	public ColumnSelector( MSBQueryTableModel model )
 	{
 		// Disable the parent
-		_msbqtm = model;
-		this.setSize( 150 , 300 );
-		this.setLayout( new BorderLayout() );
-		this.addCheckBoxes();
-		this.addCloseButton();
-		this.setVisible( true );
+		_msbqtm = model ;
+		this.setSize( 150 , 300 ) ;
+		this.setLayout( new BorderLayout() ) ;
+		this.addCheckBoxes() ;
+		this.addCloseButton() ;
+		this.setVisible( true ) ;
 	}
 
 	private void addCheckBoxes()
 	{
-		columnPanel = new JPanel( new GridLayout( 0 , 1 ) );
-		final MsbColumns columns = MsbClient.getColumnInfo();
-		JCheckBox checkBox;
+		columnPanel = new JPanel( new GridLayout( 0 , 1 ) ) ;
+		final MsbColumns columns = MsbClient.getColumnInfo() ;
+		JCheckBox checkBox ;
 		for( int i = 0 ; i < columns.size() ; i++ )
 		{
-			final MsbColumnInfo columnInfo = ( MsbColumnInfo )columns.find( i );
-			checkBox = new JCheckBox( columnInfo.getName() );
+			final MsbColumnInfo columnInfo = ( MsbColumnInfo )columns.find( i ) ;
+			checkBox = new JCheckBox( columnInfo.getName() ) ;
 			if( columnInfo.getVisible() )
-				checkBox.setSelected( true );
-			columnPanel.add( checkBox );
+				checkBox.setSelected( true ) ;
+			columnPanel.add( checkBox ) ;
 		}
-		this.add( columnPanel , BorderLayout.CENTER );
+		this.add( columnPanel , BorderLayout.CENTER ) ;
 	}
 
 	private void addCloseButton()
 	{
-		JButton closeButton = new JButton( "Accept" );
-		closeButton.setLocation( 375 , 275 );
-		closeButton.addActionListener( this );
-		this.add( closeButton , BorderLayout.SOUTH );
+		JButton closeButton = new JButton( "Accept" ) ;
+		closeButton.setLocation( 375 , 275 ) ;
+		closeButton.addActionListener( this ) ;
+		this.add( closeButton , BorderLayout.SOUTH ) ;
 	}
 
 	/**
@@ -96,23 +96,23 @@ public class ColumnSelector extends JFrame implements ActionListener
 	 */
 	public void actionPerformed( final ActionEvent evt )
 	{
-		final MsbColumns columns = MsbClient.getColumnInfo();
+		final MsbColumns columns = MsbClient.getColumnInfo() ;
 		for( int i = 0 ; i < columnPanel.getComponentCount() ; i++ )
 		{
 			if( columnPanel.getComponent( i ) instanceof JCheckBox )
 			{
-				JCheckBox checkBox = ( JCheckBox )columnPanel.getComponent( i );
-				String name = checkBox.getText();
-				MsbColumnInfo columnInfo = columns.findName( name );
+				JCheckBox checkBox = ( JCheckBox )columnPanel.getComponent( i ) ;
+				String name = checkBox.getText() ;
+				MsbColumnInfo columnInfo = columns.findName( name ) ;
 				if( columnInfo != null )
-					columnInfo.setVisible( checkBox.isSelected() );
+					columnInfo.setVisible( checkBox.isSelected() ) ;
 			}
 		}
 
-		_msbqtm.updateColumns();
-		_msbqtm.adjustColumnData();
+		_msbqtm.updateColumns() ;
+		_msbqtm.adjustColumnData() ;
 		if( parent != null )
-			parent.setTableToDefault();
-		this.dispose();
+			parent.setTableToDefault() ;
+		this.dispose() ;
 	}
 }

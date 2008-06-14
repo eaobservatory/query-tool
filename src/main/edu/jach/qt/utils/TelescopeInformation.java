@@ -1,19 +1,19 @@
-package edu.jach.qt.utils;
+package edu.jach.qt.utils ;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.StringReader;
-import java.io.IOException;
-import java.util.Hashtable;
-import org.w3c.dom.Node;
-import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
-import org.apache.xerces.parsers.DOMParser;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXNotRecognizedException;
-import org.xml.sax.SAXNotSupportedException;
-import org.apache.log4j.Logger;
+import java.io.File ;
+import java.io.FileReader ;
+import java.io.StringReader ;
+import java.io.IOException ;
+import java.util.Hashtable ;
+import org.w3c.dom.Node ;
+import org.w3c.dom.Document ;
+import org.w3c.dom.NodeList ;
+import org.apache.xerces.parsers.DOMParser ;
+import org.xml.sax.InputSource ;
+import org.xml.sax.SAXException ;
+import org.xml.sax.SAXNotRecognizedException ;
+import org.xml.sax.SAXNotSupportedException ;
+import org.apache.log4j.Logger ;
 
 /**
  * Read information about a specific telescope.
@@ -27,8 +27,8 @@ import org.apache.log4j.Logger;
  */
 public class TelescopeInformation
 {
-	private Hashtable data = new Hashtable();
-	static Logger logger = Logger.getLogger( TelescopeInformation.class );
+	private Hashtable data = new Hashtable() ;
+	static Logger logger = Logger.getLogger( TelescopeInformation.class ) ;
 
 	/**
 	 * Constructor.
@@ -41,66 +41,66 @@ public class TelescopeInformation
 	 */
 	public TelescopeInformation( String name )
 	{
-		Document doc = null;
+		Document doc = null ;
 
 		// Get the name of the current config directory:
-		String configDir = System.getProperty( "qtConfig" );
-		configDir = configDir.substring( 0 , configDir.lastIndexOf( File.separatorChar ) );
+		String configDir = System.getProperty( "qtConfig" ) ;
+		configDir = configDir.substring( 0 , configDir.lastIndexOf( File.separatorChar ) ) ;
 
-		String configFile = configDir + File.separatorChar + System.getProperty( "telescopeConfig" );
+		String configFile = configDir + File.separatorChar + System.getProperty( "telescopeConfig" ) ;
 
 		// Now try to build a document from this file
-		File dataFile = new File( configFile );
+		File dataFile = new File( configFile ) ;
 		if( !dataFile.exists() || !dataFile.canRead() )
-			logger.error( "Telescope data file does not exist:" + configFile );
+			logger.error( "Telescope data file does not exist:" + configFile ) ;
 
 		try
 		{
-			FileReader reader = new FileReader( dataFile );
-			char[] chars = new char[ 1024 ];
+			FileReader reader = new FileReader( dataFile ) ;
+			char[] chars = new char[ 1024 ] ;
 			int readLength = 0 ;
 			StringBuffer buffer = new StringBuffer() ;
 			while( ( readLength = reader.read( chars ) ) != -1 )
 				buffer.append( chars , 0 , readLength ) ;
-			reader.close();
+			reader.close() ;
 			String buffer_z = buffer.toString() ;
 
-			DOMParser parser = new DOMParser();
-			parser.setFeature( "http://xml.org/sax/features/validation" , false );
-			parser.setFeature( "http://apache.org/xml/features/dom/include-ignorable-whitespace" , false );
-			parser.parse( new InputSource( new StringReader( buffer_z ) ) );
+			DOMParser parser = new DOMParser() ;
+			parser.setFeature( "http://xml.org/sax/features/validation" , false ) ;
+			parser.setFeature( "http://apache.org/xml/features/dom/include-ignorable-whitespace" , false ) ;
+			parser.parse( new InputSource( new StringReader( buffer_z ) ) ) ;
 
-			doc = parser.getDocument();
+			doc = parser.getDocument() ;
 		}
 		catch( SAXNotRecognizedException snre )
 		{
-			logger.error( "Unable to ignore white-space text." , snre );
+			logger.error( "Unable to ignore white-space text." , snre ) ;
 		}
 		catch( SAXNotSupportedException snse )
 		{
-			logger.error( "Unable to ignore white-space text." , snse );
+			logger.error( "Unable to ignore white-space text." , snse ) ;
 		}
 		catch( SAXException sex )
 		{
-			logger.error( "SAX Exception on parse." , sex );
+			logger.error( "SAX Exception on parse." , sex ) ;
 		}
 		catch( IOException ioe )
 		{
-			logger.error( "IO Exception on parse." , ioe );
+			logger.error( "IO Exception on parse." , ioe ) ;
 		}
 
 		// Now we have the document - start playing...
-		NodeList list = doc.getElementsByTagName( "Telescope" );
+		NodeList list = doc.getElementsByTagName( "Telescope" ) ;
 
 		for( int oloop = 0 ; oloop < list.getLength() ; oloop++ )
 		{
-			String telescope = list.item( oloop ).getAttributes().getNamedItem( "name" ).getNodeValue();
+			String telescope = list.item( oloop ).getAttributes().getNamedItem( "name" ).getNodeValue() ;
 			if( telescope.equalsIgnoreCase( name ) )
 			{
-				Node telNode = list.item( oloop );
-				NodeList children = telNode.getChildNodes();
+				Node telNode = list.item( oloop ) ;
+				NodeList children = telNode.getChildNodes() ;
 				for( int iloop = 0 ; iloop < children.getLength() ; iloop++ )
-					data.put( children.item( iloop ).getNodeName().trim().toLowerCase() , children.item( iloop ).getFirstChild().getNodeValue().trim() );
+					data.put( children.item( iloop ).getNodeName().trim().toLowerCase() , children.item( iloop ).getFirstChild().getNodeValue().trim() ) ;
 			}
 		}
 	}
@@ -110,12 +110,12 @@ public class TelescopeInformation
 	 * See if the required information exists in the data.
 	 *
 	 * @param key         The information required (e.g. latitude).
-	 * @return            <code>true</code> if the information exists;
+	 * @return            <code>true</code> if the information exists ;
 	 *                    <code>false</code> otherwise.
 	 */
 	public boolean hasKey( Object key )
 	{
-		return data.containsKey( ( ( String )key ).toLowerCase() );
+		return data.containsKey( ( ( String )key ).toLowerCase() ) ;
 	}
 
 	// get the value associated with a specific key
@@ -131,52 +131,52 @@ public class TelescopeInformation
 	 */
 	public Object getValue( Object key )
 	{
-		boolean returnInt = false;
-		boolean returnDbl = false;
-		boolean returnStr = true;
+		boolean returnInt = false ;
+		boolean returnDbl = false ;
+		boolean returnStr = true ;
 
-		String thisKey = ( ( String )key ).toLowerCase();
-		String value = null;
+		String thisKey = ( ( String )key ).toLowerCase() ;
+		String value = null ;
 
 		if( hasKey( key ) )
 		{
-			value = data.get( thisKey ).toString();
+			value = data.get( thisKey ).toString() ;
 			// Convert this to a char array to work out what we need to return it as...
-			char[] datum = value.toCharArray();
+			char[] datum = value.toCharArray() ;
 			for( int i = 0 ; i < datum.length ; i++ )
 			{
 				if( Character.isLetter( datum[ i ] ) )
 				{
 					// If any of the character is a letter, treat the return as a String
-					returnStr = true;
-					returnInt = false;
-					returnDbl = false;
-					break;
+					returnStr = true ;
+					returnInt = false ;
+					returnDbl = false ;
+					break ;
 				}
 				else if( datum[ i ] == '.' )
 				{
 					// If we find a decimal point assume this is a double, but keep checking in case a letter follows
-					returnStr = false;
-					returnInt = false;
-					returnDbl = true;
+					returnStr = false ;
+					returnInt = false ;
+					returnDbl = true ;
 				}
 				else if( Character.isDigit( datum[ i ] ) && returnDbl == false )
 				{
 					// If the charaacter is a number and we have not already assumed that the value is a double, 
 					// assume it is an Integer but keep checking in case we have a string
-					returnStr = false;
-					returnInt = true;
-					returnDbl = false;
+					returnStr = false ;
+					returnInt = true ;
+					returnDbl = false ;
 				}
 			}
 		}
 
 		// Return the appropriate type of Object
 		if( returnStr )
-			return value;
+			return value ;
 		else if( returnInt )
-			return new Integer( value );
+			return new Integer( value ) ;
 		else
-			return new Double( value );
+			return new Double( value ) ;
 	}
 }

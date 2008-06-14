@@ -1,4 +1,4 @@
-package edu.jach.qt.gui;
+package edu.jach.qt.gui ;
 
 import java.awt.Component ;
 import java.awt.Toolkit ;
@@ -18,11 +18,11 @@ public class Timer extends Component implements Runnable
 	 */
 	public Timer( int i )
 	{
-		interval = i;
-		Thread t = new Thread( this );
-		t.start();
-		evtq = Toolkit.getDefaultToolkit().getSystemEventQueue();
-		enableEvents( 0 );
+		interval = i ;
+		Thread t = new Thread( this ) ;
+		t.start() ;
+		evtq = Toolkit.getDefaultToolkit().getSystemEventQueue() ;
+		enableEvents( 0 ) ;
 	}
 
 	/**
@@ -31,7 +31,7 @@ public class Timer extends Component implements Runnable
 	 */
 	public void addTimerListener( TimerListener l )
 	{
-		listener = l;
+		listener = l ;
 	}
 
 	/**
@@ -44,11 +44,11 @@ public class Timer extends Component implements Runnable
 		{
 			try
 			{
-				Thread.sleep( interval );
+				Thread.sleep( interval ) ;
 			}
 			catch( InterruptedException e ){}
-			TimerEvent te = new TimerEvent( this );
-			evtq.postEvent( te );
+			TimerEvent te = new TimerEvent( this ) ;
+			evtq.postEvent( te ) ;
 		}
 	}
 
@@ -62,15 +62,15 @@ public class Timer extends Component implements Runnable
 		if( evt instanceof TimerEvent )
 		{
 			if( listener != null )
-				listener.timeElapsed( ( TimerEvent )evt );
+				listener.timeElapsed( ( TimerEvent )evt ) ;
 		}
 		else
 		{
-			super.processEvent( evt );
+			super.processEvent( evt ) ;
 		}
 	}
 
-	private int interval;
-	private TimerListener listener;
-	private static EventQueue evtq;
+	private int interval ;
+	private TimerListener listener ;
+	private static EventQueue evtq ;
 }

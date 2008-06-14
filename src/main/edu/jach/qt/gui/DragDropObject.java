@@ -4,14 +4,14 @@
 //
 // $Id$
 //
-package edu.jach.qt.gui;
+package edu.jach.qt.gui ;
 
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.Transferable;
-import gemini.sp.SpItem;
-import java.util.Vector;
-import java.awt.datatransfer.UnsupportedFlavorException;
-import java.io.IOException;
+import java.awt.datatransfer.DataFlavor ;
+import java.awt.datatransfer.Transferable ;
+import gemini.sp.SpItem ;
+import java.util.Vector ;
+import java.awt.datatransfer.UnsupportedFlavorException ;
+import java.io.IOException ;
 
 /**
  * This class ties an SpItem to the tree widget in which its associated
@@ -21,12 +21,12 @@ import java.io.IOException;
 public final class DragDropObject implements Transferable
 {
 	/** Identifies the object being dragged and dropped */
-	public final static DataFlavor DATA_FLAVOR = new DataFlavor( DragDropObject.class , "DragDropObject" );
+	public final static DataFlavor DATA_FLAVOR = new DataFlavor( DragDropObject.class , "DragDropObject" ) ;
 
-	private Vector children = null;
-	private DragDropObject parent = null;
-	private String myName;
-	private SpItem myItem;
+	private Vector<DragDropObject> children = null ;
+	private DragDropObject parent = null ;
+	private String myName ;
+	private SpItem myItem ;
 
 	/**
 	 * This constructor should be used when dragging a newly created object
@@ -34,46 +34,46 @@ public final class DragDropObject implements Transferable
 	 */
 	public DragDropObject( SpItem spItem )
 	{
-		children = new Vector();
-		myItem = spItem;
-		myName = spItem.name();
+		children = new Vector<DragDropObject>() ;
+		myItem = spItem ;
+		myName = spItem.name() ;
 	}
 
 	public SpItem getSpItem()
 	{
-		return myItem;
+		return myItem ;
 	}
 
 	public String getName()
 	{
-		return myName;
+		return myName ;
 	}
 
 	public void add( DragDropObject info )
 	{
-		info.setParent( this );
-		children.add( info );
+		info.setParent( this ) ;
+		children.add( info ) ;
 	}
 
 	public void remove( DragDropObject info )
 	{
-		info.setParent( null );
-		children.remove( info );
+		info.setParent( null ) ;
+		children.remove( info ) ;
 	}
 
 	public void setParent( DragDropObject someParent )
 	{
-		parent = someParent;
+		parent = someParent ;
 	}
 
 	public Vector getChildren()
 	{
-		return children;
+		return children ;
 	}
 
 	public DragDropObject getParent()
 	{
-		return parent;
+		return parent ;
 	}
 
 	// Implementation of the Transferable interface
@@ -81,19 +81,19 @@ public final class DragDropObject implements Transferable
 	{
 		// MFO: DataFlavor.stringFlavor is only added because dropping nodes would not work under Windows (NT) otherwise.
 		//      The same trick is used in the Gemini OT (from ot-0.6, in jsky.app.ot.viewer.SPDragDropObject)
-		return new DataFlavor[] { DATA_FLAVOR , DataFlavor.stringFlavor };
+		return new DataFlavor[] { DATA_FLAVOR , DataFlavor.stringFlavor } ;
 	}
 
 	public boolean isDataFlavorSupported( DataFlavor fl )
 	{
-		return fl.equals( DATA_FLAVOR );
+		return fl.equals( DATA_FLAVOR ) ;
 	}
 
 	public Object getTransferData( DataFlavor fl ) throws UnsupportedFlavorException , IOException
 	{
 		if( fl.equals( DATA_FLAVOR ) )
-			return this;
+			return this ;
 		else
-			throw new UnsupportedFlavorException( fl );
+			throw new UnsupportedFlavorException( fl ) ;
 	}
 }

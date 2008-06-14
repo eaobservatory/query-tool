@@ -1,4 +1,4 @@
-package edu.jach.qt.utils;
+package edu.jach.qt.utils ;
 
 import java.io.IOException ;
 import java.io.PushbackReader ;
@@ -11,11 +11,11 @@ import java.io.FileReader ;
  letters only).  TextReader can be constructed either from an InputStream
  such as System.in (the keyboard) and in fact is done automatically with
 
- TextReader keyboard = new TextReader( );
+ TextReader keyboard = new TextReader( ) ;
  
  or by specifying the name of a file as a String as in 
  
- TextReader inputFile = new TextReader( "input.data" );
+ TextReader inputFile = new TextReader( "input.data" ) ;
 
  Written by Stuart Reges at the Univerity of Arizona 6/11/98 with 
  minor modifications by Rick Mercer.
@@ -26,10 +26,10 @@ public class TextReader
 	//--instance variables
 	// PushbackReader used here to avoid bugs in the 1.1 BufferedReader class
 	// It also allows for a "peek" method.
-	private PushbackReader in; // the input stream
+	private PushbackReader in ; // the input stream
 
 	// true If from keyboard or false when input is from a file 
-	private boolean rePrompting; // users should be prompted, but not files
+	private boolean rePrompting ; // users should be prompted, but not files
 
 	/**
 	 Construct an object used to obtain input from the keyboard
@@ -38,8 +38,8 @@ public class TextReader
 	{ 
 		// pre : input stream is open for reading
 		// post: constructs a TextReader object associated with the keyboard
-		in = new PushbackReader( new InputStreamReader( System.in ) );
-		rePrompting = true;
+		in = new PushbackReader( new InputStreamReader( System.in ) ) ;
+		rePrompting = true ;
 	}
 
 	/**
@@ -54,13 +54,13 @@ public class TextReader
 		// post: constructs a TextReader tied to the given file
 		try
 		{
-			in = new PushbackReader( new FileReader( fileName ) );
-			rePrompting = false;
+			in = new PushbackReader( new FileReader( fileName ) ) ;
+			rePrompting = false ;
 		}
 		catch( Exception e )
 		{
-			System.out.println( "Can't open input file '" + fileName + "', program terminated" );
-			System.exit( 1 );
+			System.out.println( "Can't open input file '" + fileName + "', program terminated" ) ;
+			System.exit( 1 ) ;
 		}
 	}
 
@@ -72,8 +72,8 @@ public class TextReader
 	private void error( String where )
 	{ 
 		// Have a standard way of displaying error messages
-		System.out.println( "\n***Failure in " + where + " message. Program terminated***" );
-		System.exit( 1 );
+		System.out.println( "\n***Failure in " + where + " message. Program terminated***" ) ;
+		System.exit( 1 ) ;
 	}
 
 	/** 
@@ -86,15 +86,15 @@ public class TextReader
 	{ 
 		do
 		{
-			String torf = readWord();
+			String torf = readWord() ;
 			if( torf.equalsIgnoreCase( "true" ) )
-				return true;
+				return true ;
 			else if( torf.equalsIgnoreCase( "false" ) )
-				return false;
+				return false ;
 			else
-				System.out.println( torf + " is not 'true' or 'false'. Try again" );
+				System.out.println( torf + " is not 'true' or 'false'. Try again" ) ;
 		}
-		while( true );
+		while( true ) ;
 	}
 
 	/**
@@ -107,25 +107,25 @@ public class TextReader
 	 */
 	public String readLine()
 	{
-		String result = "";
+		String result = "" ;
 		try
 		{
 			do
 			{
-				int next = in.read();
+				int next = in.read() ;
 				if( next == '\r' ) // skip carriage-return on Windows systems
-					continue;
+					continue ;
 				if( next == -1 || next == '\n' )
-					break;
-				result += ( char )next;
+					break ;
+				result += ( char )next ;
 			}
-			while( true );
+			while( true ) ;
 		}
 		catch( Exception e )
 		{
-			error( "readLine" );
+			error( "readLine" ) ;
 		}
-		return result;
+		return result ;
 	}
 
 	/**
@@ -135,7 +135,7 @@ public class TextReader
 	 */
 	public char readChar()
 	{
-		return read();
+		return read() ;
 	}
 
 	/**
@@ -148,19 +148,19 @@ public class TextReader
 		// pre : not at end-of-file of the input stream
 		// post: reads the next character of input and returns it
 
-		char result = ' ';
+		char result = ' ' ;
 		try
 		{
-			result = ( char )in.read();
+			result = ( char )in.read() ;
 			if( result == '\r' ) // skip carriage-return on Windows systems
-				result = ( char )in.read();
+				result = ( char )in.read() ;
 		}
 		catch( Exception e )
 		{
-			System.out.println( "Failure in call on read method, program terminated." );
-			System.exit( 1 );
+			System.out.println( "Failure in call on read method, program terminated." ) ;
+			System.exit( 1 ) ;
 		}
-		return result;
+		return result ;
 	}
 
 	/**
@@ -171,11 +171,11 @@ public class TextReader
 	{
 		try
 		{
-			in.unread( ( byte )ch );
+			in.unread( ( byte )ch ) ;
 		}
 		catch( Exception e )
 		{
-			error( "unread" );
+			error( "unread" ) ;
 		}
 	}
 
@@ -187,18 +187,18 @@ public class TextReader
 	 */
 	public char peek()
 	{
-		int next = 0;
+		int next = 0 ;
 		try
 		{
-			next = in.read();
+			next = in.read() ;
 		}
 		catch( Exception e )
 		{
-			error( "peek" );
+			error( "peek" ) ;
 		}
 		if( next != -1 )
-			unread( ( char )next );
-		return ( char )next;
+			unread( ( char )next ) ;
+		return ( char )next ;
 	}
 
 	/**
@@ -210,34 +210,34 @@ public class TextReader
 	 */
 	public String readWord()
 	{
-		String result = "";
+		String result = "" ;
 		try
 		{
-			int next;
+			int next ;
 			do
 			{
-				next = in.read();
+				next = in.read() ;
 			}
-			while( ( next != -1 || next != 10 ) && Character.isWhitespace( ( char )next ) );
+			while( ( next != -1 || next != 10 ) && Character.isWhitespace( ( char )next ) ) ;
 
 			while( ( next != -1 || next != 10 ) && !Character.isWhitespace( ( char )next ) )
 			{
-				result += ( char )next;
-				next = in.read();
+				result += ( char )next ;
+				next = in.read() ;
 			}
 
 			while( next != -1 && next != 10 && next != '\n' && Character.isWhitespace( ( char )next ) )
-				next = in.read();
+				next = in.read() ;
 
-			unread( ( char )next );
+			unread( ( char )next ) ;
 
 		} // end try
 		catch( Exception e )
 		{
-			error( "readWord" );
+			error( "readWord" ) ;
 		} // end catch
 
-		return result;
+		return result ;
 	}
 
 	/** 
@@ -249,27 +249,27 @@ public class TextReader
 	 */
 	public int readInt()
 	{
-		int result = 0;
+		int result = 0 ;
 		do // keep on trying until a valid double is entered
 		{
 			try
 			{
-				result = Integer.parseInt( readWord() );
-				break; // result is good, jump out of loop down to return result; 
+				result = Integer.parseInt( readWord() ) ;
+				break ; // result is good, jump out of loop down to return result ; 
 			}
 			catch( Exception e )
 			{
 				if( rePrompting )
-					System.out.println( "Invalid integer. Try again." );
+					System.out.println( "Invalid integer. Try again." ) ;
 				else
 				{
-					error( "readInt" );
-					break;
+					error( "readInt" ) ;
+					break ;
 				}
 			}
 		}
-		while( true );
-		return result;
+		while( true ) ;
+		return result ;
 	}
 
 	/** 
@@ -290,24 +290,24 @@ public class TextReader
 		{
 			try
 			{
-				result = new Double( readWord() ).doubleValue();
-				break; // result is good, jump out of loop down to return result;
+				result = new Double( readWord() ).doubleValue() ;
+				break ; // result is good, jump out of loop down to return result ;
 			}
 			catch( Exception e )
 			{
 				if( rePrompting )
 				{
-					System.out.println( "Invalid floating-point number. Try again." );
+					System.out.println( "Invalid floating-point number. Try again." ) ;
 				}
 				else
 				{
-					error( "readDouble" );
-					break;
+					error( "readDouble" ) ;
+					break ;
 				}
 			}
 		}
 		while( true ) ;
-		return result;
+		return result ;
 	}
 
 	/**
@@ -318,15 +318,15 @@ public class TextReader
 	 */
 	public boolean ready()
 	{
-		boolean result = false;
+		boolean result = false ;
 		try
 		{
-			result = in.ready();
+			result = in.ready() ;
 		}
 		catch( IOException e )
 		{
-			error( "ready" );
+			error( "ready" ) ;
 		}
-		return result;
+		return result ;
 	}
 }

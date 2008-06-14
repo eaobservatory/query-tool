@@ -1,4 +1,4 @@
-package edu.jach.qt.utils;
+package edu.jach.qt.utils ;
 
 import java.awt.Component ;
 import javax.swing.JFrame ;
@@ -25,19 +25,19 @@ final public class ErrorBox extends JFrame
 
 	public ErrorBox( String _m )
 	{
-		m = _m;
-		dialog = new JOptionPane();
-		dialog.showMessageDialog( this , m , "Error Message" , JOptionPane.ERROR_MESSAGE );
+		m = _m ;
+		dialog = new JOptionPane() ;
+		dialog.showMessageDialog( this , m , "Error Message" , JOptionPane.ERROR_MESSAGE ) ;
 	}
 
 	public ErrorBox( Component parent , String _m )
 	{
-		m = _m;
-		dialog = new JOptionPane();
-		dialog.showMessageDialog( parent , m , "Error Message" , JOptionPane.ERROR_MESSAGE );
+		m = _m ;
+		dialog = new JOptionPane() ;
+		dialog.showMessageDialog( parent , m , "Error Message" , JOptionPane.ERROR_MESSAGE ) ;
 	}
 
-	private JOptionPane dialog;
+	private JOptionPane dialog ;
 
-	private String m = new String();
+	private String m = new String() ;
 }

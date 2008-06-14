@@ -1,9 +1,9 @@
-package edu.jach.qt.gui;
+package edu.jach.qt.gui ;
 
 import javax.swing.table.AbstractTableModel ;
 import javax.swing.table.TableModel ;
-import javax.swing.event.TableModelListener;
-import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener ;
+import javax.swing.event.TableModelEvent ;
 
 /** 
  * ****USED BY THE OMP-QT TO SORT THE COLUMNS OF THE RESULT TABLE.****
@@ -21,7 +21,7 @@ import javax.swing.event.TableModelEvent;
 
 public class TableMap extends AbstractTableModel implements TableModelListener
 {
-	protected TableModel model;
+	protected TableModel model ;
 
 	/**
 	 * Return the current <code>TableModel</code>.
@@ -29,7 +29,7 @@ public class TableMap extends AbstractTableModel implements TableModelListener
 	 */
 	public TableModel getModel()
 	{
-		return model;
+		return model ;
 	}
 
 	/**
@@ -38,8 +38,8 @@ public class TableMap extends AbstractTableModel implements TableModelListener
 	 */
 	public void setModel( TableModel model )
 	{
-		this.model = model;
-		model.addTableModelListener( this );
+		this.model = model ;
+		model.addTableModelListener( this ) ;
 	}
 
 	// By default, implement TableModel by forwarding all messages to the model. 
@@ -52,7 +52,7 @@ public class TableMap extends AbstractTableModel implements TableModelListener
 	 */
 	public Object getValueAt( int aRow , int aColumn )
 	{
-		return model.getValueAt( aRow , aColumn );
+		return model.getValueAt( aRow , aColumn ) ;
 	}
 
 	/**
@@ -63,7 +63,7 @@ public class TableMap extends AbstractTableModel implements TableModelListener
 	 */
 	public void setValueAt( Object aValue , int aRow , int aColumn )
 	{
-		model.setValueAt( aValue , aRow , aColumn );
+		model.setValueAt( aValue , aRow , aColumn ) ;
 	}
 
 	/**
@@ -72,7 +72,7 @@ public class TableMap extends AbstractTableModel implements TableModelListener
 	 */
 	public int getRowCount()
 	{
-		return ( model == null ) ? 0 : model.getRowCount();
+		return ( model == null ) ? 0 : model.getRowCount() ;
 	}
 
 	/**
@@ -81,7 +81,7 @@ public class TableMap extends AbstractTableModel implements TableModelListener
 	 */
 	public int getColumnCount()
 	{
-		return ( model == null ) ? 0 : model.getColumnCount();
+		return ( model == null ) ? 0 : model.getColumnCount() ;
 	}
 
 	/**
@@ -91,7 +91,7 @@ public class TableMap extends AbstractTableModel implements TableModelListener
 	 */
 	public String getColumnName( int aColumn )
 	{
-		return model.getColumnName( aColumn );
+		return model.getColumnName( aColumn ) ;
 	}
 
 	/**
@@ -101,18 +101,18 @@ public class TableMap extends AbstractTableModel implements TableModelListener
 	 */
 	public Class getColumnClass( int aColumn )
 	{
-		return model.getColumnClass( aColumn );
+		return model.getColumnClass( aColumn ) ;
 	}
 
 	/**
 	 * Determines if a particular cell in the <code>TableModel</code> is editable.
 	 * @param   row     The row of the required cell.
 	 * @param   column  The column of the required cell.
-	 *@return   <code>true</code> if the cell is editable; <code>false</code> otherwise.
+	 *@return   <code>true</code> if the cell is editable ; <code>false</code> otherwise.
 	 */
 	public boolean isCellEditable( int row , int column )
 	{
-		return model.isCellEditable( row , column );
+		return model.isCellEditable( row , column ) ;
 	}
 
 	//
@@ -126,6 +126,6 @@ public class TableMap extends AbstractTableModel implements TableModelListener
 	 */
 	public void tableChanged( TableModelEvent e )
 	{
-		fireTableChanged( e );
+		fireTableChanged( e ) ;
 	}
 }

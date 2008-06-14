@@ -1,4 +1,4 @@
-package edu.jach.qt.utils;
+package edu.jach.qt.utils ;
 
 /**
  * NoSuchParameterException.java
@@ -13,7 +13,7 @@ public class NoSuchParameterException extends Exception
 {
 	public NoSuchParameterException( String message )
 	{
-		super( message );
+		super( message ) ;
 	}
 
 }// NoSuchParameterException

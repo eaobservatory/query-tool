@@ -1,23 +1,23 @@
-package edu.jach.qt.utils;
+package edu.jach.qt.utils ;
 
 // Gemini imports
-import gemini.sp.SpItem;
+import gemini.sp.SpItem ;
 
 // ORAC imports
-import orac.util.SpInputXML;
+import orac.util.SpInputXML ;
 
 // OMP imports
-import omp.SoapClient;
+import omp.SoapClient ;
 
 // Standard imports
-import java.io.ByteArrayInputStream;
-import java.io.FileWriter;
-import java.net.URL;
-import java.net.MalformedURLException;
-import java.util.zip.GZIPInputStream;
+import java.io.ByteArrayInputStream ;
+import java.io.FileWriter ;
+import java.net.URL ;
+import java.net.MalformedURLException ;
+import java.util.zip.GZIPInputStream ;
 
 // Miscellaneous imports
-import org.apache.log4j.Logger;
+import org.apache.log4j.Logger ;
 
 /**
  * MsbClient.java
@@ -33,8 +33,8 @@ import org.apache.log4j.Logger;
  */
 public class MsbClient extends SoapClient
 {
-	static Logger logger = Logger.getLogger( MsbClient.class );
-	private static URL url = null;
+	static Logger logger = Logger.getLogger( MsbClient.class ) ;
+	private static URL url = null ;
 
 	private static URL getURL()
 	{
@@ -42,31 +42,31 @@ public class MsbClient extends SoapClient
 		{
 			try
 			{
-				url = new URL( System.getProperty( "msbServer" ) );
+				url = new URL( System.getProperty( "msbServer" ) ) ;
 			}
 			catch( MalformedURLException mue )
 			{
-				logger.error( "getURL threw Exception" , mue );
-				mue.printStackTrace();
+				logger.error( "getURL threw Exception" , mue ) ;
+				mue.printStackTrace() ;
 			}
 		}
-		return url;
+		return url ;
 	}
 
-	private static String filename = null;
+	private static String filename = null ;
 
 	private static String getFilename()
 	{
 		if( filename == null )
 		{
-			StringBuffer buffer = new StringBuffer();
-			buffer.append( System.getProperty( "msbSummary" ) );
-			buffer.append( "." );
-			buffer.append( System.getProperty( "user.name" ) );
-			filename = buffer.toString();
-			buffer = null;
+			StringBuffer buffer = new StringBuffer() ;
+			buffer.append( System.getProperty( "msbSummary" ) ) ;
+			buffer.append( "." ) ;
+			buffer.append( System.getProperty( "user.name" ) ) ;
+			filename = buffer.toString() ;
+			buffer = null ;
 		}
-		return filename;
+		return filename ;
 	}
 
 	/**
@@ -82,31 +82,31 @@ public class MsbClient extends SoapClient
 	 */
 	public static boolean queryMSB( String xmlQueryString )
 	{
-		boolean success = false;
+		boolean success = false ;
 
-		logger.debug( "Sending queryMSB: " + xmlQueryString );
-		logger.info( "Connecting to: " + getURL().toString() );
-		flushParameter();
-		addParameter( "xmlquery" , String.class , xmlQueryString );
+		logger.debug( "Sending queryMSB: " + xmlQueryString ) ;
+		logger.info( "Connecting to: " + getURL().toString() ) ;
+		flushParameter() ;
+		addParameter( "xmlquery" , String.class , xmlQueryString ) ;
 		try
 		{
-			FileWriter fw = new FileWriter( getFilename() );
-			Object tmp = doCall( getURL() , "urn:OMP::MSBServer" , "queryMSB" );
+			FileWriter fw = new FileWriter( getFilename() ) ;
+			Object tmp = doCall( getURL() , "urn:OMP::MSBServer" , "queryMSB" ) ;
 
 			if( tmp != null )
 			{
-				fw.write( ( String )tmp );
-				fw.flush();
-				fw.close();
+				fw.write( ( String )tmp ) ;
+				fw.flush() ;
+				fw.close() ;
 			}
-			success = true;
+			success = true ;
 		}
 		catch( Exception e )
 		{
-			logger.error( "queryMSB threw Exception" , e );
-			e.printStackTrace();
+			logger.error( "queryMSB threw Exception" , e ) ;
+			e.printStackTrace() ;
 		}
-		return success;
+		return success ;
 	}
 
 	/**
@@ -122,43 +122,43 @@ public class MsbClient extends SoapClient
 	 */
 	public static String queryCalibration( String xmlQueryString )
 	{
-		String returnString = null;
-		logger.debug( "Sending queryMSB: " + xmlQueryString );
-		flushParameter();
-		addParameter( "xmlquery" , String.class , xmlQueryString );
-		addParameter( "maxcount" , Integer.class , new Integer( 2000 ) );
+		String returnString = null ;
+		logger.debug( "Sending queryMSB: " + xmlQueryString ) ;
+		flushParameter() ;
+		addParameter( "xmlquery" , String.class , xmlQueryString ) ;
+		addParameter( "maxcount" , Integer.class , new Integer( 2000 ) ) ;
 		try
 		{
-			Object tmp = doCall( getURL() , "urn:OMP::MSBServer" , "queryMSB" );
-			returnString = tmp.toString();
+			Object tmp = doCall( getURL() , "urn:OMP::MSBServer" , "queryMSB" ) ;
+			returnString = tmp.toString() ;
 		}
 		catch( Exception e )
 		{
-			logger.error( "queryCalibration threw Exception" , e );
-			e.printStackTrace();
+			logger.error( "queryCalibration threw Exception" , e ) ;
+			e.printStackTrace() ;
 		}
-		return returnString;
+		return returnString ;
 	}
 
 	public static String fetchCalibrationProgram()
 	{
-		String xml = null;
-		String telescope = System.getProperty( "telescope" );
-		logger.debug( "Sending fetchCalProgram: " + telescope );
-		flushParameter();
-		addParameter( "telescope" , String.class , telescope );
+		String xml = null ;
+		String telescope = System.getProperty( "telescope" ) ;
+		logger.debug( "Sending fetchCalProgram: " + telescope ) ;
+		flushParameter() ;
+		addParameter( "telescope" , String.class , telescope ) ;
 		try
 		{
-			Object tmp = doCall( getURL() , "urn:OMP::MSBServer" , "fetchCalProgram" );
+			Object tmp = doCall( getURL() , "urn:OMP::MSBServer" , "fetchCalProgram" ) ;
 			if( tmp instanceof byte[] )
-				xml = new String( ( byte[] )tmp );
+				xml = new String( ( byte[] )tmp ) ;
 		}
 		catch( Exception e )
 		{
-			logger.error( "fetchCalibrationProgram threw Exception" , e );
-			e.printStackTrace();
+			logger.error( "fetchCalibrationProgram threw Exception" , e ) ;
+			e.printStackTrace() ;
 		}
-		return xml;
+		return xml ;
 	}
 
 	/**
@@ -170,93 +170,93 @@ public class MsbClient extends SoapClient
 	 */
 	public static SpItem fetchMSB( Integer msbid )
 	{
-		SpItem spItem = null;
-		String spXML = null;
-		logger.debug( "Sending fetchMSB: " + msbid );
-		flushParameter();
-		addParameter( "key" , Integer.class , msbid );
+		SpItem spItem = null ;
+		String spXML = null ;
+		logger.debug( "Sending fetchMSB: " + msbid ) ;
+		flushParameter() ;
+		addParameter( "key" , Integer.class , msbid ) ;
 		try
 		{
-			FileWriter fw = new FileWriter( getFilename() );
-			Object o = doCall( getURL() , "urn:OMP::MSBServer" , "fetchMSB" );
+			FileWriter fw = new FileWriter( getFilename() ) ;
+			Object o = doCall( getURL() , "urn:OMP::MSBServer" , "fetchMSB" ) ;
 
 			if( o != null )
 			{
 				if( !( o instanceof String ) )
 				{
 					// File is gzipped
-					byte[] input = ( byte[] )o;
-					ByteArrayInputStream bis = new ByteArrayInputStream( input );
-					GZIPInputStream gis = new GZIPInputStream( bis );
-					byte[] read = new byte[ 1024 ];
-					int len;
-					StringBuffer sb = new StringBuffer();
+					byte[] input = ( byte[] )o ;
+					ByteArrayInputStream bis = new ByteArrayInputStream( input ) ;
+					GZIPInputStream gis = new GZIPInputStream( bis ) ;
+					byte[] read = new byte[ 1024 ] ;
+					int len ;
+					StringBuffer sb = new StringBuffer() ;
 					while( ( len = gis.read( read ) ) > 0 )
-						sb.append( new String( read , 0 , len ) );
-					gis.close();
-					spXML = sb.toString();
+						sb.append( new String( read , 0 , len ) ) ;
+					gis.close() ;
+					spXML = sb.toString() ;
 				}
 				else
 				{
 					// File is not compressed
-					spXML = ( String )o;
+					spXML = ( String )o ;
 				}
-				fw.write( spXML );
-				fw.flush();
-				fw.close();
-				SpInputXML spInputXML = new SpInputXML();
-				spItem = spInputXML.xmlToSpItem( spXML );
+				fw.write( spXML ) ;
+				fw.flush() ;
+				fw.close() ;
+				SpInputXML spInputXML = new SpInputXML() ;
+				spItem = spInputXML.xmlToSpItem( spXML ) ;
 			}
 		}
 		catch( Exception e )
 		{
-			logger.error( "fetchMSB threw Exception" , e );
-			e.printStackTrace();
+			logger.error( "fetchMSB threw Exception" , e ) ;
+			e.printStackTrace() ;
 		}
-		return spItem;
+		return spItem ;
 	}
 
-	private static MsbColumns columns;
+	private static MsbColumns columns ;
 
 	public synchronized static MsbColumns getColumnInfo()
 	{
 		if( columns == null )
-			columns = new MsbColumns();
+			columns = new MsbColumns() ;
 		else
-			return columns;
+			return columns ;
 
-		String[] names = getColumnNames();
-		String[] types = getColumnClasses();
+		String[] names = getColumnNames() ;
+		String[] types = getColumnClasses() ;
 
-		String hiddenColumns = System.getProperty( "hiddenColumns" );
-		String[] hidden = new String[ 0 ];
+		String hiddenColumns = System.getProperty( "hiddenColumns" ) ;
+		String[] hidden = new String[ 0 ] ;
 		if( hiddenColumns != null )
-			hidden = hiddenColumns.split( "%" );
+			hidden = hiddenColumns.split( "%" ) ;
 
 		if( names != null && types != null )
 		{
 			if( names.length == types.length )
 			{
-				MsbColumnInfo columnInfo;
+				MsbColumnInfo columnInfo ;
 				for( int index = 0 ; index < names.length ; index++ )
 				{
-					String name = names[ index ];
-					String type = types[ index ];
-					columnInfo = new MsbColumnInfo( name , type );
+					String name = names[ index ] ;
+					String type = types[ index ] ;
+					columnInfo = new MsbColumnInfo( name , type ) ;
 					for( int i = 0 ; i < hidden.length ; i++ )
 					{
 						if( hidden[ i ].equalsIgnoreCase( name ) )
-							columnInfo.setVisible( false );
+							columnInfo.setVisible( false ) ;
 					}
-					columns.add( columnInfo );
+					columns.add( columnInfo ) ;
 				}
 			}
 		}
 		else
 		{
-			columns = new MsbColumns();
+			columns = new MsbColumns() ;
 		}
-		return columns;
+		return columns ;
 	}
 
 	/**
@@ -264,24 +264,24 @@ public class MsbClient extends SoapClient
 	 * 
 	 * @return A string array of column names.
 	 */
-	private static String[] columnNames;
+	private static String[] columnNames ;
 
 	private static String[] getColumnNames()
 	{
 		if( columnNames != null )
-			return columnNames;
-		flushParameter();
-		addParameter( "telescope" , String.class , System.getProperty( "telescope" ) );
+			return columnNames ;
+		flushParameter() ;
+		addParameter( "telescope" , String.class , System.getProperty( "telescope" ) ) ;
 		try
 		{
-			Object o = doCall( getURL() , "urn:OMP::MSBServer" , "getResultColumns" );
-			columnNames = ( String[] )o;
+			Object o = doCall( getURL() , "urn:OMP::MSBServer" , "getResultColumns" ) ;
+			columnNames = ( String[] )o ;
 		}
 		catch( Exception e )
 		{
-			logger.error( "getColumnNames threw exception" , e );
+			logger.error( "getColumnNames threw exception" , e ) ;
 		}
-		return columnNames;
+		return columnNames ;
 	}
 
 	/**
@@ -289,24 +289,24 @@ public class MsbClient extends SoapClient
 	 * 
 	 * @return A string array of column types (eg Integer, String, etc).
 	 */
-	private static String[] columnClasses;
+	private static String[] columnClasses ;
 
 	private static String[] getColumnClasses()
 	{
 		if( columnClasses != null )
-			return columnClasses;
-		flushParameter();
-		addParameter( "telescope" , String.class , System.getProperty( "telescope" ) );
+			return columnClasses ;
+		flushParameter() ;
+		addParameter( "telescope" , String.class , System.getProperty( "telescope" ) ) ;
 		try
 		{
-			Object o = doCall( getURL() , "urn:OMP::MSBServer" , "getTypeColumns" );
-			columnClasses = ( String[] )o;
+			Object o = doCall( getURL() , "urn:OMP::MSBServer" , "getTypeColumns" ) ;
+			columnClasses = ( String[] )o ;
 		}
 		catch( Exception e )
 		{
-			logger.error( "getColumnNames threw exception" , e );
+			logger.error( "getColumnNames threw exception" , e ) ;
 		}
-		return columnClasses;
+		return columnClasses ;
 	}
 
 	/**
@@ -316,7 +316,7 @@ public class MsbClient extends SoapClient
 	 */
 	public static void main( String[] args )
 	{
-		MsbClient.queryMSB( "<Query><Moon>Dark</Moon></Query>" );
-		MsbClient.fetchMSB( new Integer( 96 ) );
+		MsbClient.queryMSB( "<Query><Moon>Dark</Moon></Query>" ) ;
+		MsbClient.fetchMSB( new Integer( 96 ) ) ;
 	}
 }

@@ -1,12 +1,12 @@
-package edu.jach.qt.djava;
+package edu.jach.qt.djava ;
 
 import au.gov.aao.drama.DramaPath ;
-import au.gov.aao.drama.DramaMonitor;
-import au.gov.aao.drama.DramaTask;
-import au.gov.aao.drama.DramaException;
-import au.gov.aao.drama.DramaStatus;
-import ocs.utils.CommandReceiver;
-import org.apache.log4j.Logger;
+import au.gov.aao.drama.DramaMonitor ;
+import au.gov.aao.drama.DramaTask ;
+import au.gov.aao.drama.DramaException ;
+import au.gov.aao.drama.DramaStatus ;
+import ocs.utils.CommandReceiver ;
+import org.apache.log4j.Logger ;
 
 /**
  * <code>CSOPathResponseHandler</code> This class is used to
@@ -16,8 +16,8 @@ import org.apache.log4j.Logger;
  * $Id$ */
 public class CSOPathResponseHandler extends DramaPath.ResponseHandler
 {
-	static Logger logger = Logger.getRootLogger();
-	private CommandReceiver cr;
+	static Logger logger = Logger.getRootLogger() ;
+	private CommandReceiver cr ;
 
 	/**
 	 * Constructor.
@@ -26,9 +26,9 @@ public class CSOPathResponseHandler extends DramaPath.ResponseHandler
 	 */
 	public CSOPathResponseHandler( DramaPath p , CommandReceiver cr )
 	{
-		super( p );
-		this.cr = cr;
-		logger.debug( logger.getClass().getName() );
+		super( p ) ;
+		this.cr = cr ;
+		logger.debug( logger.getClass().getName() ) ;
 	}
 
 	/** 
@@ -41,15 +41,15 @@ public class CSOPathResponseHandler extends DramaPath.ResponseHandler
 	public boolean Success( DramaPath path , DramaTask task ) throws DramaException
 	{
 		// Informational message
-		logger.info( "Got path to task " + path.TaskName() + "." );
+		logger.info( "Got path to task " + path.TaskName() + "." ) ;
 
-		String[] params = new String[] { "CSOSRC" , "CSOTAU" };
+		String[] params = new String[] { "CSOSRC" , "CSOTAU" } ;
 
 		// Start the monitor operation.
-		DramaMonitor Monitor = new DramaMonitor( path , new QT_MonResponse( cr ) , true , params );
+		DramaMonitor Monitor = new DramaMonitor( path , new QT_MonResponse( cr ) , true , params ) ;
 
 		// We have sent a new message, so return true.
-		return true;
+		return true ;
 	}
 
 	/** 
@@ -61,13 +61,13 @@ public class CSOPathResponseHandler extends DramaPath.ResponseHandler
 	 */
 	public boolean Error( DramaPath path , DramaTask task ) throws DramaException
 	{
-		DramaStatus status = task.GetEntStatus();
-		logger.warn( "Failed to get path to task \"" + path + "\"" );
-		logger.warn( "Failed with status - " + status );
+		DramaStatus status = task.GetEntStatus() ;
+		logger.warn( "Failed to get path to task \"" + path + "\"" ) ;
+		logger.warn( "Failed with status - " + status ) ;
 
-		cr.setPathLock( false );
+		cr.setPathLock( false ) ;
 
-		return false;
+		return false ;
 	}
 
 }

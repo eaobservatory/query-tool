@@ -1,4 +1,4 @@
-package edu.jach.qt.gui;
+package edu.jach.qt.gui ;
 
 import javax.swing.ImageIcon ;
 import javax.swing.JLabel ;
@@ -11,8 +11,8 @@ import java.net.MalformedURLException ;
  */
 public class TrashCan extends JLabel
 {
-	public static final String BIN_IMAGE = System.getProperty( "binImage" );
-	public static final String BIN_SEL_IMAGE = System.getProperty( "binImage" );
+	public static final String BIN_IMAGE = System.getProperty( "binImage" ) ;
+	public static final String BIN_SEL_IMAGE = System.getProperty( "binImage" ) ;
 
 	/**
 	 * Contructor.
@@ -21,12 +21,12 @@ public class TrashCan extends JLabel
 	{
 		try
 		{
-			URL url = new URL( "file://" + BIN_IMAGE );
-			setIcon( new ImageIcon( url ) );
+			URL url = new URL( "file://" + BIN_IMAGE ) ;
+			setIcon( new ImageIcon( url ) ) ;
 		}
 		catch( MalformedURLException mue )
 		{
-			setIcon( new ImageIcon( ProgramTree.class.getResource( "file://" + BIN_IMAGE ) ) );
+			setIcon( new ImageIcon( ProgramTree.class.getResource( "file://" + BIN_IMAGE ) ) ) ;
 		}
 	}
 }

@@ -1,27 +1,27 @@
-package edu.jach.qt.gui;
+package edu.jach.qt.gui ;
 
-import java.awt.GridLayout;
-import java.awt.Color;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyListener;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-import javax.swing.JTextField;
-import javax.swing.JLabel;
-import javax.swing.JRadioButton;
-import javax.swing.event.DocumentListener;
-import javax.swing.event.DocumentEvent;
-import javax.swing.Timer;
+import java.awt.GridLayout ;
+import java.awt.Color ;
+import java.awt.event.ActionListener ;
+import java.awt.event.KeyListener ;
+import java.awt.event.ActionEvent ;
+import java.awt.event.KeyEvent ;
+import javax.swing.JTextField ;
+import javax.swing.JLabel ;
+import javax.swing.JRadioButton ;
+import javax.swing.event.DocumentListener ;
+import javax.swing.event.DocumentEvent ;
+import javax.swing.Timer ;
 
-import java.util.Hashtable;
-import java.util.Vector;
-import java.util.ListIterator;
-import java.util.LinkedList;
-import java.text.DecimalFormat;
+import java.util.Hashtable ;
+import java.util.Vector ;
+import java.util.ListIterator ;
+import java.util.LinkedList ;
+import java.text.DecimalFormat ;
 
-import edu.jach.qt.utils.TimeUtils;
-import edu.jach.qt.utils.SimpleMoon;
-import org.apache.log4j.Logger;
+import edu.jach.qt.utils.TimeUtils ;
+import edu.jach.qt.utils.SimpleMoon ;
+import org.apache.log4j.Logger ;
 
 /**
  * LabeldRangeTextField.java
@@ -35,15 +35,15 @@ import org.apache.log4j.Logger;
 
 public class LabeledRangeTextField extends WidgetPanel implements DocumentListener , ActionListener , KeyListener
 {
-	static Logger logger = Logger.getLogger( LabeledRangeTextField.class );
-	private JTextField upperBound;
-	private JTextField lowerBound;
-	private JLabel widgetLabel;
-	private JLabel upperLabel;
-	private JLabel lowerLabel;
-	private static Timer timer;
-	private String name;
-	private final String obsFieldName = "Observation Date";
+	static Logger logger = Logger.getLogger( LabeledRangeTextField.class ) ;
+	private JTextField upperBound ;
+	private JTextField lowerBound ;
+	private JLabel widgetLabel ;
+	private JLabel upperLabel ;
+	private JLabel lowerLabel ;
+	private static Timer timer ;
+	private String name ;
+	private final String obsFieldName = "Observation Date" ;
 
 	/**
 	 * Contructor.
@@ -54,34 +54,34 @@ public class LabeledRangeTextField extends WidgetPanel implements DocumentListen
 	 * @param wdb The <code>WidgetDataBag</code> containing the widget information.
 	 * @param text The label of the current field.
 	 */	
-	public LabeledRangeTextField( Hashtable ht , WidgetDataBag wdb , String text )
+	public LabeledRangeTextField( Hashtable<String,String> ht , WidgetDataBag wdb , String text )
 	{
 		super( ht , wdb ) ;
 		init( text , null ) ;
 	}
 		
-	public LabeledRangeTextField( Hashtable ht , WidgetDataBag wdb , String text , String toolTip )
+	public LabeledRangeTextField( Hashtable<String,String> ht , WidgetDataBag wdb , String text , String toolTip )
 	{
-		super( ht , wdb );
+		super( ht , wdb ) ;
 		init( text , toolTip ) ;
 	}
 	
 	private void init( String text , String toolTip )
 	{
-		widgetLabel = new JLabel( text + ": " , JLabel.LEADING );
+		widgetLabel = new JLabel( text + ": " , JLabel.LEADING ) ;
 		if( text.equalsIgnoreCase( obsFieldName ) )
 		{
-			lowerLabel = new JLabel( "Date (yyyy-mm-dd): " , JLabel.TRAILING );
-			upperLabel = new JLabel( "Time (hh:mm:ss): " , JLabel.TRAILING );
+			lowerLabel = new JLabel( "Date (yyyy-mm-dd): " , JLabel.TRAILING ) ;
+			upperLabel = new JLabel( "Time (hh:mm:ss): " , JLabel.TRAILING ) ;
 		}
 		else
 		{
-			lowerLabel = new JLabel( "Min: " , JLabel.TRAILING );
-			upperLabel = new JLabel( "Max: " , JLabel.TRAILING );
+			lowerLabel = new JLabel( "Min: " , JLabel.TRAILING ) ;
+			upperLabel = new JLabel( "Max: " , JLabel.TRAILING ) ;
 		}
 
-		upperBound = new JTextField();
-		lowerBound = new JTextField();
+		upperBound = new JTextField() ;
+		lowerBound = new JTextField() ;
 		
 		if( toolTip != null && toolTip.trim().length() != 0 )
 		{
@@ -94,36 +94,36 @@ public class LabeledRangeTextField extends WidgetPanel implements DocumentListen
 	
 		if( text.equalsIgnoreCase( obsFieldName ) )
 		{
-			setLowerText( TimeUtils.getLocalDate() );
-			setUpperText( TimeUtils.getLocalTime() );
-			upperBound.addKeyListener( this );
-			lowerBound.addKeyListener( this );
-			timer = new Timer( 0 , this );
-			timer.setDelay( 1000 );
-			timer.addActionListener( this );
-			startTimer();
+			setLowerText( TimeUtils.getLocalDate() ) ;
+			setUpperText( TimeUtils.getLocalTime() ) ;
+			upperBound.addKeyListener( this ) ;
+			lowerBound.addKeyListener( this ) ;
+			timer = new Timer( 0 , this ) ;
+			timer.setDelay( 1000 ) ;
+			timer.addActionListener( this ) ;
+			startTimer() ;
 		}
-		setup();
+		setup() ;
 	}
 
 	private void setup()
 	{
-		name = widgetLabel.getText().trim();
-		GridLayout gl = new GridLayout( 0 , 5 );
-		gl.setHgap( 0 );
-		setForeground( Color.white );
-		widgetLabel.setForeground( Color.black );
+		name = widgetLabel.getText().trim() ;
+		GridLayout gl = new GridLayout( 0 , 5 ) ;
+		gl.setHgap( 0 ) ;
+		setForeground( Color.white ) ;
+		widgetLabel.setForeground( Color.black ) ;
 
-		setLayout( gl );
-		add( widgetLabel );
+		setLayout( gl ) ;
+		add( widgetLabel ) ;
 
-		add( lowerLabel );
-		add( lowerBound );
-		lowerBound.getDocument().addDocumentListener( this );
+		add( lowerLabel ) ;
+		add( lowerBound ) ;
+		lowerBound.getDocument().addDocumentListener( this ) ;
 
-		add( upperLabel );
-		add( upperBound );
-		upperBound.getDocument().addDocumentListener( this );
+		add( upperLabel ) ;
+		add( upperBound ) ;
+		upperBound.getDocument().addDocumentListener( this ) ;
 	}
 
 	/**
@@ -132,7 +132,7 @@ public class LabeledRangeTextField extends WidgetPanel implements DocumentListen
 	 */
 	public String getName()
 	{
-		return abbreviate( name );
+		return abbreviate( name ) ;
 	}
 
 	/**
@@ -142,7 +142,7 @@ public class LabeledRangeTextField extends WidgetPanel implements DocumentListen
 	 */
 	public String getUpperText()
 	{
-		return upperBound.getText();
+		return upperBound.getText() ;
 	}
 
 	/**
@@ -152,7 +152,7 @@ public class LabeledRangeTextField extends WidgetPanel implements DocumentListen
 	 */
 	public String getLowerText()
 	{
-		return lowerBound.getText();
+		return lowerBound.getText() ;
 	}
 
 	/** 
@@ -162,9 +162,9 @@ public class LabeledRangeTextField extends WidgetPanel implements DocumentListen
 	 */
 	public void setUpperText( Double val )
 	{
-		DecimalFormat df = new DecimalFormat( "0.00" );
-		String value = df.format( val.doubleValue() );
-		upperBound.setText( value );
+		DecimalFormat df = new DecimalFormat( "0.00" ) ;
+		String value = df.format( val.doubleValue() ) ;
+		upperBound.setText( value ) ;
 	}
 
 	/** 
@@ -174,9 +174,9 @@ public class LabeledRangeTextField extends WidgetPanel implements DocumentListen
 	 */
 	public void setLowerText( Double val )
 	{
-		DecimalFormat df = new DecimalFormat( "0.00" );
-		String value = df.format( val.doubleValue() );
-		lowerBound.setText( value );
+		DecimalFormat df = new DecimalFormat( "0.00" ) ;
+		String value = df.format( val.doubleValue() ) ;
+		lowerBound.setText( value ) ;
 	}
 
 	/** 
@@ -186,7 +186,7 @@ public class LabeledRangeTextField extends WidgetPanel implements DocumentListen
 	 */
 	public void setUpperText( String val )
 	{
-		upperBound.setText( val );
+		upperBound.setText( val ) ;
 	}
 
 	/** 
@@ -196,7 +196,7 @@ public class LabeledRangeTextField extends WidgetPanel implements DocumentListen
 	 */
 	public void setLowerText( String val )
 	{
-		lowerBound.setText( val );
+		lowerBound.setText( val ) ;
 	}
 
 	/**
@@ -206,15 +206,15 @@ public class LabeledRangeTextField extends WidgetPanel implements DocumentListen
 	 */
 	public Vector getUpperList()
 	{
-		String tmpStr = getUpperText();
-		Vector result = new Vector();
-		String[] split = tmpStr.split( "," );
+		String tmpStr = getUpperText() ;
+		Vector<String> result = new Vector<String>() ;
+		String[] split = tmpStr.split( "," ) ;
 		int index = 0 ;
 		
 		while( index < split.length )
-			result.add( split[ index++ ] );
+			result.add( split[ index++ ] ) ;
 		
-		return result;
+		return result ;
 	}
 
 	/**
@@ -224,15 +224,15 @@ public class LabeledRangeTextField extends WidgetPanel implements DocumentListen
 	 */
 	public Vector getLowerList()
 	{
-		String tmpStr = getLowerText();
-		Vector result = new Vector();
-		String[] split = tmpStr.split( "," );
+		String tmpStr = getLowerText() ;
+		Vector<String> result = new Vector<String>() ;
+		String[] split = tmpStr.split( "," ) ;
 		int index = 0 ;
 
 		while( index < split.length )
-			result.add( split[ index++ ] );
+			result.add( split[ index++ ] ) ;
 		
-		return result;
+		return result ;
 	}
 
 	/**
@@ -243,7 +243,7 @@ public class LabeledRangeTextField extends WidgetPanel implements DocumentListen
 	 */
 	public void insertUpdate( DocumentEvent e )
 	{
-		setAttribute( name.substring( 0 , name.length() - 1 ) , this );
+		setAttribute( name.substring( 0 , name.length() - 1 ) , this ) ;
 	}
 
 	/**
@@ -254,7 +254,7 @@ public class LabeledRangeTextField extends WidgetPanel implements DocumentListen
 	 */
 	public void removeUpdate( DocumentEvent e )
 	{
-		setAttribute( name.substring( 0 , name.length() - 1 ) , this );
+		setAttribute( name.substring( 0 , name.length() - 1 ) , this ) ;
 	}
 
 	/**
@@ -271,8 +271,8 @@ public class LabeledRangeTextField extends WidgetPanel implements DocumentListen
 	 */
 	public void actionPerformed( ActionEvent e )
 	{
-		setUpperText( TimeUtils.getLocalTime() );
-		setLowerText( TimeUtils.getLocalDate() );
+		setUpperText( TimeUtils.getLocalTime() ) ;
+		setLowerText( TimeUtils.getLocalDate() ) ;
 	}
 
 	/**
@@ -289,72 +289,72 @@ public class LabeledRangeTextField extends WidgetPanel implements DocumentListen
 	 */
 	public void keyReleased( KeyEvent evt )
 	{
-		String date = lowerBound.getText();
-		String time = upperBound.getText();
+		String date = lowerBound.getText() ;
+		String time = upperBound.getText() ;
 		// If either date or time is invalid, son't do anything
-		String datePattern = "\\d{4}-\\d{2}-\\d{2}";
-		String timePattern = "\\d{1,2}(:\\d{1,2})?(:\\d{1,2})?";
+		String datePattern = "\\d{4}-\\d{2}-\\d{2}" ;
+		String timePattern = "\\d{1,2}(:\\d{1,2})?(:\\d{1,2})?" ;
 		if( !date.matches( datePattern ) )
-			return;
+			return ;
 		if( !time.matches( timePattern ) )
-			return;
+			return ;
 
 		// See if we need to add anything to the time string
-		String[] hms = time.split( ":" );
+		String[] hms = time.split( ":" ) ;
 		switch( hms.length )
 		{
 			case 1 :
-				time = time + ":00:00";
-				break;
+				time = time + ":00:00" ;
+				break ;
 			case 2 :
-				time = time + ":00";
-				break;
+				time = time + ":00" ;
+				break ;
 			default :
 				// nothing to do
 		}
 
-		String dateTime = date + "T" + time;
-		dateTime = TimeUtils.convertLocalISODatetoUTC( dateTime );
+		String dateTime = date + "T" + time ;
+		dateTime = TimeUtils.convertLocalISODatetoUTC( dateTime ) ;
 
 		// Recalculate moon
 		// Try to update the moon Panel
-		RadioPanel moonPanel = WidgetPanel.getMoonPanel();
+		RadioPanel moonPanel = WidgetPanel.getMoonPanel() ;
 		if( moonPanel == null || moonPanel.getBackground() == Color.red )
-			return;
-		double moonValue = 0;
-		SimpleMoon moon = SimpleMoon.getInstance();
-		moon.set( dateTime );
+			return ;
+		double moonValue = 0 ;
+		SimpleMoon moon = SimpleMoon.getInstance() ;
+		moon.set( dateTime ) ;
 		if( moon.isUp() )
-			moonValue = moon.getIllumination() * 100;
-		moon = null;
+			moonValue = moon.getIllumination() * 100 ;
+		moon = null ;
 
-		Hashtable ht = widgetBag.getHash();
-		JRadioButton b = null;
+		Hashtable ht = widgetBag.getHash() ;
+		JRadioButton b = null ;
 		for( ListIterator iter = ( ( LinkedList )ht.get( "moon" ) ).listIterator( 0 ) ; iter.hasNext() ; iter.nextIndex() )
 		{
-			b = ( JRadioButton )iter.next();
+			b = ( JRadioButton )iter.next() ;
 
 			if( moonValue == 0 )
 			{
 				if( b.getText().equalsIgnoreCase( "dark" ) )
-					break;
+					break ;
 			}
 			else
 			{
 				if( moonValue <= 25 )
 				{
 					if( b.getText().equalsIgnoreCase( "grey" ) )
-						break;
+						break ;
 				}
 				else
 				{
 					if( b.getText().equalsIgnoreCase( "bright" ) )
-						break;
+						break ;
 				}
 			}
 		}
 		if( b != null )
-			b.setSelected( true );
+			b.setSelected( true ) ;
 	}
 
 	/**
@@ -365,7 +365,7 @@ public class LabeledRangeTextField extends WidgetPanel implements DocumentListen
 	 */
 	public void keyTyped( KeyEvent evt )
 	{
-		stopTimer();
+		stopTimer() ;
 	}
 
 	/**
@@ -373,8 +373,8 @@ public class LabeledRangeTextField extends WidgetPanel implements DocumentListen
 	 */
 	public void startTimer()
 	{
-		timer.start();
-		ProgramTree.setExecutable( true );
+		timer.start() ;
+		ProgramTree.setExecutable( true ) ;
 	}
 
 	/**
@@ -382,8 +382,8 @@ public class LabeledRangeTextField extends WidgetPanel implements DocumentListen
 	 */
 	public void restartTimer()
 	{
-		timer.restart();
-		ProgramTree.setExecutable( true );
+		timer.restart() ;
+		ProgramTree.setExecutable( true ) ;
 	}
 
 	/**
@@ -392,16 +392,16 @@ public class LabeledRangeTextField extends WidgetPanel implements DocumentListen
 	 */
 	public void stopTimer()
 	{
-		timer.stop();
-		ProgramTree.setExecutable( false );
+		timer.stop() ;
+		ProgramTree.setExecutable( false ) ;
 	}
 
 	/**
 	 * Check whether the timer used for updating the Date/Time field is running..
-	 * @return <code>true</code> if the timer is running; <code>flase</code> otherwise.
+	 * @return <code>true</code> if the timer is running ; <code>flase</code> otherwise.
 	 */
 	public boolean timerRunning()
 	{
-		return timer.isRunning();
+		return timer.isRunning() ;
 	}
 }

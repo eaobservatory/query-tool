@@ -1,4 +1,4 @@
-package edu.jach.qt.gui;
+package edu.jach.qt.gui ;
 
 import java.awt.Color ;
 import java.awt.event.ActionListener ;
@@ -8,7 +8,7 @@ import javax.swing.JPanel ;
 import javax.swing.JButton ;
 import javax.swing.AbstractAction ;
 import javax.swing.ImageIcon ;
-import javax.swing.Timer;
+import javax.swing.Timer ;
 
 /**
  * Led.java
@@ -23,28 +23,28 @@ import javax.swing.Timer;
 public class Led extends JPanel
 {
 	/** Handle for the "LED" button */
-	protected JButton led;
+	protected JButton led ;
 
 	/** Action linked to the stop button and led */
 	protected AbstractAction stopAction = new AbstractAction( "Stop" )
 	{
 		public void actionPerformed( ActionEvent evt )
 		{
-			this.setEnabled( false );
+			this.setEnabled( false ) ;
 		}
-	};
+	} ;
 
 	/** Timer used for blinking the led */
-	protected Timer timer;
+	protected Timer timer ;
 
 	/** The current state of the led (for blinking) */
-	protected boolean ledState;
+	protected boolean ledState ;
 
 	public Led()
 	{
-		setBackground( Color.black );
-		add( createLed() );
-		led.setEnabled( false );
+		setBackground( Color.black ) ;
+		add( createLed() ) ;
+		led.setEnabled( false ) ;
 	}
 
 	/**
@@ -52,22 +52,22 @@ public class Led extends JPanel
 	 */
 	protected JButton createLed()
 	{
-		URL url = ClassLoader.getSystemResource( "green_led.gif" );
-		led = new JButton( new ImageIcon( url ) );
-		led.setBackground( Color.black );
-		led.setFocusPainted( false );
-		led.setBorderPainted( false );
+		URL url = ClassLoader.getSystemResource( "green_led.gif" ) ;
+		led = new JButton( new ImageIcon( url ) ) ;
+		led.setBackground( Color.black ) ;
+		led.setFocusPainted( false ) ;
+		led.setBorderPainted( false ) ;
 
-		url = ClassLoader.getSystemResource( "green_led_disabled.gif" );
-		led.setDisabledIcon( new ImageIcon( url ) );
-		led.addActionListener( stopAction );
+		url = ClassLoader.getSystemResource( "green_led_disabled.gif" ) ;
+		led.setDisabledIcon( new ImageIcon( url ) ) ;
+		led.addActionListener( stopAction ) ;
 
-		return led;
+		return led ;
 	}
 
 	protected void blinkLed( boolean enabled )
 	{
-		led.setEnabled( ledState = enabled );
+		led.setEnabled( ledState = enabled ) ;
 		if( enabled )
 		{
 			if( timer == null )
@@ -76,21 +76,21 @@ public class Led extends JPanel
 				{
 					public void actionPerformed( ActionEvent ev )
 					{
-						ledState = !ledState;
-						led.setEnabled( ledState );
+						ledState = !ledState ;
+						led.setEnabled( ledState ) ;
 					}
-				} );
-				timer.start();
+				} ) ;
+				timer.start() ;
 			}
 			else
 			{
-				timer.restart();
+				timer.restart() ;
 			}
 		}
 		else
 		{
 			if( timer != null )
-				timer.stop();
+				timer.stop() ;
 		}
 	}
 }// Led

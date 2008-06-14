@@ -1,11 +1,11 @@
-package edu.jach.qt.djava;
+package edu.jach.qt.djava ;
 
-import au.gov.aao.drama.DramaMonitor;
-import au.gov.aao.drama.DramaTask;
-import au.gov.aao.drama.Arg;
-import au.gov.aao.drama.DramaException;
-import edu.jach.qt.gui.TelescopeDataPanel;
-import ocs.utils.CommandReceiver;
+import au.gov.aao.drama.DramaMonitor ;
+import au.gov.aao.drama.DramaTask ;
+import au.gov.aao.drama.Arg ;
+import au.gov.aao.drama.DramaException ;
+import edu.jach.qt.gui.TelescopeDataPanel ;
+import ocs.utils.CommandReceiver ;
 
 /**
  * <code>CSO_MonResponse</code> This class is used to handle
@@ -23,7 +23,7 @@ public class QT_MonResponse extends MonitorResponse
 	 */
 	public QT_MonResponse( CommandReceiver cr )
 	{
-		super( cr );
+		super( cr ) ;
 	}
 
 	/**
@@ -39,18 +39,18 @@ public class QT_MonResponse extends MonitorResponse
 	{
 		if( name.equals( "CSOTAU" ) )
 		{
-			logger.info( "Tau update: " + value.RealValue( name ) );
-			TelescopeDataPanel.setTau( value.RealValue( name ) );
+			logger.info( "Tau update: " + value.RealValue( name ) ) ;
+			TelescopeDataPanel.setTau( value.RealValue( name ) ) ;
 		}
 		else if( name.equals( "CSOSRC" ) )
 		{
-			logger.info( "CSO Source updated to " + value.StringValue( name ) );
-			TelescopeDataPanel.setTauTooltip( value.StringValue( name ) );
+			logger.info( "CSO Source updated to " + value.StringValue( name ) ) ;
+			TelescopeDataPanel.setTauTooltip( value.StringValue( name ) ) ;
 		}
 		else if( name.equals( "AIRMASS" ) )
 		{
-			logger.info( "AIRMASS update: " + value.RealValue( name ) );
-			TelescopeDataPanel.setAirmass( value.RealValue( name ) );
+			logger.info( "AIRMASS update: " + value.RealValue( name ) ) ;
+			TelescopeDataPanel.setAirmass( value.RealValue( name ) ) ;
 		}
 		else if( name.equals( "EXIT" ) )
 		{
@@ -59,7 +59,7 @@ public class QT_MonResponse extends MonitorResponse
 		}
 		else
 		{
-			logger.debug( "Unhandled " + name + " update: " + value.RealValue( name ) );
+			logger.debug( "Unhandled " + name + " update: " + value.RealValue( name ) ) ;
 		}
 	}
 }

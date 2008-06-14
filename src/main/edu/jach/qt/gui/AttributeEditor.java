@@ -4,38 +4,38 @@
  * Created on 06 December 2001, 12:24
  */
 
-package edu.jach.qt.gui;
+package edu.jach.qt.gui ;
 
-import gemini.sp.SpItem;
-import gemini.sp.SpObs;
-import gemini.sp.SpTreeMan;
-import gemini.sp.SpType;
-import gemini.sp.SpAvTable;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Component;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import java.util.Vector;
-import java.util.Enumeration;
-import javax.swing.JDialog;
-import javax.swing.JTable;
-import javax.swing.JScrollPane;
-import javax.swing.ListSelectionModel;
-import javax.swing.BorderFactory;
-import javax.swing.JPanel;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
-import javax.swing.JOptionPane;
-import javax.swing.JFrame;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableColumn;
-import javax.swing.text.JTextComponent;
-import org.apache.log4j.Logger;
+import gemini.sp.SpItem ;
+import gemini.sp.SpObs ;
+import gemini.sp.SpTreeMan ;
+import gemini.sp.SpType ;
+import gemini.sp.SpAvTable ;
+import java.awt.Color ;
+import java.awt.Dimension ;
+import java.awt.Component ;
+import java.awt.event.ActionListener ;
+import java.awt.event.ActionEvent ;
+import java.util.Vector ;
+import java.util.Enumeration ;
+import javax.swing.JDialog ;
+import javax.swing.JTable ;
+import javax.swing.JScrollPane ;
+import javax.swing.ListSelectionModel ;
+import javax.swing.BorderFactory ;
+import javax.swing.JPanel ;
+import javax.swing.BoxLayout ;
+import javax.swing.JButton ;
+import javax.swing.JLabel ;
+import javax.swing.JTextField ;
+import javax.swing.JOptionPane ;
+import javax.swing.JFrame ;
+import javax.swing.event.ListSelectionListener ;
+import javax.swing.event.ListSelectionEvent ;
+import javax.swing.table.TableCellRenderer ;
+import javax.swing.table.TableColumn ;
+import javax.swing.text.JTextComponent ;
+import org.apache.log4j.Logger ;
 import java.io.File ;
 
 /**
@@ -44,7 +44,7 @@ import java.io.File ;
  */
 public class AttributeEditor extends JDialog implements ActionListener , ListSelectionListener
 {
-	static Logger logger = Logger.getLogger( AttributeEditor.class );
+	static Logger logger = Logger.getLogger( AttributeEditor.class ) ;
 
 	/**
 	 * This constructor creates the table based attribute editor.
@@ -53,9 +53,9 @@ public class AttributeEditor extends JDialog implements ActionListener , ListSel
 	 */
 	public AttributeEditor( java.awt.Frame parent , boolean modal )
 	{
-		super( parent , "Attribute Editor" , modal );
-		initTableComponents();
-		doingScale = false;
+		super( parent , "Attribute Editor" , modal ) ;
+		initTableComponents() ;
+		doingScale = false ;
 	}
 
 	/**
@@ -66,10 +66,10 @@ public class AttributeEditor extends JDialog implements ActionListener , ListSel
 	 */
 	public AttributeEditor( SpObs observation , java.awt.Frame parent , boolean modal )
 	{
-		super( parent , "Attribute Editor" , modal );
-		commonInitialisation( observation );
-		initTableComponents();
-		doingScale = false;
+		super( parent , "Attribute Editor" , modal ) ;
+		commonInitialisation( observation ) ;
+		initTableComponents() ;
+		doingScale = false ;
 	}
 
 	/**
@@ -84,10 +84,10 @@ public class AttributeEditor extends JDialog implements ActionListener , ListSel
 	 */
 	public AttributeEditor( SpObs observation , java.awt.Frame parent , boolean modal , String configAttribute , boolean haveScaledThisObs , Double oldFactor , boolean rescale )
 	{
-		super( parent , "Attribute Scaling" , modal );
-		commonInitialisation( observation );
-		initScaleComponents( configAttribute , haveScaledThisObs , oldFactor.doubleValue() , rescale );
-		doingScale = true;
+		super( parent , "Attribute Scaling" , modal ) ;
+		commonInitialisation( observation ) ;
+		initScaleComponents( configAttribute , haveScaledThisObs , oldFactor.doubleValue() , rescale ) ;
+		doingScale = true ;
 	}
 
 	/**
@@ -98,18 +98,18 @@ public class AttributeEditor extends JDialog implements ActionListener , ListSel
 	 **/
 	private void commonInitialisation( SpObs observation )
 	{
-		obs = observation;
-		inst = ( SpItem )SpTreeMan.findInstrument( obs );
+		obs = observation ;
+		inst = ( SpItem )SpTreeMan.findInstrument( obs ) ;
 		try
 		{
-			instName = inst.type().getReadable();
+			instName = inst.type().getReadable() ;
 		}
 		catch( NullPointerException nex )
 		{
-			logger.warn( "No instrument in scope!" , nex );
-			instName = "None";
+			logger.warn( "No instrument in scope!" , nex ) ;
+			instName = "None" ;
 		}
-		sequence = findSequence( obs );
+		sequence = findSequence( obs ) ;
 	}
 
 	/**
@@ -123,18 +123,18 @@ public class AttributeEditor extends JDialog implements ActionListener , ListSel
 	 */
 	private Vector getConfigNames( String configItem )
 	{
-		String list = System.getProperty( configItem );
+		String list = System.getProperty( configItem ) ;
 
 		if( list == null )
-			return new Vector();
+			return new Vector() ;
 
-		String[] tok = list.split( " " );
-		Vector names = new Vector( tok.length );
+		String[] tok = list.split( " " ) ;
+		Vector<String> names = new Vector<String>( tok.length ) ;
 
 		for( int index = 0 ; index < tok.length ; index++ )
-			names.addElement( tok[ index ] );
+			names.addElement( tok[ index ] ) ;
 
-		return names;
+		return names ;
 	}
 
 	/**
@@ -148,15 +148,15 @@ public class AttributeEditor extends JDialog implements ActionListener , ListSel
 	 */
 	private SpItem findSequence( SpObs observation )
 	{
-		Enumeration children = observation.children();
+		Enumeration children = observation.children() ;
 
 		while( children.hasMoreElements() )
 		{
-			SpItem child = ( SpItem )children.nextElement();
+			SpItem child = ( SpItem )children.nextElement() ;
 			if( child.type().equals( SpType.SEQUENCE ) )
-				return child;
+				return child ;
 		}
-		return null;
+		return null ;
 	}
 
 	/**
@@ -171,25 +171,27 @@ public class AttributeEditor extends JDialog implements ActionListener , ListSel
 	 **/
 	private String concatPath( String path , SpItem newBit )
 	{
-		String result;
+		String result ;
 
 		if( path.equals( "" ) )
 		{
-			// Path is empty, no need for a separator.
-			// Skip over the observation and the sequence if at the start of the path. 
-			// This stops all the tree attributes beginning with Observation/Sequence and keeps the dialogue box down to a reasonable width.
-			// Otherwise, just start with the new bit
+			/*
+			 * Path is empty, no need for a separator.
+			 * Skip over the observation and the sequence if at the start of the path. 
+			 * This stops all the tree attributes beginning with Observation/Sequence and keeps the dialogue box down to a reasonable width.
+			 * Otherwise, just start with the new bit
+			 */
 			if( ( newBit == obs ) || ( newBit == sequence ) )
-				result = "";
+				result = "" ;
 			else
-				result = newBit.getTitle();
+				result = newBit.getTitle() ;
 		}
 		else
 		{
 			// Path is not empty, bung on the new bit regardless, using a separator
-			result = path + File.separator + newBit.getTitle();
+			result = path + File.separator + newBit.getTitle() ;
 		}
-		return result;
+		return result ;
 	}
 
 	/**
@@ -201,76 +203,76 @@ public class AttributeEditor extends JDialog implements ActionListener , ListSel
 	 **/
 	private void createComponents( String attributes , String iterators , double oldFactor )
 	{
-		System.out.println( "Editing attributes." );
-		logger.info( "Editing attributes." );
-		configAttributes = getConfigNames( attributes );
-		configIterators = getConfigNames( iterators );
+		System.out.println( "Editing attributes." ) ;
+		logger.info( "Editing attributes." ) ;
+		configAttributes = getConfigNames( attributes ) ;
+		configIterators = getConfigNames( iterators ) ;
 
 		// Get the instrument attributes that are editable, along with their current values.
-		avPairs = getInstAttValues( inst );
+		avPairs = getInstAttValues( inst ) ;
 
 		// Look for any iterators that may need addressing too, get those attributes and values.
-		iavTriplets = new Vector();
-		getIterAttValues( sequence );
+		iavTriplets = new Vector<AIVTriplet>() ;
+		getIterAttValues( sequence ) ;
 
 		// Create the table model and a suitable sized scrolling view on it
-		model = new AttributeTableModel( instName , avPairs , iavTriplets );
-		editorTable = new JTable( model );
-		scrollPane = new JScrollPane( editorTable );
-		initColumnSizes();
-		editorTable.setPreferredScrollableViewportSize( editorTable.getPreferredSize() );
-		editorTable.setSelectionMode( ListSelectionModel.SINGLE_SELECTION );
-		editorTable.getSelectionModel().addListSelectionListener( this );
+		model = new AttributeTableModel( instName , avPairs , iavTriplets ) ;
+		editorTable = new JTable( model ) ;
+		scrollPane = new JScrollPane( editorTable ) ;
+		initColumnSizes() ;
+		editorTable.setPreferredScrollableViewportSize( editorTable.getPreferredSize() ) ;
+		editorTable.setSelectionMode( ListSelectionModel.SINGLE_SELECTION ) ;
+		editorTable.getSelectionModel().addListSelectionListener( this ) ;
 
-		buttonPanel = new JPanel();
-		buttonPanel.setLayout( new BoxLayout( buttonPanel , BoxLayout.X_AXIS ) );
-		buttonPanel.setBorder( BorderFactory.createEmptyBorder( 10 , 10 , 10 , 10 ) );
-		cancel = new JButton();
-		cancel.setText( "Cancel" );
-		cancel.addActionListener( this );
-		OK = new JButton();
-		OK.setText( "OK" );
-		OK.addActionListener( this );
+		buttonPanel = new JPanel() ;
+		buttonPanel.setLayout( new BoxLayout( buttonPanel , BoxLayout.X_AXIS ) ) ;
+		buttonPanel.setBorder( BorderFactory.createEmptyBorder( 10 , 10 , 10 , 10 ) ) ;
+		cancel = new JButton() ;
+		cancel.setText( "Cancel" ) ;
+		cancel.addActionListener( this ) ;
+		OK = new JButton() ;
+		OK.setText( "OK" ) ;
+		OK.addActionListener( this ) ;
 
 		addWindowListener( new java.awt.event.WindowAdapter()
 		{
 			public void windowClosing( java.awt.event.WindowEvent evt )
 			{
-				closeDialog();
+				closeDialog() ;
 			}
-		} );
+		} ) ;
 
-		warnPanel = new JPanel();
-		warnPanel.setLayout( new BoxLayout( warnPanel , BoxLayout.X_AXIS ) );
-		warn = new JLabel( "Warning: " );
-		warn.setForeground( Color.red );
-		warnEmpty = new JLabel( "No attributes found which match the config spec." );
-		warnAlready = new JLabel( "This observation has already been scaled." );
+		warnPanel = new JPanel() ;
+		warnPanel.setLayout( new BoxLayout( warnPanel , BoxLayout.X_AXIS ) ) ;
+		warn = new JLabel( "Warning: " ) ;
+		warn.setForeground( Color.red ) ;
+		warnEmpty = new JLabel( "No attributes found which match the config spec." ) ;
+		warnAlready = new JLabel( "This observation has already been scaled." ) ;
 
-		scalePanel = new JPanel();
-		scalePanel.setLayout( new BoxLayout( scalePanel , BoxLayout.X_AXIS ) );
+		scalePanel = new JPanel() ;
+		scalePanel.setLayout( new BoxLayout( scalePanel , BoxLayout.X_AXIS ) ) ;
 		if( configAttributes.size() > 0 )
 		{
-			scaleLabel = new JLabel( "Scale " + configAttributes.elementAt( 0 ) + " attributes by " );
-			scaleFactor = new JTextField( Double.toString( oldFactor ) , 10 );
-			rescaleLabel = new JLabel( "Scale " + configAttributes.elementAt( 0 ) + " attributes by " + oldFactor );
+			scaleLabel = new JLabel( "Scale " + configAttributes.elementAt( 0 ) + " attributes by " ) ;
+			scaleFactor = new JTextField( Double.toString( oldFactor ) , 10 ) ;
+			rescaleLabel = new JLabel( "Scale " + configAttributes.elementAt( 0 ) + " attributes by " + oldFactor ) ;
 		}
 		else
 		{
-			scaleLabel = new JLabel( "Scale attributes by" );
-			scaleFactor = new JTextField( Double.toString( oldFactor ) , 10 );
-			rescaleLabel = new JLabel( "Scale attributes by " + oldFactor );
+			scaleLabel = new JLabel( "Scale attributes by" ) ;
+			scaleFactor = new JTextField( Double.toString( oldFactor ) , 10 ) ;
+			rescaleLabel = new JLabel( "Scale attributes by " + oldFactor ) ;
 		}
 
 		// Fix the height of the scaleFactor box to that of the scaleLabel. 
 		// This keeps the layout sensible when resizing the dialog window 
 		// (without it, the scaleFactor is the component which grows with the window, which is OK width wise but bogging height wise)
-		int height = scaleLabel.getMaximumSize().height;
-		scaleFactor.setMinimumSize( new Dimension( scaleFactor.getMinimumSize().width , height ) );
-		scaleFactor.setPreferredSize( new Dimension( scaleFactor.getPreferredSize().width , height ) );
-		scaleFactor.setMaximumSize( new Dimension( scaleFactor.getMaximumSize().width , height ) );
+		int height = scaleLabel.getMaximumSize().height ;
+		scaleFactor.setMinimumSize( new Dimension( scaleFactor.getMinimumSize().width , height ) ) ;
+		scaleFactor.setPreferredSize( new Dimension( scaleFactor.getPreferredSize().width , height ) ) ;
+		scaleFactor.setMaximumSize( new Dimension( scaleFactor.getMaximumSize().width , height ) ) ;
 
-		getContentPane().setLayout( new BoxLayout( getContentPane() , BoxLayout.Y_AXIS ) );
+		getContentPane().setLayout( new BoxLayout( getContentPane() , BoxLayout.Y_AXIS ) ) ;
 	}
 
 	/**
@@ -280,34 +282,34 @@ public class AttributeEditor extends JDialog implements ActionListener , ListSel
 	 */
 	private void initTableComponents()
 	{
-		boolean tableIsEmpty;
+		boolean tableIsEmpty ;
 
-		createComponents( instName + "_ATTRIBS" , instName + "_ITERATORS" , -1.0 );
-		tableIsEmpty = ( model.getRowCount() == 0 );
+		createComponents( instName + "_ATTRIBS" , instName + "_ITERATORS" , -1.0 ) ;
+		tableIsEmpty = ( model.getRowCount() == 0 ) ;
 
 		if( tableIsEmpty )
 		{
 			// No attributes to edit. Just put a warning to this effect and an OK button
-			warnPanel.add( warn );
-			warnPanel.add( warnEmpty );
-			getContentPane().add( warnPanel );
+			warnPanel.add( warn ) ;
+			warnPanel.add( warnEmpty ) ;
+			getContentPane().add( warnPanel ) ;
 			// Rather than using the OK button, make the cancel button say
 			// OK and use that instead. this stops the action listener from trying to do anything with the empty table.
-			cancel.setText( "OK" );
-			buttonPanel.add( cancel );
-			getContentPane().add( buttonPanel );
+			cancel.setText( "OK" ) ;
+			buttonPanel.add( cancel ) ;
+			getContentPane().add( buttonPanel ) ;
 		}
 		else
 		{
 			// There are attributes to edit. Show the table, the OK button and the Cancel button.
-			getContentPane().add( scrollPane );
-			model.setEditable( true );
-			buttonPanel.add( OK );
-			buttonPanel.add( cancel );
-			getContentPane().add( buttonPanel );
+			getContentPane().add( scrollPane ) ;
+			model.setEditable( true ) ;
+			buttonPanel.add( OK ) ;
+			buttonPanel.add( cancel ) ;
+			getContentPane().add( buttonPanel ) ;
 		}
 
-		pack();
+		pack() ;
 	}
 
 	/**
@@ -320,50 +322,50 @@ public class AttributeEditor extends JDialog implements ActionListener , ListSel
 	 **/
 	private void initScaleComponents( String attribute , boolean haveScaledThisObs , double oldFactor , boolean rescale )
 	{
-		boolean tableIsEmpty;
+		boolean tableIsEmpty ;
 
-		createComponents( instName + "_" + attribute , instName + "_ITERATORS" , oldFactor );
-		tableIsEmpty = ( model.getRowCount() == 0 );
+		createComponents( instName + "_" + attribute , instName + "_ITERATORS" , oldFactor ) ;
+		tableIsEmpty = ( model.getRowCount() == 0 ) ;
 
 		if( tableIsEmpty )
 		{
 			// No attributes to scale. Just put a warning to this effect and an OK button
-			warnPanel.add( warn );
-			warnPanel.add( warnEmpty );
-			getContentPane().add( warnPanel );
+			warnPanel.add( warn ) ;
+			warnPanel.add( warnEmpty ) ;
+			getContentPane().add( warnPanel ) ;
 			// Rather than using the OK button, make the cancel button say
 			// OK and use that instead. This stops the action listener from trying to do anything with the empty table.
-			cancel.setText( "OK" );
-			buttonPanel.add( cancel );
-			getContentPane().add( buttonPanel );
+			cancel.setText( "OK" ) ;
+			buttonPanel.add( cancel ) ;
+			getContentPane().add( buttonPanel ) ;
 		}
 		else
 		{
 			// There are attributes to edit. Show the table, the OK button and the Cancel button.
-			getContentPane().add( scrollPane );
-			model.setEditable( false );
+			getContentPane().add( scrollPane ) ;
+			model.setEditable( false ) ;
 			if( haveScaledThisObs )
 			{
-				warnPanel.add( warn );
-				warnPanel.add( warnAlready );
-				getContentPane().add( warnPanel );
+				warnPanel.add( warn ) ;
+				warnPanel.add( warnAlready ) ;
+				getContentPane().add( warnPanel ) ;
 			}
 			if( rescale )
 			{
-				scalePanel.add( rescaleLabel );
+				scalePanel.add( rescaleLabel ) ;
 			}
 			else
 			{
-				scalePanel.add( scaleLabel );
-				scalePanel.add( scaleFactor );
+				scalePanel.add( scaleLabel ) ;
+				scalePanel.add( scaleFactor ) ;
 			}
-			getContentPane().add( scalePanel );
-			buttonPanel.add( OK );
-			buttonPanel.add( cancel );
-			getContentPane().add( buttonPanel );
+			getContentPane().add( scalePanel ) ;
+			buttonPanel.add( OK ) ;
+			buttonPanel.add( cancel ) ;
+			getContentPane().add( buttonPanel ) ;
 		}
 
-		pack();
+		pack() ;
 	}
 
 	/**
@@ -378,7 +380,7 @@ public class AttributeEditor extends JDialog implements ActionListener , ListSel
 	public void actionPerformed( ActionEvent evt )
 	{
 
-		Object source = evt.getSource();
+		Object source = evt.getSource() ;
 
 		if( source == cancel )
 		{
@@ -386,14 +388,14 @@ public class AttributeEditor extends JDialog implements ActionListener , ListSel
 			if( doingScale )
 				_scaleFactorUsed = -1. ;
 			
-			closeDialog();
-			System.out.println( "Editing cancelled" );
-			logger.info( "Editing cancelled" );
+			closeDialog() ;
+			System.out.println( "Editing cancelled" ) ;
+			logger.info( "Editing cancelled" ) ;
 		}
 		else if( source == OK )
 		{
 			if( makeChanges() )
-				closeDialog();
+				closeDialog() ;
 		}
 	}
 
@@ -410,10 +412,10 @@ public class AttributeEditor extends JDialog implements ActionListener , ListSel
 	 */
 	private void flushChanges()
 	{
-		JTextComponent comp = ( JTextComponent )editorTable.getEditorComponent();
+		JTextComponent comp = ( JTextComponent )editorTable.getEditorComponent() ;
 
 		if( comp != null )// There is some editing going on
-			model.setValueAt( ( String )comp.getText() , editorTable.getEditingRow() , editorTable.getEditingColumn() );
+			model.setValueAt( ( String )comp.getText() , editorTable.getEditingRow() , editorTable.getEditingColumn() ) ;
 	}
 
 	/**
@@ -424,103 +426,103 @@ public class AttributeEditor extends JDialog implements ActionListener , ListSel
 	 */
 	private boolean makeChanges()
 	{
-		String message;
+		String message ;
 		if( doingScale )
 		{
 			try
 			{
-				_scaleFactorUsed = Double.valueOf( scaleFactor.getText() ).doubleValue();
+				_scaleFactorUsed = Double.valueOf( scaleFactor.getText() ).doubleValue() ;
 				if( Math.abs( _scaleFactorUsed ) < 1e-6 )
 				{
-					message = "Zero (or very small) scale factor (" + scaleFactor.getText() + ").";
-					JOptionPane.showMessageDialog( this , message , "Does not Compute" , JOptionPane.WARNING_MESSAGE );
-					return false;
+					message = "Zero (or very small) scale factor (" + scaleFactor.getText() + ")." ;
+					JOptionPane.showMessageDialog( this , message , "Does not Compute" , JOptionPane.WARNING_MESSAGE ) ;
+					return false ;
 				}
 				else if( _scaleFactorUsed < 0 )
 				{
-					message = "Negative scale factor (" + scaleFactor.getText() + ").";
-					JOptionPane.showMessageDialog( this , message , "Does not Compute" , JOptionPane.WARNING_MESSAGE );
-					return false;
+					message = "Negative scale factor (" + scaleFactor.getText() + ")." ;
+					JOptionPane.showMessageDialog( this , message , "Does not Compute" , JOptionPane.WARNING_MESSAGE ) ;
+					return false ;
 				}
 				else
 				{
-					model.scaleValuesBy( _scaleFactorUsed );
+					model.scaleValuesBy( _scaleFactorUsed ) ;
 				}
 			}
 			catch( Exception e )
 			{
-				message = "Invalid scale factor (" + scaleFactor.getText() + ").";
-				JOptionPane.showMessageDialog( this , message , "Unable to comply" , JOptionPane.ERROR_MESSAGE );
+				message = "Invalid scale factor (" + scaleFactor.getText() + ")." ;
+				JOptionPane.showMessageDialog( this , message , "Unable to comply" , JOptionPane.ERROR_MESSAGE ) ;
 
-				return false;
+				return false ;
 			}
 		}
 		else
 		{
-			flushChanges();
+			flushChanges() ;
 		}
 
-		boolean doneSome = false;
+		boolean doneSome = false ;
 
 		// Here we get changed attribute values from the table model and
 		// set them in the SpItem.
-		int row = 0;
-		Enumeration pairs = avPairs.elements();
-		Enumeration triplets = iavTriplets.elements();
+		int row = 0 ;
+		Enumeration pairs = avPairs.elements() ;
+		Enumeration triplets = iavTriplets.elements() ;
 
 		while( pairs.hasMoreElements() )
 		{
-			AVPair pair = ( AVPair )pairs.nextElement();
+			AVPair pair = ( AVPair )pairs.nextElement() ;
 			if( model.isChangedAt( row ) )
 			{
 				if( !doneSome )
 				{
-					logger.info( "Updating attributes" );
-					doneSome = true;
+					logger.info( "Updating attributes" ) ;
+					doneSome = true ;
 				}
 
-				String name = "";
-				String value = "";
-				Object tmp = model.getValueAt( row , 0 );
+				String name = "" ;
+				String value = "" ;
+				Object tmp = model.getValueAt( row , 0 ) ;
 				if( tmp instanceof String )
-					name = ( String )tmp;
-				tmp = model.getValueAt( row , 1 );
+					name = ( String )tmp ;
+				tmp = model.getValueAt( row , 1 ) ;
 				if( tmp instanceof String )
-					value = ( String )tmp;
-				logger.info( name + " = '" + value + "'" );
-				pair.origin().setValue( ( String )model.getValueAt( row , 1 ) );
+					value = ( String )tmp ;
+				logger.info( name + " = '" + value + "'" ) ;
+				pair.origin().setValue( ( String )model.getValueAt( row , 1 ) ) ;
 			}
 			row++ ;
 		}
 		while( triplets.hasMoreElements() )
 		{
-			AIVTriplet triplet = ( AIVTriplet )triplets.nextElement();
+			AIVTriplet triplet = ( AIVTriplet )triplets.nextElement() ;
 			if( model.isChangedAt( row ) )
 			{
 				if( !doneSome )
 				{
-					logger.info( "Updating attributes" );
-					doneSome = true;
+					logger.info( "Updating attributes" ) ;
+					doneSome = true ;
 				}
-				logger.info( model.getValueAt( row , 0 ) + " = '" + model.getValueAt( row , 1 ) + "'" );
-				triplet.origin().setValue( ( String )model.getValueAt( row , 1 ) );
+				logger.info( model.getValueAt( row , 0 ) + " = '" + model.getValueAt( row , 1 ) + "'" ) ;
+				triplet.origin().setValue( ( String )model.getValueAt( row , 1 ) ) ;
 			}
 			row++ ;
 		}
 
 		if( !doneSome )
 		{
-			System.out.println( "No changes made" );
-			logger.info( "No changes made" );
+			System.out.println( "No changes made" ) ;
+			logger.info( "No changes made" ) ;
 		}
-		return true;
+		return true ;
 	}
 
 	/** Closes the dialog */
 	private void closeDialog()
 	{
-		setVisible( false );
-		dispose();
+		setVisible( false ) ;
+		dispose() ;
 	}
 
 	/**
@@ -535,29 +537,29 @@ public class AttributeEditor extends JDialog implements ActionListener , ListSel
 	private Vector getInstAttValues( SpItem instrument )
 	{
 		// Get the current values of the editable attributes
-		Enumeration attributes = configAttributes.elements();
-		Vector av = new Vector( configAttributes.size() );
+		Enumeration attributes = configAttributes.elements() ;
+		Vector<AVPair> av = new Vector<AVPair>( configAttributes.size() ) ;
 
-		avTable = inst.getTable();
+		avTable = inst.getTable() ;
 
 		while( attributes.hasMoreElements() )
 		{
-			String att;
-			String val;
-			AVPair avp;
+			String att ;
+			String val ;
+			AVPair avp ;
 
-			att = ( String )attributes.nextElement();
+			att = ( String )attributes.nextElement() ;
 			if( att != null )
-				val = avTable.get( att );
+				val = avTable.get( att ) ;
 			else
-				val = "No such attribute";
+				val = "No such attribute" ;
 			if( ( val != null ) && ( !val.equals( "" ) ) )
 			{
-				avp = new AVPair( att , val , instrument , att , 0 );
-				av.addElement( avp );
+				avp = new AVPair( att , val , instrument , att , 0 ) ;
+				av.addElement( avp ) ;
 			}
 		}
-		return av;
+		return av ;
 	}
 
 	/**
@@ -578,9 +580,9 @@ public class AttributeEditor extends JDialog implements ActionListener , ListSel
 	 */
 	private void getIterAttValues( SpItem root )
 	{
-		logger.info( "Attributes = " + configAttributes );
-		logger.info( "Iterators  = " + configIterators );
-		getIterAttValues( root , "" , "" );
+		logger.info( "Attributes = " + configAttributes ) ;
+		logger.info( "Iterators  = " + configIterators ) ;
+		getIterAttValues( root , "" , "" ) ;
 	}
 
 	/**
@@ -597,34 +599,34 @@ public class AttributeEditor extends JDialog implements ActionListener , ListSel
 	 */
 	private void getLocalIterAttValues( SpItem root , String subtype , String path , String indent )
 	{
-		final String iterSuffix = "Iter";
+		final String iterSuffix = "Iter" ;
 
 		// Iterate over root's attributes
-		SpAvTable table = root.getTable();
-		Enumeration keys = table.attributes();
+		SpAvTable table = root.getTable() ;
+		Enumeration keys = table.attributes() ;
 
 		while( keys.hasMoreElements() )
 		{
-			String key;
-			String lookupKey;
+			String key ;
+			String lookupKey ;
 
-			key = ( String )keys.nextElement();
+			key = ( String )keys.nextElement() ;
 			if( key.endsWith( iterSuffix ) )
-				lookupKey = key.substring( 0 , key.length() - iterSuffix.length() );
+				lookupKey = key.substring( 0 , key.length() - iterSuffix.length() ) ;
 			else
-				lookupKey = key;
+				lookupKey = key ;
 
 			if( configAttributes.contains( lookupKey ) )
 			{
-				Vector val = table.getAll( key );
+				Vector val = table.getAll( key ) ;
 				if( val.size() == 1 )
 				{
-					iavTriplets.addElement( new AIVTriplet( concatPath( path , root ) , lookupKey , ( String )val.elementAt( 0 ) , new AttributeOrigin( root , key , 0 ) ) );
+					iavTriplets.addElement( new AIVTriplet( concatPath( path , root ) , lookupKey , ( String )val.elementAt( 0 ) , new AttributeOrigin( root , key , 0 ) ) ) ;
 				}
 				else
 				{
 					for( int i = 0 ; i < val.size() ; i++ )
-						iavTriplets.addElement( new AIVTriplet( concatPath( path , root ) , lookupKey + "[" + i + "]" , ( String )val.elementAt( i ) , new AttributeOrigin( root , key , i ) ) );
+						iavTriplets.addElement( new AIVTriplet( concatPath( path , root ) , lookupKey + "[" + i + "]" , ( String )val.elementAt( i ) , new AttributeOrigin( root , key , i ) ) ) ;
 				}
 			}
 		}
@@ -650,18 +652,18 @@ public class AttributeEditor extends JDialog implements ActionListener , ListSel
 	{
 		if( root != null )
 		{
-			String subtype = root.subtypeStr();
+			String subtype = root.subtypeStr() ;
 
 			// If root is a suitable iterator, look through its attributes for ones specified in avPairs
 			if( configIterators.contains( subtype ) )
-				getLocalIterAttValues( root , subtype , path , indent + "   " );
+				getLocalIterAttValues( root , subtype , path , indent + "   " ) ;
 
 			// Recurse over root's children
-			Enumeration children = root.children();
+			Enumeration children = root.children() ;
 			while( children.hasMoreElements() )
 			{
-				SpItem child = ( SpItem )children.nextElement();
-				getIterAttValues( child , concatPath( path , root ) , indent + "   " );
+				SpItem child = ( SpItem )children.nextElement() ;
+				getIterAttValues( child , concatPath( path , root ) , indent + "   " ) ;
 			}
 		}
 	}
@@ -674,38 +676,38 @@ public class AttributeEditor extends JDialog implements ActionListener , ListSel
 	private void initColumnSizes()
 	{
 
-		final int minWidth = 80;
-		final int padding = 20;
+		final int minWidth = 80 ;
+		final int padding = 20 ;
 
-		TableColumn column = null;
-		Component comp = null;
-		int width;
-		int maxWidth;
+		TableColumn column = null ;
+		Component comp = null ;
+		int width ;
+		int maxWidth ;
 
 		for( int i = 0 ; i < model.getColumnCount() ; i++ )
 		{
-			maxWidth = minWidth; // sic - set a lower bound for the width
-			column = editorTable.getColumnModel().getColumn( i );
+			maxWidth = minWidth ; // sic - set a lower bound for the width
+			column = editorTable.getColumnModel().getColumn( i ) ;
 
-			TableCellRenderer r = column.getHeaderRenderer();
+			TableCellRenderer r = column.getHeaderRenderer() ;
 			if( r == null )
-				comp = editorTable.getDefaultRenderer( model.getColumnClass( i ) ).getTableCellRendererComponent( editorTable , column.getHeaderValue() , false , false , 0 , i );
+				comp = editorTable.getDefaultRenderer( model.getColumnClass( i ) ).getTableCellRendererComponent( editorTable , column.getHeaderValue() , false , false , 0 , i ) ;
 			else
-				comp = r.getTableCellRendererComponent( null , column.getHeaderValue() , false , false , 0 , 0 );
+				comp = r.getTableCellRendererComponent( null , column.getHeaderValue() , false , false , 0 , 0 ) ;
 
-			width = comp.getPreferredSize().width;
-			maxWidth = Math.max( width , maxWidth );
+			width = comp.getPreferredSize().width ;
+			maxWidth = Math.max( width , maxWidth ) ;
 
 			for( int row = 0 ; row < model.getRowCount() ; row++ )
 			{
-				comp = editorTable.getDefaultRenderer( model.getColumnClass( i ) ).getTableCellRendererComponent( editorTable , model.getValueAt( row , i ) , false , false , 0 , i );
-				width = comp.getPreferredSize().width;
-				maxWidth = Math.max( width , maxWidth );
+				comp = editorTable.getDefaultRenderer( model.getColumnClass( i ) ).getTableCellRendererComponent( editorTable , model.getValueAt( row , i ) , false , false , 0 , i ) ;
+				width = comp.getPreferredSize().width ;
+				maxWidth = Math.max( width , maxWidth ) ;
 			}
 
 			//XXX: Before Swing 1.1 Beta 2, use setMinWidth instead.
 			// Add some padding to the column, this is purely aesthetic
-			column.setPreferredWidth( maxWidth + padding );
+			column.setPreferredWidth( maxWidth + padding ) ;
 		}
 	}
 
@@ -714,7 +716,7 @@ public class AttributeEditor extends JDialog implements ActionListener , ListSel
 	 */
 	public static void main( String args[] )
 	{
-		new AttributeEditor( new JFrame() , true ).show();
+		new AttributeEditor( new JFrame() , true ).setVisible( true ) ;
 	}
 
 	/**
@@ -722,42 +724,42 @@ public class AttributeEditor extends JDialog implements ActionListener , ListSel
 	 */
 	public static double scaleFactorUsed()
 	{
-		return _scaleFactorUsed;
+		return _scaleFactorUsed ;
 	}
 
 	public void valueChanged( ListSelectionEvent e )
 	{
 		if( !e.getValueIsAdjusting() )
 		{
-			editorTable.grabFocus();
-			editorTable.setColumnSelectionInterval( 1 , 1 );
-			editorTable.editCellAt( editorTable.getSelectedRow() , 1 );
+			editorTable.grabFocus() ;
+			editorTable.setColumnSelectionInterval( 1 , 1 ) ;
+			editorTable.editCellAt( editorTable.getSelectedRow() , 1 ) ;
 		}
 	}
 
 	private static double _scaleFactorUsed = 1. ;
-	private JScrollPane scrollPane;
-	private JTable editorTable;
-	private JPanel buttonPanel;
-	private JPanel warnPanel;
-	private JPanel scalePanel;
-	private JButton cancel;
-	private JButton OK;
-	private JLabel warn;
-	private JLabel warnEmpty;
-	private JLabel warnAlready;
-	private JLabel scaleLabel;
-	private JLabel rescaleLabel;
-	private JTextField scaleFactor;
-	private SpObs obs;
-	private SpItem sequence;
-	private SpItem inst;
-	private String instName;
-	private Vector configAttributes;
-	private Vector configIterators;
-	private Vector avPairs;
-	private Vector iavTriplets;
-	private SpAvTable avTable;
-	private AttributeTableModel model;
-	private boolean doingScale;
+	private JScrollPane scrollPane ;
+	private JTable editorTable ;
+	private JPanel buttonPanel ;
+	private JPanel warnPanel ;
+	private JPanel scalePanel ;
+	private JButton cancel ;
+	private JButton OK ;
+	private JLabel warn ;
+	private JLabel warnEmpty ;
+	private JLabel warnAlready ;
+	private JLabel scaleLabel ;
+	private JLabel rescaleLabel ;
+	private JTextField scaleFactor ;
+	private SpObs obs ;
+	private SpItem sequence ;
+	private SpItem inst ;
+	private String instName ;
+	private Vector configAttributes ;
+	private Vector configIterators ;
+	private Vector avPairs ;
+	private Vector<AIVTriplet> iavTriplets ;
+	private SpAvTable avTable ;
+	private AttributeTableModel model ;
+	private boolean doingScale ;
 }

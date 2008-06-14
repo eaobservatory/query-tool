@@ -1,16 +1,16 @@
-package edu.jach.qt.gui;
+package edu.jach.qt.gui ;
 
 import java.awt.GridLayout ;
 import java.awt.event.ActionListener ;
 import java.awt.event.ActionEvent ;
 import java.util.ListIterator ;
-import java.util.LinkedList;
+import java.util.LinkedList ;
 import javax.swing.JRadioButton ;
 import javax.swing.ButtonGroup ;
 import javax.swing.BorderFactory ;
 import javax.swing.border.TitledBorder ;
-import java.util.Hashtable;
-import edu.jach.qt.gui.WidgetDataBag;
+import java.util.Hashtable ;
+import edu.jach.qt.gui.WidgetDataBag ;
 
 /**
  * RadioPanel.java
@@ -25,22 +25,22 @@ import edu.jach.qt.gui.WidgetDataBag;
  */
 public class RadioPanel extends WidgetPanel implements ActionListener
 {
-	private JRadioButton rb;
-	private String next , myTitle;
-	private LinkedList myElems;
-	private ListIterator iterator;
+	private JRadioButton rb ;
+	private String next , myTitle ;
+	private LinkedList myElems ;
+	private ListIterator iterator ;
 
 	/**
 	 * The variable <code>group</code> is the list of JRadioButtons.
 	 *
 	 */
-	public ButtonGroup group = new ButtonGroup();
+	public ButtonGroup group = new ButtonGroup() ;
 
 	/**
 	 * The variable <code>radioElems</code> is a LinkedList of the buttons.
 	 *
 	 */
-	public LinkedList radioElems = new LinkedList();
+	public LinkedList<JRadioButton> radioElems = new LinkedList<JRadioButton>() ;
 
 	/**
 	 * Creates a new <code>RadioPanel</code> instance.
@@ -50,27 +50,27 @@ public class RadioPanel extends WidgetPanel implements ActionListener
 	 * @param title a <code>String</code> value
 	 * @param elems a <code>LinkedList</code> value
 	 */
-	public RadioPanel( Hashtable ht , WidgetDataBag wdb , CompInfo info )
+	public RadioPanel( Hashtable<String,String> ht , WidgetDataBag wdb , CompInfo info )
 	{
-		super( ht , wdb );
-		myTitle = info.getTitle();
-		myElems = info.getList();
-		config();
+		super( ht , wdb ) ;
+		myTitle = info.getTitle() ;
+		myElems = info.getList() ;
+		config() ;
 	}
 
 	private void config()
 	{
-		iterator = myElems.listIterator( 0 );
-		setOpaque( false );
-		setBorder( BorderFactory.createTitledBorder( BorderFactory.createEtchedBorder() , myTitle , TitledBorder.CENTER , TitledBorder.DEFAULT_POSITION ) );
+		iterator = myElems.listIterator( 0 ) ;
+		setOpaque( false ) ;
+		setBorder( BorderFactory.createTitledBorder( BorderFactory.createEtchedBorder() , myTitle , TitledBorder.CENTER , TitledBorder.DEFAULT_POSITION ) ) ;
 		if( myElems.size() > 3 )
-			setLayout( new GridLayout( 0 , 2 ) );
+			setLayout( new GridLayout( 0 , 2 ) ) ;
 		else
-			setLayout( new GridLayout( 3 , 0 ) );
+			setLayout( new GridLayout( 3 , 0 ) ) ;
 
 		for( iterator.nextIndex() ; iterator.hasNext() ; iterator.nextIndex() )
 		{
-			next = ( String )iterator.next();
+			next = ( String )iterator.next() ;
 			String toolTip = null ;
 			if( next.matches( ".*-.*" ) )
 			{
@@ -78,17 +78,17 @@ public class RadioPanel extends WidgetPanel implements ActionListener
 				next = split[ 0 ].trim() ;
 				toolTip = split[ 1 ].trim() ;
 			}
-			rb = new JRadioButton( next );
-			rb.addActionListener( this );
+			rb = new JRadioButton( next ) ;
+			rb.addActionListener( this ) ;
 			if( toolTip != null )
 				rb.setToolTipText( toolTip ) ;
 
-			add( rb );
-			rb.setAlignmentX( rb.LEFT_ALIGNMENT );
-			group.add( rb );
-			radioElems.add( rb );
+			add( rb ) ;
+			rb.setAlignmentX( rb.LEFT_ALIGNMENT ) ;
+			group.add( rb ) ;
+			radioElems.add( rb ) ;
 			if( ( iterator.nextIndex() - 1 ) == 0 )
-				rb.doClick();
+				rb.doClick() ;
 		}
 	}
 
@@ -101,6 +101,6 @@ public class RadioPanel extends WidgetPanel implements ActionListener
 	 */
 	public void actionPerformed( ActionEvent evt )
 	{
-		setAttribute( myTitle , radioElems );
+		setAttribute( myTitle , radioElems ) ;
 	}
 }// RadioPanel

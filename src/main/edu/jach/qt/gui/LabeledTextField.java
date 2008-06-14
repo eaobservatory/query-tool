@@ -1,4 +1,4 @@
-package edu.jach.qt.gui;
+package edu.jach.qt.gui ;
 
 import java.awt.Color ;
 import java.awt.GridLayout ;
@@ -23,9 +23,9 @@ import javax.swing.event.DocumentEvent ;
 
 public class LabeledTextField extends WidgetPanel implements KeyListener , DocumentListener
 {
-	protected JTextField textField;
-	protected JLabel label;
-	protected String name;
+	protected JTextField textField ;
+	protected JLabel label ;
+	protected String name ;
 
 	/**
 	 * Creates a new <code>LabeledTextField</code> instance.
@@ -33,39 +33,39 @@ public class LabeledTextField extends WidgetPanel implements KeyListener , Docum
 	 * @param parent a <code>WidgetPanel</code> value
 	 * @param text a <code>String</code> value for the name of the LabeledTextField
 	 */
-	public LabeledTextField( Hashtable ht , WidgetDataBag wdb , String text )
+	public LabeledTextField( Hashtable<String,String> ht , WidgetDataBag wdb , String text )
 	{
-		super( ht , wdb );
-		textField = new JTextField( "" );
-		label = new JLabel( text + ": " , JLabel.LEADING );
-		setup();
+		super( ht , wdb ) ;
+		textField = new JTextField( "" ) ;
+		label = new JLabel( text + ": " , JLabel.LEADING ) ;
+		setup() ;
 	}
 	
-	public LabeledTextField( Hashtable ht , WidgetDataBag wdb , String text , String toolTip )
+	public LabeledTextField( Hashtable<String,String> ht , WidgetDataBag wdb , String text , String toolTip )
 	{
-		super( ht , wdb );
-		textField = new JTextField( "" );
-		label = new JLabel( text + ": " , JLabel.LEADING );
+		super( ht , wdb ) ;
+		textField = new JTextField( "" ) ;
+		label = new JLabel( text + ": " , JLabel.LEADING ) ;
 		if( toolTip != null && toolTip.trim().length() != 0 )
 		{
 			textField.setToolTipText( toolTip ) ;
 			label.setToolTipText( toolTip ) ;
 		}
-		setup();
+		setup() ;
 	}
 
 	private void setup()
 	{
-		name = label.getText().trim();
-		textField.setHorizontalAlignment( JTextField.LEFT );
-		label.setForeground( Color.black );
+		name = label.getText().trim() ;
+		textField.setHorizontalAlignment( JTextField.LEFT ) ;
+		label.setForeground( Color.black ) ;
 
-		this.setLayout( new GridLayout() );
-		add( label );
+		this.setLayout( new GridLayout() ) ;
+		add( label ) ;
 
-		add( textField );
-		textField.getDocument().addDocumentListener( this );
-		textField.addKeyListener( this );
+		add( textField ) ;
+		textField.getDocument().addDocumentListener( this ) ;
+		textField.addKeyListener( this ) ;
 	}
 
 	/**
@@ -76,7 +76,7 @@ public class LabeledTextField extends WidgetPanel implements KeyListener , Docum
 	 */
 	public String getName()
 	{
-		return abbreviate( name );
+		return abbreviate( name ) ;
 	}
 
 	/**
@@ -85,7 +85,7 @@ public class LabeledTextField extends WidgetPanel implements KeyListener , Docum
 	 */
 	public String getText()
 	{
-		return textField.getText();
+		return textField.getText() ;
 	}
 
 	/**
@@ -94,7 +94,7 @@ public class LabeledTextField extends WidgetPanel implements KeyListener , Docum
 	 */
 	public void setText( String val )
 	{
-		textField.setText( val );
+		textField.setText( val ) ;
 	}
 
 	/*
@@ -104,14 +104,14 @@ public class LabeledTextField extends WidgetPanel implements KeyListener , Docum
 	 */
 	public Vector getList()
 	{
-		String tmpStr = getText();
-		Vector result = new Vector();
+		String tmpStr = getText() ;
+		Vector<String> result = new Vector<String>() ;
 		String[] split = tmpStr.split( "," ) ;
 		int index = 0 ;
 		
 		while( index < split.length )
 			result.add( split[ index++ ] ) ;
-		return result;
+		return result ;
 	}
 
 	/**
@@ -122,7 +122,7 @@ public class LabeledTextField extends WidgetPanel implements KeyListener , Docum
 	 */
 	public void insertUpdate( DocumentEvent e )
 	{
-		setAttribute( name.substring( 0 , name.length() - 1 ) , this );
+		setAttribute( name.substring( 0 , name.length() - 1 ) , this ) ;
 	}
 
 	/**
@@ -133,7 +133,7 @@ public class LabeledTextField extends WidgetPanel implements KeyListener , Docum
 	 */
 	public void removeUpdate( DocumentEvent e )
 	{
-		setAttribute( name.substring( 0 , name.length() - 1 ) , this );
+		setAttribute( name.substring( 0 , name.length() - 1 ) , this ) ;
 	}
 
 	/**
@@ -155,7 +155,7 @@ public class LabeledTextField extends WidgetPanel implements KeyListener , Docum
 		// TODO: implement this java.awt.event.KeyListener method
 
 		if( param1.getKeyChar() == 10 )
-			InfoPanel.searchButton.doClick();
+			InfoPanel.searchButton.doClick() ;
 	}
 
 	/**

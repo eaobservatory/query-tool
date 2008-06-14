@@ -1,4 +1,4 @@
-package edu.jach.qt.utils;
+package edu.jach.qt.utils ;
 
 import java.util.Calendar ;
 import java.util.Date ;
@@ -14,9 +14,9 @@ import java.text.ParsePosition ;
  */
 public class TimeUtils
 {
-	private final static String dateFormat = "yyyy-MM-dd";
-	private final static String timeFormat = "HH:mm:ss";
-	private final static String isoFormat = "yyyy-MM-dd'T'HH:mm:ss";
+	private final static String dateFormat = "yyyy-MM-dd" ;
+	private final static String timeFormat = "HH:mm:ss" ;
+	private final static String isoFormat = "yyyy-MM-dd'T'HH:mm:ss" ;
 	private final static SimpleDateFormat sdf = new SimpleDateFormat( dateFormat ) ;
 	private final static SimpleDateFormat stf = new SimpleDateFormat( timeFormat ) ;
 	private final static SimpleDateFormat sif = new SimpleDateFormat( isoFormat ) ;
@@ -33,7 +33,7 @@ public class TimeUtils
 	 */
 	public static String getLocalDate()
 	{
-		return sdf.format( Calendar.getInstance().getTime() );
+		return sdf.format( Calendar.getInstance().getTime() ) ;
 	}
 	
 	/**
@@ -43,7 +43,7 @@ public class TimeUtils
 	public static String getUTCDate()
 	{
 		sdf.setTimeZone( UTC ) ;
-		return sdf.format( Calendar.getInstance( UTC ).getTime() );
+		return sdf.format( Calendar.getInstance( UTC ).getTime() ) ;
 	}
 
 	/** 
@@ -53,7 +53,7 @@ public class TimeUtils
 	 */
 	public static String getLocalTime()
 	{
-		return stf.format( Calendar.getInstance().getTime() );
+		return stf.format( Calendar.getInstance().getTime() ) ;
 	}
 	
 	/** 
@@ -63,8 +63,8 @@ public class TimeUtils
 	 */
 	public static String getUTCTime()
 	{
-		stf.setTimeZone( UTC );
-		return stf.format( Calendar.getInstance( UTC ).getTime() );
+		stf.setTimeZone( UTC ) ;
+		return stf.format( Calendar.getInstance( UTC ).getTime() ) ;
 	}
 
 	/**
@@ -73,11 +73,11 @@ public class TimeUtils
 	 * ISO format defined as YYYY-MM-DD'T'HH:MM:SS
 	 *
 	 * @param dateString    Date/Time string
-	 * @return              <code>true</code> if valid; <code>false</code> otherwise.
+	 * @return              <code>true</code> if valid ; <code>false</code> otherwise.
 	 */
 	public static boolean isValidDate( String dateString )
 	{
-		Date date = parseDate( dateString );
+		Date date = parseDate( dateString ) ;
 		return ( date != null ) ;
 	}
 
@@ -90,11 +90,11 @@ public class TimeUtils
 	public static String convertLocalISODatetoUTC( String isoDate )
 	{
 		// Parse the date to get the local Date
-		Date date = parseDate( isoDate );
-		String convertedDate = null;
+		Date date = parseDate( isoDate ) ;
+		String convertedDate = null ;
 		if( date != null )
 		{
-			TimeZone tz = TimeZone.getDefault();
+			TimeZone tz = TimeZone.getDefault() ;
 			Calendar cal = toCalendar( isoDate , tz ) ;
 			
 			int hh = cal.get( Calendar.HOUR_OF_DAY ) ;
@@ -103,12 +103,12 @@ public class TimeUtils
 			
 			int millsecondsOfDay = ( hh * 3600 + mm * 60 + ss ) * 1000 ;
 			
-			int tzOffset = tz.getOffset( cal.get( Calendar.ERA ) , cal.get( Calendar.YEAR ) , cal.get( Calendar.MONTH ) , cal.get( Calendar.DAY_OF_MONTH ) , cal.get( Calendar.DAY_OF_WEEK ) , millsecondsOfDay );
-			cal.set( Calendar.MILLISECOND , cal.get( Calendar.MILLISECOND ) - tzOffset );
+			int tzOffset = tz.getOffset( cal.get( Calendar.ERA ) , cal.get( Calendar.YEAR ) , cal.get( Calendar.MONTH ) , cal.get( Calendar.DAY_OF_MONTH ) , cal.get( Calendar.DAY_OF_WEEK ) , millsecondsOfDay ) ;
+			cal.set( Calendar.MILLISECOND , cal.get( Calendar.MILLISECOND ) - tzOffset ) ;
 
-			convertedDate = sif.format( cal.getTime() );
+			convertedDate = sif.format( cal.getTime() ) ;
 		}
-		return convertedDate;
+		return convertedDate ;
 	}
 
 	/**
@@ -135,10 +135,10 @@ public class TimeUtils
 	 */
 	public static Calendar toCalendar( String isoDateTime , TimeZone timeZone )
 	{
-		Calendar cal = null;
+		Calendar cal = null ;
 		if( isValidDate( isoDateTime ) )
 		{
-			cal = Calendar.getInstance( timeZone );
+			cal = Calendar.getInstance( timeZone ) ;
 			String[] split = isoDateTime.split( "[-T:]" ) ;
 			
 			int yyyy = Integer.parseInt( split[ 0 ] ) ;
@@ -147,14 +147,14 @@ public class TimeUtils
 			int hh = Integer.parseInt( split[ 3 ] ) ;
 			int mm = Integer.parseInt( split[ 4 ] ) ;
 			int ss = Integer.parseInt( split[ 5 ] ) ;
-			cal.set( Calendar.YEAR , yyyy );
-			cal.set( Calendar.MONTH , mn - 1 ); // months are 0 based
-			cal.set( Calendar.DAY_OF_MONTH , dd );
-			cal.set( Calendar.HOUR_OF_DAY , hh );
-			cal.set( Calendar.MINUTE , mm );
-			cal.set( Calendar.SECOND , ss );
+			cal.set( Calendar.YEAR , yyyy ) ;
+			cal.set( Calendar.MONTH , mn - 1 ) ; // months are 0 based
+			cal.set( Calendar.DAY_OF_MONTH , dd ) ;
+			cal.set( Calendar.HOUR_OF_DAY , hh ) ;
+			cal.set( Calendar.MINUTE , mm ) ;
+			cal.set( Calendar.SECOND , ss ) ;
 		}
-		return cal;
+		return cal ;
 	}
 
 	/**
@@ -167,9 +167,9 @@ public class TimeUtils
 	 */
 	private static Date parseDate( String dateString )
 	{
-		ParsePosition p = new ParsePosition( 0 );
-		sif.setLenient( false );
-		Date date = sif.parse( dateString , p );
-		return date;
+		ParsePosition p = new ParsePosition( 0 ) ;
+		sif.setLenient( false ) ;
+		Date date = sif.parse( dateString , p ) ;
+		return date ;
 	}
 }

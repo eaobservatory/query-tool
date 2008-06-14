@@ -1,7 +1,7 @@
-package edu.jach.qt.gui;
+package edu.jach.qt.gui ;
 
-import java.io.File;
-import edu.jach.qt.utils.HTMLViewer;
+import java.io.File ;
+import edu.jach.qt.utils.HTMLViewer ;
 
 /**
  * Display the current help information in local browser.
@@ -19,15 +19,15 @@ class HelpPage
 	 */
 	public HelpPage()
 	{
-		File tmp = new File( System.getProperty( "qtConfig" ) );
-		String dir = tmp.getAbsoluteFile().getParent();
-		String helpFile = dir + File.separator + "Documents/AboutTheQT.html";
+		File tmp = new File( System.getProperty( "qtConfig" ) ) ;
+		String dir = tmp.getAbsoluteFile().getParent() ;
+		String helpFile = dir + File.separator + "Documents/AboutTheQT.html" ;
 
-		HTMLViewer htmlViewer = new HTMLViewer( null , helpFile );
+		HTMLViewer htmlViewer = new HTMLViewer( null , helpFile ) ;
 	}
 
 	public static void main( String[] args )
 	{
-		HelpPage helpPage = new HelpPage();
+		HelpPage helpPage = new HelpPage() ;
 	}
 }

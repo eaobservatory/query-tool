@@ -1,12 +1,12 @@
-package edu.jach.qt.djava;
+package edu.jach.qt.djava ;
 
-import au.gov.aao.drama.DramaMonitor;
-import au.gov.aao.drama.DramaTask;
-import au.gov.aao.drama.Arg;
-import au.gov.aao.drama.DramaException;
-import au.gov.aao.drama.DramaStatus;
-import ocs.utils.CommandReceiver;
-import org.apache.log4j.Logger;
+import au.gov.aao.drama.DramaMonitor ;
+import au.gov.aao.drama.DramaTask ;
+import au.gov.aao.drama.Arg ;
+import au.gov.aao.drama.DramaException ;
+import au.gov.aao.drama.DramaStatus ;
+import ocs.utils.CommandReceiver ;
+import org.apache.log4j.Logger ;
 
 /**
  * <code>MonitorResponse</code> is used to handle reponses to the
@@ -16,9 +16,9 @@ import org.apache.log4j.Logger;
  * @version $Id$ */
 public abstract class MonitorResponse extends DramaMonitor.MonResponse
 {
-	protected static Logger logger = Logger.getRootLogger();
-	protected CommandReceiver cr;
-	public final boolean DEBUG = "true".equals( System.getProperty( "debug" , "false" ) );
+	protected static Logger logger = Logger.getRootLogger() ;
+	protected CommandReceiver cr ;
+	public final boolean DEBUG = "true".equals( System.getProperty( "debug" , "false" ) ) ;
 
 	/**
 	 * Constructor.
@@ -26,8 +26,8 @@ public abstract class MonitorResponse extends DramaMonitor.MonResponse
 	 */
 	public MonitorResponse( CommandReceiver cr )
 	{
-		super();
-		this.cr = cr;
+		super() ;
+		this.cr = cr ;
 	}
 
 	/**
@@ -43,10 +43,10 @@ public abstract class MonitorResponse extends DramaMonitor.MonResponse
 	 */
 	public boolean SuccessCompletion( DramaMonitor monitor , DramaTask task ) throws DramaException
 	{
-		String statusMessage = "Monitor SucessCompletion invoked";
-		task.MsgOut( statusMessage );
-		logger.info( statusMessage );
-		return false;
+		String statusMessage = "Monitor SucessCompletion invoked" ;
+		task.MsgOut( statusMessage ) ;
+		logger.info( statusMessage ) ;
+		return false ;
 	}
 
 	/**
@@ -62,11 +62,11 @@ public abstract class MonitorResponse extends DramaMonitor.MonResponse
 	 */
 	public boolean ErrorCompletion( DramaMonitor monitor , DramaTask task ) throws DramaException
 	{
-		DramaStatus status = task.GetEntStatus();
-		String statusMessage = "Monitor Completed with error - " + status;
-		task.MsgOut( statusMessage );
-		logger.error( statusMessage );
-		return false;
+		DramaStatus status = task.GetEntStatus() ;
+		String statusMessage = "Monitor Completed with error - " + status ;
+		task.MsgOut( statusMessage ) ;
+		logger.error( statusMessage ) ;
+		return false ;
 	}
 
 	/**
@@ -82,10 +82,10 @@ public abstract class MonitorResponse extends DramaMonitor.MonResponse
 	 */
 	public void Started( DramaMonitor monitor , DramaTask task ) throws DramaException
 	{
-		String statusMessage = "CSO Parameter monitoring started";
-		task.MsgOut( statusMessage );
-		logger.info( statusMessage );
-		cr.setPathLock( false );
+		String statusMessage = "CSO Parameter monitoring started" ;
+		task.MsgOut( statusMessage ) ;
+		logger.info( statusMessage ) ;
+		cr.setPathLock( false ) ;
 	}
 
 	/**
@@ -97,5 +97,5 @@ public abstract class MonitorResponse extends DramaMonitor.MonResponse
 	 * @param value       Value of the monitored parameter
 	 * @exception         DramaException if task fail
 	 */
-	public abstract void Changed( DramaMonitor monitor , DramaTask task , String name , Arg value ) throws DramaException;
+	public abstract void Changed( DramaMonitor monitor , DramaTask task , String name , Arg value ) throws DramaException ;
 }

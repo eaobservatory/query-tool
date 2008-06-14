@@ -1,4 +1,4 @@
-package edu.jach.qt.utils;
+package edu.jach.qt.utils ;
 
 import java.awt.Color ;
 import javax.swing.JFrame ;
@@ -24,10 +24,10 @@ final public class Translating extends Thread
 	 */
 	public Translating()
 	{
-		frame = new JFrame( "Translation is in progress." );
-		frame.setSize( 300 , 60 );
-		frame.setLocation( 400 , 200 );
-		frame.show();
+		frame = new JFrame( "Translation is in progress." ) ;
+		frame.setSize( 300 , 60 ) ;
+		frame.setLocation( 400 , 200 ) ;
+		frame.setVisible( true ) ;
 	}
 
 	/** public void run () is a public method
@@ -44,18 +44,18 @@ final public class Translating extends Thread
 		{
 			try
 			{
-				sleep( 600 );
+				sleep( 600 ) ;
 				if( index % 2 < 1 )
-					frame.setBackground( OracColor.red );
+					frame.setBackground( OracColor.red ) ;
 				else
-					frame.setBackground( Color.black );
+					frame.setBackground( Color.black ) ;
 
 				index++ ;
 
 			}
 			catch( InterruptedException e )
 			{
-				System.out.println( "translating frame:" + e );
+				System.out.println( "translating frame:" + e ) ;
 			}
 
 		}
@@ -63,9 +63,9 @@ final public class Translating extends Thread
 
 	public JFrame getFrame()
 	{
-		return frame;
+		return frame ;
 	}
 
-	private long index = 0;
-	private JFrame frame;
+	private long index = 0 ;
+	private JFrame frame ;
 }

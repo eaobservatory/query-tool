@@ -3,11 +3,11 @@
  *
  */
 
-package edu.jach.qt.gui;
+package edu.jach.qt.gui ;
 
 import java.util.Enumeration ;
 import java.util.Vector ;
-import javax.swing.JOptionPane;
+import javax.swing.JOptionPane ;
 import javax.swing.table.AbstractTableModel ;
 
 /**
@@ -16,23 +16,23 @@ import javax.swing.table.AbstractTableModel ;
  */
 public class AttributeTableModel extends AbstractTableModel
 {
-	final String[] columnNames = { "Attribute" , "Value" };
-	final Object[][] data;
-	final boolean[] isNumber;
-	final boolean[] isChanged;
-	final Object[] originalValue;
-	private boolean isEditable = true;
+	final String[] columnNames = { "Attribute" , "Value" } ;
+	final Object[][] data ;
+	final boolean[] isNumber ;
+	final boolean[] isChanged ;
+	final Object[] originalValue ;
+	private boolean isEditable = true ;
 
 	private boolean isANumber( String s )
 	{
 		try
 		{
-			double d = Double.valueOf( s ).doubleValue();
-			return true;
+			Double.valueOf( s ) ;
+			return true ;
 		}
 		catch( Exception x )
 		{
-			return false;
+			return false ;
 		}
 	}
 
@@ -44,36 +44,36 @@ public class AttributeTableModel extends AbstractTableModel
 	 */
 	public AttributeTableModel( String instName , Vector avPairs , Vector iterAivTriplets )
 	{
-		super();
-		data = new Object[ avPairs.size() + iterAivTriplets.size() ][ 2 ];
-		isNumber = new boolean[ avPairs.size() + iterAivTriplets.size() ];
-		isChanged = new boolean[ avPairs.size() + iterAivTriplets.size() ];
-		originalValue = new String[ avPairs.size() + iterAivTriplets.size() ];
-		int index = 0;
-		Enumeration pairs;
-		Enumeration triplets;
+		super() ;
+		data = new Object[ avPairs.size() + iterAivTriplets.size() ][ 2 ] ;
+		isNumber = new boolean[ avPairs.size() + iterAivTriplets.size() ] ;
+		isChanged = new boolean[ avPairs.size() + iterAivTriplets.size() ] ;
+		originalValue = new String[ avPairs.size() + iterAivTriplets.size() ] ;
+		int index = 0 ;
+		Enumeration pairs ;
+		Enumeration triplets ;
 
-		pairs = avPairs.elements();
+		pairs = avPairs.elements() ;
 		while( pairs.hasMoreElements() )
 		{
-			AVPair pair = ( AVPair )pairs.nextElement();
-			data[ index ][ 0 ] = pair.attribute();
-			data[ index ][ 1 ] = pair.value();
-			isNumber[ index ] = isANumber( ( String )pair.value() );
-			isChanged[ index ] = false;
-			originalValue[ index ] = ( String )pair.value();
+			AVPair pair = ( AVPair )pairs.nextElement() ;
+			data[ index ][ 0 ] = pair.attribute() ;
+			data[ index ][ 1 ] = pair.value() ;
+			isNumber[ index ] = isANumber( ( String )pair.value() ) ;
+			isChanged[ index ] = false ;
+			originalValue[ index ] = ( String )pair.value() ;
 			index++ ;
 		}
 
-		triplets = iterAivTriplets.elements();
+		triplets = iterAivTriplets.elements() ;
 		while( triplets.hasMoreElements() )
 		{
-			AIVTriplet triplet = ( AIVTriplet )triplets.nextElement();
-			data[ index ][ 0 ] = triplet.iterator() + ":" + triplet.attribute();
-			data[ index ][ 1 ] = triplet.value();
-			isNumber[ index ] = isANumber( ( String )triplet.value() );
-			isChanged[ index ] = false;
-			originalValue[ index ] = ( String )triplet.value();
+			AIVTriplet triplet = ( AIVTriplet )triplets.nextElement() ;
+			data[ index ][ 0 ] = triplet.iterator() + ":" + triplet.attribute() ;
+			data[ index ][ 1 ] = triplet.value() ;
+			isNumber[ index ] = isANumber( ( String )triplet.value() ) ;
+			isChanged[ index ] = false ;
+			originalValue[ index ] = ( String )triplet.value() ;
 			index++ ;
 		}
 	}
@@ -84,7 +84,7 @@ public class AttributeTableModel extends AbstractTableModel
 	 */
 	public int getColumnCount()
 	{
-		return columnNames.length;
+		return columnNames.length ;
 	}
 
 	/**
@@ -93,7 +93,7 @@ public class AttributeTableModel extends AbstractTableModel
 	 */
 	public int getRowCount()
 	{
-		return data.length;
+		return data.length ;
 	}
 
 	 /**
@@ -104,7 +104,7 @@ public class AttributeTableModel extends AbstractTableModel
 	 */
 	public Object getValueAt( int row , int col )
 	{
-		return data[ row ][ col ];
+		return data[ row ][ col ] ;
 	}
 
 	/**
@@ -116,7 +116,7 @@ public class AttributeTableModel extends AbstractTableModel
 	 */
 	public Object getOriginalValueAt( int row , int col )
 	{
-		return originalValue[ row ];
+		return originalValue[ row ] ;
 	}
 
 	/**
@@ -126,7 +126,7 @@ public class AttributeTableModel extends AbstractTableModel
 	 */
 	public boolean isChangedAt( int row )
 	{
-		return isChanged[ row ];
+		return isChanged[ row ] ;
 	}
 
 	/**
@@ -136,7 +136,7 @@ public class AttributeTableModel extends AbstractTableModel
 	 */
 	public boolean isNumberAt( int row )
 	{
-		return isNumber[ row ];
+		return isNumber[ row ] ;
 	}
 
 	/**
@@ -145,7 +145,7 @@ public class AttributeTableModel extends AbstractTableModel
 	 */
 	public void setEditable( boolean editable )
 	{
-		isEditable = editable;
+		isEditable = editable ;
 	}
 
 	/**
@@ -159,9 +159,9 @@ public class AttributeTableModel extends AbstractTableModel
 	{
 		//Note that the data/cell address is constant, no matter where the cell appears onscreen.
 		if( col == 1 )
-			return isEditable;
+			return isEditable ;
 		else
-			return false;
+			return false ;
 	}
 
 	/**
@@ -179,9 +179,9 @@ public class AttributeTableModel extends AbstractTableModel
 		{
 			if( isNumberAt( row ) )
 			{
-				double d = Double.valueOf( ( String )getValueAt( row , 1 ) ).doubleValue();
-				d *= factor;
-				_setValueAt( Double.toString( d ) , row , 1 );
+				double d = Double.valueOf( ( String )getValueAt( row , 1 ) ).doubleValue() ;
+				d *= factor ;
+				_setValueAt( Double.toString( d ) , row , 1 ) ;
 			}
 		}
 	}
@@ -211,13 +211,13 @@ public class AttributeTableModel extends AbstractTableModel
 		if( isNumberAt( row ) )
 		{
 			if( isANumber( ( String )value ) )
-				_setValueAt( value , row , col );
+				_setValueAt( value , row , col ) ;
 			else
-				_resetValueAt( value , row , col );
+				_resetValueAt( value , row , col ) ;
 		}
 		else
 		{
-			_setValueAt( value , row , col );
+			_setValueAt( value , row , col ) ;
 		}
 	}
 
@@ -236,9 +236,9 @@ public class AttributeTableModel extends AbstractTableModel
 	 **/
 	private void _setValueAt( Object value , int row , int col )
 	{
-		data[ row ][ col ] = value;
-		isChanged[ row ] = true;
-		fireTableCellUpdated( row , col );
+		data[ row ][ col ] = value ;
+		isChanged[ row ] = true ;
+		fireTableCellUpdated( row , col ) ;
 	}
 
 	/**
@@ -254,8 +254,8 @@ public class AttributeTableModel extends AbstractTableModel
 	 **/
 	private void _resetValueAt( Object value , int row , int col )
 	{
-		String message = value + " is an invalid value for the " + data[ row ][ 0 ] + " attribute.";
-		JOptionPane.showMessageDialog( null , message , "Invalid Input!" , JOptionPane.WARNING_MESSAGE );
-		fireTableCellUpdated( row , col );
+		String message = value + " is an invalid value for the " + data[ row ][ 0 ] + " attribute." ;
+		JOptionPane.showMessageDialog( null , message , "Invalid Input!" , JOptionPane.WARNING_MESSAGE ) ;
+		fireTableCellUpdated( row , col ) ;
 	}
 }

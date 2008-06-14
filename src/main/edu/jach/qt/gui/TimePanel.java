@@ -1,18 +1,18 @@
-package edu.jach.qt.gui;
+package edu.jach.qt.gui ;
 
-import java.awt.GridLayout;
-import java.awt.Color;
-import java.util.TimeZone;
-import java.util.Calendar;
-import java.util.Date;
-import javax.swing.JPanel;
-import javax.swing.JLabel;
-import javax.swing.SwingConstants;
-import java.text.SimpleDateFormat;
+import java.awt.GridLayout ;
+import java.awt.Color ;
+import java.util.TimeZone ;
+import java.util.Calendar ;
+import java.util.Date ;
+import javax.swing.JPanel ;
+import javax.swing.JLabel ;
+import javax.swing.SwingConstants ;
+import java.text.SimpleDateFormat ;
 
-import edu.jach.qt.utils.LocalSiderealTime;
+import edu.jach.qt.utils.LocalSiderealTime ;
 
-import edu.jach.qt.utils.OMPTimer;
+import edu.jach.qt.utils.OMPTimer ;
 import edu.jach.qt.utils.OMPTimerListener ;
 
 /**
@@ -27,12 +27,12 @@ import edu.jach.qt.utils.OMPTimerListener ;
 
 public class TimePanel extends JPanel implements OMPTimerListener
 {
-	JLabel local;
-	JLabel universal;
-	SimpleDateFormat localDateFormatter;
-	SimpleDateFormat universalDateFormatter;
-	LocalSiderealTime localSiderealTime;
-	JLabel lst;
+	JLabel local ;
+	JLabel universal ;
+	SimpleDateFormat localDateFormatter ;
+	SimpleDateFormat universalDateFormatter ;
+	LocalSiderealTime localSiderealTime ;
+	JLabel lst ;
 
 	/**
 	 * Constructor.
@@ -40,40 +40,40 @@ public class TimePanel extends JPanel implements OMPTimerListener
 	 */
 	public TimePanel()
 	{
-		setBackground( Color.black );
+		setBackground( Color.black ) ;
 
-		local = new JLabel();
-		universal = new JLabel();
-		lst = new JLabel();
+		local = new JLabel() ;
+		universal = new JLabel() ;
+		lst = new JLabel() ;
 
-		local.setHorizontalAlignment( SwingConstants.CENTER );
-		universal.setHorizontalAlignment( SwingConstants.CENTER );
-		lst.setHorizontalAlignment( SwingConstants.CENTER );
+		local.setHorizontalAlignment( SwingConstants.CENTER ) ;
+		universal.setHorizontalAlignment( SwingConstants.CENTER ) ;
+		lst.setHorizontalAlignment( SwingConstants.CENTER ) ;
 
-		local.setBackground( Color.black );
-		universal.setBackground( Color.black );
-		lst.setBackground( Color.black );
-		local.setForeground( Color.green );
-		universal.setForeground( Color.green );
-		lst.setForeground( Color.green );
+		local.setBackground( Color.black ) ;
+		universal.setBackground( Color.black ) ;
+		lst.setBackground( Color.black ) ;
+		local.setForeground( Color.green ) ;
+		universal.setForeground( Color.green ) ;
+		lst.setForeground( Color.green ) ;
 
-		local.setOpaque( true );
-		universal.setOpaque( true );
-		lst.setOpaque( true );
+		local.setOpaque( true ) ;
+		universal.setOpaque( true ) ;
+		lst.setOpaque( true ) ;
 
-		setLayout( new GridLayout( 3 , 1 ) );
+		setLayout( new GridLayout( 3 , 1 ) ) ;
 
-		add( local );
-		add( universal );
-		add( lst );
+		add( local ) ;
+		add( universal ) ;
+		add( lst ) ;
 
-		localDateFormatter = new SimpleDateFormat( "kk.mm.ss z" );
-		universalDateFormatter = new SimpleDateFormat( "kk.mm.ss z" );
-		universalDateFormatter.setTimeZone( TimeZone.getTimeZone( "UTC" ) );
+		localDateFormatter = new SimpleDateFormat( "kk.mm.ss z" ) ;
+		universalDateFormatter = new SimpleDateFormat( "kk.mm.ss z" ) ;
+		universalDateFormatter.setTimeZone( TimeZone.getTimeZone( "UTC" ) ) ;
 
-		localSiderealTime = new LocalSiderealTime( System.getProperty( "telescope" ).trim() );
+		localSiderealTime = new LocalSiderealTime( System.getProperty( "telescope" ).trim() ) ;
 
-		OMPTimer.getOMPTimer().setTimer( 1000 , this );
+		OMPTimer.getOMPTimer().setTimer( 1000 , this ) ;
 	}
 
 	/**
@@ -83,14 +83,13 @@ public class TimePanel extends JPanel implements OMPTimerListener
 	 */
 	public void timeElapsed()
 	{
-		Calendar cal = Calendar.getInstance();
-		Date date = cal.getTime();
-		localSiderealTime.setDate();
-		String localTime = localDateFormatter.format( date );
-		String universalTime = universalDateFormatter.format( date );
-		local.setText( localTime );
-		universal.setText( universalTime );
-		lst.setText( localSiderealTime.stime() );
+		Calendar cal = Calendar.getInstance() ;
+		Date date = cal.getTime() ;
+		localSiderealTime.setDate() ;
+		String localTime = localDateFormatter.format( date ) ;
+		String universalTime = universalDateFormatter.format( date ) ;
+		local.setText( localTime ) ;
+		universal.setText( universalTime ) ;
+		lst.setText( localSiderealTime.stime() ) ;
 	}
-
 }// TimePanel

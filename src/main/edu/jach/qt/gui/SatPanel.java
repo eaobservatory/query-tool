@@ -1,17 +1,17 @@
-package edu.jach.qt.gui;
+package edu.jach.qt.gui ;
 
-import java.awt.Color;
-import java.awt.Image;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.lang.Exception;
-import java.net.URL;
-import java.util.StringTokenizer;
+import java.awt.Color ;
+import java.awt.Image ;
+import java.io.BufferedReader ;
+import java.io.InputStreamReader ;
+import java.lang.Exception ;
+import java.net.URL ;
+import java.util.StringTokenizer ;
 import javax.swing.JLabel ;
 import javax.swing.SwingConstants ;
 import javax.swing.BorderFactory ;
 import javax.swing.ImageIcon ;
-import javax.swing.border.TitledBorder;
+import javax.swing.border.TitledBorder ;
 
 import edu.jach.qt.utils.OMPTimer ;
 import edu.jach.qt.utils.OMPTimerListener ;
@@ -28,8 +28,8 @@ import edu.jach.qt.utils.OMPTimerListener ;
 
 public class SatPanel extends JLabel implements OMPTimerListener
 {
-	private TitledBorder satBorder;
-	private static String currentWebPage;
+	private TitledBorder satBorder ;
+	private static String currentWebPage ;
 
 	/**
 	 * Constructor.
@@ -38,19 +38,19 @@ public class SatPanel extends JLabel implements OMPTimerListener
 	 */
 	public SatPanel()
 	{
-		setHorizontalAlignment( SwingConstants.CENTER );
-		satBorder = BorderFactory.createTitledBorder( BorderFactory.createLineBorder( new Color( 51 , 134 , 206 ) ) , "Loading Sat..." , TitledBorder.CENTER , TitledBorder.DEFAULT_POSITION );
-		satBorder.setTitleColor( new Color( 51 , 134 , 206 ) );
-		setBorder( satBorder );
+		setHorizontalAlignment( SwingConstants.CENTER ) ;
+		satBorder = BorderFactory.createTitledBorder( BorderFactory.createLineBorder( new Color( 51 , 134 , 206 ) ) , "Loading Sat..." , TitledBorder.CENTER , TitledBorder.DEFAULT_POSITION ) ;
+		satBorder.setTitleColor( new Color( 51 , 134 , 206 ) ) ;
+		setBorder( satBorder ) ;
 
 		if( System.getProperty( "telescope" ).equalsIgnoreCase( "jcmt" ) )
-			currentWebPage = System.getProperty( "satelliteWVPage" );
+			currentWebPage = System.getProperty( "satelliteWVPage" ) ;
 		else
-			currentWebPage = System.getProperty( "satelliteIRPage" );
+			currentWebPage = System.getProperty( "satelliteIRPage" ) ;
 
-		refreshIcon();
+		refreshIcon() ;
 
-		OMPTimer.getOMPTimer().setTimer( 600000 , this ); //refresh every 10 minutes
+		OMPTimer.getOMPTimer().setTimer( 600000 , this ) ; //refresh every 10 minutes
 	}
 
 	// implementation of edu.jach.qt.gui.TimerListener interface
@@ -60,7 +60,7 @@ public class SatPanel extends JLabel implements OMPTimerListener
 	 */
 	public void timeElapsed()
 	{
-		refreshIcon();
+		refreshIcon() ;
 	}
 
 	/**
@@ -68,39 +68,39 @@ public class SatPanel extends JLabel implements OMPTimerListener
 	 */
 	public void refreshIcon()
 	{
-		URL url;
+		URL url ;
 		try
 		{
-			url = new URL( currentWebPage );
+			url = new URL( currentWebPage ) ;
 		}
 		catch( Exception mue )
 		{
-			System.out.println( "Unable to convert to URL" );
-			url = null;
+			System.out.println( "Unable to convert to URL" ) ;
+			url = null ;
 		}
-		final URL thisURL = url;
+		final URL thisURL = url ;
 		SwingWorker worker = new SwingWorker()
 		{
 			public Object construct()
 			{
 				try
 				{
-					String imageSuffix = URLReader.getImageString( thisURL );
-					String timeString = imageSuffix.substring( imageSuffix.lastIndexOf( "/" ) + 1 , imageSuffix.lastIndexOf( "/" ) + 13 );
+					String imageSuffix = URLReader.getImageString( thisURL ) ;
+					String timeString = imageSuffix.substring( imageSuffix.lastIndexOf( "/" ) + 1 , imageSuffix.lastIndexOf( "/" ) + 13 ) ;
 
 					// Make sure we scale the image
-					ImageIcon icon = new ImageIcon( new URL( InfoPanel.IMG_PREFIX + imageSuffix ) );
-					icon.setImage( icon.getImage().getScaledInstance( 112 , 90 , Image.SCALE_DEFAULT ) );
-					setIcon( icon );
+					ImageIcon icon = new ImageIcon( new URL( InfoPanel.IMG_PREFIX + imageSuffix ) ) ;
+					icon.setImage( icon.getImage().getScaledInstance( 112 , 90 , Image.SCALE_DEFAULT ) ) ;
+					setIcon( icon ) ;
 
-					satBorder.setTitle( timeString + " UTC" );
+					satBorder.setTitle( timeString + " UTC" ) ;
 				}
 				catch( Exception e ){}
-				return null;
+				return null ;
 			}
-		};
+		} ;
 		if( url != null )
-			worker.start();
+			worker.start() ;
 	}
 
 	/**
@@ -112,11 +112,11 @@ public class SatPanel extends JLabel implements OMPTimerListener
 	public void setDisplay( String image )
 	{
 		if( image.equalsIgnoreCase( "Water Vapour" ) )
-			currentWebPage = System.getProperty( "satelliteWVPage" );
+			currentWebPage = System.getProperty( "satelliteWVPage" ) ;
 		else
-			currentWebPage = System.getProperty( "satelliteIRPage" );
+			currentWebPage = System.getProperty( "satelliteIRPage" ) ;
 
-		refreshIcon();
+		refreshIcon() ;
 	}
 }// SatPanel
 
@@ -134,26 +134,26 @@ class URLReader
 	 */
 	public static String getImageString( URL url ) throws Exception
 	{
-		String imgString = "";
-		String inputLine , html = "";
-		BufferedReader in = new BufferedReader( new InputStreamReader( url.openStream() ) );
+		String imgString = "" ;
+		String inputLine , html = "" ;
+		BufferedReader in = new BufferedReader( new InputStreamReader( url.openStream() ) ) ;
 		while( ( inputLine = in.readLine() ) != null )
-			html = html + inputLine;
+			html = html + inputLine ;
 
-		in.close();
+		in.close() ;
 
-		StringTokenizer st = new StringTokenizer( html );
+		StringTokenizer st = new StringTokenizer( html ) ;
 
 		while( st.hasMoreTokens() )
 		{
-			String temp = st.nextToken();
+			String temp = st.nextToken() ;
 			if( temp.startsWith( "SRC" ) )
 			{
-				imgString = temp.substring( 4 , temp.indexOf( '>' ) );
-				break;
+				imgString = temp.substring( 4 , temp.indexOf( '>' ) ) ;
+				break ;
 			}
 		}
 
-		return imgString;
+		return imgString ;
 	}
 }

@@ -1,24 +1,24 @@
-package edu.jach.qt.gui;
+package edu.jach.qt.gui ;
 
-import javax.swing.JFrame;
-import javax.swing.JTextArea;
-import javax.swing.JToolBar;
-import javax.swing.JLabel;
-import javax.swing.JComboBox;
-import javax.swing.JScrollPane;
+import javax.swing.JFrame ;
+import javax.swing.JTextArea ;
+import javax.swing.JToolBar ;
+import javax.swing.JLabel ;
+import javax.swing.JComboBox ;
+import javax.swing.JScrollPane ;
 
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener ;
+import java.awt.event.ActionEvent ;
 
-import java.awt.BorderLayout;
+import java.awt.BorderLayout ;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.BufferedReader;
+import java.io.File ;
+import java.io.FileReader ;
+import java.io.BufferedReader ;
 
-import java.util.ArrayList;
-import java.util.StringTokenizer;
-import java.util.Collections;
+import java.util.ArrayList ;
+import java.util.StringTokenizer ;
+import java.util.Collections ;
 
 /**
  * This class is responsible for allowing users to view the current log file.
@@ -35,20 +35,20 @@ import java.util.Collections;
 
 public class LogViewer
 {
-	JFrame baseFrame = new JFrame( "QueryTool Log" );
-	JTextArea dispArea = new JTextArea( 20 , 50 );
-	String[] lineChoices = { "20" , "50" , "100" , "150" };
-	String[] levelChoice = { "All" , "DEBUG" , "INFO" , "WARNING" , "ERROR" };
-	ArrayList data = new ArrayList();
-	int nLines;
-	int selectedLevel;
+	JFrame baseFrame = new JFrame( "QueryTool Log" ) ;
+	JTextArea dispArea = new JTextArea( 20 , 50 ) ;
+	String[] lineChoices = { "20" , "50" , "100" , "150" } ;
+	String[] levelChoice = { "All" , "DEBUG" , "INFO" , "WARNING" , "ERROR" } ;
+	ArrayList<String> data = new ArrayList<String>() ;
+	int nLines ;
+	int selectedLevel ;
 
 	/**
 	 * Constructor
 	 */
 	LogViewer()
 	{
-		makeWindow();
+		makeWindow() ;
 	}
 
 	/*
@@ -56,19 +56,19 @@ public class LogViewer
 	 */
 	private void makeWindow()
 	{
-		baseFrame.setLayout( new BorderLayout() );
+		baseFrame.setLayout( new BorderLayout() ) ;
 
-		JToolBar tb = makeToolBar();
-		baseFrame.add( tb , BorderLayout.NORTH );
+		JToolBar tb = makeToolBar() ;
+		baseFrame.add( tb , BorderLayout.NORTH ) ;
 
-		dispArea.setLineWrap( true );
-		dispArea.setWrapStyleWord( true );
-		dispArea.setEditable( false );
-		JScrollPane srollPane = new JScrollPane( dispArea );
-		srollPane.setVerticalScrollBarPolicy( JScrollPane.VERTICAL_SCROLLBAR_ALWAYS );
-		srollPane.setHorizontalScrollBarPolicy( JScrollPane.HORIZONTAL_SCROLLBAR_NEVER );
+		dispArea.setLineWrap( true ) ;
+		dispArea.setWrapStyleWord( true ) ;
+		dispArea.setEditable( false ) ;
+		JScrollPane srollPane = new JScrollPane( dispArea ) ;
+		srollPane.setVerticalScrollBarPolicy( JScrollPane.VERTICAL_SCROLLBAR_ALWAYS ) ;
+		srollPane.setHorizontalScrollBarPolicy( JScrollPane.HORIZONTAL_SCROLLBAR_NEVER ) ;
 
-		baseFrame.add( srollPane , BorderLayout.CENTER );
+		baseFrame.add( srollPane , BorderLayout.CENTER ) ;
 	}
 
 	/*
@@ -76,51 +76,51 @@ public class LogViewer
 	 */
 	private JToolBar makeToolBar()
 	{
-		JToolBar tb = new JToolBar();
+		JToolBar tb = new JToolBar() ;
 
 		// Make  the tool bar components...
-		JLabel nLineLabel = new JLabel( "Lines" );
-		final JComboBox nLineChooser = new JComboBox();
+		JLabel nLineLabel = new JLabel( "Lines" ) ;
+		final JComboBox nLineChooser = new JComboBox() ;
 		for( int i = 0 ; i < lineChoices.length ; i++ )
-			nLineChooser.addItem( lineChoices[ i ] );
+			nLineChooser.addItem( lineChoices[ i ] ) ;
 
-		nLineChooser.setSelectedIndex( 0 );
-		nLines = ( Integer.valueOf( lineChoices[ 0 ] ) ).intValue();
+		nLineChooser.setSelectedIndex( 0 ) ;
+		nLines = ( Integer.valueOf( lineChoices[ 0 ] ) ).intValue() ;
 		nLineChooser.addActionListener( new ActionListener()
 		{
 			public void actionPerformed( ActionEvent e )
 			{
-				nLines = ( Integer.valueOf( ( String )nLineChooser.getSelectedItem() ) ).intValue();
-				showLog();
+				nLines = ( Integer.valueOf( ( String )nLineChooser.getSelectedItem() ) ).intValue() ;
+				showLog() ;
 			}
-		} );
+		} ) ;
 
-		JLabel filterLabel = new JLabel( "Filter:" );
-		final JComboBox filterChooser = new JComboBox();
+		JLabel filterLabel = new JLabel( "Filter:" ) ;
+		final JComboBox filterChooser = new JComboBox() ;
 		for( int i = 0 ; i < levelChoice.length ; i++ )
-			filterChooser.addItem( levelChoice[ i ] );
+			filterChooser.addItem( levelChoice[ i ] ) ;
 
-		filterChooser.setSelectedIndex( 0 );
-		selectedLevel = 0;
+		filterChooser.setSelectedIndex( 0 ) ;
+		selectedLevel = 0 ;
 		filterChooser.addActionListener( new ActionListener()
 		{
 			public void actionPerformed( ActionEvent e )
 			{
-				selectedLevel = filterChooser.getSelectedIndex();
-				showLog();
+				selectedLevel = filterChooser.getSelectedIndex() ;
+				showLog() ;
 			}
-		} );
+		} ) ;
 
-		tb.add( nLineLabel );
-		tb.add( nLineChooser );
-		tb.addSeparator();
-		tb.add( filterLabel );
-		tb.add( filterChooser );
-		tb.addSeparator();
+		tb.add( nLineLabel ) ;
+		tb.add( nLineChooser ) ;
+		tb.addSeparator() ;
+		tb.add( filterLabel ) ;
+		tb.add( filterChooser ) ;
+		tb.addSeparator() ;
 
-		tb.setFloatable( false );
+		tb.setFloatable( false ) ;
 
-		return tb;
+		return tb ;
 	}
 
 	/**
@@ -133,19 +133,19 @@ public class LogViewer
 	public void showLog( String fileName )
 	{
 		// Make sure the file exists and we can read it
-		File logFile = new File( fileName );
+		File logFile = new File( fileName ) ;
 		if( !logFile.exists() || !logFile.canRead() )
 		{
-			dispArea.append( "Unable to read log file " + fileName );
+			dispArea.append( "Unable to read log file " + fileName ) ;
 		}
 		else
 		{
-			readData( logFile );
-			showLog();
+			readData( logFile ) ;
+			showLog() ;
 		}
 
-		baseFrame.pack();
-		baseFrame.show();
+		baseFrame.pack() ;
+		baseFrame.setVisible( true ) ;
 	}
 
 	/*
@@ -154,51 +154,51 @@ public class LogViewer
 	private void showLog()
 	{
 		// Reinitiaise each time we do the display
-		dispArea.setText( "" );
+		dispArea.setText( "" ) ;
 
 		// Convert ArrayList to Array
-		String[] dataArray = ( String[] )data.toArray( new String[ 0 ] );
+		String[] dataArray = ( String[] )data.toArray( new String[ 0 ] ) ;
 
-		int count = 0;
-		ArrayList displayData = new ArrayList();
+		int count = 0 ;
+		ArrayList<String> displayData = new ArrayList<String>() ;
 		// Start with the oldest data
 		for( int i = 0 ; i < dataArray.length ; i++ )
 		{
 			// See what level the current string starts with
-			StringTokenizer st = new StringTokenizer( dataArray[ i ] );
-			String firstToken;
+			StringTokenizer st = new StringTokenizer( dataArray[ i ] ) ;
+			String firstToken ;
 			try
 			{
-				firstToken = st.nextToken();
+				firstToken = st.nextToken() ;
 			}
 			catch( Exception e )
 			{
-				firstToken = "All";
+				firstToken = "All" ;
 			}
 			// See if this token is in the list of choices
-			int currentLevel = 0;
+			int currentLevel = 0 ;
 			for( int j = 1 ; j < levelChoice.length - 1 ; j++ )
 			{
 				if( firstToken.equals( levelChoice[ j ] ) )
 				{
-					currentLevel = j;
-					break;
+					currentLevel = j ;
+					break ;
 				}
 			}
 			if( currentLevel >= selectedLevel )
 			{
-				displayData.add( dataArray[ i ] + "\n" );
+				displayData.add( dataArray[ i ] + "\n" ) ;
 				count++ ;
 			}
 			// If we reach the maximum lines to display, break out
 			if( count == nLines )
-				break;
+				break ;
 		}
-		Collections.reverse( displayData );
+		Collections.reverse( displayData ) ;
 		for( int i = 0 ; i < displayData.size() ; i++ )
-			dispArea.append( ( String )displayData.get( i ) );
+			dispArea.append( ( String )displayData.get( i ) ) ;
 
-		return;
+		return ;
 	}
 
 	/*
@@ -208,30 +208,30 @@ public class LogViewer
 	{
 		try
 		{
-			BufferedReader br = new BufferedReader( new FileReader( logFile ) );
-			String line;
+			BufferedReader br = new BufferedReader( new FileReader( logFile ) ) ;
+			String line ;
 			while( ( line = br.readLine() ) != null )
-				data.add( line );
+				data.add( line ) ;
 
-			br.close();
+			br.close() ;
 		}
 		catch( Exception e )
 		{
-			data.add( "Error reading log file" );
-			data.add( e.toString() );
-			return;
+			data.add( "Error reading log file" ) ;
+			data.add( e.toString() ) ;
+			return ;
 		}
-		data.trimToSize();
+		data.trimToSize() ;
 
 		// Cut this down to the maximum size we deal with
-		int maxSize = ( Integer.valueOf( lineChoices[ lineChoices.length - 1 ] ) ).intValue();
+		int maxSize = ( Integer.valueOf( lineChoices[ lineChoices.length - 1 ] ) ).intValue() ;
 		if( data.size() > maxSize )
 		{
-			data.subList( 0 , data.size() - maxSize ).clear();
-			data.trimToSize();
+			data.subList( 0 , data.size() - maxSize ).clear() ;
+			data.trimToSize() ;
 		}
 
 		// Reverse the ArrayList so that when we display the info, we get things written in the correct order ( oldest first )
-		Collections.reverse( data );
+		Collections.reverse( data ) ;
 	}
 }

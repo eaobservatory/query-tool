@@ -1,7 +1,7 @@
-package edu.jach.qt.utils;
+package edu.jach.qt.utils ;
 
-import java.io.FilenameFilter;
-import java.io.File;
+import java.io.FilenameFilter ;
+import java.io.File ;
 
 public class FileExtensionFilter implements FilenameFilter
 {
@@ -12,7 +12,7 @@ public class FileExtensionFilter implements FilenameFilter
 		if( fileExtension == null )
 			throw new RuntimeException( "You asked for a null file extension." ) ;
 		
-		fileExtension = fileExtension.trim();
+		fileExtension = fileExtension.trim() ;
 		
 		if( fileExtension.equals( "" ) )
 			throw new RuntimeException( "You asked an empty file extension." ) ;

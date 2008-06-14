@@ -5,7 +5,7 @@
  * by David Clarke
  */
 
-package edu.jach.qt.gui;
+package edu.jach.qt.gui ;
 
 import gemini.sp.SpItem ;
 
@@ -26,9 +26,9 @@ import gemini.sp.SpItem ;
  **/
 public class AttributeOrigin
 {
-	private SpItem _item;
-	private String _name;
-	private int _index;
+	private SpItem _item ;
+	private String _name ;
+	private int _index ;
 
 	/** 
 	 * Basic constructor 
@@ -38,41 +38,41 @@ public class AttributeOrigin
 	 */
 	public AttributeOrigin( SpItem item , String name , int index )
 	{
-		_item = item;
-		_name = name;
-		_index = index;
+		_item = item ;
+		_name = name ;
+		_index = index ;
 	}
 
 	/** Return the item */
 	public SpItem item()
 	{
-		return _item;
+		return _item ;
 	}
 
 	/** Return the name */
 	public String name()
 	{
-		return _name;
+		return _name ;
 	}
 
 	/** Return the index */
 	public int index()
 	{
-		return _index;
+		return _index ;
 	}
 
 	/** Set the value of the originating attribute */
 	public void setValue( String value )
 	{
-		item().getTable().set( name() , value , index() ); // Yukk    
+		item().getTable().set( name() , value , index() ) ; // Yukk    
 		// Set an override flag on the attribute so it does not get over-ridden by calls to updateDAConf
-		String overide = "override_" + name();
-		item().getTable().set( overide , true , index() );
+		String overide = "override_" + name() ;
+		item().getTable().set( overide , true , index() ) ;
 	}
 
 	/** Convert to a string */
 	public String toString()
 	{
-		return _item.getTitle() + ":" + _name + "[" + _index + "]";
+		return _item.getTitle() + ":" + _name + "[" + _index + "]" ;
 	}
 }

@@ -5,7 +5,7 @@
  * by David Clarke
  */
 
-package edu.jach.qt.gui;
+package edu.jach.qt.gui ;
 
 import gemini.sp.SpItem ;
 
@@ -23,10 +23,10 @@ import gemini.sp.SpItem ;
  **/
 public class AIVTriplet
 {
-	private String _attribute;
-	private String _iterator;
-	private String _value;
-	private AttributeOrigin _origin;
+	private String _attribute ;
+	private String _iterator ;
+	private String _value ;
+	private AttributeOrigin _origin ;
 
 	/** Basic constructor
 	 * @param iterator   The name of the iterator
@@ -36,19 +36,19 @@ public class AIVTriplet
 	 */
 	public AIVTriplet( String iterator , String attribute , String value , AttributeOrigin origin )
 	{
-		_attribute = attribute;
-		_iterator = iterator;
-		_value = value;
-		_origin = origin;
+		_attribute = attribute ;
+		_iterator = iterator ;
+		_value = value ;
+		_origin = origin ;
 	}
 
 	/** Basic constructor */
 	public AIVTriplet( String iterator , String attribute , String value , SpItem item , String name , int index )
 	{
-		_attribute = attribute;
-		_iterator = iterator;
-		_value = value;
-		_origin = new AttributeOrigin( item , name , index );
+		_attribute = attribute ;
+		_iterator = iterator ;
+		_value = value ;
+		_origin = new AttributeOrigin( item , name , index ) ;
 	}
 
 	/** Empty constructor */
@@ -57,30 +57,30 @@ public class AIVTriplet
 	/** Return the iterator */
 	public String iterator()
 	{
-		return _iterator;
+		return _iterator ;
 	}
 
 	/** Return the attribute */
 	public String attribute()
 	{
-		return _attribute;
+		return _attribute ;
 	}
 
 	/** Return the value */
 	public String value()
 	{
-		return _value;
+		return _value ;
 	}
 
 	/** Return the origin */
 	public AttributeOrigin origin()
 	{
-		return _origin;
+		return _origin ;
 	}
 
 	/** String representation */
 	public String toString()
 	{
-		return "(" + iterator() + ":" + attribute() + " = " + value() + ")";
+		return "(" + iterator() + ":" + attribute() + " = " + value() + ")" ;
 	}
 }

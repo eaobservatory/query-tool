@@ -1,29 +1,29 @@
-package edu.jach.qt.utils;
+package edu.jach.qt.utils ;
 
-import gemini.sp.SpTreeMan;
-import gemini.sp.SpObs;
-import gemini.sp.SpItem;
-import gemini.sp.SpTranslationNotSupportedException;
+import gemini.sp.SpTreeMan ;
+import gemini.sp.SpObs ;
+import gemini.sp.SpItem ;
+import gemini.sp.SpTranslationNotSupportedException ;
 
-import java.io.FileInputStream;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.FileWriter;
-import java.io.InputStreamReader;
-import java.io.File;
+import java.io.FileInputStream ;
+import java.io.BufferedReader ;
+import java.io.IOException ;
+import java.io.FileWriter ;
+import java.io.InputStreamReader ;
+import java.io.File ;
 
-import java.util.Properties;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.Vector;
-import java.util.Enumeration;
-import java.util.TimeZone;
+import java.util.Properties ;
+import java.util.Calendar ;
+import java.util.GregorianCalendar ;
+import java.util.Vector ;
+import java.util.Enumeration ;
+import java.util.TimeZone ;
 
-import java.text.SimpleDateFormat;
+import java.text.SimpleDateFormat ;
 
-import org.apache.log4j.Logger;
+import org.apache.log4j.Logger ;
 
-import gemini.util.ConfigWriter;
+import gemini.util.ConfigWriter ;
 
 /***
  * QtTools.java
@@ -47,26 +47,26 @@ public class QtTools
 	 @throws none
 	 */
 
-	public static final int OOS_STATE_UNKNOWN = -1;
-	public static final int OOS_STATE_IDLE = 0;
-	public static final int OOS_STATE_STOPPED = 1;
-	public static final int OOS_STATE_PAUSED = 2;
-	public static final int OOS_STATE_RUNNING = 3;
-	public static final int OOS_ACTIVE = 4;
-	public static final int OOS_INACTIVE = 5;
+	public static final int OOS_STATE_UNKNOWN = -1 ;
+	public static final int OOS_STATE_IDLE = 0 ;
+	public static final int OOS_STATE_STOPPED = 1 ;
+	public static final int OOS_STATE_PAUSED = 2 ;
+	public static final int OOS_STATE_RUNNING = 3 ;
+	public static final int OOS_ACTIVE = 4 ;
+	public static final int OOS_INACTIVE = 5 ;
 
-	static Logger logger = Logger.getLogger( QtTools.class );
+	static Logger logger = Logger.getLogger( QtTools.class ) ;
 
 	public static void loadConfig( String filename )
 	{
 		try
 		{
-			String line_str;
-			FileInputStream is = new FileInputStream( filename );
-			BufferedReader d = new BufferedReader( new InputStreamReader( is ) );
+			String line_str ;
+			FileInputStream is = new FileInputStream( filename ) ;
+			BufferedReader d = new BufferedReader( new InputStreamReader( is ) ) ;
 
-			Properties temp = System.getProperties();
-			int lineno = 0;
+			Properties temp = System.getProperties() ;
+			int lineno = 0 ;
 
 			while( ( line_str = d.readLine() ) != null )
 			{
@@ -74,30 +74,30 @@ public class QtTools
 				if( line_str.length() > 0 )
 				{
 					if( line_str.charAt( 0 ) == '#' )
-						continue;
+						continue ;
 
 					try
 					{
-						int colonpos = line_str.indexOf( ":" );
-						temp.put( line_str.substring( 0 , colonpos ).trim() , line_str.substring( colonpos + 1 ).trim() );
+						int colonpos = line_str.indexOf( ":" ) ;
+						temp.put( line_str.substring( 0 , colonpos ).trim() , line_str.substring( colonpos + 1 ).trim() ) ;
 
 					}
 					catch( IndexOutOfBoundsException e )
 					{
-						logger.fatal( "Problem reading line " + lineno + ": " + line_str );
-						d.close();
-						is.close();
-						System.exit( 1 );
+						logger.fatal( "Problem reading line " + lineno + ": " + line_str ) ;
+						d.close() ;
+						is.close() ;
+						System.exit( 1 ) ;
 					}
 				}
 			}
-			d.close();
-			is.close();
+			d.close() ;
+			is.close() ;
 
 		}
 		catch( IOException e )
 		{
-			logger.error( "File error: " + e );
+			logger.error( "File error: " + e ) ;
 		}
 	}
 
@@ -108,28 +108,28 @@ public class QtTools
 	 */
 	public static int execute( String[] cmd , boolean wait , boolean output )
 	{
-		ExecDtask task = new ExecDtask( cmd );
-		task.setWaitFor( wait );
+		ExecDtask task = new ExecDtask( cmd ) ;
+		task.setWaitFor( wait ) ;
 
-		task.setOutput( output );
-		task.run();
+		task.setOutput( output ) ;
+		task.run() ;
 
 		// Check for errors from the script
-		int status = task.getExitStatus();
+		int status = task.getExitStatus() ;
 		if( status != 0 )
-			logger.error( "Error reported by instrument startup script, code was: " + status );
+			logger.error( "Error reported by instrument startup script, code was: " + status ) ;
 
-		task.stop();
+		task.stop() ;
 		try
 		{
-			task.join();
+			task.join() ;
 		}
 		catch( InterruptedException e )
 		{
-			logger.error( "Load task join interrupted! " + e.getMessage() );
+			logger.error( "Load task join interrupted! " + e.getMessage() ) ;
 		}
 
-		return status;
+		return status ;
 	}
 
 	/**
@@ -145,55 +145,55 @@ public class QtTools
 		// We are going to take some shortcuts, like assuming the telescope is UKIRT
 
 		// File will go into exec path and be called ukirt_yyyymmddThhmmss.xml
-		String opDir = System.getProperty( "EXEC_PATH" );
+		String opDir = System.getProperty( "EXEC_PATH" ) ;
 		if( "false".equalsIgnoreCase( System.getProperty( "DRAMA_ENABLED" ) ) )
-			opDir = System.getProperty( "user.home" );
+			opDir = System.getProperty( "user.home" ) ;
 
-		Calendar cal = new GregorianCalendar( TimeZone.getTimeZone( "UTC" ) );
-		SimpleDateFormat sdf = new SimpleDateFormat( "yyyyMMdd'T'HHmmss" );
-		StringBuffer fileName = new StringBuffer( sdf.format( cal.getTime() ) );
-		fileName.append( ".xml" );
-		fileName.insert( 0 , File.separatorChar );
-		fileName.insert( 0 , opDir );
-		System.out.println( "QUEUE filename is " + fileName.toString() );
+		Calendar cal = new GregorianCalendar( TimeZone.getTimeZone( "UTC" ) ) ;
+		SimpleDateFormat sdf = new SimpleDateFormat( "yyyyMMdd'T'HHmmss" ) ;
+		StringBuffer fileName = new StringBuffer( sdf.format( cal.getTime() ) ) ;
+		fileName.append( ".xml" ) ;
+		fileName.insert( 0 , File.separatorChar ) ;
+		fileName.insert( 0 , opDir ) ;
+		System.out.println( "QUEUE filename is " + fileName.toString() ) ;
 
 		try
 		{
-			FileWriter fw = new FileWriter( fileName.toString() );
-			fw.write( "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n" );
-			fw.write( "<QueueEntries  telescope=\"UKIRT\">\n" );
+			FileWriter fw = new FileWriter( fileName.toString() ) ;
+			fw.write( "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n" ) ;
+			fw.write( "<QueueEntries  telescope=\"UKIRT\">\n" ) ;
 
 			// Now we need to get (a) the sequence for each obs in the MSB and
 			// (b) the estimated duration of the obs and (c) the instrument name for the obs.
-			Vector obs = SpTreeMan.findAllItems( item , "gemini.sp.SpObs" );
-			Enumeration e = obs.elements();
+			Vector obs = SpTreeMan.findAllItems( item , "gemini.sp.SpObs" ) ;
+			Enumeration e = obs.elements() ;
 			while( e.hasMoreElements() )
 			{
-				SpObs currentObs = ( SpObs )e.nextElement();
-				String inst = SpTreeMan.findInstrument( currentObs ).type().getReadable();
-				double time = currentObs.getElapsedTime();
-				fw.write( "  <Entry totalDuration=\"" + time + "\"  instrument=\"" + inst + "\">\n" );
+				SpObs currentObs = ( SpObs )e.nextElement() ;
+				String inst = SpTreeMan.findInstrument( currentObs ).type().getReadable() ;
+				double time = currentObs.getElapsedTime() ;
+				fw.write( "  <Entry totalDuration=\"" + time + "\"  instrument=\"" + inst + "\">\n" ) ;
 				// if we are using the old translator, we need to add the exec path, otherwise we don't
-				String tName = translate( ( SpItem )currentObs , inst );
+				String tName = translate( ( SpItem )currentObs , inst ) ;
 				if( tName != null && tName.indexOf( opDir ) == -1 )
-					fw.write( "    " + opDir + File.separatorChar + tName + "\n" );
+					fw.write( "    " + opDir + File.separatorChar + tName + "\n" ) ;
 				else
-					fw.write( "    " + tName + "\n" );
+					fw.write( "    " + tName + "\n" ) ;
 
-				fw.write( "  </Entry>\n" );
+				fw.write( "  </Entry>\n" ) ;
 			}
 			// Close off the entry
-			fw.write( "</QueueEntries>\n" );
-			fw.close();
+			fw.write( "</QueueEntries>\n" ) ;
+			fw.close() ;
 		}
 		catch( IOException ioe )
 		{
-			String message = "Unable to write queue file " + fileName.toString();
-			logger.error( message , ioe );
-			fileName = new StringBuffer();
+			String message = "Unable to write queue file " + fileName.toString() ;
+			logger.error( message , ioe ) ;
+			fileName = new StringBuffer() ;
 		}
 
-		return fileName.toString();
+		return fileName.toString() ;
 	}
 
 	/**
@@ -208,51 +208,51 @@ public class QtTools
 	 */
 	public static String translate( SpItem observation , String inst )
 	{
-		String tname = null;
+		String tname = null ;
 		try
 		{
 			if( observation == null )
-				throw new NullPointerException( "Observation passed to translate() is null" );
+				throw new NullPointerException( "Observation passed to translate() is null" ) ;
 
-			SpObs spObs = null;
+			SpObs spObs = null ;
 			if( observation instanceof SpObs )
 			{
-				spObs = ( SpObs )observation;
+				spObs = ( SpObs )observation ;
 			}
 			else
 			{
 				while( observation != null )
 				{
-					observation = observation.parent();
+					observation = observation.parent() ;
 					if( ( observation != null ) && ( observation instanceof SpObs ) )
 					{
-						spObs = ( SpObs )observation;
-						break;
+						spObs = ( SpObs )observation ;
+						break ;
 					}
 				}
 			}
 			if( spObs == null )
-				throw new NullPointerException( "Observation passed to translate() not translatable" );
+				throw new NullPointerException( "Observation passed to translate() not translatable" ) ;
 
-			spObs.translate( new Vector() );
+			spObs.translate( new Vector() ) ;
 			
-			tname = ConfigWriter.getCurrentInstance().getExecName();
-			logger.debug( "Translated file set to: " + tname );
-			String fileProperty = new String( inst + "ExecFilename" );
-			Properties properties = System.getProperties();
-			properties.put( fileProperty , tname );
+			tname = ConfigWriter.getCurrentInstance().getExecName() ;
+			logger.debug( "Translated file set to: " + tname ) ;
+			String fileProperty = new String( inst + "ExecFilename" ) ;
+			Properties properties = System.getProperties() ;
+			properties.put( fileProperty , tname ) ;
 			logger.debug( "System property " + fileProperty + " now set to " + tname ) ;
 		}
 		catch( NullPointerException e )
 		{
-			logger.fatal( "Translation failed!, Missing value " + e );
+			logger.fatal( "Translation failed!, Missing value " + e ) ;
 		}
 		catch( SpTranslationNotSupportedException sptnse )
 		{
-			logger.fatal( "Translation failed! " + sptnse );
+			logger.fatal( "Translation failed! " + sptnse ) ;
 		}
 		
-		return tname;
+		return tname ;
 	}
 
 	/**
@@ -264,83 +264,83 @@ public class QtTools
 	public static int loadDramaTasks( String name )
 	{
 		//starting the drama tasks
-		String[] script = new String[ 6 ];
+		String[] script = new String[ 6 ] ;
 
-		script[ 0 ] = System.getProperty( "LOAD_DHSC" );
-		script[ 1 ] = new String( name );
-		script[ 2 ] = "-" + System.getProperty( "QUICKLOOK" , "noql" );
-		script[ 3 ] = "-" + System.getProperty( "SIMULATE" , "simTel" );
-		script[ 4 ] = "-" + System.getProperty( "ENGINEERING" , "eng" );
-		script[ 5 ] = "-omp";
+		script[ 0 ] = System.getProperty( "LOAD_DHSC" ) ;
+		script[ 1 ] = new String( name ) ;
+		script[ 2 ] = "-" + System.getProperty( "QUICKLOOK" , "noql" ) ;
+		script[ 3 ] = "-" + System.getProperty( "SIMULATE" , "simTel" ) ;
+		script[ 4 ] = "-" + System.getProperty( "ENGINEERING" , "eng" ) ;
+		script[ 5 ] = "-omp" ;
 
-		logger.info( "About to start script " + script[ 0 ] + " " + script[ 1 ] + " " + script[ 2 ] + " " + script[ 3 ] + " " + script[ 4 ] + " " + script[ 5 ] );
+		logger.info( "About to start script " + script[ 0 ] + " " + script[ 1 ] + " " + script[ 2 ] + " " + script[ 3 ] + " " + script[ 4 ] + " " + script[ 5 ] ) ;
 
-		int status = QtTools.execute( script , false , true );
+		int status = QtTools.execute( script , false , true ) ;
 
-		return status;
+		return status ;
 	}
 
 	public static int oosTest( String[] cmd )
 	{
-		String argList = "";
+		String argList = "" ;
 		for( int i = 0 ; i < cmd.length ; i++ )
-			argList += ( " " + cmd[ i ] );
+			argList += ( " " + cmd[ i ] ) ;
 
-		logger.debug( "oosTest argList is: " + argList );
+		logger.debug( "oosTest argList is: " + argList ) ;
 
-		int status = -1;
+		int status = -1 ;
 		try
 		{
-			Process p = Runtime.getRuntime().exec( cmd );
-			BufferedReader stdOut = new BufferedReader( new InputStreamReader( p.getInputStream() ) );
+			Process p = Runtime.getRuntime().exec( cmd ) ;
+			BufferedReader stdOut = new BufferedReader( new InputStreamReader( p.getInputStream() ) ) ;
 
-			String s = null;
+			String s = null ;
 			while( ( s = stdOut.readLine() ) != null )
 			{
-				System.err.println( s );
-				logger.debug( "oosTest output: >>>" + s + "<<<" );
+				System.err.println( s ) ;
+				logger.debug( "oosTest output: >>>" + s + "<<<" ) ;
 				if( s.endsWith( "IS INACTIVE" ) )
 				{
-					status = QtTools.OOS_INACTIVE;
+					status = QtTools.OOS_INACTIVE ;
 				}
 				else if( s.endsWith( "IS ACTIVE" ) )
 				{
-					status = QtTools.OOS_ACTIVE;
+					status = QtTools.OOS_ACTIVE ;
 				}
 				else if( s.endsWith( "Idle " ) )
 				{
-					status = QtTools.OOS_STATE_IDLE;
+					status = QtTools.OOS_STATE_IDLE ;
 				}
 				else if( s.endsWith( "Stopped " ) )
 				{
-					status = QtTools.OOS_STATE_STOPPED;
+					status = QtTools.OOS_STATE_STOPPED ;
 				}
 				else if( s.endsWith( "Paused " ) )
 				{
-					status = QtTools.OOS_STATE_PAUSED;
+					status = QtTools.OOS_STATE_PAUSED ;
 				}
 				else if( s.endsWith( "Running " ) )
 				{
-					status = QtTools.OOS_STATE_RUNNING;
+					status = QtTools.OOS_STATE_RUNNING ;
 				}
 				else
 				{
-					logger.error( "UNKNOWN OOS STATE." );
-					status = QtTools.OOS_STATE_UNKNOWN;
+					logger.error( "UNKNOWN OOS STATE." ) ;
+					status = QtTools.OOS_STATE_UNKNOWN ;
 				}
 			}
 
-			p.waitFor();
+			p.waitFor() ;
 		}
 		catch( IOException e )
 		{
-			logger.error( "StdOut got IO exception:" + e.getMessage() );
+			logger.error( "StdOut got IO exception:" + e.getMessage() ) ;
 		}
 		catch( InterruptedException ie )
 		{
-			logger.error( "oosTest process was interrupted abnormally." , ie );
+			logger.error( "oosTest process was interrupted abnormally." , ie ) ;
 		}
 
-		return status;
+		return status ;
 	}
 }

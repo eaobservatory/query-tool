@@ -1,14 +1,15 @@
-package edu.jach.qt.gui;
+package edu.jach.qt.gui ;
 
-import edu.jach.qt.gui.WidgetDataBag;
-import java.util.Hashtable;
-import java.util.LinkedList;
-import java.util.ListIterator;
+import edu.jach.qt.gui.WidgetDataBag ;
+import java.util.Hashtable ;
+import java.util.LinkedList ;
+import java.util.ListIterator ;
 import javax.swing.BoxLayout ;
 import javax.swing.BorderFactory ;
 import javax.swing.border.TitledBorder ;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
+import javax.swing.event.DocumentEvent ;
+import javax.swing.event.DocumentListener ;
+import java.awt.Component ;
 
 /**
  * JTextFieldPanel.java
@@ -23,16 +24,16 @@ import javax.swing.event.DocumentListener;
  */
 public class JTextFieldPanel extends WidgetPanel implements DocumentListener
 {
-	private String next , myTitle;
-	private LinkedList myElems;
-	private ListIterator iterator;
-	private int viewPosition = BoxLayout.Y_AXIS;
+	private String next , myTitle ;
+	private LinkedList myElems ;
+	private ListIterator iterator ;
+	private int viewPosition = BoxLayout.Y_AXIS ;
 
 	/**
 	 * The variable <code>radioElems</code> is a LinkedList of the buttons.
 	 *
 	 */
-	public LinkedList fieldElems = new LinkedList();
+	public LinkedList<LabeledTextField> fieldElems = new LinkedList<LabeledTextField>() ;
 
 	/**
 	 * Creates a new <code>JTextFieldPanel</code> instance.
@@ -42,13 +43,13 @@ public class JTextFieldPanel extends WidgetPanel implements DocumentListener
 	 * @param title a <code>String</code> value
 	 * @param elems a <code>LinkedList</code> value
 	 */
-	public JTextFieldPanel( Hashtable ht , WidgetDataBag wdb , CompInfo info )
+	public JTextFieldPanel( Hashtable<String,String> ht , WidgetDataBag wdb , CompInfo info )
 	{
-		super( ht , wdb );
-		myTitle = info.getTitle();
-		viewPosition = info.getView();
-		myElems = info.getList();
-		config();
+		super( ht , wdb ) ;
+		myTitle = info.getTitle() ;
+		viewPosition = info.getView() ;
+		myElems = info.getList() ;
+		config() ;
 	}
 
 	/**
@@ -56,13 +57,13 @@ public class JTextFieldPanel extends WidgetPanel implements DocumentListener
 	 */
 	private void config()
 	{
-		iterator = myElems.listIterator( 0 );
-		setBorder( BorderFactory.createTitledBorder( BorderFactory.createEtchedBorder() , myTitle , TitledBorder.CENTER , TitledBorder.DEFAULT_POSITION ) );
-		setLayout( new BoxLayout( this , viewPosition ) );
-		LabeledTextField tf;
+		iterator = myElems.listIterator( 0 ) ;
+		setBorder( BorderFactory.createTitledBorder( BorderFactory.createEtchedBorder() , myTitle , TitledBorder.CENTER , TitledBorder.DEFAULT_POSITION ) ) ;
+		setLayout( new BoxLayout( this , viewPosition ) ) ;
+		LabeledTextField tf ;
 		for( iterator.nextIndex() ; iterator.hasNext() ; iterator.nextIndex() )
 		{
-			next = ( String )iterator.next();
+			next = ( String )iterator.next() ;
 			String toolTip = null ;
 			if( next.matches( ".*-.*" ) )
 			{
@@ -70,11 +71,11 @@ public class JTextFieldPanel extends WidgetPanel implements DocumentListener
 				next = split[ 0 ].trim() ;
 				toolTip = split[ 1 ].trim() ;
 			}
-			tf = new LabeledTextField( super.abbrevTable , super.widgetBag , next , toolTip );
+			tf = new LabeledTextField( super.abbrevTable , super.widgetBag , next , toolTip ) ;
 
-			add( tf );
-			fieldElems.add( tf );
-			tf.setAlignmentX( tf.CENTER_ALIGNMENT );
+			add( tf ) ;
+			fieldElems.add( tf ) ;
+			tf.setAlignmentX( Component.CENTER_ALIGNMENT ) ;
 		}
 	}
 
@@ -85,12 +86,12 @@ public class JTextFieldPanel extends WidgetPanel implements DocumentListener
 	 */
 	public void setTextField( String field , String val )
 	{
-		ListIterator iterator = fieldElems.listIterator( 0 );
+		ListIterator iterator = fieldElems.listIterator( 0 ) ;
 		while( iterator.hasNext() )
 		{
-			LabeledTextField thisTextField = ( LabeledTextField )iterator.next();
+			LabeledTextField thisTextField = ( LabeledTextField )iterator.next() ;
 			if( thisTextField.getName().equals( field ) )
-				thisTextField.setText( val );
+				thisTextField.setText( val ) ;
 		}
 	}
 
@@ -101,15 +102,15 @@ public class JTextFieldPanel extends WidgetPanel implements DocumentListener
 	 */
 	public String getText( String field )
 	{
-		String rtn = null;
-		ListIterator iterator = fieldElems.listIterator( 0 );
+		String rtn = null ;
+		ListIterator iterator = fieldElems.listIterator( 0 ) ;
 		while( iterator.hasNext() )
 		{
-			LabeledTextField thisTextField = ( LabeledTextField )iterator.next();
+			LabeledTextField thisTextField = ( LabeledTextField )iterator.next() ;
 			if( thisTextField.getName().equals( field ) )
-				rtn = thisTextField.getText();
+				rtn = thisTextField.getText() ;
 		}
-		return rtn;
+		return rtn ;
 	}
 
 	/**
@@ -118,8 +119,8 @@ public class JTextFieldPanel extends WidgetPanel implements DocumentListener
 	 */
 	public void setTau( String val )
 	{
-		LabeledTextField temp = ( LabeledTextField )( fieldElems.getFirst() );
-		temp.setText( val );
+		LabeledTextField temp = ( LabeledTextField )( fieldElems.getFirst() ) ;
+		temp.setText( val ) ;
 	}
 
 	/**
@@ -130,16 +131,16 @@ public class JTextFieldPanel extends WidgetPanel implements DocumentListener
 	 */
 	public void insertUpdate( DocumentEvent e )
 	{
-		ListIterator iter = fieldElems.listIterator( 0 );
-		LabeledTextField tf;
-		String name;
+		ListIterator iter = fieldElems.listIterator( 0 ) ;
+		LabeledTextField tf ;
+		String name ;
 
 		for( iter.nextIndex() ; iter.hasNext() ; iter.nextIndex() )
 		{
-			tf = ( LabeledTextField )iterator.next();
+			tf = ( LabeledTextField )iterator.next() ;
 
-			name = tf.getName();
-			setAttribute( name.substring( 0 , name.length() - 1 ) , tf.getText() );
+			name = tf.getName() ;
+			setAttribute( name.substring( 0 , name.length() - 1 ) , tf.getText() ) ;
 		}
 	}
 
@@ -151,16 +152,16 @@ public class JTextFieldPanel extends WidgetPanel implements DocumentListener
 	 */
 	public void removeUpdate( DocumentEvent e )
 	{
-		ListIterator iter = fieldElems.listIterator( 0 );
-		LabeledTextField tf;
-		String name;
+		ListIterator iter = fieldElems.listIterator( 0 ) ;
+		LabeledTextField tf ;
+		String name ;
 
 		for( iter.nextIndex() ; iter.hasNext() ; iter.nextIndex() )
 		{
-			tf = ( LabeledTextField )iterator.next();
+			tf = ( LabeledTextField )iterator.next() ;
 
-			name = tf.getName();
-			setAttribute( name.substring( 0 , name.length() - 1 ) , tf.getText() );
+			name = tf.getName() ;
+			setAttribute( name.substring( 0 , name.length() - 1 ) , tf.getText() ) ;
 		}
 	}
 
@@ -171,16 +172,16 @@ public class JTextFieldPanel extends WidgetPanel implements DocumentListener
 	 */
 	public void changedUpdate( DocumentEvent e )
 	{
-		ListIterator iter = fieldElems.listIterator( 0 );
-		String name;
-		LabeledTextField tf;
+		ListIterator iter = fieldElems.listIterator( 0 ) ;
+		String name ;
+		LabeledTextField tf ;
 
 		for( iter.nextIndex() ; iter.hasNext() ; iter.nextIndex() )
 		{
-			tf = ( LabeledTextField )iterator.next();
-			name = tf.getName();
+			tf = ( LabeledTextField )iterator.next() ;
+			name = tf.getName() ;
 
-			setAttribute( name.substring( 0 , name.length() - 1 ) , tf.getText() );
+			setAttribute( name.substring( 0 , name.length() - 1 ) , tf.getText() ) ;
 		}
 
 	}

@@ -1,6 +1,6 @@
-package edu.jach.qt.gui;
+package edu.jach.qt.gui ;
 
-import java.util.LinkedList;
+import java.util.LinkedList ;
 
 /**
  * A linked list of interface components..
@@ -10,16 +10,16 @@ import java.util.LinkedList;
  */
 class CompInfo
 {
-	private String title = "";
-	private int view = -1;
-	private LinkedList list;
+	private String title = "" ;
+	private int view = -1 ;
+	private LinkedList list ;
 
 	/**
 	 * Constructor.
 	 */
 	public CompInfo()
 	{
-		list = new LinkedList();
+		list = new LinkedList() ;
 	}
 
 	/**
@@ -28,7 +28,7 @@ class CompInfo
 	 */
 	public void addElem( Object obj )
 	{
-		list.add( obj );
+		list.add( obj ) ;
 	}
 
 	/**
@@ -38,7 +38,7 @@ class CompInfo
 	 */
 	public Object getElem( int i )
 	{
-		return list.get( i );
+		return list.get( i ) ;
 	}
 
 	/**
@@ -47,7 +47,7 @@ class CompInfo
 	 */
 	public LinkedList getList()
 	{
-		return list;
+		return list ;
 	}
 
 	/**
@@ -56,7 +56,7 @@ class CompInfo
 	 */
 	public int getSize()
 	{
-		return list.size();
+		return list.size() ;
 	}
 
 	/**
@@ -66,7 +66,7 @@ class CompInfo
 	 */
 	public void setView( int view )
 	{
-		this.view = view;
+		this.view = view ;
 	}
 
 	/**
@@ -75,7 +75,7 @@ class CompInfo
 	 */
 	public int getView()
 	{
-		return view;
+		return view ;
 	}
 
 	/**
@@ -84,7 +84,7 @@ class CompInfo
 	 */
 	public void setTitle( String title )
 	{
-		this.title = title;
+		this.title = title ;
 	}
 
 	/**
@@ -93,6 +93,6 @@ class CompInfo
 	 */
 	public String getTitle()
 	{
-		return title;
+		return title ;
 	}
 }

@@ -1,28 +1,28 @@
-package edu.jach.qt.gui;
+package edu.jach.qt.gui ;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.util.Enumeration;
-import java.util.ArrayList;
-import java.util.Vector;
-import javax.swing.JPanel;
-import javax.swing.JTextPane;
-import javax.swing.JScrollPane;
-import javax.swing.BorderFactory;
-import javax.swing.border.TitledBorder;
-import javax.swing.border.Border;
-import javax.swing.text.Style;
-import javax.swing.text.StyleConstants;
-import javax.swing.text.StyleContext;
-import javax.swing.text.Document;
+import java.awt.GridBagConstraints ;
+import java.awt.GridBagLayout ;
+import java.awt.Color ;
+import java.awt.Font ;
+import java.awt.BorderLayout ;
+import java.awt.Component ;
+import java.util.Enumeration ;
+import java.util.ArrayList ;
+import java.util.Vector ;
+import javax.swing.JPanel ;
+import javax.swing.JTextPane ;
+import javax.swing.JScrollPane ;
+import javax.swing.BorderFactory ;
+import javax.swing.border.TitledBorder ;
+import javax.swing.border.Border ;
+import javax.swing.text.Style ;
+import javax.swing.text.StyleConstants ;
+import javax.swing.text.StyleContext ;
+import javax.swing.text.Document ;
 
-import gemini.sp.SpTreeMan;
-import gemini.sp.SpItem;
-import gemini.sp.SpNote;
+import gemini.sp.SpTreeMan ;
+import gemini.sp.SpItem ;
+import gemini.sp.SpNote ;
 
 /**
  * Constructs a scrollable text panel.
@@ -90,8 +90,8 @@ final public class NotePanel extends JPanel
 	{
 		if( sp != null )
 		{
-			ArrayList notes = new ArrayList() ;
-			ArrayList styles = new ArrayList() ;
+			ArrayList<String> notes = new ArrayList<String>() ;
+			ArrayList<String> styles = new ArrayList<String>() ;
 	
 			Vector noteVector = SpTreeMan.findAllItems( sp , SpNote.class.getName() ) ;
 			Enumeration e = noteVector.elements() ;
@@ -134,15 +134,15 @@ final public class NotePanel extends JPanel
 	private static void initStyles()
 	{
 		if( textPanel == null )
-			textPanel = new JTextPane();
+			textPanel = new JTextPane() ;
 
-		StyleContext styleContext = StyleContext.getDefaultStyleContext();
-		Style def = styleContext.getStyle( StyleContext.DEFAULT_STYLE );
+		StyleContext styleContext = StyleContext.getDefaultStyleContext() ;
+		Style def = styleContext.getStyle( StyleContext.DEFAULT_STYLE ) ;
 
-		Style regular = textPanel.addStyle( "regular" , def );
-		StyleConstants.setFontFamily( def , "SansSerif" );
+		Style regular = textPanel.addStyle( "regular" , def ) ;
+		StyleConstants.setFontFamily( def , "SansSerif" ) ;
 
-		Style s = textPanel.addStyle( "bold" , regular );
-		StyleConstants.setBold( s , true );
+		Style s = textPanel.addStyle( "bold" , regular ) ;
+		StyleConstants.setBold( s , true ) ;
 	}
 }

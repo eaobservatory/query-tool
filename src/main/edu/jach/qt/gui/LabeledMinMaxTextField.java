@@ -1,4 +1,4 @@
-package edu.jach.qt.gui;
+package edu.jach.qt.gui ;
 
 import java.awt.GridLayout ;
 import java.awt.event.ActionListener ;
@@ -22,8 +22,8 @@ import java.util.Hashtable ;
 
 public class LabeledMinMaxTextField extends LabeledTextField
 {
-	protected LinkedList valueList;
-	protected JComboBox rangeList;
+	protected LinkedList valueList ;
+	protected JComboBox rangeList ;
 
 	/** 
 	 * Constructor.
@@ -31,45 +31,45 @@ public class LabeledMinMaxTextField extends LabeledTextField
 	 * @param wdb <code>WidgetDataBag</code> of widget information.
 	 * @param text  The label for this object.
 	 */
-	public LabeledMinMaxTextField( Hashtable ht , WidgetDataBag wdb , String text )
+	public LabeledMinMaxTextField( Hashtable<String,String> ht , WidgetDataBag wdb , String text )
 	{
-		super( ht , wdb , text );
+		super( ht , wdb , text ) ;
 
-		valueList = new LinkedList();
-		rangeList = new JComboBox();
+		valueList = new LinkedList() ;
+		rangeList = new JComboBox() ;
 
-		setup();
+		setup() ;
 	}
 	
 	public LabeledMinMaxTextField( Hashtable ht , WidgetDataBag wdb , String text , String toolTip )
 	{
-		super( ht , wdb , text , toolTip );
+		super( ht , wdb , text , toolTip ) ;
 
-		valueList = new LinkedList();
-		rangeList = new JComboBox();
+		valueList = new LinkedList() ;
+		rangeList = new JComboBox() ;
 
-		setup();
+		setup() ;
 	}
 
 	private void setup()
 	{
-		this.setLayout( new GridLayout( 1 , 3 ) );
-		add( label );
+		this.setLayout( new GridLayout( 1 , 3 ) ) ;
+		add( label ) ;
 
-		rangeList.addItem( "Max" );
-		rangeList.addItem( "Min" );
-		rangeList.setSelectedIndex( 0 );
+		rangeList.addItem( "Max" ) ;
+		rangeList.addItem( "Min" ) ;
+		rangeList.setSelectedIndex( 0 ) ;
 		rangeList.addActionListener( new ActionListener()
 		{
 			public void actionPerformed( ActionEvent e )
 			{
-				setAttribute( getLabel() , valueList );
+				setAttribute( getLabel() , valueList ) ;
 			}
-		} );
-		add( rangeList );
-		valueList.add( 0 , rangeList );
-		add( textField );
-		textField.getDocument().addDocumentListener( this );
+		} ) ;
+		add( rangeList ) ;
+		valueList.add( 0 , rangeList ) ;
+		add( textField ) ;
+		textField.getDocument().addDocumentListener( this ) ;
 	}
 
 	/**
@@ -80,7 +80,7 @@ public class LabeledMinMaxTextField extends LabeledTextField
 	 */
 	public void insertUpdate( DocumentEvent e )
 	{
-		setAttribute( getLabel() , valueList );
+		setAttribute( getLabel() , valueList ) ;
 	}
 
 	/**
@@ -91,8 +91,8 @@ public class LabeledMinMaxTextField extends LabeledTextField
 	 */
 	public void removeUpdate( DocumentEvent e )
 	{
-		valueList.add( 1 , textField.getText() );
-		setAttribute( getLabel() , valueList );
+		valueList.add( 1 , textField.getText() ) ;
+		setAttribute( getLabel() , valueList ) ;
 	}
 
 	/**
@@ -112,8 +112,8 @@ public class LabeledMinMaxTextField extends LabeledTextField
 	 */
 	public String getLabel()
 	{
-		valueList.add( 1 , textField.getText() );
-		String name = label.getText().trim();
-		return name.substring( 0 , name.length() - 1 );
+		valueList.add( 1 , textField.getText() ) ;
+		String name = label.getText().trim() ;
+		return name.substring( 0 , name.length() - 1 ) ;
 	}
 }

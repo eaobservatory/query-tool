@@ -1,4 +1,4 @@
-package edu.jach.qt.app;
+package edu.jach.qt.app ;
 
 /**
  * Interface <code>Observer</code> is implemented by the Querytool
@@ -14,5 +14,5 @@ public interface Observer
 	 *
 	 * @param o a <code>Subject</code> value
 	 */
-	public void update( Subject o );
+	public void update( Subject o ) ;
 }// Observer

@@ -1,4 +1,4 @@
-package edu.jach.qt.gui;
+package edu.jach.qt.gui ;
 
 import java.awt.AWTEvent ;
 
@@ -14,8 +14,8 @@ public class TimerEvent extends AWTEvent
 	 */
 	public TimerEvent( Timer t )
 	{
-		super( t , TIMER_EVENT );
+		super( t , TIMER_EVENT ) ;
 	}
 
-	public static final int TIMER_EVENT = AWTEvent.RESERVED_ID_MAX + 5555;
+	public static final int TIMER_EVENT = AWTEvent.RESERVED_ID_MAX + 5555 ;
 }

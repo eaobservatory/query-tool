@@ -1,35 +1,35 @@
-package edu.jach.qt.gui;
+package edu.jach.qt.gui ;
 
 /* QT imports */
-import edu.jach.qt.utils.TextReader;
-import edu.jach.qt.utils.SimpleMoon;
+import edu.jach.qt.utils.TextReader ;
+import edu.jach.qt.utils.SimpleMoon ;
 
 /* Standard imports */
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Component;
-import java.awt.Color;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.io.IOException;
-import java.util.Hashtable;
-import java.util.LinkedList;
-import java.util.Enumeration;
-import java.util.ListIterator;
-import javax.swing.JPanel;
-import javax.swing.JCheckBox;
-import javax.swing.SwingConstants;
-import javax.swing.BoxLayout;
-import javax.swing.JToggleButton;
-import javax.swing.JRadioButton;
-import javax.swing.ToolTipManager;
+import java.awt.GridBagConstraints ;
+import java.awt.GridBagLayout ;
+import java.awt.Component ;
+import java.awt.Color ;
+import java.awt.event.ActionListener ;
+import java.awt.event.ActionEvent ;
+import java.awt.event.MouseAdapter ;
+import java.awt.event.MouseEvent ;
+import java.io.IOException ;
+import java.util.Hashtable ;
+import java.util.LinkedList ;
+import java.util.Enumeration ;
+import java.util.ListIterator ;
+import javax.swing.JPanel ;
+import javax.swing.JCheckBox ;
+import javax.swing.SwingConstants ;
+import javax.swing.BoxLayout ;
+import javax.swing.JToggleButton ;
+import javax.swing.JRadioButton ;
+import javax.swing.ToolTipManager ;
 
-import edu.jach.qt.utils.MoonChangeListener;
+import edu.jach.qt.utils.MoonChangeListener ;
 
 /* Miscellaneous imports */
-import org.apache.log4j.Logger;
+import org.apache.log4j.Logger ;
 
 /**
  * WidgetPanel.java
@@ -47,23 +47,23 @@ import org.apache.log4j.Logger;
  */
 public class WidgetPanel extends JPanel implements ActionListener , MoonChangeListener
 {
-	static Logger logger = Logger.getLogger( WidgetPanel.class );
-	private TextReader tr;
-	private int numComponents = 0;
-	private JCheckBox[] cb = new JCheckBox[ 3 ];
-	protected Hashtable abbrevTable;
-	protected WidgetDataBag widgetBag;
-	private int totalNumRadRows = 0;
-	private int numRadPanels = 0;
-	private static JTextFieldPanel atmospherePanel;
-	private static RadioPanel moonPanel;
-	private boolean ignoreMoonUpdates = false;
+	static Logger logger = Logger.getLogger( WidgetPanel.class ) ;
+	private TextReader tr ;
+	private int numComponents = 0 ;
+	private JCheckBox[] cb = new JCheckBox[ 3 ] ;
+	protected Hashtable<String,String> abbrevTable ;
+	protected WidgetDataBag widgetBag ;
+	private int totalNumRadRows = 0 ;
+	private int numRadPanels = 0 ;
+	private static JTextFieldPanel atmospherePanel ;
+	private static RadioPanel moonPanel ;
+	private boolean ignoreMoonUpdates = false ;
 
 	/**
 	 * Describe variable <code>instrumentPanel</code> here.
 	 *
 	 */
-	public ButtonPanel instrumentPanel;
+	public ButtonPanel instrumentPanel ;
 
 	/**
 	 * Creates a new <code>WidgetPanel</code> instance.
@@ -73,12 +73,12 @@ public class WidgetPanel extends JPanel implements ActionListener , MoonChangeLi
 	 * @param wdb
 	 *            a <code>WidgetDataBag</code> value
 	 */
-	public WidgetPanel( Hashtable ht , WidgetDataBag wdb )
+	public WidgetPanel( Hashtable<String,String> ht , WidgetDataBag wdb )
 	{
-		abbrevTable = ht;
-		widgetBag = wdb;
+		abbrevTable = ht ;
+		widgetBag = wdb ;
 
-		SimpleMoon.addChangeListener( this );
+		SimpleMoon.addChangeListener( this ) ;
 	}
 
 	/**
@@ -91,75 +91,75 @@ public class WidgetPanel extends JPanel implements ActionListener , MoonChangeLi
 	 */
 	public void parseConfig( String file ) throws IOException
 	{
-		GridBagLayout layout = new GridBagLayout();
-		setLayout( layout );
+		GridBagLayout layout = new GridBagLayout() ;
+		setLayout( layout ) ;
 
-		GridBagConstraints gbc = new GridBagConstraints();
-		String widget , next , tmp;
+		GridBagConstraints gbc = new GridBagConstraints() ;
+		String widget , next , tmp ;
 
-		tr = new TextReader( file );
+		tr = new TextReader( file ) ;
 		while( tr.ready() )
 		{
 			//skip over comments
 			while( tr.peek() == '#' )
-				tr.readLine();
+				tr.readLine() ;
 
 			//which widget?
-			widget = tr.readWord();
+			widget = tr.readWord() ;
 
 			//JLabeldTextField
 			if( widget.equals( "JTextField" ) )
 			{
-				tr.readLine();
-				gbc.fill = GridBagConstraints.HORIZONTAL;
-				gbc.anchor = GridBagConstraints.WEST;
-				gbc.weightx = 100;
-				gbc.weighty = 0;
-				gbc.insets.top = 10;
-				gbc.insets.bottom = 5;
-				gbc.insets.left = 10;
-				gbc.insets.right = 5;
-				addTextFields( "Labeled" , gbc );
+				tr.readLine() ;
+				gbc.fill = GridBagConstraints.HORIZONTAL ;
+				gbc.anchor = GridBagConstraints.WEST ;
+				gbc.weightx = 100 ;
+				gbc.weighty = 0 ;
+				gbc.insets.top = 10 ;
+				gbc.insets.bottom = 5 ;
+				gbc.insets.left = 10 ;
+				gbc.insets.right = 5 ;
+				addTextFields( "Labeled" , gbc ) ;
 			}
 			else if( widget.equals( "JMinMaxField" ) )
 			{
-				tr.readLine();
-				gbc.fill = GridBagConstraints.HORIZONTAL;
-				gbc.anchor = GridBagConstraints.NORTH;
-				gbc.weightx = 100;
-				gbc.weighty = 0;
-				gbc.insets.top = 5;
-				gbc.insets.bottom = 5;
-				gbc.insets.left = 10;
-				gbc.insets.right = 5;
-				addTextFields( "MinMax" , gbc );
+				tr.readLine() ;
+				gbc.fill = GridBagConstraints.HORIZONTAL ;
+				gbc.anchor = GridBagConstraints.NORTH ;
+				gbc.weightx = 100 ;
+				gbc.weighty = 0 ;
+				gbc.insets.top = 5 ;
+				gbc.insets.bottom = 5 ;
+				gbc.insets.left = 10 ;
+				gbc.insets.right = 5 ;
+				addTextFields( "MinMax" , gbc ) ;
 			}
 			else if( widget.equals( "JRangeField" ) )
 			{
-				tr.readLine();
-				gbc.fill = GridBagConstraints.HORIZONTAL;
-				gbc.anchor = GridBagConstraints.NORTH;
-				gbc.weightx = 100;
-				gbc.weighty = 0;
-				gbc.insets.top = 9;
-				gbc.insets.bottom = 5;
-				gbc.insets.left = 10;
-				gbc.insets.right = 15;
-				addTextFields( "Range" , gbc );
+				tr.readLine() ;
+				gbc.fill = GridBagConstraints.HORIZONTAL ;
+				gbc.anchor = GridBagConstraints.NORTH ;
+				gbc.weightx = 100 ;
+				gbc.weighty = 0 ;
+				gbc.insets.top = 9 ;
+				gbc.insets.bottom = 5 ;
+				gbc.insets.left = 10 ;
+				gbc.insets.right = 15 ;
+				addTextFields( "Range" , gbc ) ;
 			}
 			else if( widget.equals( "JCheckBox" ) )
 			{
-				gbc.fill = GridBagConstraints.HORIZONTAL;
-				gbc.anchor = GridBagConstraints.WEST;
-				gbc.weightx = 100;
-				gbc.weighty = 0;
-				int num = 0;
-				next = tr.readLine();
+				gbc.fill = GridBagConstraints.HORIZONTAL ;
+				gbc.anchor = GridBagConstraints.WEST ;
+				gbc.weightx = 100 ;
+				gbc.weighty = 0 ;
+				int num = 0 ;
+				next = tr.readLine() ;
 				do
 				{
-					next = tr.readLine();
+					next = tr.readLine() ;
 					if( next.equals( "[EndSection]" ) )
-						break;
+						break ;
 					
 					String toolTip = null ;
 					if( next.matches( ".*-.*" ) )
@@ -169,105 +169,105 @@ public class WidgetPanel extends JPanel implements ActionListener , MoonChangeLi
 						toolTip = split[ 1 ].trim() ;
 					}
 					
-					cb[ num ] = new JCheckBox( next );
-					cb[ num ].setHorizontalAlignment( SwingConstants.CENTER );
+					cb[ num ] = new JCheckBox( next ) ;
+					cb[ num ].setHorizontalAlignment( SwingConstants.CENTER ) ;
 
-					cb[ num ].addActionListener( this );
+					cb[ num ].addActionListener( this ) ;
 					
 					if( toolTip != null )
 						cb[ num ].setToolTipText( toolTip ) ;
 					
-					add( cb[ num ] , gbc , 1 , num , 2 , 1 );
+					add( cb[ num ] , gbc , 1 , num , 2 , 1 ) ;
 					num++ ;
-					tmp = abbreviate( next );
-					abbrevTable.put( next , tmp );
+					tmp = abbreviate( next ) ;
+					abbrevTable.put( next , tmp ) ;
 				}
-				while( true );
+				while( true ) ;
 			}
 			else if( widget.equals( "JRadioButtonGroup" ) || widget.equals( "JTextFieldGroup" ) )
 			{
-				CompInfo info = makeList();
+				CompInfo info = makeList() ;
 
-				WidgetPanel panel;
+				WidgetPanel panel ;
 
 				if( info.getView() != -1 )
 				{
 					if( widget.equals( "JRadioButtonGroup" ) )
-						panel = new RadioPanel( abbrevTable , widgetBag , info );
+						panel = new RadioPanel( abbrevTable , widgetBag , info ) ;
 					else
-						panel = new JTextFieldPanel( abbrevTable , widgetBag , info );
+						panel = new JTextFieldPanel( abbrevTable , widgetBag , info ) ;
 
-					panel.setName( info.getTitle() );
-					gbc.insets.top = 0;
-					gbc.insets.bottom = 0;
-					gbc.insets.left = 0;
-					gbc.insets.right = 0;
+					panel.setName( info.getTitle() ) ;
+					gbc.insets.top = 0 ;
+					gbc.insets.bottom = 0 ;
+					gbc.insets.left = 0 ;
+					gbc.insets.right = 0 ;
 
-					gbc.fill = GridBagConstraints.HORIZONTAL;
-					gbc.anchor = GridBagConstraints.NORTH;
-					gbc.weightx = 50;
-					gbc.weighty = 0;
+					gbc.fill = GridBagConstraints.HORIZONTAL ;
+					gbc.anchor = GridBagConstraints.NORTH ;
+					gbc.weightx = 50 ;
+					gbc.weighty = 0 ;
 					if( info.getView() == BoxLayout.Y_AXIS )
 					{
 						if( info.getTitle().equalsIgnoreCase( "Clouds" ) )
 						{
-							add( panel , gbc , 2 , 20 , 1 , info.getSize() + 1 );
+							add( panel , gbc , 2 , 20 , 1 , info.getSize() + 1 ) ;
 						}
 						else if( info.getTitle().equalsIgnoreCase( "Atmosphere" ) )
 						{
-							add( panel , gbc , 1 , 4 , 3 , info.getSize() + 1 );
-							setAtmospherePanel( panel );
+							add( panel , gbc , 1 , 4 , 3 , info.getSize() + 1 ) ;
+							setAtmospherePanel( panel ) ;
 						}
 						else if( info.getTitle().equalsIgnoreCase( "Moon" ) )
 						{
-							add( panel , gbc , 3 , 20 , 1 , info.getSize() + 1 );
-							setMoonPanel( panel );
+							add( panel , gbc , 3 , 20 , 1 , info.getSize() + 1 ) ;
+							setMoonPanel( panel ) ;
 						}
 						else if( info.getTitle().equalsIgnoreCase( "Country" ) )
 						{
-							add( panel , gbc , 1 , 0 , 2 , info.getSize() + 1 );
+							add( panel , gbc , 1 , 0 , 2 , info.getSize() + 1 ) ;
 						}
 						else
 						{
-							add( panel , gbc , numRadPanels , 20 , 1 , info.getSize() + 1 );
+							add( panel , gbc , numRadPanels , 20 , 1 , info.getSize() + 1 ) ;
 						}
-						totalNumRadRows += info.getSize() + 2;
+						totalNumRadRows += info.getSize() + 2 ;
 					}
 					else
 					{
-						add( panel , gbc , 0 , numComponents + totalNumRadRows , 1 , 2 );
+						add( panel , gbc , 0 , numComponents + totalNumRadRows , 1 , 2 ) ;
 					}
 
 					numRadPanels++ ;
 				}
 				else
 				{
-					logger.error( "FAILED to set radio position!" );
-					System.exit( 1 );
+					logger.error( "FAILED to set radio position!" ) ;
+					System.exit( 1 ) ;
 				}
 			}
 			else if( widget.equals( "JCheckBoxGroup" ) )
 			{
-				CompInfo info = makeList();
+				CompInfo info = makeList() ;
 
-				instrumentPanel = new ButtonPanel( abbrevTable , widgetBag , info );
-				gbc.fill = GridBagConstraints.HORIZONTAL;
-				gbc.weightx = 100;
-				gbc.weighty = 100;
-				gbc.insets.left = 10;
+				instrumentPanel = new ButtonPanel( abbrevTable , widgetBag , info ) ;
+				gbc.fill = GridBagConstraints.HORIZONTAL ;
+				gbc.weightx = 100 ;
+				gbc.weighty = 100 ;
+				gbc.insets.left = 10 ;
 				if( info.getTitle().equalsIgnoreCase( "Instruments" ) )
-					add( instrumentPanel , gbc , 0 , 20 , 2 , 1 );
+					add( instrumentPanel , gbc , 0 , 20 , 2 , 1 ) ;
 				else
-					add( instrumentPanel , gbc , 0 , 21 , 2 , 1 );
+					add( instrumentPanel , gbc , 0 , 21 , 2 , 1 ) ;
 			}
 			else if( !widget.equals( "[Section]" ) )
 			{
-				break;
+				break ;
 			}
 
 		}//end while
 
-		setButtons();
+		setButtons() ;
 
 	}//parseConfig
 
@@ -279,56 +279,56 @@ public class WidgetPanel extends JPanel implements ActionListener , MoonChangeLi
 	public void setButtons()
 	{
 		if( ignoreMoonUpdates )
-			return;
+			return ;
 
 		// Currently sets the moon based on whether it is up and the illuminated fraction
-		SimpleMoon moon = SimpleMoon.getInstance();
-		Hashtable ht = widgetBag.getHash();
+		SimpleMoon moon = SimpleMoon.getInstance() ;
+		Hashtable ht = widgetBag.getHash() ;
 
-		boolean dark = false;
-		boolean grey = false;
-		boolean bright = false;
+		boolean dark = false ;
+		boolean grey = false ;
+		boolean bright = false ;
 
 		if( moon.isUp() == false )
-			dark = true;
+			dark = true ;
 		else if( moon.getIllumination() < 0.25 )
-			grey = true;
+			grey = true ;
 		else
-			bright = true;
+			bright = true ;
 
 		for( Enumeration e = ht.keys() ; e.hasMoreElements() ; )
 		{
-			String next = ( ( String )e.nextElement() );
+			String next = ( ( String )e.nextElement() ) ;
 			if( next.equalsIgnoreCase( "Moon" ) )
 			{
 				ListIterator iter = (( LinkedList )ht.get( next )).listIterator( 0 ) ;
 				for( ; iter.hasNext() ; iter.nextIndex() )
 				{
-					Object o = iter.next();
+					Object o = iter.next() ;
 					if( o instanceof JRadioButton )
 					{
-						JToggleButton abstractButton = ( JRadioButton )o;
+						JToggleButton abstractButton = ( JRadioButton )o ;
 						abstractButton.addMouseListener( new MouseAdapter()
 						{
 							public void mouseClicked( MouseEvent e )
 							{
-								ignoreMoonUpdates = true;
-								ToolTipManager.sharedInstance().registerComponent( moonPanel );
-								moonPanel.setToolTipText( "Auto update disabled by user; use \"Set Default\" to enable" );
-								moonPanel.setBackground( Color.red );
+								ignoreMoonUpdates = true ;
+								ToolTipManager.sharedInstance().registerComponent( moonPanel ) ;
+								moonPanel.setToolTipText( "Auto update disabled by user ; use \"Set Default\" to enable" ) ;
+								moonPanel.setBackground( Color.red ) ;
 							}
-						} );
-						String buttonName = abstractButton.getText();
+						} ) ;
+						String buttonName = abstractButton.getText() ;
 						if( buttonName.equalsIgnoreCase( "Dark" ) && dark == true )
-							abstractButton.setSelected( true );
+							abstractButton.setSelected( true ) ;
 						else if( buttonName.equalsIgnoreCase( "Grey" ) && grey == true )
-							abstractButton.setSelected( true );
+							abstractButton.setSelected( true ) ;
 						else if( buttonName.equalsIgnoreCase( "Bright" ) && bright == true )
-							abstractButton.setSelected( true );
+							abstractButton.setSelected( true ) ;
 					}
 				}
 			}
-			break;
+			break ;
 		}
 	}
 
@@ -337,11 +337,11 @@ public class WidgetPanel extends JPanel implements ActionListener , MoonChangeLi
 	 */
 	public void setMoonUpdatable( boolean flag )
 	{
-		ignoreMoonUpdates = !flag;
+		ignoreMoonUpdates = !flag ;
 		if( flag == true && moonPanel != null )
 		{
-			moonPanel.setToolTipText( null );
-			moonPanel.setBackground( instrumentPanel.getBackground() );
+			moonPanel.setToolTipText( null ) ;
+			moonPanel.setBackground( instrumentPanel.getBackground() ) ;
 		}
 	}
 
@@ -355,12 +355,12 @@ public class WidgetPanel extends JPanel implements ActionListener , MoonChangeLi
 	 */
 	private void addTextFields( String type , GridBagConstraints gbc )
 	{
-		String next , tmp;
+		String next , tmp ;
 		do
 		{
-			next = tr.readLine();
+			next = tr.readLine() ;
 			if( next.equals( "[EndSection]" ) )
-				break;
+				break ;
 			
 			String toolTip = null ;
 			if( next.matches( ".*-.*" ) )
@@ -370,17 +370,17 @@ public class WidgetPanel extends JPanel implements ActionListener , MoonChangeLi
 				toolTip = split[ 1 ].trim() ;
 			}
 			
-			tmp = abbreviate( next );
-			abbrevTable.put( next , tmp );
+			tmp = abbreviate( next ) ;
+			abbrevTable.put( next , tmp ) ;
 
 			if( type.equals( "Labeled" ) )
-				add( new LabeledTextField( abbrevTable , widgetBag , next , toolTip ) , gbc , 0 , numComponents , 1 , 1 );
+				add( new LabeledTextField( abbrevTable , widgetBag , next , toolTip ) , gbc , 0 , numComponents , 1 , 1 ) ;
 			else if( type.equals( "MinMax" ) )
-				add( new LabeledMinMaxTextField( abbrevTable , widgetBag , next , toolTip ) , gbc , 0 , numComponents , 1 , 1 );
+				add( new LabeledMinMaxTextField( abbrevTable , widgetBag , next , toolTip ) , gbc , 0 , numComponents , 1 , 1 ) ;
 			else if( type.equals( "Range" ) )
-				add( new LabeledRangeTextField( abbrevTable , widgetBag , next , toolTip ) , gbc , 0 , numComponents , 1 , 1 );
+				add( new LabeledRangeTextField( abbrevTable , widgetBag , next , toolTip ) , gbc , 0 , numComponents , 1 , 1 ) ;
 		}
-		while( true );
+		while( true ) ;
 	}
 
 	/**
@@ -388,40 +388,40 @@ public class WidgetPanel extends JPanel implements ActionListener , MoonChangeLi
 	 */
 	private CompInfo makeList()
 	{
-		String next , view , tmpTitle = "";
-		CompInfo info = new CompInfo();
+		String next , view , tmpTitle = "" ;
+		CompInfo info = new CompInfo() ;
 
-		next = tr.readLine();
+		next = tr.readLine() ;
 		do
 		{
-			next = tr.readLine();
+			next = tr.readLine() ;
 			if( next.equals( "GroupTitle" ) )
 			{
-				tmpTitle = tr.readLine();
-				info.setTitle( tmpTitle );
-				addTableEntry( tmpTitle );
+				tmpTitle = tr.readLine() ;
+				info.setTitle( tmpTitle ) ;
+				addTableEntry( tmpTitle ) ;
 			}
 			else if( next.equals( "view" ) )
 			{
-				view = tr.readLine();
+				view = tr.readLine() ;
 
 				if( view.trim().equals( "X" ) )
-					info.setView( BoxLayout.X_AXIS );
+					info.setView( BoxLayout.X_AXIS ) ;
 				else if( view.trim().equals( "Y" ) )
-					info.setView( BoxLayout.Y_AXIS );
+					info.setView( BoxLayout.Y_AXIS ) ;
 			}
 			else if( next.equals( "[EndSection]" ) )
 			{
-				break;
+				break ;
 			}
 			else
 			{
-				info.addElem( next );
-				addTableEntry( next );
+				info.addElem( next ) ;
+				addTableEntry( next ) ;
 			}
 		}
-		while( true );
-		return info;
+		while( true ) ;
+		return info ;
 	}
 
 	/**
@@ -433,9 +433,9 @@ public class WidgetPanel extends JPanel implements ActionListener , MoonChangeLi
 	 */
 	public void addTableEntry( String entry )
 	{
-		String tmp = "";
-		tmp = abbreviate( entry );
-		abbrevTable.put( entry , tmp );
+		String tmp = "" ;
+		tmp = abbreviate( entry ) ;
+		abbrevTable.put( entry , tmp ) ;
 	}
 
 	/**
@@ -447,16 +447,16 @@ public class WidgetPanel extends JPanel implements ActionListener , MoonChangeLi
 	 */
 	public String abbreviate( String next )
 	{
-		String result = "ERROR";
+		String result = "ERROR" ;
 		if( !next.equals( "" ) )
 		{
-			result = "";
-			next.trim();
+			result = "" ;
+			next.trim() ;
 
-			String[] st = next.split( "\\p{Space}" );
-			result = st[ 0 ].trim();
+			String[] st = next.split( "\\p{Space}" ) ;
+			result = st[ 0 ].trim() ;
 		}
-		return result.toLowerCase();
+		return result.toLowerCase() ;
 	}
 
 	/**
@@ -465,7 +465,7 @@ public class WidgetPanel extends JPanel implements ActionListener , MoonChangeLi
 	 */
 	protected void printTable()
 	{
-		logger.debug( abbrevTable.toString() );
+		logger.debug( abbrevTable.toString() ) ;
 	}
 
 	/**
@@ -482,11 +482,11 @@ public class WidgetPanel extends JPanel implements ActionListener , MoonChangeLi
 	 */
 	public void add( Component c , GridBagConstraints gbc , int x , int y , int w , int h )
 	{
-		gbc.gridx = x;
-		gbc.gridy = y;
-		gbc.gridwidth = w;
-		gbc.gridheight = h;
-		add( c , gbc );
+		gbc.gridx = x ;
+		gbc.gridy = y ;
+		gbc.gridwidth = w ;
+		gbc.gridheight = h ;
+		add( c , gbc ) ;
 		numComponents++ ;
 	}
 
@@ -497,9 +497,9 @@ public class WidgetPanel extends JPanel implements ActionListener , MoonChangeLi
 	 */
 	public void setAtmospherePanel( WidgetPanel panel )
 	{
-		atmospherePanel = ( JTextFieldPanel )panel;
+		atmospherePanel = ( JTextFieldPanel )panel ;
 		if( !TelescopeDataPanel.getCSO().startsWith( "-" ) )
-			atmospherePanel.setTextField( "tau:" , TelescopeDataPanel.getCSO() );
+			atmospherePanel.setTextField( "tau:" , TelescopeDataPanel.getCSO() ) ;
 	}
 
 	/**
@@ -509,7 +509,7 @@ public class WidgetPanel extends JPanel implements ActionListener , MoonChangeLi
 	 */
 	public void setMoonPanel( WidgetPanel panel )
 	{
-		moonPanel = ( RadioPanel )panel;
+		moonPanel = ( RadioPanel )panel ;
 	}
 
 	/**
@@ -518,7 +518,7 @@ public class WidgetPanel extends JPanel implements ActionListener , MoonChangeLi
 	 */
 	public static JTextFieldPanel getAtmospherePanel()
 	{
-		return WidgetPanel.atmospherePanel;
+		return WidgetPanel.atmospherePanel ;
 	}
 
 	/**
@@ -527,7 +527,7 @@ public class WidgetPanel extends JPanel implements ActionListener , MoonChangeLi
 	 */
 	public static RadioPanel getMoonPanel()
 	{
-		return WidgetPanel.moonPanel;
+		return WidgetPanel.moonPanel ;
 	}
 
 	/**
@@ -542,23 +542,23 @@ public class WidgetPanel extends JPanel implements ActionListener , MoonChangeLi
 	 */
 	public void actionPerformed( ActionEvent evt )
 	{
-		Object source = evt.getSource();
+		Object source = evt.getSource() ;
 
 		if( source.equals( cb[ 0 ] ) )
 		{
-			widgetBag.put( abbrevTable.get( cb[ 0 ].getText() ) , "" + cb[ 0 ].isSelected() );
+			widgetBag.put( abbrevTable.get( cb[ 0 ].getText() ) , "" + cb[ 0 ].isSelected() ) ;
 		}
 		else if( source.equals( cb[ 1 ] ) )
 		{
 			if( cb[ 1 ].isSelected() )
 			{
-				instrumentPanel.setSelected( false );
-				instrumentPanel.setEnabled( false );
+				instrumentPanel.setSelected( false ) ;
+				instrumentPanel.setEnabled( false ) ;
 			}
 			else
 			{
-				instrumentPanel.setEnabled( true );
-				instrumentPanel.setSelected( false );
+				instrumentPanel.setEnabled( true ) ;
+				instrumentPanel.setSelected( false ) ;
 			}
 		}
 	}
@@ -575,7 +575,7 @@ public class WidgetPanel extends JPanel implements ActionListener , MoonChangeLi
 	 */
 	public void setAttribute( String key , String value )
 	{
-		widgetBag.put( abbrevTable.get( key ) , value );
+		widgetBag.put( abbrevTable.get( key ) , value ) ;
 	}
 
 	/**
@@ -591,7 +591,7 @@ public class WidgetPanel extends JPanel implements ActionListener , MoonChangeLi
 	public void setAttribute( String key , Object obj )
 	{
 		Object object = abbrevTable.get( key ) ;
-		widgetBag.put( object , obj );
+		widgetBag.put( object , obj ) ;
 	}
 
 	/**
@@ -607,7 +607,7 @@ public class WidgetPanel extends JPanel implements ActionListener , MoonChangeLi
 	 */
 	public void setAttribute( String title , LinkedList list )
 	{
-		widgetBag.put( abbrevTable.get( title ) , list );
+		widgetBag.put( abbrevTable.get( title ) , list ) ;
 	}
 
 	/**
@@ -616,12 +616,12 @@ public class WidgetPanel extends JPanel implements ActionListener , MoonChangeLi
 	 */
 	public WidgetDataBag getBag()
 	{
-		return widgetBag;
+		return widgetBag ;
 	}
 
 	public void moonChanged()
 	{
-		setButtons();
+		setButtons() ;
 	}
 
 }// WidgetPanel

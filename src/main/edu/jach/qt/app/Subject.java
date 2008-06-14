@@ -1,4 +1,4 @@
-package edu.jach.qt.app;
+package edu.jach.qt.app ;
 
 /**
  * Interface <code>Subject</code> is implemented by the WidgetDataBag
@@ -15,7 +15,7 @@ public interface Subject
 	 *
 	 * @param o an <code>Observer</code> value
 	 */
-	public void addObserver( Observer o );
+	public void addObserver( Observer o ) ;
 
 	/**
 	 * The <code>removeObserver</code> method removes Observers 
@@ -23,5 +23,5 @@ public interface Subject
 	 *
 	 * @param o an <code>Observer</code> value
 	 */
-	public void removeObserver( Observer o );
+	public void removeObserver( Observer o ) ;
 }// Subject

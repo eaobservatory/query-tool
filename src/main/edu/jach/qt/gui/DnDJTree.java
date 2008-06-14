@@ -1,4 +1,4 @@
-package edu.jach.qt.gui;
+package edu.jach.qt.gui ;
 
 /*
  **  This is version II of DnDJTree. The first version allowed for what I 
@@ -46,24 +46,24 @@ import java.io.IOException ;
 public class DnDJTree extends JTree implements TreeSelectionListener , DragGestureListener , DropTargetListener , DragSourceListener
 {
 	/** Stores the selected node info */
-	protected TreePath selectedTreePath = null;
+	protected TreePath selectedTreePath = null ;
 
-	protected MsbNode selectedNode = null;
+	protected MsbNode selectedNode = null ;
 
 	/** Variables needed for DnD */
-	private DragSource dragSource = null;
+	private DragSource dragSource = null ;
 
 	/** Constructor 
 	 @param root The root node of the tree
 	 @param parent Parent JFrame of the JTree */
 	public DnDJTree( MsbNode root )
 	{
-		super( root );
+		super( root ) ;
 
-		addTreeSelectionListener( this );
+		addTreeSelectionListener( this ) ;
 
 		/* ********************** CHANGED ********************** */
-		dragSource = DragSource.getDefaultDragSource();
+		dragSource = DragSource.getDefaultDragSource() ;
 		/* ****************** END OF CHANGE ******************** */
 
 		DragGestureRecognizer dgr = dragSource.createDefaultDragGestureRecognizer
@@ -71,21 +71,21 @@ public class DnDJTree extends JTree implements TreeSelectionListener , DragGestu
 				this , //DragSource
 				DnDConstants.ACTION_COPY_OR_MOVE , //specifies valid actions
 				this //DragGestureListener
-		);
+		) ;
 
 		/* 
 		 * Eliminates right mouse clicks as valid actions - useful especially if you implement a JPopupMenu for the JTree
 		 */
-		dgr.setSourceActions( dgr.getSourceActions() & ~InputEvent.BUTTON3_MASK );
+		dgr.setSourceActions( dgr.getSourceActions() & ~InputEvent.BUTTON3_MASK ) ;
 
 		// unnecessary, but gives FileManager look
-		putClientProperty( "JTree.lineStyle" , "Angled" );
+		putClientProperty( "JTree.lineStyle" , "Angled" ) ;
 	}
 
 	/** Returns The selected node */
 	public MsbNode getSelectedNode()
 	{
-		return selectedNode;
+		return selectedNode ;
 	}
 
 	///////////////////////// Interface stuff ////////////////////
@@ -94,18 +94,18 @@ public class DnDJTree extends JTree implements TreeSelectionListener , DragGestu
 	public void dragGestureRecognized( DragGestureEvent e )
 	{
 		//Get the selected node
-		MsbNode dragNode = getSelectedNode();
+		MsbNode dragNode = getSelectedNode() ;
 		if( dragNode != null )
 		{
 			//Get the Transferable Object
-			Transferable transferable = ( Transferable )dragNode.getUserObject();
+			Transferable transferable = ( Transferable )dragNode.getUserObject() ;
 			/* ********************** CHANGED ********************** */
 
-			//Select the appropriate cursor;
-			Cursor cursor = DragSource.DefaultCopyNoDrop;
-			int action = e.getDragAction();
+			//Select the appropriate cursor ;
+			Cursor cursor = DragSource.DefaultCopyNoDrop ;
+			int action = e.getDragAction() ;
 			if( action == DnDConstants.ACTION_MOVE )
-				cursor = DragSource.DefaultMoveNoDrop;
+				cursor = DragSource.DefaultMoveNoDrop ;
 
 			//In fact the cursor is set to NoDrop because once an action is rejected
 			// by a dropTarget, the dragSourceListener are no more invoked.
@@ -115,7 +115,7 @@ public class DnDJTree extends JTree implements TreeSelectionListener , DragGestu
 			/* ****************** END OF CHANGE ******************** */
 
 			//begin the drag
-			dragSource.startDrag( e , cursor , transferable , this );
+			dragSource.startDrag( e , cursor , transferable , this ) ;
 		}
 	}
 
@@ -139,75 +139,75 @@ public class DnDJTree extends JTree implements TreeSelectionListener , DragGestu
 	{
 		try
 		{
-			Transferable tr = e.getTransferable();
+			Transferable tr = e.getTransferable() ;
 
 			//flavor not supported, reject drop
 			if( !tr.isDataFlavorSupported( DragDropObject.DATA_FLAVOR ) )
-				e.rejectDrop();
+				e.rejectDrop() ;
 
 			//cast into appropriate data type
-			DragDropObject childInfo = ( DragDropObject )tr.getTransferData( DragDropObject.DATA_FLAVOR );
+			DragDropObject childInfo = ( DragDropObject )tr.getTransferData( DragDropObject.DATA_FLAVOR ) ;
 
 			//get new parent node
-			Point loc = e.getLocation();
-			TreePath destinationPath = getPathForLocation( loc.x , loc.y );
+			Point loc = e.getLocation() ;
+			TreePath destinationPath = getPathForLocation( loc.x , loc.y ) ;
 
-			final String msg = testDropTarget( destinationPath , selectedTreePath );
+			final String msg = testDropTarget( destinationPath , selectedTreePath ) ;
 			if( msg != null )
 			{
-				e.rejectDrop();
+				e.rejectDrop() ;
 
 				SwingUtilities.invokeLater( new Runnable()
 				{
 					public void run()
 					{
-						JOptionPane.showMessageDialog( null , msg , "Error Dialog" , JOptionPane.ERROR_MESSAGE );
+						JOptionPane.showMessageDialog( null , msg , "Error Dialog" , JOptionPane.ERROR_MESSAGE ) ;
 					}
-				} );
-				return;
+				} ) ;
+				return ;
 			}
-			MsbNode newParent = ( MsbNode )destinationPath.getLastPathComponent();
+			MsbNode newParent = ( MsbNode )destinationPath.getLastPathComponent() ;
 
 			//get old parent node
-			MsbNode oldParent = ( MsbNode )getSelectedNode().getParent();
-			int action = e.getDropAction();
-			boolean copyAction = ( action == DnDConstants.ACTION_COPY );
+			MsbNode oldParent = ( MsbNode )getSelectedNode().getParent() ;
+			int action = e.getDropAction() ;
+			boolean copyAction = ( action == DnDConstants.ACTION_COPY ) ;
 
 			//make new child node
-			MsbNode newChild = new MsbNode( childInfo );
+			MsbNode newChild = new MsbNode( childInfo ) ;
 
 			try
 			{
 				if( !copyAction )
-					oldParent.remove( getSelectedNode() );
-				newParent.add( newChild );
+					oldParent.remove( getSelectedNode() ) ;
+				newParent.add( newChild ) ;
 
 				if( copyAction )
-					e.acceptDrop( DnDConstants.ACTION_COPY );
+					e.acceptDrop( DnDConstants.ACTION_COPY ) ;
 				else
-					e.acceptDrop( DnDConstants.ACTION_MOVE );
+					e.acceptDrop( DnDConstants.ACTION_MOVE ) ;
 			}
 			catch( java.lang.IllegalStateException ils )
 			{
-				e.rejectDrop();
+				e.rejectDrop() ;
 			}
 
-			e.getDropTargetContext().dropComplete( true );
+			e.getDropTargetContext().dropComplete( true ) ;
 
 			//expand nodes appropriately - this probably isnt the best way...
-			DefaultTreeModel model = ( DefaultTreeModel )getModel();
-			model.reload( oldParent );
-			model.reload( newParent );
-			TreePath parentPath = new TreePath( newParent.getPath() );
-			expandPath( parentPath );
+			DefaultTreeModel model = ( DefaultTreeModel )getModel() ;
+			model.reload( oldParent ) ;
+			model.reload( newParent ) ;
+			TreePath parentPath = new TreePath( newParent.getPath() ) ;
+			expandPath( parentPath ) ;
 		}
 		catch( IOException io )
 		{
-			e.rejectDrop();
+			e.rejectDrop() ;
 		}
 		catch( UnsupportedFlavorException ufe )
 		{
-			e.rejectDrop();
+			e.rejectDrop() ;
 		}
 	} //end of method
 
@@ -222,14 +222,14 @@ public class DnDJTree extends JTree implements TreeSelectionListener , DragGestu
 	{
 		/* ********************** CHANGED ********************** */
 		//set cursor location. Needed in setCursor method
-		Point cursorLocationBis = e.getLocation();
-		TreePath destinationPath = getPathForLocation( cursorLocationBis.x , cursorLocationBis.y );
+		Point cursorLocationBis = e.getLocation() ;
+		TreePath destinationPath = getPathForLocation( cursorLocationBis.x , cursorLocationBis.y ) ;
 
 		// if destination path is okay accept drop......otherwise reject drop
 		if( testDropTarget( destinationPath , selectedTreePath ) == null )
-			e.acceptDrag( DnDConstants.ACTION_COPY_OR_MOVE );
+			e.acceptDrag( DnDConstants.ACTION_COPY_OR_MOVE ) ;
 		else
-			e.rejectDrag();
+			e.rejectDrag() ;
 		/* ****************** END OF CHANGE ******************** */
 	}
 
@@ -239,11 +239,11 @@ public class DnDJTree extends JTree implements TreeSelectionListener , DragGestu
 	/** TreeSelectionListener - sets selected node */
 	public void valueChanged( TreeSelectionEvent evt )
 	{
-		selectedTreePath = evt.getNewLeadSelectionPath();
+		selectedTreePath = evt.getNewLeadSelectionPath() ;
 		if( selectedTreePath == null )
-			selectedNode = null;
+			selectedNode = null ;
 		else
-			selectedNode = ( MsbNode )selectedTreePath.getLastPathComponent();
+			selectedNode = ( MsbNode )selectedTreePath.getLastPathComponent() ;
 	}
 
 	/** Convenience method to test whether drop location is valid
@@ -256,27 +256,27 @@ public class DnDJTree extends JTree implements TreeSelectionListener , DragGestu
 		//Typical Tests for dropping
 
 		//Test 1.
-		boolean destinationPathIsNull = destination == null;
+		boolean destinationPathIsNull = destination == null ;
 		if( destinationPathIsNull )
-			return "Invalid drop location.";
+			return "Invalid drop location." ;
 
 		//Test 2.
-		MsbNode node = ( MsbNode )destination.getLastPathComponent();
+		MsbNode node = ( MsbNode )destination.getLastPathComponent() ;
 		if( !node.getAllowsChildren() )
-			return "This node does not allow children";
+			return "This node does not allow children" ;
 
 		if( destination.equals( dropper ) )
-			return "Destination cannot be same as source";
+			return "Destination cannot be same as source" ;
 
 		//Test 3.
 		if( dropper.isDescendant( destination ) )
-			return "Destination node cannot be a descendant.";
+			return "Destination node cannot be a descendant." ;
 
 		//Test 4.
 		if( dropper.getParentPath().equals( destination ) )
-			return "Destination node cannot be a parent.";
+			return "Destination node cannot be a parent." ;
 
-		return null;
+		return null ;
 	}
 
 	//program entry point

@@ -1,6 +1,6 @@
-package edu.jach.qt.gui;
+package edu.jach.qt.gui ;
 
-import javax.swing.SwingUtilities;
+import javax.swing.SwingUtilities ;
 
 /**
  * This is the 3rd version of SwingWorker (also known as
@@ -16,7 +16,7 @@ import javax.swing.SwingUtilities;
  */
 public abstract class SwingWorker
 {
-	private Object value;
+	private Object value ;
 
 	/** 
 	 * Class to maintain reference to current worker thread
@@ -24,25 +24,25 @@ public abstract class SwingWorker
 	 */
 	private static class ThreadVar
 	{
-		private Thread thread;
+		private Thread thread ;
 
 		ThreadVar( Thread t )
 		{
-			thread = t;
+			thread = t ;
 		}
 
 		synchronized Thread get()
 		{
-			return thread;
+			return thread ;
 		}
 
 		synchronized void clear()
 		{
-			thread = null;
+			thread = null ;
 		}
 	}
 
-	private ThreadVar threadVar;
+	private ThreadVar threadVar ;
 
 	/** 
 	 * Get the value produced by the worker thread, or null if it 
@@ -51,7 +51,7 @@ public abstract class SwingWorker
 	 */
 	protected synchronized Object getValue()
 	{
-		return value;
+		return value ;
 	}
 
 	/** 
@@ -60,13 +60,13 @@ public abstract class SwingWorker
 	 */
 	private synchronized void setValue( Object x )
 	{
-		value = x;
+		value = x ;
 	}
 
 	/** 
 	 * Compute the value to be returned by the <code>get</code> method. 
 	 */
-	public abstract Object construct();
+	public abstract Object construct() ;
 
 	/**
 	 * Called on the event dispatching thread (not on the worker thread)
@@ -80,11 +80,11 @@ public abstract class SwingWorker
 	 */
 	public void interrupt()
 	{
-		Thread t = threadVar.get();
+		Thread t = threadVar.get() ;
 		if( t != null )
-			t.interrupt();
+			t.interrupt() ;
 
-		threadVar.clear();
+		threadVar.clear() ;
 	}
 
 	/**
@@ -98,18 +98,18 @@ public abstract class SwingWorker
 	{
 		while( true )
 		{
-			Thread t = threadVar.get();
+			Thread t = threadVar.get() ;
 			if( t == null )
-				return getValue();
+				return getValue() ;
 
 			try
 			{
-				t.join();
+				t.join() ;
 			}
 			catch( InterruptedException e )
 			{
-				Thread.currentThread().interrupt(); // propagate
-				return null;
+				Thread.currentThread().interrupt() ; // propagate
+				return null ;
 			}
 		}
 	}
@@ -124,9 +124,9 @@ public abstract class SwingWorker
 		{
 			public void run()
 			{
-				finished();
+				finished() ;
 			}
-		};
+		} ;
 
 		Runnable doConstruct = new Runnable()
 		{
@@ -134,19 +134,19 @@ public abstract class SwingWorker
 			{
 				try
 				{
-					setValue( construct() );
+					setValue( construct() ) ;
 				}
 				finally
 				{
-					threadVar.clear();
+					threadVar.clear() ;
 				}
 
-				SwingUtilities.invokeLater( doFinished );
+				SwingUtilities.invokeLater( doFinished ) ;
 			}
-		};
+		} ;
 
-		Thread t = new Thread( doConstruct );
-		threadVar = new ThreadVar( t );
+		Thread t = new Thread( doConstruct ) ;
+		threadVar = new ThreadVar( t ) ;
 	}
 
 	/**
@@ -154,8 +154,8 @@ public abstract class SwingWorker
 	 */
 	public void start()
 	{
-		Thread t = threadVar.get();
+		Thread t = threadVar.get() ;
 		if( t != null )
-			t.start();
+			t.start() ;
 	}
 }

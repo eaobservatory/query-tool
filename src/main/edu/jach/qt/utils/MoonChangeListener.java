@@ -1,6 +1,6 @@
-package edu.jach.qt.utils;
+package edu.jach.qt.utils ;
 
 public interface MoonChangeListener
 {
-	public void moonChanged();
+	public void moonChanged() ;
 }

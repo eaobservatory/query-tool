@@ -1,4 +1,4 @@
-package edu.jach.qt.gui;
+package edu.jach.qt.gui ;
 
 import javax.swing.tree.DefaultMutableTreeNode ;
 
@@ -10,39 +10,39 @@ public class MsbNode extends DefaultMutableTreeNode
 {
 	public MsbNode( DragDropObject info )
 	{
-		super( info );
+		super( info ) ;
 	}
 
 	/** Override a few methods... */
 	public boolean isLeaf()
 	{
-		return false;
+		return false ;
 	}
 
 	public boolean getAllowsChildren()
 	{
-		return true;
+		return true ;
 	}
 
 	public void add( DefaultMutableTreeNode child )
 	{
-		super.add( child );
+		super.add( child ) ;
 
-		DragDropObject childPI = ( DragDropObject )( ( MsbNode )child ).getUserObject();
+		DragDropObject childPI = ( DragDropObject )( ( MsbNode )child ).getUserObject() ;
 
-		DragDropObject newParent = ( DragDropObject )getUserObject();
+		DragDropObject newParent = ( DragDropObject )getUserObject() ;
 
-		newParent.add( childPI );
+		newParent.add( childPI ) ;
 	}
 
 	public void remove( DefaultMutableTreeNode child )
 	{
-		super.remove( child );
+		super.remove( child ) ;
 
-		DragDropObject childDDO = ( DragDropObject )( ( MsbNode )child ).getUserObject();
+		DragDropObject childDDO = ( DragDropObject )( ( MsbNode )child ).getUserObject() ;
 
-		DragDropObject parentDDO = ( DragDropObject )getUserObject();
+		DragDropObject parentDDO = ( DragDropObject )getUserObject() ;
 		if( parent != null )
-			parentDDO.remove( childDDO );
+			parentDDO.remove( childDDO ) ;
 	}
 }

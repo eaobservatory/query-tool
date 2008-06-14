@@ -1,4 +1,4 @@
-package edu.jach.qt.utils;
+package edu.jach.qt.utils ;
 
 import gemini.sp.SpItem ;
 import gemini.sp.SpMSB ;
@@ -52,7 +52,7 @@ public class SpQueuedMap
 			writeChecksumToDisk( ( SpMSB )item ) ;
 			treeSet.add( checksum ) ;
 		}
-		return replacement;
+		return replacement ;
 	}
 	
 	public boolean seen( String checksum )
@@ -63,8 +63,8 @@ public class SpQueuedMap
 	public boolean containsSpItem( SpItem item )
 	{
 		if( item == null )
-			return false;
-		item = getCorrectItem( item );
+			return false ;
+		item = getCorrectItem( item ) ;
 		String checksum = msbChecksum( item ) ;
 		return treeMap.containsKey( checksum ) ;
 	}
@@ -72,7 +72,7 @@ public class SpQueuedMap
 	public String containsMsbChecksum( String checksum )
 	{
 		if( checksum == null )
-			return null;
+			return null ;
 		if( treeMap.containsKey( checksum ) )
 			return convertTimeStamp( ( String )treeMap.get( checksum ) ) ;
 		String onDisk = isChecksumOnDisk( checksum ) ;
@@ -106,11 +106,11 @@ public class SpQueuedMap
 		SpItem spitem = ( SpItem )item ;
 		if( item instanceof SpObs )
 		{
-			final SpItem parent = spitem.parent();
+			final SpItem parent = spitem.parent() ;
 			if( parent instanceof SpMSB )
-				spitem = parent;
+				spitem = parent ;
 		}
-		return spitem;
+		return spitem ;
 	}
 
 	private boolean writeChecksumToDisk( SpMSB item )
@@ -129,7 +129,7 @@ public class SpQueuedMap
 		buffer.append( System.currentTimeMillis() ) ;
 		String fileName = buffer.toString() ;
 
-		File file = new File( fileName );
+		File file = new File( fileName ) ;
 		try
 		{
 			success = file.createNewFile() ;
