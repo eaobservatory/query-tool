@@ -1,11 +1,13 @@
 package edu.jach.qt.gui ;
 
 import gemini.sp.SpItem ;
+import gemini.sp.SpProg ;
 
 public class Selection
 {
 	private static final Selection self = new Selection() ;
 	private static SpItem selectedItem = null ;
+	private static final Class spProg = SpProg.class ;
 
 	public static final int DEFERRED = 1 ;
 	public static final int NOTDEFERRED = 0 ;
@@ -27,7 +29,11 @@ public class Selection
 
 	public static synchronized void setSelection( SpItem item , boolean deferred )
 	{
-		selectedItem = item ;
+		if( spProg.isInstance( item ) )
+			selectedItem = item ;
+		else if( item != null )
+			selectedItem = item.getRootItem() ;
+		
 		if( deferred )
 			ISDEFERRED = DEFERRED ;
 		else
