@@ -29,15 +29,22 @@ public class Selection
 
 	public static synchronized void setSelection( SpItem item , boolean deferred )
 	{
-		if( spProg.isInstance( item ) )
-			selectedItem = item ;
-		else if( item != null )
-			selectedItem = item.getRootItem() ;
-		
-		if( deferred )
-			ISDEFERRED = DEFERRED ;
+		if( item != null )
+		{		
+			if( !deferred && !spProg.isInstance( item ) )
+				selectedItem = item.getRootItem() ;
+			else
+				selectedItem = item ;
+			
+			if( deferred )
+				ISDEFERRED = DEFERRED ;
+			else
+				ISDEFERRED = NOTDEFERRED ;
+		}
 		else
-			ISDEFERRED = NOTDEFERRED ;
+		{
+			clear() ;
+		}
 	}
 	
 	public static synchronized void clear()
