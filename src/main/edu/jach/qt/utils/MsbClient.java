@@ -175,6 +175,7 @@ public class MsbClient extends SoapClient
 		logger.debug( "Sending fetchMSB: " + msbid ) ;
 		flushParameter() ;
 		addParameter( "key" , Integer.class , msbid ) ;
+		addParameter( "compress" , String.class , "gzip" ) ;
 		try
 		{
 			FileWriter fw = new FileWriter( getFilename() ) ;
