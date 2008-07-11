@@ -10,11 +10,9 @@ import orac.util.SpInputXML ;
 import omp.SoapClient ;
 
 // Standard imports
-import java.io.ByteArrayInputStream ;
 import java.io.FileWriter ;
 import java.net.URL ;
 import java.net.MalformedURLException ;
-import java.util.zip.GZIPInputStream ;
 
 // Miscellaneous imports
 import org.apache.log4j.Logger ;
@@ -183,25 +181,7 @@ public class MsbClient extends SoapClient
 
 			if( o != null )
 			{
-				if( !( o instanceof String ) )
-				{
-					// File is gzipped
-					byte[] input = ( byte[] )o ;
-					ByteArrayInputStream bis = new ByteArrayInputStream( input ) ;
-					GZIPInputStream gis = new GZIPInputStream( bis ) ;
-					byte[] read = new byte[ 1024 ] ;
-					int len ;
-					StringBuffer sb = new StringBuffer() ;
-					while( ( len = gis.read( read ) ) > 0 )
-						sb.append( new String( read , 0 , len ) ) ;
-					gis.close() ;
-					spXML = sb.toString() ;
-				}
-				else
-				{
-					// File is not compressed
-					spXML = ( String )o ;
-				}
+				spXML = o.toString() ;
 				fw.write( spXML ) ;
 				fw.flush() ;
 				fw.close() ;
