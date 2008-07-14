@@ -181,7 +181,7 @@ public class MsbClient extends SoapClient
 
 			if( o != null )
 			{
-				spXML = o.toString() ;
+				spXML = new String( ( byte[] )o ) ;
 				fw.write( spXML ) ;
 				fw.flush() ;
 				fw.close() ;
