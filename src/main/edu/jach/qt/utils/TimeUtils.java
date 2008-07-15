@@ -21,6 +21,7 @@ public class TimeUtils
 	private final static SimpleDateFormat stf = new SimpleDateFormat( timeFormat ) ;
 	private final static SimpleDateFormat sif = new SimpleDateFormat( isoFormat ) ;
 	private final static TimeZone UTC = TimeZone.getTimeZone( "UTC" ) ;
+	private final static TimeZone HST = TimeZone.getTimeZone( "HST" ) ;
 
 	/**
 	 * Constructor.
@@ -33,7 +34,8 @@ public class TimeUtils
 	 */
 	public static String getLocalDate()
 	{
-		return sdf.format( Calendar.getInstance().getTime() ) ;
+		sdf.setTimeZone( HST ) ;
+		return sdf.format( Calendar.getInstance( HST ).getTime() ) ;
 	}
 	
 	/**
@@ -53,7 +55,8 @@ public class TimeUtils
 	 */
 	public static String getLocalTime()
 	{
-		return stf.format( Calendar.getInstance().getTime() ) ;
+		stf.setTimeZone( HST ) ;
+		return stf.format( Calendar.getInstance( HST ).getTime() ) ;
 	}
 	
 	/** 
