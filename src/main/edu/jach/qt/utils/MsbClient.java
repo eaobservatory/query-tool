@@ -181,7 +181,10 @@ public class MsbClient extends SoapClient
 
 			if( o != null )
 			{
-				spXML = new String( ( byte[] )o ) ;
+				if( o instanceof byte[] )
+					spXML = new String( ( byte[] )o ) ;
+				else if( o instanceof String )
+					spXML = ( String )o ;
 				fw.write( spXML ) ;
 				fw.flush() ;
 				fw.close() ;
