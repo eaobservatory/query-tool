@@ -18,57 +18,39 @@ import java.util.Vector ;
 
 public class OrderedMap
 {
-	final private TreeMap treeMap ;
+	final private TreeMap<String,Object> treeMap ;
 	final private Vector<String> vector ;
 	private int size ;
 
 	public OrderedMap()
 	{
-		treeMap = new TreeMap() ;
+		treeMap = new TreeMap<String,Object>() ;
 		vector = new Vector<String>() ;
 	}
 
 	public synchronized void add( final String key , final Object object )
 	{
-		synchronized( treeMap )
-		{
-			synchronized( vector )
-			{
-				treeMap.put( key , object ) ;
-				vector.add( key ) ;
-				size++ ;
-			}
-		}
+		treeMap.put( key , object ) ;
+		vector.add( key ) ;
+		size++ ;
 	}
 
 	public synchronized Object remove( final int index )
 	{
-		synchronized( vector )
-		{
-			synchronized( treeMap )
-			{
-				final Object name = vector.remove( index ) ;
-				final Object object = treeMap.remove( name ) ;
-				if( object != null )
-					size-- ;
-				return object ;
-			}
-		}
+		final Object name = vector.remove( index ) ;
+		final Object object = treeMap.remove( name ) ;
+		if( object != null )
+			size-- ;
+		return object ;
 	}
 
 	public synchronized Object remove( final String name )
 	{
-		synchronized( treeMap )
-		{
-			synchronized( vector )
-			{
-				final Object object = treeMap.remove( name ) ;
-				vector.remove( name ) ;
-				if( object != null )
-					size-- ;
-				return object ;
-			}
-		}
+		final Object object = treeMap.remove( name ) ;
+		vector.remove( name ) ;
+		if( object != null )
+			size-- ;
+		return object ;
 	}
 
 	public Object find( final String name )
@@ -122,9 +104,7 @@ public class OrderedMap
 
 	public synchronized void move( int currentIndex , int newIndex )
 	{
-		if( currentIndex == newIndex )
-			return ;
-		if( currentIndex > -1 && currentIndex < size() )
+		if( currentIndex != newIndex && currentIndex > -1 && currentIndex < size() )
 		{
 			String object = vector.remove( currentIndex ) ;
 			newIndex = newIndex < size() ? newIndex : size() - 1 ;
