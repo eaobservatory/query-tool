@@ -7,7 +7,6 @@ PACKAGE = edu/jach/qt/utils
 SOURCES = \
 	BasicWindowMonitor.java \
 	Bench.java \
-	Blocker.java \
 	CalibrationList.java \
 	MsbColumnInfo.java \
 	MsbColumns.java \
