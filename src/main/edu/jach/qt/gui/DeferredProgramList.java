@@ -89,6 +89,7 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 	private GridBagConstraints gbc ;
 	private JScrollPane scrollPane = new JScrollPane() ;
 	private DefaultListModel model ;
+	private static SpItem currentItem ;
 	private static HashMap fileToObjectMap = new HashMap() ;
 	private JPopupMenu engMenu = new JPopupMenu() ;
 	private JMenuItem engItem = new JMenuItem( "Send for Engineering" ) ;
@@ -116,6 +117,7 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 		gbc = new GridBagConstraints() ;
 
 		model = new DefaultListModel() ;
+		currentItem = null ;
 
 		dropTarget = new DropTarget() ;
 		try
@@ -135,6 +137,11 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 		scrollPane.getViewport().setDropTarget( dropTarget ) ;
 		getCurrentList() ;
 		displayList() ;
+	}
+
+	public static synchronized SpItem getCurrentItem()
+	{
+		return currentItem ;
 	}
 
 	/**
@@ -256,8 +263,8 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 		// This is a hack to fix fault [20021030.002]. It shouldn't happen but hopefully this will make sure...
 		obsList.setEnabled( true ) ;
 		obsList.setSelectedIndex( obsList.getModel().getSize() - 1 ) ;
-		Selection.setSelection( ( SpItem )obsList.getSelectedValue() , true ) ;
-		NotePanel.setNote( Selection.selection() ) ;
+		currentItem = ( SpItem )obsList.getSelectedValue() ;
+		NotePanel.setNote( currentItem ) ;
 		ProgramTree.clearSelection() ;
 	}
 
@@ -267,6 +274,7 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 	public static void clearSelection()
 	{
 		obsList.clearSelection() ;
+		currentItem = null ;
 	}
 
 	/**
@@ -291,24 +299,24 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 				}
 				else
 				{
-					if( Selection.selection() != obsList.getSelectedValue() )
+					if( currentItem != obsList.getSelectedValue() )
 					{
 						// Select the new item
-						Selection.setSelection( ( SpItem )obsList.getSelectedValue() , true ) ;
-						NotePanel.setNote( Selection.selection() ) ;
+						currentItem = ( SpItem )obsList.getSelectedValue() ;
+						NotePanel.setNote( currentItem ) ;
 						ProgramTree.clearSelection() ;
 					}
 					else
 					{
 						obsList.clearSelection() ;
-						Selection.clear() ;
+						currentItem = null ;
 					}
 				}
 			}
 
 			public void mousePressed( MouseEvent e )
 			{
-				if( e.isPopupTrigger() && Selection.deferred() == Selection.DEFERRED )
+				if( e.isPopupTrigger() && currentItem != null )
 					engMenu.show( e.getComponent() , e.getX() , e.getY() ) ;
 				else
 					ProgramTree.clearSelection() ;
@@ -344,8 +352,6 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 		{
 			makePersistent( obs ) ;
 			addElement( obs ) ;
-			obsList.setSelectedValue( obs , true ) ;
-			Selection.setSelection( obs , true ) ;
 		}
 	}
 
@@ -398,7 +404,7 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 	{
 		Thread t = null ;
 
-		if( Selection.selection() != null )
+		if( currentItem != null )
 		{
 			/*
 			 * If we have items selected on both the ProgramList and Deferred List 
@@ -408,8 +414,9 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 			{
 				try
 				{
-					logger.info( "Sending observation " + Selection.selection().getTitle() + " for execution." ) ;
+					logger.info( "Sending observation " + currentItem.getTitle() + " for execution." ) ;
 					ExecuteUKIRT execute = new ExecuteUKIRT( _useQueue ) ;
+					execute.setDeferred( true ) ;
 					File failFile = execute.failFile() ;
 					File successFile = execute.successFile() ;
 					t = new Thread( execute , "UKIRT Execution Thread" ) ;
@@ -428,7 +435,7 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 					else if( successFile.exists() )
 					{
 						// Mark this observation as having been done
-						markThisObservationAsDone( Selection.selection() ) ;
+						markThisObservationAsDone( currentItem ) ;
 						logger.info( "Observation executed successfully" ) ;
 					}
 					else
@@ -455,7 +462,7 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 			}
 			else if( System.getProperty( "telescope" ).equalsIgnoreCase( "jcmt" ) )
 			{
-				new ExecuteInThread( Selection.selection() , true ).start() ;
+				new ExecuteInThread( currentItem , true ).start() ;
 			}
 		}
 	}
@@ -607,7 +614,7 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 		// Delete the old entry and replace by the current
 		String fileToRemove = ( String )fileToObjectMap.get( obsList.getSelectedValue() ) ;
 		if( fileToRemove != null )
-		{
+		{	
 			File f = new File( fileToRemove ) ;
 			f.delete() ;
 			fileToObjectMap.remove( obsList.getSelectedValue() ) ;
@@ -615,7 +622,7 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 		int index = obsList.getSelectedIndex() ;
 		if( index > -1 )
 			( ( DefaultListModel )obsList.getModel() ).removeElementAt( index ) ;
-		Selection.clear() ;
+		currentItem = null ;
 
 		makePersistent( thisObservation ) ;
 
@@ -687,7 +694,7 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 			if( index > -1 )
 				( ( DefaultListModel )obsList.getModel() ).removeElementAt( index ) ;
 
-			Selection.clear() ;
+			currentItem = null ;
 		}
 		obsList.setEnabled( true ) ;
 		this.dropTarget.setActive( true ) ;
@@ -724,7 +731,6 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 		obsList.setEnabled( false ) ;
 		if( selected != null )
 		{
-			Selection.setSelection( selected , true ) ;
 			StringSelection text = new StringSelection( selected.toString() ) ;
 			// Disable dropping on this window
 			this.dropTarget.setActive( false ) ;
@@ -770,6 +776,7 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 			execute = ExecuteJCMT.getInstance( _item ) ;
 			if( execute == null )
 				return ;
+			execute.setDeferred( _isDeferred ) ;
 			failed = execute.run() ;
 
 			if( failed )
@@ -779,7 +786,7 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 			}
 			else
 			{
-				markThisObservationAsDone( Selection.selection() ) ;
+				markThisObservationAsDone( currentItem ) ;
 				logger.info( "Observation executed successfully" ) ;
 			}
 		}

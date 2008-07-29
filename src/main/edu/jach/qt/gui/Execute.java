@@ -37,13 +37,25 @@ public class Execute
 	 */
 	protected Execute() throws Exception
 	{
-		if( Selection.selection() == null )
+		if( ProgramTree.getSelectedItem() == null && DeferredProgramList.getCurrentItem() == null )
 		{
 			new PopUp( "You have not selected an observation!" , "Please select an observation." , JOptionPane.ERROR_MESSAGE ).start() ;
 			throw new Exception( "No Item Selected" ) ;
 		}
+		else if( ProgramTree.getSelectedItem() != null && DeferredProgramList.getCurrentItem() != null )
+		{
+			new PopUp( "You may only select one observation!" , "Please deselect an observation." , JOptionPane.ERROR_MESSAGE ).start() ;
+			throw new Exception( "Multiple Items Selected" ) ;
+		}
+		else if( DeferredProgramList.getCurrentItem() != null )
+		{
+			isDeferred = true ;
+		}
+	}
 
-		isDeferred = Selection.deferred() == Selection.DEFERRED ;
+	public void setDeferred( boolean deferred )
+	{
+		isDeferred = deferred ;
 	}
 
 	private static File successFile = null ;

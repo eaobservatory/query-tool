@@ -1,71 +1,69 @@
-package edu.jach.qt.gui ;
+package edu.jach.qt.gui;
 
 /* QT imports */
-import gemini.sp.SpItem ;
+import gemini.sp.SpItem;
 
 /* Miscellaneous imports */
 /* Standard imports */
-import edu.jach.qt.app.Querytool ;
-import edu.jach.qt.utils.CalibrationList ;
-import edu.jach.qt.utils.MsbClient ;
-import java.awt.GridBagConstraints ;
-import java.awt.GridBagLayout ;
-import java.awt.AWTEvent ;
-import java.awt.Dimension ;
-import java.awt.BorderLayout ;
-import java.awt.Component ;
-import java.awt.Color ;
-import java.awt.event.ActionListener ;
-import java.awt.event.ActionEvent ;
-import java.awt.event.WindowAdapter ;
-import java.awt.event.WindowEvent ;
-import java.awt.event.MouseAdapter ;
-import java.awt.event.MouseEvent ;
-import java.io.IOException ;
-import java.io.File ;
-import java.util.Hashtable ;
-import java.util.Vector ;
-import javax.swing.JFrame ;
-import javax.swing.JTable ;
-import javax.swing.JMenuItem ;
-import javax.swing.JCheckBoxMenuItem ;
-import javax.swing.JTabbedPane ;
-import javax.swing.JMenu ;
-import javax.swing.JPopupMenu ;
-import javax.swing.JOptionPane ;
-import javax.swing.JScrollPane ;
-import javax.swing.JViewport ;
-import javax.swing.JSplitPane ;
-import javax.swing.ToolTipManager ;
-import javax.swing.ListSelectionModel ;
-import javax.swing.SwingUtilities ;
-import javax.swing.SwingConstants ;
-import javax.swing.ImageIcon ;
-import javax.swing.JMenuBar ;
-import javax.swing.JButton ;
-import javax.swing.event.ChangeEvent ;
-import javax.swing.event.PopupMenuListener ;
-import javax.swing.event.MenuListener ;
-import javax.swing.event.ListSelectionListener ;
-import javax.swing.event.MenuEvent ;
-import javax.swing.event.PopupMenuEvent ;
-import javax.swing.event.ListSelectionEvent ;
-import javax.swing.event.TableColumnModelEvent ;
-import javax.swing.event.TableColumnModelListener ;
-import javax.swing.table.TableColumnModel ;
-import javax.swing.table.TableColumn ;
-import org.apache.log4j.Logger ;
-import sun.misc.Signal ;
-import sun.misc.SignalHandler ;
-import java.util.EventListener ;
-import java.net.URL ;
+import edu.jach.qt.app.Querytool;
+import edu.jach.qt.utils.CalibrationList;
+import edu.jach.qt.utils.MsbClient;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.AWTEvent;
+import java.awt.Dimension;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Color;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.IOException;
+import java.io.File;
+import java.util.Hashtable;
+import java.util.Vector;
+import javax.swing.JFrame;
+import javax.swing.JTable;
+import javax.swing.JMenuItem;
+import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JTabbedPane;
+import javax.swing.JMenu;
+import javax.swing.JPopupMenu;
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JViewport;
+import javax.swing.JSplitPane;
+import javax.swing.ToolTipManager;
+import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
+import javax.swing.SwingConstants;
+import javax.swing.ImageIcon;
+import javax.swing.JMenuBar;
+import javax.swing.JButton;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.PopupMenuListener;
+import javax.swing.event.MenuListener;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.event.MenuEvent;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.TableColumnModelEvent;
+import javax.swing.event.TableColumnModelListener;
+import javax.swing.table.TableColumnModel;
+import javax.swing.table.TableColumn;
+import org.apache.log4j.Logger;
+import sun.misc.Signal;
+import sun.misc.SignalHandler;
+import java.util.EventListener;
+import edu.jach.qt.utils.Splash;
 
-import edu.jach.qt.utils.Splash ;
+import edu.jach.qt.utils.MsbColumns;
 
-import edu.jach.qt.utils.MsbColumns ;
-
-import edu.jach.qt.utils.SpQueuedMap ;
-import edu.jach.qt.utils.OrderedMap ;
+import edu.jach.qt.utils.SpQueuedMap;
+import edu.jach.qt.utils.OrderedMap;
 
 /**
  * The <code>QtFrame</code> is responsible for how the main JFrame
@@ -214,7 +212,7 @@ public class QtFrame extends JFrame implements PopupMenuListener , ActionListene
 		DeferredProgramList.cleanup() ;
 
 		// Input Panel Setup
-		WidgetPanel inputPanel = new WidgetPanel( new Hashtable<String,String>() , widgetBag ) ;
+		WidgetPanel inputPanel = new WidgetPanel( new Hashtable() , widgetBag ) ;
 		_widgetPanel = inputPanel ;
 		buildStagingPanel() ;
 		// Table setup
@@ -278,7 +276,7 @@ public class QtFrame extends JFrame implements PopupMenuListener , ActionListene
 
 	private void projectTableSetup( ProjectTableModel ptm )
 	{
-		Vector<String> columnNames = new Vector<String>() ;
+		Vector columnNames = new Vector() ;
 		columnNames.add( "projectid" ) ;
 		columnNames.add( "priority" ) ;
 		projectTable = new JTable( ptm ) ;
@@ -822,7 +820,7 @@ public class QtFrame extends JFrame implements PopupMenuListener , ActionListene
 			if( allocation.isSelected() && remaining.isSelected() && observability.isSelected() && zoneOfAvoidance.isSelected() )
 			{
 				// If all selected - set to green light
-				URL url = ClassLoader.getSystemResource( "green_light1.gif" ) ;
+				java.net.URL url = ClassLoader.getSystemResource( "green_light1.gif" ) ;
 				ImageIcon icon = new ImageIcon( url ) ;
 				InfoPanel.searchButton.setIcon( icon ) ;
 				table.setBackground( Color.WHITE ) ;
@@ -830,7 +828,7 @@ public class QtFrame extends JFrame implements PopupMenuListener , ActionListene
 			else if( !allocation.isSelected() && !remaining.isSelected() && !observability.isSelected() && !zoneOfAvoidance.isSelected() )
 			{
 				// No constraints disabled - set to red
-				URL url = ClassLoader.getSystemResource( "red_light1.gif" ) ;
+				java.net.URL url = ClassLoader.getSystemResource( "red_light1.gif" ) ;
 				ImageIcon icon = new ImageIcon( url ) ;
 				InfoPanel.searchButton.setIcon( icon ) ;
 				table.setBackground( Color.RED.darker() ) ;
@@ -838,7 +836,7 @@ public class QtFrame extends JFrame implements PopupMenuListener , ActionListene
 			else
 			{
 				// Some constraints diabled - set to amber
-				URL url = ClassLoader.getSystemResource( "amber_light1.gif" ) ;
+				java.net.URL url = ClassLoader.getSystemResource( "amber_light1.gif" ) ;
 				ImageIcon icon = new ImageIcon( url ) ;
 				InfoPanel.searchButton.setIcon( icon ) ;
 				table.setBackground( Color.YELLOW.darker() ) ;

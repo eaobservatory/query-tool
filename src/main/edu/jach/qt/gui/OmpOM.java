@@ -4,7 +4,6 @@ package edu.jach.qt.gui ;
 import gemini.sp.SpItem ;
 import gemini.sp.SpTreeMan ;
 import gemini.sp.SpMSB ;
-import gemini.sp.SpObs ;
 import gemini.sp.iter.SpIterChop ;
 import gemini.sp.iter.SpIterRepeat ;
 import gemini.sp.iter.SpIterOffset ;
@@ -183,12 +182,12 @@ public class OmpOM extends JPanel
 	public String getProgramName()
 	{
 		String returnString = "Title Not Found" ;
-		SpItem currentItem = Selection.selection() ;
+		SpItem currentItem = ProgramTree.getCurrentItem() ;
 		if( currentItem != null )
 		{
-			Vector progVector = SpTreeMan.findAllItems( currentItem , SpMSB.class.getName() ) ;
+			Vector progVector = SpTreeMan.findAllItems( currentItem , "gemini.sp.SpMSB" ) ;
 			if( progVector == null || progVector.size() == 0 )
-				progVector = SpTreeMan.findAllItems( currentItem , SpObs.class.getName() ) ;
+				progVector = SpTreeMan.findAllItems( currentItem , "gemini.sp.SpObs" ) ;
 			try
 			{
 				if( progVector != null && progVector.size() > 0 )
@@ -264,8 +263,10 @@ public class OmpOM extends JPanel
 		JSplitPane dsp = new JSplitPane( JSplitPane.VERTICAL_SPLIT , deferredList , notes ) ;
 		dsp.setDividerLocation( 150 ) ;
 		JSplitPane splitPane = new JSplitPane( JSplitPane.HORIZONTAL_SPLIT , ptree , dsp ) ;
-		if( Selection.deferred() != Selection.NOTSET )
-			NotePanel.setNote( Selection.selection() ) ;
+		if( ProgramTree.getCurrentItem() != null )
+			NotePanel.setNote( ProgramTree.getCurrentItem() ) ;
+		else if( DeferredProgramList.getCurrentItem() != null )
+			NotePanel.setNote( DeferredProgramList.getCurrentItem() ) ;
 		else
 			NotePanel.setNote( spItem ) ;
 		return splitPane ;

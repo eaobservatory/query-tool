@@ -24,14 +24,19 @@ public class ExecuteUKIRT extends Execute implements Runnable
 		System.out.println( "Starting execution..." ) ;
 
 		SpItem itemToExecute ;
-
-		itemToExecute = Selection.selection() ;
-		
-		String isDeferred = "Deferred" ;
-		if( Selection.deferred() != Selection.DEFERRED )
-			isDeferred = "Program" ;
-
-		logger.info( "Executing observation from " + isDeferred + " list" ) ;
+		if( isDeferred )
+		{
+			itemToExecute = DeferredProgramList.getCurrentItem() ;
+			logger.info( "Executing observation from deferred list" ) ;
+		}
+		else
+		{
+			if( _useQueue )
+				itemToExecute = ProgramTree.getCurrentItem() ;
+			else
+				itemToExecute = ProgramTree.getSelectedItem() ;
+			logger.info( "Executing observation from Program List" ) ;
+		}
 
 		if( itemToExecute != null )
 		{

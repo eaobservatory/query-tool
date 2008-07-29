@@ -93,7 +93,7 @@ final public class NotePanel extends JPanel
 			ArrayList<String> notes = new ArrayList<String>() ;
 			ArrayList<String> styles = new ArrayList<String>() ;
 	
-			Vector noteVector = SpTreeMan.findAllItems( sp , SpNote.class.getName() ) ;
+			Vector noteVector = SpTreeMan.findAllItems( sp , "gemini.sp.SpNote" ) ;
 			Enumeration e = noteVector.elements() ;
 			while( e.hasMoreElements() )
 			{
@@ -103,9 +103,9 @@ final public class NotePanel extends JPanel
 					String[] instructions = thisNote.getInstructions() ;
 					if( instructions != null )
 					{
-						for( String instruction : instructions )
+						for( int i = 0 ; i < instructions.length ; i++ )
 						{
-							notes.add( instruction + "\n" ) ;
+							notes.add( instructions[ i ] + "\n" ) ;
 							styles.add( "bold" ) ;
 						}
 					}

@@ -21,6 +21,7 @@ import orac.ukirt.inst.SpInstUIST ;
 /* QT imports */
 import edu.jach.qt.utils.ErrorBox ;
 import edu.jach.qt.utils.HTMLViewer ;
+import edu.jach.qt.utils.MyTreeCellRenderer ;
 import edu.jach.qt.utils.ObsListCellRenderer ;
 
 /* Standard imports */
@@ -87,6 +88,7 @@ import javax.swing.border.Border ;
 import javax.swing.event.TreeSelectionListener ;
 import javax.swing.event.TreeSelectionEvent ;
 
+import javax.swing.tree.DefaultTreeModel ;
 import javax.swing.tree.DefaultMutableTreeNode ;
 import javax.swing.tree.TreePath ;
 
@@ -111,12 +113,18 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 	private JTree tree ;
 	private static JList obsList ;
 	private DefaultListModel model ;
-	private JScrollPane scrollPane = new JScrollPane() ;
+	private JScrollPane scrollPane = new JScrollPane() ;;
+	private static SpItem _spItem ;
+	private DefaultMutableTreeNode root ;
+	private DefaultTreeModel treeModel ;
 	private TreeViewer tv = null ;
 	private TreePath path ;
+//	private String projectID = null ;
+//	private String checkSum = null ;
 	private DropTarget dropTarget = null ;
 	private DragSource dragSource = null ;
 	private TrashCan trash = null ;
+	private static SpItem selectedItem = null ;
 	public static SpItem obsToDefer ;
 	private final String editText = "Edit Attribute..." ;
 	private final String scaleText = "Scale Exposure Times..." ;
@@ -147,6 +155,9 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 	 */
 	public ProgramTree()
 	{
+		// Ensure nothing is selected 
+		selectedItem = null ;
+
 		Border border = BorderFactory.createMatteBorder( 2 , 2 , 2 , 2 , Color.white ) ;
 		setBorder( new TitledBorder( border , "Retrieved MSBs" , 0 , 0 , new Font( "Roman" , Font.BOLD , 12 ) , Color.black ) ) ;
 		setLayout( new BorderLayout() ) ;
@@ -226,6 +237,16 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 		add( xpand , gbc , 0 , 2 , 1 , 1 ) ;
 	}
 
+	public static synchronized SpItem getSelectedItem()
+	{
+		return selectedItem ;
+	}
+
+	public static SpItem getCurrentItem()
+	{
+		return _spItem ;
+	}
+
 	/**
 	 * Set the "Send for Execution" to (dis)abled.
 	 * 
@@ -296,10 +317,12 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 		if( source == xpand )
 		{
 			SpItem itemToXpand ;
-			if( Selection.selection() == null )
+			if( selectedItem == null && DeferredProgramList.getCurrentItem() == null )
 				return ;
+			else if( selectedItem == null )
+				itemToXpand = DeferredProgramList.getCurrentItem() ;
 			else
-				itemToXpand = Selection.selection() ;
+				itemToXpand = selectedItem ;
 						
 			SpItem temp = itemToXpand.deepCopy() ;
 			
@@ -353,15 +376,20 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 	public void doExecute()
 	{
 		SpItem item = null ;
-		boolean isDeferred = Selection.deferred() == Selection.DEFERRED ;
+		boolean isDeferred = false ;
 		boolean failed = false ;
 
 		Thread t = null ;
 
-		if( Selection.selection() == null )
+		if( obsList.getSelectedValue() == null && DeferredProgramList.getCurrentItem() == null )
 		{
 			JOptionPane.showMessageDialog( null , "You have not selected an observation!" , "Please select an observation." , JOptionPane.ERROR_MESSAGE ) ;
 			return ;
+		}
+		else if( obsList.getSelectedValue() == null )
+		{
+			isDeferred = true ;
+			item = DeferredProgramList.getCurrentItem() ;
 		}
 
 		setExecutable( false ) ;
@@ -369,7 +397,17 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 
 		if( System.getProperty( "telescope" ).equalsIgnoreCase( "ukirt" ) )
 		{
-			item = Selection.selection() ;
+			if( isDeferred )
+			{
+				item = DeferredProgramList.getCurrentItem() ;
+			}
+			else
+			{
+				if( _useQueue )
+					item = ProgramTree.getCurrentItem() ;
+				else
+					item = ProgramTree.getSelectedItem() ;
+			}
 
 			SpInstObsComp instrumentContext = getContext( item ) ;
 
@@ -400,6 +438,7 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 			try
 			{
 				ExecuteUKIRT execute = new ExecuteUKIRT( _useQueue ) ;
+				execute.setDeferred( isDeferred ) ;
 
 				File failFile = execute.failFile() ;
 				File successFile = execute.successFile() ;
@@ -477,11 +516,12 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 			{
 				try
 				{
-					if( Selection.deferred() != Selection.NOTSET )
-					{
-						ExecuteInThread ein = new ExecuteInThread( Selection.selection() , isDeferred ) ;
-						ein.start() ;
-					}
+					ExecuteInThread ein ;
+					if( isDeferred )
+						ein = new ExecuteInThread( item , isDeferred ) ;
+					else
+						ein = new ExecuteInThread( _spItem , isDeferred ) ;
+					ein.start() ;
 				}
 				catch( Exception e )
 				{
@@ -513,6 +553,51 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 	}
 
 	/**
+	 * public void addTree(String title,SpItem sp) is a public method to set
+	 * up a JTree GUI bit for a science program object in the panel and to
+	 * set up a listener too
+	 * 
+	 * @param String
+	 *                title and SpItem sp
+	 * @return none
+	 * @throws none
+	 * @deprecated Replaced by {@link #addList(SpItem)}
+	 * 
+	 */
+	public void addTree( SpItem sp )
+	{
+		_spItem = sp ;
+
+		getItems( sp , root ) ;
+
+		// Create a new tree control
+		treeModel = new DefaultTreeModel( root ) ;
+		tree = new JTree( treeModel ) ;
+
+		MyTreeCellRenderer tcr = new MyTreeCellRenderer() ;
+		// Tell the tree it is being rendered by our application
+		tree.setCellRenderer( tcr ) ;
+		tree.addTreeSelectionListener( this ) ;
+		tree.addKeyListener( this ) ;
+
+		// Add the listbox to a scrolling pane
+		scrollPane.getViewport().removeAll() ;
+		scrollPane.getViewport().add( tree ) ;
+		scrollPane.getViewport().setOpaque( false ) ;
+
+		gbc.fill = GridBagConstraints.BOTH ;
+		gbc.insets.bottom = 5 ;
+		gbc.insets.left = 10 ;
+		gbc.insets.right = 5 ;
+		gbc.weightx = 100 ;
+		gbc.weighty = 100 ;
+		add( scrollPane , gbc , 0 , 0 , 2 , 1 ) ;
+
+		this.repaint() ;
+		this.validate() ;
+	}
+
+	/**
 	 * Set up the List GUI and populate it with the results of a query.
 	 * 
 	 * @param sp
@@ -526,17 +611,17 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 			return ;
 
 		// If we get here we should reinitialise with the new argument
-		Selection.setSelection( sp , false ) ;
+		_spItem = sp ;
 
 		model = new DefaultListModel() ;
 
-		if( sp == null )
+		if( _spItem == null )
 		{
 			model.clear() ;
 		}
 		else
 		{
-			Vector obsVector = SpTreeMan.findAllItems( sp , SpObs.class.getName() ) ;
+			Vector obsVector = SpTreeMan.findAllItems( sp , "gemini.sp.SpObs" ) ;
 
 			Enumeration e = obsVector.elements() ;
 			while( e.hasMoreElements() )
@@ -555,31 +640,31 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 				if( e.getClickCount() == 2 )
 				{
 					_useQueue = true ;
-					Selection.setSelection( ( SpItem )obsList.getSelectedValue() , false ) ;
+					selectedItem = ( SpItem )obsList.getSelectedValue() ;
 					doExecute() ;
 				}
 				else if( e.getClickCount() == 1 && ( e.getModifiers() & InputEvent.BUTTON1_MASK ) == InputEvent.BUTTON1_MASK )
 				{
-					if( Selection.selection() != obsList.getSelectedValue() )
+					if( selectedItem != obsList.getSelectedValue() )
 					{
 						// Select the new item
-						Selection.setSelection( ( SpItem )obsList.getSelectedValue() , false ) ;
+						selectedItem = ( SpItem )obsList.getSelectedValue() ;
 						DeferredProgramList.clearSelection() ;
-						NotePanel.setNote( Selection.selection() ) ;
+						NotePanel.setNote( ProgramTree.getCurrentItem() ) ;
 					}
 					else if( e.getClickCount() == 1 )
 					{
-						if( Selection.selection() != obsList.getSelectedValue() )
+						if( selectedItem != obsList.getSelectedValue() )
 						{
 							// Select the new item
-							Selection.setSelection( ( SpItem )obsList.getSelectedValue() , false ) ;
+							selectedItem = ( SpItem )obsList.getSelectedValue() ;
 							DeferredProgramList.clearSelection() ;
-							NotePanel.setNote( Selection.selection() ) ;
+							NotePanel.setNote( ProgramTree.getCurrentItem() ) ;
 						}
 						else
 						{
 							obsList.clearSelection() ;
-							Selection.clear() ;
+							selectedItem = null ;
 						}
 					}
 				}
@@ -602,7 +687,7 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 		if( model.size() > 0 )
 		{
 			obsList.setSelectedIndex( 0 ) ;
-			Selection.setSelection( ( SpItem )obsList.getSelectedValue() , false ) ;
+			selectedItem = ( SpItem )obsList.getSelectedValue() ;
 		}
 
 		dragSource.createDefaultDragGestureRecognizer( obsList , DnDConstants.ACTION_MOVE , this ) ;
@@ -626,6 +711,7 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 	public static void clearSelection()
 	{
 		obsList.clearSelection() ;
+		selectedItem = null ;
 	}
 
 	/**
@@ -672,7 +758,7 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 	{
 		SpObs item = ( SpObs )obsList.getSelectedValue() ;
 
-		Vector obsV = SpTreeMan.findAllItems( Selection.selection() , SpObs.class.getName() ) ;
+		Vector obsV = SpTreeMan.findAllItems( _spItem , "gemini.sp.SpObs" ) ;
 
 		int index = obsList.getSelectedIndex() ;
 		(( DefaultListModel )obsList.getModel()).removeElementAt( index ) ;
@@ -726,11 +812,11 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 	private void editAttributes()
 	{
 		// Recheck that this is an observation
-		if( Selection.selection().type() == SpType.OBSERVATION )
+		if( selectedItem.type() == SpType.OBSERVATION )
 		{
 			setExecutable( false ) ;
 
-			SpObs observation = ( SpObs )Selection.selection() ;
+			SpObs observation = ( SpObs )selectedItem ;
 
 			try
 			{
@@ -758,11 +844,11 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 	 **/
 	private void scaleAttributes()
 	{
-		if( Selection.selection() != null && Selection.selection().type() == SpType.OBSERVATION )
+		if( selectedItem != null && selectedItem.type() == SpType.OBSERVATION )
 		{
 			setExecutable( false ) ;
 	
-			SpObs observation = ( SpObs )Selection.selection() ;
+			SpObs observation = ( SpObs )selectedItem ;
 			if( !observation.equals( null ) )
 			{
 				new AttributeEditor( observation , new javax.swing.JFrame() , true , "EXPTIME" , haveScaled.contains( observation ) , lastScaleFactor() , false ).show() ;
@@ -792,11 +878,11 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 	 **/
 	private void rescaleAttributes()
 	{
-		if( Selection.selection() == null || Selection.selection().type() != SpType.OBSERVATION )
+		if( selectedItem == null || selectedItem.type() != SpType.OBSERVATION )
 		{
 			setExecutable( false ) ;
 	
-			SpObs observation = ( SpObs )Selection.selection() ;
+			SpObs observation = ( SpObs )selectedItem ;
 			if( !observation.equals( null ) )
 			{
 				new AttributeEditor( observation , new javax.swing.JFrame() , true , "EXPTIME" , haveScaled.contains( observation ) , lastScaleFactor() , true ).show() ;
@@ -836,7 +922,7 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 
 		if( item != null )
 		{
-			Vector obs = SpTreeMan.findAllItems( item , SpObs.class.getName() ) ;
+			Vector obs = SpTreeMan.findAllItems( item , "gemini.sp.SpObs" ) ;
 			instrumentContext = SpTreeMan.findInstrument( ( SpObs )obs.firstElement() ) ;
 		}
 		
@@ -852,7 +938,7 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 				return ;
 
 			// If this is an observation then show the popup
-			if( Selection.selection() != null && Selection.selection().type() == SpType.OBSERVATION )
+			if( selectedItem != null && selectedItem.type() == SpType.OBSERVATION )
 				scalePopup.show( e.getComponent() , e.getX() , e.getY() ) ;
 		}
 	}
@@ -881,9 +967,11 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 	 */
 	public void drop( DropTargetDropEvent evt )
 	{
-		SpObs itemForDrop = null ;
-		if( Selection.selection() != null )
-			itemForDrop = ( SpObs )Selection.selection() ;
+		SpObs itemForDrop ;
+		if( selectedItem != null )
+			itemForDrop = ( SpObs )selectedItem ;
+		else
+			itemForDrop = ( SpObs )DeferredProgramList.getCurrentItem() ;
 
 		if( itemForDrop != null && !itemForDrop.isOptional() )
 		{
@@ -916,18 +1004,18 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 			Object selected = obsList.getSelectedValue() ;
 			enableList( false ) ;
 			DeferredProgramList.clearSelection() ;
-			Selection.setSelection( ( SpItem )selected , false ) ;
+			selectedItem = ( SpItem )selected ;
 	
 			if( selected != null )
 			{
-				obsToDefer = Selection.selection().deepCopy() ;
+				obsToDefer = selectedItem.deepCopy() ;
 	
 				SpInstObsComp inst = SpTreeMan.findInstrument( obsToDefer ) ;
 	
 				// we are expecting the instrument to be null
 				if( inst == null )
 				{
-					inst = SpTreeMan.findInstrument( Selection.selection() ) ;
+					inst = SpTreeMan.findInstrument( selectedItem ) ;
 					SpInstObsComp clonedInst = ( SpInstObsComp )inst.deepCopy() ;
 					SpInsertData insertable = SpTreeMan.evalInsertInside( clonedInst , obsToDefer ) ;
 					if( insertable != null )
@@ -994,7 +1082,10 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 			if( obs != null )
 			{
 				if( obs.isOptional() )
+				{
 					removeCurrentNode() ;
+					selectedItem = null ;
+				}
 			}
 		}
 		enableList( true ) ;
@@ -1068,6 +1159,7 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 			File failFile = execute.failFile() ;
 			File successFile = execute.successFile() ;
 
+			execute.setDeferred( _isDeferred ) ;
 			failed = execute.run() ;
 
 			if( failFile.exists() )
@@ -1105,7 +1197,8 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 				if( !_isDeferred )
 				{
 					model.clear() ;
-					Selection.clear() ;
+					_spItem = null ;
+					selectedItem = null ;
 				}
 				else
 				{
