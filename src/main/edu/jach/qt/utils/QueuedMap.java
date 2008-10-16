@@ -9,20 +9,20 @@ import java.security.NoSuchAlgorithmException ;
 
 /**
  * 
- * QueuedMap is a map that hashes the key independantly of the maps own implementation.
+ * QueuedMap is a map that hashes the key independently of the maps own implementation.
  * As to why you would want to do this, you probably don't.
  */
 
 public class QueuedMap
 {
-	protected TreeMap treeMap = null ;
+	protected TreeMap<String,Object> treeMap = null ;
 	private static QueuedMap queuedMap = null ;
 	public String algorythm = "SHA" ;
 	private static boolean tryDigest = true ;
 
 	protected QueuedMap()
 	{
-		treeMap = new TreeMap() ;
+		treeMap = new TreeMap<String,Object>() ;
 	}
 
 	public static synchronized QueuedMap getQueuedMap()

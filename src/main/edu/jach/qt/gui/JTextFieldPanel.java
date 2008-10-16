@@ -86,10 +86,10 @@ public class JTextFieldPanel extends WidgetPanel implements DocumentListener
 	 */
 	public void setTextField( String field , String val )
 	{
-		ListIterator iterator = fieldElems.listIterator( 0 ) ;
+		ListIterator<LabeledTextField> iterator = fieldElems.listIterator( 0 ) ;
 		while( iterator.hasNext() )
 		{
-			LabeledTextField thisTextField = ( LabeledTextField )iterator.next() ;
+			LabeledTextField thisTextField = iterator.next() ;
 			if( thisTextField.getName().equals( field ) )
 				thisTextField.setText( val ) ;
 		}
@@ -103,10 +103,10 @@ public class JTextFieldPanel extends WidgetPanel implements DocumentListener
 	public String getText( String field )
 	{
 		String rtn = null ;
-		ListIterator iterator = fieldElems.listIterator( 0 ) ;
+		ListIterator<LabeledTextField> iterator = fieldElems.listIterator( 0 ) ;
 		while( iterator.hasNext() )
 		{
-			LabeledTextField thisTextField = ( LabeledTextField )iterator.next() ;
+			LabeledTextField thisTextField = iterator.next() ;
 			if( thisTextField.getName().equals( field ) )
 				rtn = thisTextField.getText() ;
 		}
@@ -119,7 +119,7 @@ public class JTextFieldPanel extends WidgetPanel implements DocumentListener
 	 */
 	public void setTau( String val )
 	{
-		LabeledTextField temp = ( LabeledTextField )( fieldElems.getFirst() ) ;
+		LabeledTextField temp = ( fieldElems.getFirst() ) ;
 		temp.setText( val ) ;
 	}
 
@@ -131,7 +131,7 @@ public class JTextFieldPanel extends WidgetPanel implements DocumentListener
 	 */
 	public void insertUpdate( DocumentEvent e )
 	{
-		ListIterator iter = fieldElems.listIterator( 0 ) ;
+		ListIterator<LabeledTextField> iter = fieldElems.listIterator( 0 ) ;
 		LabeledTextField tf ;
 		String name ;
 
@@ -152,7 +152,7 @@ public class JTextFieldPanel extends WidgetPanel implements DocumentListener
 	 */
 	public void removeUpdate( DocumentEvent e )
 	{
-		ListIterator iter = fieldElems.listIterator( 0 ) ;
+		ListIterator<LabeledTextField> iter = fieldElems.listIterator( 0 ) ;
 		LabeledTextField tf ;
 		String name ;
 
@@ -172,7 +172,7 @@ public class JTextFieldPanel extends WidgetPanel implements DocumentListener
 	 */
 	public void changedUpdate( DocumentEvent e )
 	{
-		ListIterator iter = fieldElems.listIterator( 0 ) ;
+		ListIterator<LabeledTextField> iter = fieldElems.listIterator( 0 ) ;
 		String name ;
 		LabeledTextField tf ;
 

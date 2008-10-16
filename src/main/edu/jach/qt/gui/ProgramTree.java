@@ -119,8 +119,6 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 	private DefaultTreeModel treeModel ;
 	private TreeViewer tv = null ;
 	private TreePath path ;
-//	private String projectID = null ;
-//	private String checkSum = null ;
 	private DropTarget dropTarget = null ;
 	private DragSource dragSource = null ;
 	private TrashCan trash = null ;
@@ -130,8 +128,8 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 	private final String scaleText = "Scale Exposure Times..." ;
 	private String rescaleText = "Re-do Scale Exposure Times" ;
 	private final String engString = "Send for Engineering" ;
-	private Vector haveScaled = new Vector() ;
-	private Vector scaleFactors = new Vector() ;
+	private Vector<SpObs> haveScaled = new Vector<SpObs>() ;
+	private Vector<Double> scaleFactors = new Vector<Double>() ;
 	private JMenuItem edit ;
 	private JMenuItem scale ;
 	private JMenuItem scaleAgain ;
@@ -912,7 +910,7 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 		}
 		else
 		{
-			return ( Double )scaleFactors.elementAt( scaleFactors.size() - 1 ) ;
+			return scaleFactors.elementAt( scaleFactors.size() - 1 ) ;
 		}
 	}
 

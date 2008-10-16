@@ -204,7 +204,7 @@ public class LabeledRangeTextField extends WidgetPanel implements DocumentListen
 	 * 
 	 * @return The contents of the text field.
 	 */
-	public Vector getUpperList()
+	public Vector<String> getUpperList()
 	{
 		String tmpStr = getUpperText() ;
 		Vector<String> result = new Vector<String>() ;
@@ -222,7 +222,7 @@ public class LabeledRangeTextField extends WidgetPanel implements DocumentListen
 	 * 
 	 * @return The contents of the text field.
 	 */
-	public Vector getLowerList()
+	public Vector<String> getLowerList()
 	{
 		String tmpStr = getLowerText() ;
 		Vector<String> result = new Vector<String>() ;

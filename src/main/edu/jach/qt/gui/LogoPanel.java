@@ -126,7 +126,7 @@ public class LogoPanel extends JLabel implements Runnable , ActionListener
 	public void actionPerformed( ActionEvent e )
 	{
 		frameNumber++ ;
-		setIcon( ( ( ImageIcon )images.elementAt( LogoPanel.frameNumber % 10 ) ) ) ;
+		setIcon( images.elementAt( LogoPanel.frameNumber % 10 ) ) ;
 	}
 
 	/** 

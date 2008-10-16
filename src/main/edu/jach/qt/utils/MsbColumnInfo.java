@@ -3,7 +3,7 @@ package edu.jach.qt.utils ;
 public class MsbColumnInfo
 {
 	private String name ;
-	private Class klass ;
+	private Class<?> klass ;
 	private boolean visible = true ;
 
 	public MsbColumnInfo( String name , String klassType )
@@ -22,7 +22,7 @@ public class MsbColumnInfo
 		return name ;
 	}
 
-	public Class getClassType()
+	public Class<?> getClassType()
 	{
 		return klass ;
 	}

@@ -37,7 +37,7 @@ import jsky.app.ot.OtTreeWidget ;
  */
 class TreeViewer implements ActionListener 
 {	
-	private TreeMap treemap = null ;
+	private TreeMap<String,TreeMap<String,String>> treemap = null ;
 	
 	/* 
 	 * if hide is true, only show named components and values
@@ -151,23 +151,23 @@ class TreeViewer implements ActionListener
 
 		if( treemap != null )
 		{
-			Vector vector = unrollItem( item , new Vector() ) ;
+			Vector<SpItem> vector = unrollItem( item , new Vector<SpItem>() ) ;
 			
 			for( int index = 0 ; index < vector.size() ; index++ )
 			{
 				String className = item.getClass().getName() ;
 				if( !hide || treemap.containsKey( className ) )
 				{
-					TreeMap values ; 
+					TreeMap<String,String> values ; 
 					if( hide )
-						values = ( TreeMap )treemap.get( className ) ;
+						values = treemap.get( className ) ;
 					else
-						values = new TreeMap() ;
+						values = new TreeMap<String,String>() ;
 					buffer.append( "\n\n" + className + "\n\n" ) ;
 					
 					SpAvTable table = item.getTable() ;
 					
-					Iterator keys = table.getAttrIterator() ;
+					Iterator<String> keys = table.getAttrIterator() ;
 					
 					String key ;
 					String value ;
@@ -176,11 +176,11 @@ class TreeViewer implements ActionListener
 					
 					while( keys.hasNext() )
 					{
-						key = ( String )keys.next() ;
+						key = keys.next() ;
 						
 						if( !hide || values.containsKey( key ) )
 						{
-							alias = ( String )values.get( key ) ;
+							alias = values.get( key ) ;
 							if( alias == null )
 								alias = key ;
 							value = table.get( key ) ;
@@ -193,7 +193,7 @@ class TreeViewer implements ActionListener
 						}
 					}
 				}
-				item = ( SpItem )vector.elementAt( index ) ;
+				item = vector.elementAt( index ) ;
 			}
 		}
 
@@ -205,7 +205,7 @@ class TreeViewer implements ActionListener
 		return textPane ;
 	}
 	
-	private Vector unrollItem( SpItem item , Vector vector )
+	private Vector<SpItem> unrollItem( SpItem item , Vector<SpItem> vector )
 	{
 		Enumeration children = item.children() ;
 		while( children.hasMoreElements() )
@@ -260,8 +260,8 @@ class TreeViewer implements ActionListener
 			
 			if( contents != null )
 			{
-				treemap = new TreeMap() ;
-				TreeMap values = null ;
+				treemap = new TreeMap<String,TreeMap<String,String>>() ;
+				TreeMap<String,String> values = null ;
 				boolean newComponent = true ;
 				String component = null ;
 				
@@ -295,7 +295,7 @@ class TreeViewer implements ActionListener
 							{
 								component = line ;
 								newComponent = false ;
-								values = new TreeMap() ;
+								values = new TreeMap<String,String>() ;
 								treemap.put( component , values ) ;
 							}
 							else

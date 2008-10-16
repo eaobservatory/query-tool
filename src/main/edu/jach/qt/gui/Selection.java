@@ -7,7 +7,7 @@ public class Selection
 {
 	private static final Selection self = new Selection() ;
 	private static SpItem selectedItem = null ;
-	private static final Class spProg = SpProg.class ;
+	private static final Class<SpProg> spProg = SpProg.class ;
 
 	public static final int DEFERRED = 1 ;
 	public static final int NOTDEFERRED = 0 ;

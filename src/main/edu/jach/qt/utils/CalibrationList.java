@@ -48,16 +48,15 @@ public class CalibrationList
 	private static final String ALL_DISABLED = "all" ;
 	public static final String ROOT_ELEMENT_TAG = "SpMSBSummary" ;
 	static Logger logger = Logger.getLogger( CalibrationList.class ) ;
-	static TreeMap treeMap = null ;
 
 	/**
 	 * Constructor
 	 */
 	private CalibrationList(){}
 
-	public static OrderedMap getCalibrations()
+	public static OrderedMap<String,SpItem> getCalibrations()
 	{
-		OrderedMap orderedMap = new OrderedMap() ;
+		OrderedMap<String,SpItem> orderedMap = new OrderedMap<String,SpItem>() ;
 
 		try
 		{
@@ -76,7 +75,7 @@ public class CalibrationList
 		return orderedMap ;
 	}
 
-	private static OrderedMap pickApart( OrderedMap orderedMap , SpItem spItem )
+	private static OrderedMap<String,SpItem> pickApart( OrderedMap<String,SpItem> orderedMap , SpItem spItem )
 	{
 		Enumeration enumeration = spItem.children() ;
 		String telescope = System.getProperty( "telescope" ) ;
@@ -119,9 +118,9 @@ public class CalibrationList
 	 *            The name os the telescope.
 	 * @return A <code>TreeMap</code> of observations. If no observations are found then there will be zero entries in the table.
 	 */
-	public static TreeMap getCalibrations( String telescope )
+	public static TreeMap<String,Integer> getCalibrations( String telescope )
 	{
-		TreeMap tree = new TreeMap() ;
+		TreeMap<String,Integer> tree = new TreeMap<String,Integer>() ;
 		Document doc = new DocumentImpl() ;
 		Element root = doc.createElement( "MSBQuery" ) ;
 		Element item ;
@@ -192,7 +191,7 @@ public class CalibrationList
 				for( int node = 0 ; node < XmlUtils.getSize( doc , ROOT_ELEMENT_TAG ) ; node++ )
 				{
 					item = XmlUtils.getElement( doc , ROOT_ELEMENT_TAG , node ) ;
-					tree.put( ( String )XmlUtils.getValue( item , "title" ) , new Integer( item.getAttribute( "id" ) ) ) ;
+					tree.put( XmlUtils.getValue( item , "title" ) , new Integer( item.getAttribute( "id" ) ) ) ;
 				}
 			}
 			else

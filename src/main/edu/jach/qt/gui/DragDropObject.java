@@ -66,7 +66,7 @@ public final class DragDropObject implements Transferable
 		parent = someParent ;
 	}
 
-	public Vector getChildren()
+	public Vector<DragDropObject> getChildren()
 	{
 		return children ;
 	}

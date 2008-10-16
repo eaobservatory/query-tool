@@ -90,11 +90,11 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 	private JScrollPane scrollPane = new JScrollPane() ;
 	private DefaultListModel model ;
 	private static SpItem currentItem ;
-	private static HashMap fileToObjectMap = new HashMap() ;
+	private static HashMap<SpItem,String> fileToObjectMap = new HashMap<SpItem,String>() ;
 	private JPopupMenu engMenu = new JPopupMenu() ;
 	private JMenuItem engItem = new JMenuItem( "Send for Engineering" ) ;
 	private boolean _useQueue = true ;
-	private static HashSet duplicates = new HashSet() ;
+	private static HashSet<SpItem> duplicates = new HashSet<SpItem>() ;
 	static Logger logger = Logger.getLogger( DeferredProgramList.class ) ;
 	
 	private static final FileExtensionFilter xmlFilter = new FileExtensionFilter( ".xml" ) ;
@@ -612,7 +612,7 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 		thisObservation.setTitleAttr( newTitle ) ;
 
 		// Delete the old entry and replace by the current
-		String fileToRemove = ( String )fileToObjectMap.get( obsList.getSelectedValue() ) ;
+		String fileToRemove = fileToObjectMap.get( obsList.getSelectedValue() ) ;
 		if( fileToRemove != null )
 		{	
 			File f = new File( fileToRemove ) ;
@@ -679,7 +679,7 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 		if( evt.getDropSuccess() )
 		{
 			// Delete the file
-			String fileToRemove = ( String )fileToObjectMap.get( obsList.getSelectedValue() ) ;
+			String fileToRemove = fileToObjectMap.get( obsList.getSelectedValue() ) ;
 			if( fileToRemove != null )
 			{
 				File f = new File( fileToRemove ) ;

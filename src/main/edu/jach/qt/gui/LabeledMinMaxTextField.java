@@ -3,6 +3,8 @@ package edu.jach.qt.gui ;
 import java.awt.GridLayout ;
 import java.awt.event.ActionListener ;
 import java.awt.event.ActionEvent ;
+import java.io.Serializable;
+
 import javax.swing.JComboBox ;
 import javax.swing.event.DocumentEvent ;
 
@@ -22,7 +24,7 @@ import java.util.Hashtable ;
 
 public class LabeledMinMaxTextField extends LabeledTextField
 {
-	protected LinkedList valueList ;
+	protected LinkedList<Serializable> valueList ;
 	protected JComboBox rangeList ;
 
 	/** 
@@ -35,17 +37,17 @@ public class LabeledMinMaxTextField extends LabeledTextField
 	{
 		super( ht , wdb , text ) ;
 
-		valueList = new LinkedList() ;
+		valueList = new LinkedList<Serializable>() ;
 		rangeList = new JComboBox() ;
 
 		setup() ;
 	}
 	
-	public LabeledMinMaxTextField( Hashtable ht , WidgetDataBag wdb , String text , String toolTip )
+	public LabeledMinMaxTextField( Hashtable<String,String> ht , WidgetDataBag wdb , String text , String toolTip )
 	{
 		super( ht , wdb , text , toolTip ) ;
 
-		valueList = new LinkedList() ;
+		valueList = new LinkedList<Serializable>() ;
 		rangeList = new JComboBox() ;
 
 		setup() ;

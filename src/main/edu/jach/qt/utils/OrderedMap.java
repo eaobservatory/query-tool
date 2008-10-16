@@ -16,68 +16,64 @@ import java.util.Vector ;
  *
  */
 
-public class OrderedMap
+public class OrderedMap<S,O>
 {
-	final private TreeMap<String,Object> treeMap ;
-	final private Vector<String> vector ;
+	final private TreeMap<S,O> treeMap ;
+	final private Vector<S> vector ;
 	private int size ;
 
 	public OrderedMap()
 	{
-		treeMap = new TreeMap<String,Object>() ;
-		vector = new Vector<String>() ;
+		treeMap = new TreeMap<S,O>() ;
+		vector = new Vector<S>() ;
 	}
 
-	public synchronized void add( final String key , final Object object )
+	public synchronized void add( final S key , final O object )
 	{
 		treeMap.put( key , object ) ;
 		vector.add( key ) ;
 		size++ ;
 	}
 
-	public synchronized Object remove( final int index )
+	public synchronized O remove( final int index )
 	{
-		final Object name = vector.remove( index ) ;
-		final Object object = treeMap.remove( name ) ;
+		final S key = vector.remove( index ) ;
+		final O object = treeMap.remove( key ) ;
 		if( object != null )
 			size-- ;
 		return object ;
 	}
 
-	public synchronized Object remove( final String name )
+	public synchronized O remove( final S key )
 	{
-		final Object object = treeMap.remove( name ) ;
-		vector.remove( name ) ;
+		final O object = treeMap.remove( key ) ;
+		vector.remove( key ) ;
 		if( object != null )
 			size-- ;
 		return object ;
 	}
 
-	public Object find( final String name )
+	public O find( final S key )
 	{
-		final Object object = treeMap.get( name ) ;
+		final O object = treeMap.get( key ) ;
 		return object ;
 	}
 
-	public Object find( int index )
+	public O find( int index )
 	{
-		final Object name = vector.elementAt( index ) ;
-		Object object = treeMap.get( name ) ;
+		final S key = vector.elementAt( index ) ;
+		O object = treeMap.get( key ) ;
 		return object ;
 	}
 
-	public String getNameForIndex( int index )
+	public S getNameForIndex( int index )
 	{
-		String returnValue = "" ;
-		Object temp = vector.elementAt( index ) ;
-		if( temp instanceof String )
-			returnValue = ( String )temp ;
-		return returnValue ;
+		return vector.elementAt( index ) ;
 	}
 
-	public int getIndexForName( String name )
+	public int getIndexForKey( S key )
 	{
-		return vector.indexOf( name ) ;
+		return vector.indexOf( key ) ;
 	}
 
 	public int size()
@@ -92,13 +88,13 @@ public class OrderedMap
 		size = 0 ;
 	}
 
-	public synchronized void move( String name , int index )
+	public synchronized void move( S key , int index )
 	{
-		int current = getIndexForName( name ) ;
+		int current = getIndexForKey( key ) ;
 		if( current != index && current > -1 )
 		{
 			vector.remove( current ) ;
-			vector.insertElementAt( name , index ) ;
+			vector.insertElementAt( key , index ) ;
 		}
 	}
 
@@ -106,7 +102,7 @@ public class OrderedMap
 	{
 		if( currentIndex != newIndex && currentIndex > -1 && currentIndex < size() )
 		{
-			String object = vector.remove( currentIndex ) ;
+			S object = vector.remove( currentIndex ) ;
 			newIndex = newIndex < size() ? newIndex : size() - 1 ;
 			vector.insertElementAt( object , newIndex ) ;
 		}

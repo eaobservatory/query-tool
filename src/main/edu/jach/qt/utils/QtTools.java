@@ -234,7 +234,7 @@ public class QtTools
 			if( spObs == null )
 				throw new NullPointerException( "Observation passed to translate() not translatable" ) ;
 
-			spObs.translate( new Vector() ) ;
+			spObs.translate( new Vector<String>() ) ;
 			
 			tname = ConfigWriter.getCurrentInstance().getExecName() ;
 			logger.debug( "Translated file set to: " + tname ) ;

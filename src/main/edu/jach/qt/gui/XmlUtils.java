@@ -5,14 +5,12 @@ import java.io.File ;
 import java.io.IOException ;
 import java.util.StringTokenizer ;
 import java.util.Vector ;
-import javax.swing.JOptionPane ;
 import javax.xml.parsers.DocumentBuilderFactory ;
 import javax.xml.parsers.DocumentBuilder ;
 
 import org.xml.sax.InputSource ;
 import org.xml.sax.Attributes ;
 import org.xml.sax.helpers.DefaultHandler ;
-import javax.xml.parsers.ParserConfigurationException ;
 import org.apache.xerces.parsers.DOMParser ;
 
 import org.apache.log4j.Logger ;
@@ -70,7 +68,7 @@ public class XmlUtils
 		for( count = 0 ; count < rows.getLength() ; count++ )
 		{
 			Element e = getElement( doc , tagName , count ) ;
-			String projectId = ( String )getValue( e , "projectid" ) ;
+			String projectId = getValue( e , "projectid" ) ;
 			if( projectId.trim().equals( selection.trim() ) )
 			{
 				selectionCount++ ;
@@ -110,7 +108,7 @@ public class XmlUtils
 		for( int i = 0 ; i < rows.getLength() ; i++ )
 		{
 			Element e = getElement( doc , tagName , i ) ;
-			String projectId = ( String )getValue( e , "projectid" ) ;
+			String projectId = getValue( e , "projectid" ) ;
 			if( projectId.trim().equals( includeThis.trim() ) )
 				rowCount++ ;
 		}
@@ -132,7 +130,7 @@ public class XmlUtils
 	 @param    tagName a tag name
 	 @return   s   the value of a Node 
 	 */
-	public static Object getValue( Element e , String tagName )
+	public static String getValue( Element e , String tagName )
 	{
 		try
 		{
@@ -159,7 +157,6 @@ public class XmlUtils
 		}
 
 		return null ;
-
 	}
 
 	public static String getChecksum( String xmlString )
@@ -195,78 +192,6 @@ public class XmlUtils
 			logger.error( "Unable to determine checksum" ) ;
 
 		return checksum ;
-	}
-
-	/**
-	 * Returns an array of strings representing the columns contained
-	 * in the MSB summary file.  This file must exist, so the application
-	 * needs to perform a query before this method can be invoked.
-	 * @param  summaryFile   The name of the XML file containing the MSB
-	 *                       summary information.
-	 * @return               A string array of column names, or null if an 
-	 *                       error is encountered.
-	 * @deprecated           Replaced by {@link edu.jach.qt.utils.MsbClient#getColumnNames()}
-	 */
-	public static String[] getColumnNames( String summaryFile )
-	{
-		Document doc ;
-		try
-		{
-			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance() ;
-
-			DocumentBuilder builder = factory.newDocumentBuilder() ;
-			doc = builder.parse( new File( summaryFile ) ) ;
-		}
-		catch( SAXException sxe )
-		{
-			Exception x = sxe ;
-			if( sxe.getException() != null )
-				x = sxe.getException() ;
-
-			logger.error( "SAX Error generated during parsing" , x ) ;
-			return null ;
-		}
-		catch( ParserConfigurationException pce )
-		{
-			logger.error( "ParseConfiguration Error generated during parsing" , pce ) ;
-			return null ;
-		}
-		catch( IOException ioe )
-		{
-			// I/O error
-			logger.error( "IO Error generated attempting to build Document" , ioe ) ;
-			return null ;
-		}
-
-		if( doc == null )
-		{
-			JOptionPane.showMessageDialog( null , "No observations found - unable to start" , "No Obs" , JOptionPane.ERROR_MESSAGE ) ;
-			logger.error( "No observation found - unable to build results table" ) ;
-		}
-
-		Vector names = new Vector() ;
-		Node element = doc.getElementsByTagName( "SpMSBSummary" ).item( 0 ) ;
-		if( element != null )
-		{
-			NodeList summary = element.getChildNodes() ;
-			for( int i = 0 ; i < summary.getLength() ; i++ )
-			{
-				String name = summary.item( i ).getNodeName().trim() ;
-				if( name.startsWith( "#" ) )
-					continue ;
-
-				names.add( ( Object )name ) ;
-			}
-		}
-		Object msbid = names.remove( names.indexOf( "msbid" ) ) ;
-		Object checksum = names.remove( names.indexOf( "checksum" ) ) ;
-		names.add( msbid ) ;
-		names.add( checksum ) ;
-		String[] columns = new String[ names.size() ] ;
-		for( int i = 0 ; i < names.size() ; i++ )
-			columns[ i ] = ( String )names.get( i ) ;
-
-		return columns ;
 	}
 
 	/**
@@ -348,7 +273,7 @@ public class XmlUtils
 
 	}
 
-	public static OrderedMap getNewModel( Document doc , String tag )
+	public static OrderedMap<String,Object> getNewModel( Document doc , String tag )
 	{
 		if( doc == null )
 			return null ;
@@ -360,9 +285,9 @@ public class XmlUtils
 
 		NodeList children ;
 		// Create an OrderedMap containing the data for each project
-		OrderedMap projectData = new OrderedMap() ;
+		OrderedMap<String,Object> projectData = new OrderedMap<String,Object>() ;
 
-		// Loop thru all the elements in the document and start populating the new model.
+		// Loop through all the elements in the document and start populating the new model.
 		int rowsLength = rows.getLength() ;
 		Element e ;
 		String currentProject ;
@@ -370,8 +295,8 @@ public class XmlUtils
 		for( int i = 0 ; i < rowsLength ; i++ )
 		{
 			e = getElement( doc , tag , i ) ;
-			currentProject = ( String )getValue( e , "projectid" ) ;
-			// Loop thru all the models to see if there is one we can use
+			currentProject = getValue( e , "projectid" ) ;
+			// Loop through all the models to see if there is one we can use
 			if( projectData.find( currentProject ) == null )
 			{
 				currentModel = new MSBTableModel( currentProject ) ;
@@ -384,7 +309,7 @@ public class XmlUtils
 
 			currentModel.bumpIndex() ;
 
-			// Now we have the model, loop thru the elements and add these to the model
+			// Now we have the model, loop through the elements and add these to the model
 			children = rows.item( i ).getChildNodes() ;
 			int numberOfChildren = children.getLength() ;
 			String name ;
@@ -428,14 +353,14 @@ public class XmlUtils
 			sxe.printStackTrace() ;
 			return null ;
 		}
-		Vector projectIds = new Vector() ;
-		Vector priorities = new Vector() ;
+		Vector<String> projectIds = new Vector<String>() ;
+		Vector<Integer> priorities = new Vector<Integer>() ;
 		if( projectDoc != null )
 		{
 			int nElements = getSize( projectDoc , "SpMSBSummary" ) ;
 			for( int i = 0 ; i < nElements ; i++ )
 			{
-				Object value = getValue( getElement( projectDoc , "SpMSBSummary" , i ) , "projectid" ) ;
+				String value = getValue( getElement( projectDoc , "SpMSBSummary" , i ) , "projectid" ) ;
 				if( !( projectIds.contains( value ) ) )
 				{
 					projectIds.add( value ) ;
@@ -485,7 +410,7 @@ public class XmlUtils
 		private final String _titleElement = "projectid" ;
 		private final String _priority = "priority" ;
 		private boolean getNextPriority = false ;
-		private Vector ids = new Vector() ;
+		private Vector<String> ids = new Vector<String>() ;
 		private Vector<Integer> priorities = new Vector<Integer>() ;
 		int idCount = 0 ;
 
@@ -509,7 +434,7 @@ public class XmlUtils
 				s = s.substring( start , start + length ) ;
 				s = s.trim() ;
 				// This was added to trap some random problems with the SAX parser.  
-				// I dont really know why it happens, but this trap should get rid of them
+				// I don't really know why it happens, but this trap should get rid of them
 				if( !s.equals( "" ) && !ids.contains( s ) && start != 0 && length != 1 )
 				{
 					ids.add( s ) ;
@@ -527,12 +452,12 @@ public class XmlUtils
 			}
 		}
 
-		public Vector getProjectIds()
+		public Vector<String> getProjectIds()
 		{
 			return ids ;
 		}
 
-		public Vector getPriorities()
+		public Vector<Integer> getPriorities()
 		{
 			return priorities ;
 		}

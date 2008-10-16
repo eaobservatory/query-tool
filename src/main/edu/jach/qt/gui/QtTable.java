@@ -32,7 +32,7 @@ public class QtTable extends JTable
 	public Object getValueAt( int row , int column )
 	{
 		Object object = tableModel.getValueAt( row , column ) ;
-		int checksumIndex = columns.getIndexForName( "checksum" ) ;
+		int checksumIndex = columns.getIndexForKey( "checksum" ) ;
 		String checksum ;
 		if( column != checksumIndex )
 			checksum = ( String )tableModel.getValueAt( row , checksumIndex ) ;

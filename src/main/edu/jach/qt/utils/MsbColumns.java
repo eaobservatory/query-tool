@@ -1,6 +1,6 @@
 package edu.jach.qt.utils ;
 
-public class MsbColumns extends OrderedMap
+public class MsbColumns extends OrderedMap<String,MsbColumnInfo>
 {
 	public void add( MsbColumnInfo msbColumnInfo )
 	{
@@ -9,37 +9,25 @@ public class MsbColumns extends OrderedMap
 
 	public MsbColumnInfo removeIndex( final int index )
 	{
-		MsbColumnInfo msbColumnInfo = null ;
-		final Object object = super.remove( index ) ;
-		if( object instanceof MsbColumnInfo )
-			msbColumnInfo = ( MsbColumnInfo )object ;
+		final MsbColumnInfo msbColumnInfo = super.remove( index ) ;
 		return msbColumnInfo ;
 	}
 
 	public MsbColumnInfo removeName( final String name )
 	{
-		MsbColumnInfo msbColumnInfo = null ;
-		final Object object = super.remove( name ) ;
-		if( object instanceof MsbColumnInfo )
-			msbColumnInfo = ( MsbColumnInfo )object ;
+		final MsbColumnInfo msbColumnInfo = super.remove( name ) ;
 		return msbColumnInfo ;
 	}
 
 	public MsbColumnInfo findName( final String name )
 	{
-		MsbColumnInfo msbColumnInfo = null ;
-		final Object object = super.find( name ) ;
-		if( object instanceof MsbColumnInfo )
-			msbColumnInfo = ( MsbColumnInfo )object ;
+		final MsbColumnInfo msbColumnInfo = super.find( name ) ;
 		return msbColumnInfo ;
 	}
 
 	public MsbColumnInfo findIndex( final int index )
 	{
-		MsbColumnInfo msbColumnInfo = null ;
-		final Object object = super.find( index ) ;
-		if( object instanceof MsbColumnInfo )
-			msbColumnInfo = ( MsbColumnInfo )object ;
+		final MsbColumnInfo msbColumnInfo = super.find( index ) ;
 		return msbColumnInfo ;
 	}
 

@@ -93,10 +93,10 @@ public class SimpleMoon implements OMPTimerListener
 	private void stateChanged()
 	{
 		MoonChangeListener listener ;
-		Iterator iterator = hashSet.iterator() ;
+		Iterator<MoonChangeListener> iterator = hashSet.iterator() ;
 		while( iterator.hasNext() )
 		{
-			listener = ( MoonChangeListener )iterator.next() ;
+			listener = iterator.next() ;
 			listener.moonChanged() ;
 		}
 	}

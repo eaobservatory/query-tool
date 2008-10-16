@@ -121,12 +121,12 @@ public class AttributeEditor extends JDialog implements ActionListener , ListSel
 	 *            configItem
 	 * @author David Clarke
 	 */
-	private Vector getConfigNames( String configItem )
+	private Vector<String> getConfigNames( String configItem )
 	{
 		String list = System.getProperty( configItem ) ;
 
 		if( list == null )
-			return new Vector() ;
+			return new Vector<String>() ;
 
 		String[] tok = list.split( " " ) ;
 		Vector<String> names = new Vector<String>( tok.length ) ;
@@ -467,12 +467,12 @@ public class AttributeEditor extends JDialog implements ActionListener , ListSel
 		// Here we get changed attribute values from the table model and
 		// set them in the SpItem.
 		int row = 0 ;
-		Enumeration pairs = avPairs.elements() ;
-		Enumeration triplets = iavTriplets.elements() ;
+		Enumeration<AVPair> pairs = avPairs.elements() ;
+		Enumeration<AIVTriplet> triplets = iavTriplets.elements() ;
 
 		while( pairs.hasMoreElements() )
 		{
-			AVPair pair = ( AVPair )pairs.nextElement() ;
+			AVPair pair = pairs.nextElement() ;
 			if( model.isChangedAt( row ) )
 			{
 				if( !doneSome )
@@ -496,7 +496,7 @@ public class AttributeEditor extends JDialog implements ActionListener , ListSel
 		}
 		while( triplets.hasMoreElements() )
 		{
-			AIVTriplet triplet = ( AIVTriplet )triplets.nextElement() ;
+			AIVTriplet triplet = triplets.nextElement() ;
 			if( model.isChangedAt( row ) )
 			{
 				if( !doneSome )
@@ -534,10 +534,10 @@ public class AttributeEditor extends JDialog implements ActionListener , ListSel
 	 * @return Vector
 	 * @author Alan Bridger
 	 */
-	private Vector getInstAttValues( SpItem instrument )
+	private Vector<AVPair> getInstAttValues( SpItem instrument )
 	{
 		// Get the current values of the editable attributes
-		Enumeration attributes = configAttributes.elements() ;
+		Enumeration<String> attributes = configAttributes.elements() ;
 		Vector<AVPair> av = new Vector<AVPair>( configAttributes.size() ) ;
 
 		avTable = inst.getTable() ;
@@ -548,7 +548,7 @@ public class AttributeEditor extends JDialog implements ActionListener , ListSel
 			String val ;
 			AVPair avp ;
 
-			att = ( String )attributes.nextElement() ;
+			att = attributes.nextElement() ;
 			if( att != null )
 				val = avTable.get( att ) ;
 			else
@@ -755,9 +755,9 @@ public class AttributeEditor extends JDialog implements ActionListener , ListSel
 	private SpItem sequence ;
 	private SpItem inst ;
 	private String instName ;
-	private Vector configAttributes ;
-	private Vector configIterators ;
-	private Vector avPairs ;
+	private Vector<String> configAttributes ;
+	private Vector<String> configIterators ;
+	private Vector<AVPair> avPairs ;
 	private Vector<AIVTriplet> iavTriplets ;
 	private SpAvTable avTable ;
 	private AttributeTableModel model ;

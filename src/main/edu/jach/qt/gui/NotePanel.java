@@ -120,7 +120,7 @@ final public class NotePanel extends JPanel
 			{
 				doc.remove( 0 , doc.getLength() ) ;
 				for( int i = 0 ; i < notes.size() ; i++ )
-					doc.insertString( doc.getLength() , ( String )notes.get( i ) , textPanel.getStyle( ( String )styles.get( i ) ) ) ;
+					doc.insertString( doc.getLength() , notes.get( i ) , textPanel.getStyle( styles.get( i ) ) ) ;
 			}
 			catch( Exception ex )
 			{

@@ -12,8 +12,8 @@ public class ProjectTableModel extends AbstractTableModel implements Runnable , 
 	static Logger logger = Logger.getLogger( ProjectTableModel.class ) ;
 	private static String[] colName = { "projectid" , "priority" } ;
 	private static Class[] colClass = { String.class , Integer.class } ;
-	private Vector projectIds = new Vector() ;
-	private Vector priorities = new Vector() ;
+	private Vector<String> projectIds = new Vector<String>() ;
+	private Vector<Integer> priorities = new Vector<Integer>() ;
 
 	public ProjectTableModel()
 	{

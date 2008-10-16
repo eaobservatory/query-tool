@@ -100,7 +100,7 @@ public class QtFrame extends JFrame implements PopupMenuListener , ActionListene
 	private Querytool localQuerytool ;
 	private InfoPanel infoPanel ;
 	private JPopupMenu popup ;
-	private OrderedMap calibrationList = new OrderedMap() ;
+	private OrderedMap<String,SpItem> calibrationList = new OrderedMap<String,SpItem>() ;
 	private JMenu calibrationMenu = new JMenu( "Calibrations" ) ;
 	private WidgetPanel _widgetPanel ;
 	private int[] tableColumnSizes ;
@@ -212,7 +212,7 @@ public class QtFrame extends JFrame implements PopupMenuListener , ActionListene
 		DeferredProgramList.cleanup() ;
 
 		// Input Panel Setup
-		WidgetPanel inputPanel = new WidgetPanel( new Hashtable() , widgetBag ) ;
+		WidgetPanel inputPanel = new WidgetPanel( new Hashtable<String,String>() , widgetBag ) ;
 		_widgetPanel = inputPanel ;
 		buildStagingPanel() ;
 		// Table setup
@@ -276,7 +276,7 @@ public class QtFrame extends JFrame implements PopupMenuListener , ActionListene
 
 	private void projectTableSetup( ProjectTableModel ptm )
 	{
-		Vector columnNames = new Vector() ;
+		Vector<String> columnNames = new Vector<String>() ;
 		columnNames.add( "projectid" ) ;
 		columnNames.add( "priority" ) ;
 		projectTable = new JTable( ptm ) ;
@@ -331,7 +331,7 @@ public class QtFrame extends JFrame implements PopupMenuListener , ActionListene
 
 						try
 						{
-							int checksumIndex = columns.getIndexForName( "checksum" ) ;
+							int checksumIndex = columns.getIndexForKey( "checksum" ) ;
 							String checksum = ( String )sorter.getValueAt( selRow , checksumIndex ) ;
 							if( remaining.isSelected() )
 							{
@@ -346,7 +346,7 @@ public class QtFrame extends JFrame implements PopupMenuListener , ActionListene
 									}
 								}
 							}
-							int msbIndex = columns.getIndexForName( "msbid" ) ;
+							int msbIndex = columns.getIndexForKey( "msbid" ) ;
 							msbID = new Integer( ( String )sorter.getValueAt( selRow , msbIndex ) ) ;
 							om.setSpItem( localQuerytool.fetchMSB( msbID ) ) ;
 							isStatusOK = new Boolean( true ) ;
@@ -372,7 +372,7 @@ public class QtFrame extends JFrame implements PopupMenuListener , ActionListene
 						InfoPanel.logoPanel.stop() ;
 						om.enableList( true ) ;
 
-						int msbIndex = columns.getIndexForName( "msbid" ) ;
+						int msbIndex = columns.getIndexForKey( "msbid" ) ;
 						msbID = new Integer( ( String )sorter.getValueAt( selRow , msbIndex ) ) ;
 
 						if( isStatusOK.booleanValue() )
@@ -380,9 +380,9 @@ public class QtFrame extends JFrame implements PopupMenuListener , ActionListene
 							om.addNewTree( msbID ) ;
 							buildStagingPanel() ;
 
-							int checksumIndex = columns.getIndexForName( "checksum" ) ;
+							int checksumIndex = columns.getIndexForKey( "checksum" ) ;
 							String checksum = ( String )sorter.getValueAt( selRow , checksumIndex ) ;
-							int projectIndex = columns.getIndexForName( "projectid" ) ;
+							int projectIndex = columns.getIndexForKey( "projectid" ) ;
 							String projectid = ( String )sorter.getValueAt( selRow , projectIndex ) ;
 
 							logger.info( "MSB " + msbID + " INFO is: " + projectid + ", " + checksum ) ;

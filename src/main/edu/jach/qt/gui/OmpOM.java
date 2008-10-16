@@ -74,7 +74,7 @@ public class OmpOM extends JPanel
 	private ProgramTree ptree ;
 	private File file ;
 	private SpItem spItem ;
-	private Hashtable ptreeHashtable ;
+	private Hashtable<Integer,ProgramTree> ptreeHashtable ;
 	private DeferredProgramList deferredList ;
 	public NotePanel notes ;
 
@@ -84,7 +84,7 @@ public class OmpOM extends JPanel
 	 */
 	public OmpOM()
 	{
-		ptreeHashtable = new Hashtable() ;
+		ptreeHashtable = new Hashtable<Integer,ProgramTree>() ;
 
 		/* 
 		 * Need to construct UKIRT-specific items so that their SpTypes are

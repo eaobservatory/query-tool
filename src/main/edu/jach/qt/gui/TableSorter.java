@@ -87,7 +87,7 @@ public class TableSorter extends TableMap
 	 */
 	public int compareRowsByColumn( final int row1 , final int row2 , final int column )
 	{
-		final Class type = model.getColumnClass( column ) ;
+		final Class<?> type = model.getColumnClass( column ) ;
 		final TableModel data = model ;
 
 		// Check for nulls.
@@ -212,7 +212,7 @@ public class TableSorter extends TableMap
 		compares++ ;
 		for( int level = 0 ; level < sortingColumns.size() ; level++ )
 		{
-			Integer column = ( Integer )sortingColumns.elementAt( level ) ;
+			Integer column = sortingColumns.elementAt( level ) ;
 			int result = compareRowsByColumn( row1 , row2 , column.intValue() ) ;
 			if( result != 0 )
 				return ascending ? result : -result ;

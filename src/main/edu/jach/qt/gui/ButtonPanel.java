@@ -24,7 +24,7 @@ import edu.jach.qt.gui.WidgetDataBag ;
 
 public class ButtonPanel extends WidgetPanel
 {
-	LinkedList buttonList ;
+	LinkedList<JCheckBox> buttonList ;
 	ListIterator iterator ;
 	private String next , myTitle ;
 
@@ -42,7 +42,7 @@ public class ButtonPanel extends WidgetPanel
 		iterator = info.getList().listIterator( 0 ) ;
 
 		setBorder( BorderFactory.createTitledBorder( BorderFactory.createEtchedBorder() , myTitle , TitledBorder.CENTER , TitledBorder.DEFAULT_POSITION ) ) ;
-		buttonList = new LinkedList() ;
+		buttonList = new LinkedList<JCheckBox>() ;
 
 		setLayout( new GridLayout( 3 , info.getSize() / 2 ) ) ;
 		JCheckBox wfcamTickBox = null ;
@@ -80,9 +80,9 @@ public class ButtonPanel extends WidgetPanel
 	public void setEnabled( boolean booleanFlag )
 	{
 		JCheckBox next ;
-		for( ListIterator iter = buttonList.listIterator() ; iter.hasNext() ; iter.nextIndex() )
+		for( ListIterator<JCheckBox> iter = buttonList.listIterator() ; iter.hasNext() ; iter.nextIndex() )
 		{
-			next = ( JCheckBox )iter.next() ;
+			next = iter.next() ;
 			if( !next.getText().equals( "Any Instrument" ) && !next.getText().equals( "Any Heterodyne" ) && !next.getText().equals( "current" ) )
 				next.setEnabled( booleanFlag ) ;
 		}
@@ -97,9 +97,9 @@ public class ButtonPanel extends WidgetPanel
 	public void setSelected( boolean flag )
 	{
 		JCheckBox next ;
-		for( ListIterator iter = buttonList.listIterator() ; iter.hasNext() ; iter.nextIndex() )
+		for( ListIterator<JCheckBox> iter = buttonList.listIterator() ; iter.hasNext() ; iter.nextIndex() )
 		{
-			next = ( JCheckBox )iter.next() ;
+			next = iter.next() ;
 			if( !next.getText().equals( "Any Instrument" ) && !next.getText().equals( "Any Heterodyne" ) && !next.getText().equals( "current" ) )
 			{
 				next.setSelected( flag ) ;
@@ -111,9 +111,9 @@ public class ButtonPanel extends WidgetPanel
 	private void wfcamSelected( boolean selected )
 	{
 		JCheckBox next ;
-		for( ListIterator iter = buttonList.listIterator() ; iter.hasNext() ; iter.nextIndex() )
+		for( ListIterator<JCheckBox> iter = buttonList.listIterator() ; iter.hasNext() ; iter.nextIndex() )
 		{
-			next = ( JCheckBox )iter.next() ;
+			next = iter.next() ;
 			// If flag is true, we need to deselect everything else and disable the
 			if( selected )
 			{

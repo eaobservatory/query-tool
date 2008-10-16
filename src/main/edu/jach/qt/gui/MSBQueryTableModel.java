@@ -3,8 +3,6 @@ package edu.jach.qt.gui ;
 import java.io.File ;
 import java.io.IOException ;
 import java.util.Vector ;
-import java.util.ArrayList ;
-import java.util.List ;
 import javax.swing.table.AbstractTableModel ;
 import javax.xml.parsers.DocumentBuilderFactory ;
 import javax.xml.parsers.DocumentBuilder ;
@@ -49,13 +47,11 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable
 	protected Element msbIndex ;
 	public Integer[] projectIds ;
 
-	//used to hold a list of TableModelListeners
-	protected List tableModelListeners = new ArrayList() ;
 	private boolean rowCountCached = false ;
 	private int cachedRowCount ;
 
 	/**
-	 * Constructor. Constructs a tabe model with 200 possible entries.
+	 * Constructor. Constructs a table model with 200 possible entries.
 	 */
 	public MSBQueryTableModel() throws Exception
 	{
@@ -262,10 +258,10 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable
 	/**
 	 * Return column class
 	 * 
-	 * @parm c the index of column
+	 * @param c the index of column
 	 * @return the common ancestor class of the object values in the model.
 	 */
-	public Class getColumnClass( final int column )
+	public Class<?> getColumnClass( final int column )
 	{
 		MsbColumnInfo columnInfo = MsbClient.getColumnInfo().findIndex( column ) ;
 		return columnInfo.getClassType() ;
@@ -369,7 +365,7 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable
 		{
 			int modelSize = model.size() ;
 			MSBTableModel msbTableModel ;
-			Vector vector ;
+			Vector<Integer> vector ;
 			Integer integer ;
 			int intValue ;
 			int size ;
@@ -382,7 +378,7 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable
 				size = vector.size() ;
 				for( int step = 0 ; step < size ; step++ )
 				{
-					integer = ( Integer )vector.elementAt( step ) ;
+					integer = vector.elementAt( step ) ;
 					intValue = integer.intValue() ;
 					totalIndexes[ intValue ] = currentPosition++ ;
 				}

@@ -47,7 +47,7 @@ public class SpQueuedMap
 		if( !checksum.equals( "" ) )
 		{
 			replacement = treeMap.containsKey( checksum ) ;
-			if( ( ( SpMSB )item ).getNumberRemaining() < 2 )
+			if( (( SpMSB )item).getNumberRemaining() < 2 )
 				treeMap.put( checksum , "" + System.currentTimeMillis() ) ;
 			writeChecksumToDisk( ( SpMSB )item ) ;
 			treeSet.add( checksum ) ;
@@ -74,7 +74,7 @@ public class SpQueuedMap
 		if( checksum == null )
 			return null ;
 		if( treeMap.containsKey( checksum ) )
-			return convertTimeStamp( ( String )treeMap.get( checksum ) ) ;
+			return convertTimeStamp( treeMap.get( checksum ) ) ;
 		String onDisk = isChecksumOnDisk( checksum ) ;
 		if( onDisk != null )
 			treeMap.put( checksum , onDisk ) ;

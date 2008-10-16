@@ -110,10 +110,10 @@ public class WidgetDataBag implements Subject
 	private void notifyObservers()
 	{
 		// loop through and notify each observer 
-		Iterator i = observers.iterator() ;
+		Iterator<Observer> i = observers.iterator() ;
 		while( i.hasNext() )
 		{
-			Observer o = ( Observer )i.next() ;
+			Observer o = i.next() ;
 			o.update( this ) ;
 		}
 	}

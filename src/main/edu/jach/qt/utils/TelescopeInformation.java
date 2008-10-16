@@ -27,7 +27,7 @@ import org.apache.log4j.Logger ;
  */
 public class TelescopeInformation
 {
-	private Hashtable data = new Hashtable() ;
+	private Hashtable<String,String> data = new Hashtable<String,String>() ;
 	static Logger logger = Logger.getLogger( TelescopeInformation.class ) ;
 
 	/**

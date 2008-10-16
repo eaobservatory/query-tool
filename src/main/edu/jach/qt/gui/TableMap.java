@@ -99,7 +99,7 @@ public class TableMap extends AbstractTableModel implements TableModelListener
 	 * @param aColumn   The column index.
 	 * @return          The <code>Class</code> associated with the column index.
 	 */
-	public Class getColumnClass( int aColumn )
+	public Class<?> getColumnClass( int aColumn )
 	{
 		return model.getColumnClass( aColumn ) ;
 	}

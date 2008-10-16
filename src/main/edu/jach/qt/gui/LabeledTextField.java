@@ -102,7 +102,7 @@ public class LabeledTextField extends WidgetPanel implements KeyListener , Docum
 	 * A list may be given by typing comma separated values.
 	 * @return A <code>Vector</code> containing each item in the list.
 	 */
-	public Vector getList()
+	public Vector<String> getList()
 	{
 		String tmpStr = getText() ;
 		Vector<String> result = new Vector<String>() ;
