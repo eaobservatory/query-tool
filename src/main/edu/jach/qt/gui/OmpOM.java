@@ -2,6 +2,7 @@ package edu.jach.qt.gui ;
 
 /* Gemini imports */
 import gemini.sp.SpItem ;
+import gemini.sp.SpObs;
 import gemini.sp.SpTreeMan ;
 import gemini.sp.SpMSB ;
 import gemini.sp.iter.SpIterChop ;
@@ -31,7 +32,6 @@ import orac.ukirt.iter.SpIterIRPOL ;
 import orac.ukirt.iter.SpIterNod ;
 import orac.ukirt.iter.SpIterUFTI ;
 import orac.jcmt.inst.SpInstHeterodyne ;
-//import orac.jcmt.iter.* ;
 import orac.jcmt.iter.SpIterFocusObs ;
 import orac.jcmt.iter.SpIterFrequency ;
 import orac.jcmt.iter.SpIterJiggleObs ;
@@ -185,9 +185,9 @@ public class OmpOM extends JPanel
 		SpItem currentItem = ProgramTree.getCurrentItem() ;
 		if( currentItem != null )
 		{
-			Vector progVector = SpTreeMan.findAllItems( currentItem , "gemini.sp.SpMSB" ) ;
+			Vector<SpItem> progVector = SpTreeMan.findAllItems( currentItem , SpMSB.class.getName() ) ;
 			if( progVector == null || progVector.size() == 0 )
-				progVector = SpTreeMan.findAllItems( currentItem , "gemini.sp.SpObs" ) ;
+				progVector = SpTreeMan.findAllItems( currentItem , SpObs.class.getName() ) ;
 			try
 			{
 				if( progVector != null && progVector.size() > 0 )
@@ -331,10 +331,10 @@ public class OmpOM extends JPanel
 	 */
 	private void getItems( SpItem spItem , MsbNode node )
 	{
-		Enumeration children = spItem.children() ;
+		Enumeration<SpItem> children = spItem.children() ;
 		while( children.hasMoreElements() )
 		{
-			SpItem childNode = ( SpItem )children.nextElement() ;
+			SpItem childNode = children.nextElement() ;
 			DragDropObject ddo = new DragDropObject( childNode ) ;
 			MsbNode temp = new MsbNode( ddo ) ;
 			node.add( temp ) ;

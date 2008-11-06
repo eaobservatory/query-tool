@@ -89,10 +89,10 @@ public class SpQueuedMap
 			final SpMSB msb = ( SpMSB )item ;
 			checksum = msb.getChecksum() ;
 			String id = null ;
-			Vector obses = gemini.sp.SpTreeMan.findAllItems( msb , SpObs.class.getName() ) ;
+			Vector<SpItem> obses = gemini.sp.SpTreeMan.findAllItems( msb , SpObs.class.getName() ) ;
 			if( obses.size() != 0 )
 			{
-				SpItem obs = ( SpItem )obses.remove( 0 ) ;
+				SpItem obs = obses.remove( 0 ) ;
 				id = obs.getTable().get( "msbid" , 0 ) ;
 			}
 			if( id != null )

@@ -6,7 +6,6 @@ import java.awt.Color ;
 import java.awt.Font ;
 import java.awt.BorderLayout ;
 import java.awt.Component ;
-import java.util.Enumeration ;
 import java.util.ArrayList ;
 import java.util.Vector ;
 import javax.swing.JPanel ;
@@ -93,11 +92,10 @@ final public class NotePanel extends JPanel
 			ArrayList<String> notes = new ArrayList<String>() ;
 			ArrayList<String> styles = new ArrayList<String>() ;
 	
-			Vector noteVector = SpTreeMan.findAllItems( sp , "gemini.sp.SpNote" ) ;
-			Enumeration e = noteVector.elements() ;
-			while( e.hasMoreElements() )
+			Vector<SpItem> noteVector = SpTreeMan.findAllItems( sp , SpNote.class.getName() ) ;
+			for( SpItem item : noteVector )
 			{
-				SpNote thisNote = ( SpNote )e.nextElement() ;
+				SpNote thisNote = ( SpNote )item ;
 				if( thisNote.isObserveInstruction() )
 				{
 					String[] instructions = thisNote.getInstructions() ;

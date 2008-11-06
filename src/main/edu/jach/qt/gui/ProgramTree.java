@@ -154,7 +154,7 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 	public ProgramTree()
 	{
 		// Ensure nothing is selected 
-		selectedItem = null ;
+		setSelectedItem( null ) ;
 
 		Border border = BorderFactory.createMatteBorder( 2 , 2 , 2 , 2 , Color.white ) ;
 		setBorder( new TitledBorder( border , "Retrieved MSBs" , 0 , 0 , new Font( "Roman" , Font.BOLD , 12 ) , Color.black ) ) ;
@@ -235,11 +235,21 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 		add( xpand , gbc , 0 , 2 , 1 , 1 ) ;
 	}
 
-	public static synchronized SpItem getSelectedItem()
+	public static void setSelectedItem( SpItem item )
+	{
+		selectedItem = item ;
+	}
+	
+	public static SpItem getSelectedItem()
 	{
 		return selectedItem ;
 	}
 
+	public static void setCurrentItem( SpItem item )
+	{
+		_spItem = item ;
+	}
+	
 	public static SpItem getCurrentItem()
 	{
 		return _spItem ;
@@ -315,12 +325,12 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 		if( source == xpand )
 		{
 			SpItem itemToXpand ;
-			if( selectedItem == null && DeferredProgramList.getCurrentItem() == null )
+			if( getSelectedItem() == null && DeferredProgramList.getCurrentItem() == null )
 				return ;
-			else if( selectedItem == null )
+			else if( getSelectedItem() == null )
 				itemToXpand = DeferredProgramList.getCurrentItem() ;
 			else
-				itemToXpand = selectedItem ;
+				itemToXpand = getSelectedItem() ;
 						
 			SpItem temp = itemToXpand.deepCopy() ;
 			
@@ -518,7 +528,7 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 					if( isDeferred )
 						ein = new ExecuteInThread( item , isDeferred ) ;
 					else
-						ein = new ExecuteInThread( _spItem , isDeferred ) ;
+						ein = new ExecuteInThread( getCurrentItem() , isDeferred ) ;
 					ein.start() ;
 				}
 				catch( Exception e )
@@ -564,7 +574,7 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 	 */
 	public void addTree( SpItem sp )
 	{
-		_spItem = sp ;
+		setCurrentItem( sp ) ;
 
 		getItems( sp , root ) ;
 
@@ -609,21 +619,20 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 			return ;
 
 		// If we get here we should reinitialise with the new argument
-		_spItem = sp ;
+		setCurrentItem( sp ) ;
 
 		model = new DefaultListModel() ;
 
-		if( _spItem == null )
+		if( getCurrentItem() == null )
 		{
 			model.clear() ;
 		}
 		else
 		{
-			Vector obsVector = SpTreeMan.findAllItems( sp , "gemini.sp.SpObs" ) ;
+			Vector<SpItem> obsVector = SpTreeMan.findAllItems( sp , SpObs.class.getName() ) ;
 
-			Enumeration e = obsVector.elements() ;
-			while( e.hasMoreElements() )
-				model.addElement( e.nextElement() ) ;
+			for( SpItem item : obsVector )
+				model.addElement( item ) ;
 		}
 
 		obsList = new JList( model ) ;
@@ -638,31 +647,31 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 				if( e.getClickCount() == 2 )
 				{
 					_useQueue = true ;
-					selectedItem = ( SpItem )obsList.getSelectedValue() ;
+					setSelectedItem( ( SpItem )obsList.getSelectedValue() ) ;
 					doExecute() ;
 				}
 				else if( e.getClickCount() == 1 && ( e.getModifiers() & InputEvent.BUTTON1_MASK ) == InputEvent.BUTTON1_MASK )
 				{
-					if( selectedItem != obsList.getSelectedValue() )
+					if( getSelectedItem() != obsList.getSelectedValue() )
 					{
 						// Select the new item
-						selectedItem = ( SpItem )obsList.getSelectedValue() ;
+						setSelectedItem( ( SpItem )obsList.getSelectedValue() ) ;
 						DeferredProgramList.clearSelection() ;
 						NotePanel.setNote( ProgramTree.getCurrentItem() ) ;
 					}
 					else if( e.getClickCount() == 1 )
 					{
-						if( selectedItem != obsList.getSelectedValue() )
+						if( getSelectedItem() != obsList.getSelectedValue() )
 						{
 							// Select the new item
-							selectedItem = ( SpItem )obsList.getSelectedValue() ;
+							setSelectedItem( ( SpItem )obsList.getSelectedValue() ) ;
 							DeferredProgramList.clearSelection() ;
 							NotePanel.setNote( ProgramTree.getCurrentItem() ) ;
 						}
 						else
 						{
 							obsList.clearSelection() ;
-							selectedItem = null ;
+							setSelectedItem( null ) ;
 						}
 					}
 				}
@@ -685,7 +694,7 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 		if( model.size() > 0 )
 		{
 			obsList.setSelectedIndex( 0 ) ;
-			selectedItem = ( SpItem )obsList.getSelectedValue() ;
+			setSelectedItem( ( SpItem )obsList.getSelectedValue() ) ;
 		}
 
 		dragSource.createDefaultDragGestureRecognizer( obsList , DnDConstants.ACTION_MOVE , this ) ;
@@ -704,12 +713,12 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 	}
 
 	/**
-	 * Clear the selection from the Prgram Tree List.
+	 * Clear the selection from the Program Tree List.
 	 */
 	public static void clearSelection()
 	{
 		obsList.clearSelection() ;
-		selectedItem = null ;
+		setSelectedItem( null ) ;
 	}
 
 	/**
@@ -756,14 +765,14 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 	{
 		SpObs item = ( SpObs )obsList.getSelectedValue() ;
 
-		Vector obsV = SpTreeMan.findAllItems( _spItem , "gemini.sp.SpObs" ) ;
+		Vector<SpItem> obsV = SpTreeMan.findAllItems( getCurrentItem() , SpObs.class.getName() ) ;
 
 		int index = obsList.getSelectedIndex() ;
 		(( DefaultListModel )obsList.getModel()).removeElementAt( index ) ;
 
 		SpObs[] obsToDelete = null ;
 		if( obsV.size() > index )
-			obsToDelete = new SpObs[] { ( SpObs )obsV.elementAt( index ) } ;
+			obsToDelete = new SpObs[]{ ( SpObs )obsV.elementAt( index ) } ;
 
 		try
 		{
@@ -790,10 +799,10 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 	 */
 	private void getItems( SpItem spItem , DefaultMutableTreeNode node )
 	{
-		Enumeration children = spItem.children() ;
+		Enumeration<SpItem> children = spItem.children() ;
 		while( children.hasMoreElements() )
 		{
-			SpItem child = ( SpItem )children.nextElement() ;
+			SpItem child = children.nextElement() ;
 
 			DefaultMutableTreeNode temp = new DefaultMutableTreeNode( child ) ;
 
@@ -810,11 +819,11 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 	private void editAttributes()
 	{
 		// Recheck that this is an observation
-		if( selectedItem.type() == SpType.OBSERVATION )
+		if( getSelectedItem().type() == SpType.OBSERVATION )
 		{
 			setExecutable( false ) ;
 
-			SpObs observation = ( SpObs )selectedItem ;
+			SpObs observation = ( SpObs )getSelectedItem() ;
 
 			try
 			{
@@ -842,11 +851,11 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 	 **/
 	private void scaleAttributes()
 	{
-		if( selectedItem != null && selectedItem.type() == SpType.OBSERVATION )
+		if( getSelectedItem() != null && getSelectedItem().type() == SpType.OBSERVATION )
 		{
 			setExecutable( false ) ;
 	
-			SpObs observation = ( SpObs )selectedItem ;
+			SpObs observation = ( SpObs )getSelectedItem() ;
 			if( !observation.equals( null ) )
 			{
 				new AttributeEditor( observation , new javax.swing.JFrame() , true , "EXPTIME" , haveScaled.contains( observation ) , lastScaleFactor() , false ).show() ;
@@ -876,11 +885,11 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 	 **/
 	private void rescaleAttributes()
 	{
-		if( selectedItem == null || selectedItem.type() != SpType.OBSERVATION )
+		if( getSelectedItem() == null || getSelectedItem().type() != SpType.OBSERVATION )
 		{
 			setExecutable( false ) ;
 	
-			SpObs observation = ( SpObs )selectedItem ;
+			SpObs observation = ( SpObs )getSelectedItem() ;
 			if( !observation.equals( null ) )
 			{
 				new AttributeEditor( observation , new javax.swing.JFrame() , true , "EXPTIME" , haveScaled.contains( observation ) , lastScaleFactor() , true ).show() ;
@@ -920,8 +929,8 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 
 		if( item != null )
 		{
-			Vector obs = SpTreeMan.findAllItems( item , "gemini.sp.SpObs" ) ;
-			instrumentContext = SpTreeMan.findInstrument( ( SpObs )obs.firstElement() ) ;
+			Vector<SpItem> obs = SpTreeMan.findAllItems( item , SpObs.class.getName() ) ;
+			instrumentContext = SpTreeMan.findInstrument( obs.firstElement() ) ;
 		}
 		
 		return instrumentContext ;
@@ -936,7 +945,7 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 				return ;
 
 			// If this is an observation then show the popup
-			if( selectedItem != null && selectedItem.type() == SpType.OBSERVATION )
+			if( getSelectedItem() != null && getSelectedItem().type() == SpType.OBSERVATION )
 				scalePopup.show( e.getComponent() , e.getX() , e.getY() ) ;
 		}
 	}
@@ -966,8 +975,8 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 	public void drop( DropTargetDropEvent evt )
 	{
 		SpObs itemForDrop ;
-		if( selectedItem != null )
-			itemForDrop = ( SpObs )selectedItem ;
+		if( getSelectedItem() != null )
+			itemForDrop = ( SpObs )getSelectedItem() ;
 		else
 			itemForDrop = ( SpObs )DeferredProgramList.getCurrentItem() ;
 
@@ -1002,18 +1011,18 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 			Object selected = obsList.getSelectedValue() ;
 			enableList( false ) ;
 			DeferredProgramList.clearSelection() ;
-			selectedItem = ( SpItem )selected ;
+			setSelectedItem( ( SpItem )selected ) ;
 	
 			if( selected != null )
 			{
-				obsToDefer = selectedItem.deepCopy() ;
+				obsToDefer = getSelectedItem().deepCopy() ;
 	
 				SpInstObsComp inst = SpTreeMan.findInstrument( obsToDefer ) ;
 	
 				// we are expecting the instrument to be null
 				if( inst == null )
 				{
-					inst = SpTreeMan.findInstrument( selectedItem ) ;
+					inst = SpTreeMan.findInstrument( getSelectedItem() ) ;
 					SpInstObsComp clonedInst = ( SpInstObsComp )inst.deepCopy() ;
 					SpInsertData insertable = SpTreeMan.evalInsertInside( clonedInst , obsToDefer ) ;
 					if( insertable != null )
@@ -1082,7 +1091,7 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 				if( obs.isOptional() )
 				{
 					removeCurrentNode() ;
-					selectedItem = null ;
+					setSelectedItem( null ) ;
 				}
 			}
 		}
@@ -1195,8 +1204,8 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 				if( !_isDeferred )
 				{
 					model.clear() ;
-					_spItem = null ;
-					selectedItem = null ;
+					setCurrentItem( null ) ;
+					setSelectedItem( null ) ;
 				}
 				else
 				{

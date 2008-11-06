@@ -77,9 +77,9 @@ public class CalibrationList
 
 	private static OrderedMap<String,SpItem> pickApart( OrderedMap<String,SpItem> orderedMap , SpItem spItem )
 	{
-		Enumeration enumeration = spItem.children() ;
+		Enumeration<SpItem> enumeration = spItem.children() ;
 		String telescope = System.getProperty( "telescope" ) ;
-		Object object ;
+		SpItem object ;
 
 		while( enumeration.hasMoreElements() )
 		{
@@ -106,7 +106,7 @@ public class CalibrationList
 			{
 				continue ;
 			}
-			orderedMap = pickApart( orderedMap , ( SpItem )object ) ;
+			orderedMap = pickApart( orderedMap , object ) ;
 		}
 		return orderedMap ;
 	}

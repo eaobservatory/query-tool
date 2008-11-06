@@ -207,10 +207,10 @@ class TreeViewer implements ActionListener
 	
 	private Vector<SpItem> unrollItem( SpItem item , Vector<SpItem> vector )
 	{
-		Enumeration children = item.children() ;
+		Enumeration<SpItem> children = item.children() ;
 		while( children.hasMoreElements() )
 		{
-			SpItem nuItem = ( SpItem )children.nextElement() ;
+			SpItem nuItem = children.nextElement() ;
 			unrollItem( nuItem , vector ) ;
 			vector.add( nuItem ) ;
 		}

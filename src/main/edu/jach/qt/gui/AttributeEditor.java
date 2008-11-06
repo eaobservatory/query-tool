@@ -148,11 +148,11 @@ public class AttributeEditor extends JDialog implements ActionListener , ListSel
 	 */
 	private SpItem findSequence( SpObs observation )
 	{
-		Enumeration children = observation.children() ;
+		Enumeration<SpItem> children = observation.children() ;
 
 		while( children.hasMoreElements() )
 		{
-			SpItem child = ( SpItem )children.nextElement() ;
+			SpItem child = children.nextElement() ;
 			if( child.type().equals( SpType.SEQUENCE ) )
 				return child ;
 		}
@@ -659,10 +659,10 @@ public class AttributeEditor extends JDialog implements ActionListener , ListSel
 				getLocalIterAttValues( root , subtype , path , indent + "   " ) ;
 
 			// Recurse over root's children
-			Enumeration children = root.children() ;
+			Enumeration<SpItem> children = root.children() ;
 			while( children.hasMoreElements() )
 			{
-				SpItem child = ( SpItem )children.nextElement() ;
+				SpItem child = children.nextElement() ;
 				getIterAttValues( child , concatPath( path , root ) , indent + "   " ) ;
 			}
 		}

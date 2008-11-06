@@ -44,14 +44,14 @@ public class UkirtTranslator
 
 	private void getObservations( SpItem root )
 	{
-		Enumeration children = root.children() ;
+		Enumeration<SpItem> children = root.children() ;
 		String rootTitle = root.getTitleAttr() ;
 		if( rootTitle == null || rootTitle.equals( "" ) )
 			rootTitle = root.typeStr() ;
 
 		while( children.hasMoreElements() )
 		{
-			SpItem child = ( SpItem )children.nextElement() ;
+			SpItem child = children.nextElement() ;
 			if( child.getClass().getName().endsWith( "SpObs" ) )
 				doTranslate( rootTitle , ( SpObs )child ) ;
 			else if( child.getClass().getName().endsWith( "SpMSB" ) )

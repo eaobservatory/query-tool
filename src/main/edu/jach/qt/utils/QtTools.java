@@ -165,11 +165,10 @@ public class QtTools
 
 			// Now we need to get (a) the sequence for each obs in the MSB and
 			// (b) the estimated duration of the obs and (c) the instrument name for the obs.
-			Vector obs = SpTreeMan.findAllItems( item , "gemini.sp.SpObs" ) ;
-			Enumeration e = obs.elements() ;
-			while( e.hasMoreElements() )
+			Vector<SpItem> obs = SpTreeMan.findAllItems( item , SpObs.class.getName() ) ;
+			for( SpItem obsItem : obs )
 			{
-				SpObs currentObs = ( SpObs )e.nextElement() ;
+				SpObs currentObs = ( SpObs )obsItem ;
 				String inst = SpTreeMan.findInstrument( currentObs ).type().getReadable() ;
 				double time = currentObs.getElapsedTime() ;
 				fw.write( "  <Entry totalDuration=\"" + time + "\"  instrument=\"" + inst + "\">\n" ) ;
