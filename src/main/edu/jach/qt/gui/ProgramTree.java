@@ -124,10 +124,10 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 	private TrashCan trash = null ;
 	private static SpItem selectedItem = null ;
 	public static SpItem obsToDefer ;
-	private final String editText = "Edit Attribute..." ;
-	private final String scaleText = "Scale Exposure Times..." ;
-	private String rescaleText = "Re-do Scale Exposure Times" ;
-	private final String engString = "Send for Engineering" ;
+	private static final String editText = "Edit Attribute..." ;
+	private static final String scaleText = "Scale Exposure Times..." ;
+	private static String rescaleText = "Re-do Scale Exposure Times" ;
+	private static final String engString = "Send for Engineering" ;
 	private Vector<SpObs> haveScaled = new Vector<SpObs>() ;
 	private Vector<Double> scaleFactors = new Vector<Double>() ;
 	private JMenuItem edit ;
@@ -137,10 +137,12 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 	private JPopupMenu scalePopup ;
 	private JPopupMenu msbDonePopup ;
 	private JMenuItem msbDoneMenuItem ;
-	private final String msbDoneText = "Accept/Reject this MSB" ;
+	private static final String msbDoneText = "Accept/Reject this MSB" ;
 	private boolean _useQueue = true ;
-	
 	private boolean uistIrpol = false ;
+	
+	private static final String sendToQueue = "Send to Queue" ;
+	private static final String disabled = "Time constraint edited, click \"Set Default\"" ;
 	
 	/** public programTree() is the constructor. The class
 	 has only one constructor so far.  a few thing are done during
@@ -164,7 +166,8 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 		setLayout( gbl ) ;
 		gbc = new GridBagConstraints() ;
 
-		engButton = new JButton( "Send to Queue" ) ;
+		engButton = new JButton() ;
+		engButton.setText( sendToQueue ) ;
 		engButton.setMargin( new Insets( 5 , 10 , 5 , 10 ) ) ;
 		engButton.setEnabled( true ) ;
 		engButton.addActionListener( this ) ;
@@ -265,13 +268,16 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 	{
 		logger.debug( "In ProgramTree.setExecutable() ; setting run.enabled to " + flag ) ;
 		engButton.setEnabled( flag ) ;
+		
 		if( flag == false )
 		{
+			engButton.setText( disabled ) ;
 			engButton.setToolTipText( "Disabled due to edited time constraint" ) ;
 			ToolTipManager.sharedInstance().setInitialDelay( 250 ) ;
 		}
 		else
 		{
+			engButton.setText( sendToQueue ) ;
 			engButton.setToolTipText( null ) ;
 		}
 	}
