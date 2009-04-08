@@ -9,10 +9,12 @@ import gemini.sp.SpType ;
 import gemini.sp.SpInsertData ;
 import gemini.sp.SpFactory ;
 import gemini.sp.obsComp.SpInstObsComp ;
+import gemini.sp.obsComp.SpTelescopeObsComp;
 
 /* JSKY imports */
 
 /* ORAC imports */
+import orac.jcmt.inst.SpDRRecipe ;
 import orac.jcmt.inst.SpInstHeterodyne ;
 import orac.ukirt.inst.SpInstUIST ;
 
@@ -123,7 +125,7 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 	private DragSource dragSource = null ;
 	private TrashCan trash = null ;
 	private static SpItem selectedItem = null ;
-	public static SpItem obsToDefer ;
+	private static SpItem obsToDefer = null ;
 	private static final String editText = "Edit Attribute..." ;
 	private static final String scaleText = "Scale Exposure Times..." ;
 	private static String rescaleText = "Re-do Scale Exposure Times" ;
@@ -257,6 +259,16 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 	{
 		return _spItem ;
 	}
+	
+	public static void setObservationToDefer( SpItem item )
+	{
+		obsToDefer = item ;
+	}
+	
+	public static SpItem getObservationToDefer()
+	{
+		return obsToDefer ;
+	}
 
 	/**
 	 * Set the "Send for Execution" to (dis)abled.
@@ -345,10 +357,8 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 			if( inst == null )
 			{
 				inst = SpTreeMan.findInstrument( itemToXpand ) ;
-				SpInstObsComp clonedInst = ( SpInstObsComp )inst.deepCopy() ;
-				SpInsertData spid = SpTreeMan.evalInsertInside( clonedInst , temp ) ;
-				if( spid != null )
-					SpTreeMan.insert( spid ) ;
+				if( inst != null )
+					insert( inst , temp ) ;
 			}
 			
 			itemToXpand = temp ;
@@ -1008,7 +1018,6 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 	 * @param event  <code>DragGestureEvent</code> event
 	 * 
 	 */
-
 	public void dragGestureRecognized( DragGestureEvent event )
 	{
 		InputEvent ipe = event.getTriggerEvent() ;
@@ -1020,22 +1029,11 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 			setSelectedItem( ( SpItem )selected ) ;
 	
 			if( selected != null )
-			{
-				obsToDefer = getSelectedItem().deepCopy() ;
+			{	
+				SpItem deferredObs = fixupDeferredObs( getSelectedItem() ) ;
+				setObservationToDefer( deferredObs ) ;
 	
-				SpInstObsComp inst = SpTreeMan.findInstrument( obsToDefer ) ;
-	
-				// we are expecting the instrument to be null
-				if( inst == null )
-				{
-					inst = SpTreeMan.findInstrument( getSelectedItem() ) ;
-					SpInstObsComp clonedInst = ( SpInstObsComp )inst.deepCopy() ;
-					SpInsertData insertable = SpTreeMan.evalInsertInside( clonedInst , obsToDefer ) ;
-					if( insertable != null )
-						SpTreeMan.insert( insertable ) ;
-				}
-	
-				StringSelection text = new StringSelection( obsToDefer.toString() ) ;
+				StringSelection text = new StringSelection( getSelectedItem().toString() ) ;
 	
 				// as the name suggests, starts the dragging
 				dragSource.startDrag( event , DragSource.DefaultMoveNoDrop , text , this ) ;
@@ -1045,6 +1043,73 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 				logger.warn( "nothing was selected to drag" ) ;
 			}
 		}
+	}
+	
+	/**
+	 * Fix up deferred observations to include items from the original MSB.
+	 * 
+	 * Clone the item passed in, if the clone contains any of the items we are looking for, skip, 
+	 * otherwise go back to the original item and look for the items in context, and if found, add.
+	 * 
+	 * Items currently being sought : Instrument, Target list and DR recipes.
+	 * @param obs item to be cloned.
+	 * @return cloned item.
+	 */
+	private SpItem fixupDeferredObs( SpItem obs )
+	{
+		SpItem deferredObs = getSelectedItem().deepCopy() ;
+		
+		SpInstObsComp inst = SpTreeMan.findInstrument( deferredObs ) ;
+		if( inst == null )
+		{
+			inst = SpTreeMan.findInstrument( obs ) ;		
+			if( inst != null )
+				insert( inst , deferredObs ) ;
+		}
+		
+		SpTelescopeObsComp obsComp = SpTreeMan.findTargetList( deferredObs ) ;
+		if( obsComp == null )
+		{
+			obsComp = SpTreeMan.findTargetList( obs ) ;	
+			if( obsComp != null )
+				insert( obsComp , deferredObs ) ;
+		}
+		
+		Vector<SpItem> recipes = null ;
+		SpItem obsParent = deferredObs.parent() ;
+		if( obsParent != null )
+			recipes = SpTreeMan.findAllInstances( obsParent , SpDRRecipe.class.getName() ) ;
+		if( recipes == null || recipes.size() == 0 )
+		{
+			obsParent = obs.parent() ;
+			if( obsParent != null )
+				recipes = SpTreeMan.findAllInstances( obsParent , SpDRRecipe.class.getName() ) ;
+    		if( recipes != null && recipes.size() > 0 )
+    		{
+    			for( SpItem recipe : recipes )
+    				insert( recipe , deferredObs ) ;
+    		}
+		}
+		return deferredObs ;
+	}
+	
+	/**
+	 * Convenience method.
+	 * Clone an item for insertion, and insert.
+	 * @param insert item to insert.
+	 * @param insertInto item to insert item into.
+	 * @return boolean indicating success.
+	 */
+	private boolean insert( SpItem insert , SpItem insertInto )
+	{
+		boolean success = true ;
+    	SpItem clonedItem = insert.deepCopy() ;
+    	SpInsertData spid = SpTreeMan.evalInsertInside( clonedItem , insertInto ) ;
+    	if( spid != null )
+    		SpTreeMan.insert( spid ) ;
+    	else
+    		success = false ;
+    	return success ;
 	}
 
 	/**
@@ -1089,7 +1154,7 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 	 */
 	public void dragDropEnd( DragSourceDropEvent evt )
 	{
-		if( evt.getDropSuccess() == true )
+		if( evt.getDropSuccess() )
 		{
 			SpObs obs = ( SpObs )obsList.getSelectedValue() ;
 			if( obs != null )
@@ -1183,7 +1248,7 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 					StringBuffer error = new StringBuffer() ;
 					try
 					{
-						// Read the information from the filure file
+						// Read the information from the failure file
 						BufferedReader rdr = new BufferedReader( new FileReader( failFile ) ) ;
 						String line ;
 						while( ( line = rdr.readLine() ) != null )

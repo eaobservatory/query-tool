@@ -62,8 +62,10 @@ import gemini.sp.SpProg ;
 import gemini.sp.SpFactory ;
 import gemini.sp.SpType ;
 import gemini.sp.obsComp.SpInstObsComp ;
+import gemini.sp.obsComp.SpTelescopeObsComp;
 
 /* ORAC imports */
+import orac.jcmt.inst.SpDRRecipe;
 import orac.util.SpInputXML ;
 
 /* ORAC-OM imports */
@@ -654,7 +656,7 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 		if( this.dropTarget.isActive() )
 		{
 			evt.acceptDrop( DnDConstants.ACTION_MOVE ) ;
-			SpItem thisObs = ProgramTree.obsToDefer ;
+			SpItem thisObs = ProgramTree.getObservationToDefer() ;
 			if( (( SpObs )thisObs).isOptional() )
 			{
 				appendItem( thisObs ) ;
