@@ -46,7 +46,7 @@ public class LabeledRangeTextField extends WidgetPanel implements DocumentListen
 	private final String obsFieldName = "Observation Date" ;
 
 	/**
-	 * Contructor.
+	 * Constructor.
 	 * Associates the input text with the field name, and add the object to
 	 * the <code>WidgetDataBag</code> and <code>Hashtable</code>.  Constructs
 	 * the Min and Max text fields.
@@ -328,7 +328,7 @@ public class LabeledRangeTextField extends WidgetPanel implements DocumentListen
 			moonValue = moon.getIllumination() * 100 ;
 		moon = null ;
 
-		Hashtable ht = widgetBag.getHash() ;
+		Hashtable<String,Object> ht = widgetBag.getHash() ;
 		JRadioButton b = null ;
 		for( ListIterator iter = ( ( LinkedList )ht.get( "moon" ) ).listIterator( 0 ) ; iter.hasNext() ; iter.nextIndex() )
 		{

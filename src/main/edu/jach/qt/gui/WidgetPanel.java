@@ -283,7 +283,7 @@ public class WidgetPanel extends JPanel implements ActionListener , MoonChangeLi
 
 		// Currently sets the moon based on whether it is up and the illuminated fraction
 		SimpleMoon moon = SimpleMoon.getInstance() ;
-		Hashtable ht = widgetBag.getHash() ;
+		Hashtable<String,Object> ht = widgetBag.getHash() ;
 
 		boolean dark = false ;
 		boolean grey = false ;
@@ -296,9 +296,9 @@ public class WidgetPanel extends JPanel implements ActionListener , MoonChangeLi
 		else
 			bright = true ;
 
-		for( Enumeration e = ht.keys() ; e.hasMoreElements() ; )
+		for( Enumeration<String> e = ht.keys() ; e.hasMoreElements() ; )
 		{
-			String next = ( ( String )e.nextElement() ) ;
+			String next = e.nextElement() ;
 			if( next.equalsIgnoreCase( "Moon" ) )
 			{
 				ListIterator iter = (( LinkedList )ht.get( next )).listIterator( 0 ) ;
@@ -351,7 +351,7 @@ public class WidgetPanel extends JPanel implements ActionListener , MoonChangeLi
 	 * @param type
 	 *            The type of the textfield. Must one of <italic>Labeled</italic>, <italic>MinMax</italic> or <italic>Range</italic>.
 	 * @param gbc
-	 *            The GridBatConstraints class for these objets.
+	 *            The GridBatConstraints class for these objects.
 	 */
 	private void addTextFields( String type , GridBagConstraints gbc )
 	{
@@ -471,7 +471,7 @@ public class WidgetPanel extends JPanel implements ActionListener , MoonChangeLi
 	/**
 	 * The <code>add</code> method here is a utility for adding widgets
 	 * or subJPanels to the WdgetPanel.  The layout manager is a
-	 * GridBag and the current contraints (gbc) are passed to this method.
+	 * GridBag and the current constraints (gbc) are passed to this method.
 	 *
 	 * @param c a <code>Component</code> value
 	 * @param gbc a <code>GridBagConstraints</code> value
@@ -564,10 +564,10 @@ public class WidgetPanel extends JPanel implements ActionListener , MoonChangeLi
 	}
 
 	/**
-	 * Provided for convienince, <code>setAttribute</code> method with
+	 * Provided for convenience, <code>setAttribute</code> method with
 	 * this signature is supported but not encouraged.  All classes
 	 * using this methods should move towards the (String, LinkedList)
-	 * signature as meand of updateing widget state to the
+	 * signature as means of updating widget state to the
 	 * WidgetDataBag object.
 	 *
 	 * @param key a <code>String</code> value
@@ -579,10 +579,10 @@ public class WidgetPanel extends JPanel implements ActionListener , MoonChangeLi
 	}
 
 	/**
-	 * Provided for convienince, <code>setAttribute</code> method with
+	 * Provided for convenience, <code>setAttribute</code> method with
 	 * this signature is supported but not encouraged.  All classes
 	 * using this methods should move towards the (String, LinkedList)
-	 * signature as meand of updateing widget state to the
+	 * signature as means of updating widget state to the
 	 * WidgetDataBag object.
 	 *
 	 * @param key a <code>String</code> value
@@ -590,7 +590,7 @@ public class WidgetPanel extends JPanel implements ActionListener , MoonChangeLi
 	 */
 	public void setAttribute( String key , Object obj )
 	{
-		Object object = abbrevTable.get( key ) ;
+		String object = abbrevTable.get( key ) ;
 		widgetBag.put( object , obj ) ;
 	}
 

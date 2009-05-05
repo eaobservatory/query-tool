@@ -149,12 +149,12 @@ public class Querytool implements Runnable , Observer
 	}
 
 	/**
-	 * The <code>buildXML</code> method is triggerd by any Subject update. If the gui state changes, this method rebuilds the _xmlString.
+	 * The <code>buildXML</code> method is triggered by any Subject update. If the gui state changes, this method rebuilds the _xmlString.
 	 * 
 	 * @param ht
 	 *            a <code>Hashtable</code> value
 	 */
-	public void buildXML( Hashtable ht ) throws NullPointerException
+	public void buildXML( Hashtable<String,Object> ht ) throws NullPointerException
 	{
 		try
 		{
@@ -204,9 +204,9 @@ public class Querytool implements Runnable , Observer
 				root.appendChild( item ) ;
 			}
 
-			for( final Enumeration e = ht.keys() ; e.hasMoreElements() ; )
+			for( final Enumeration<String> e = ht.keys() ; e.hasMoreElements() ; )
 			{
-				next = ( ( String )e.nextElement() ) ;
+				next = e.nextElement() ;
 
 				if( next.equalsIgnoreCase( "instruments" ) )
 				{
@@ -334,7 +334,7 @@ public class Querytool implements Runnable , Observer
 				else if( ht.get( next ) instanceof LabeledTextField )
 				{
 					LabeledTextField ltf = ( LabeledTextField )ht.get( next ) ;
-					Enumeration n = ltf.getList().elements() ;
+					Enumeration<String> n = ltf.getList().elements() ;
 					String tmpStr ;
 
 					while( n.hasMoreElements() )
@@ -354,7 +354,7 @@ public class Querytool implements Runnable , Observer
 						else
 							continue ;
 
-						tmpStr = ( String )n.nextElement() ;
+						tmpStr = n.nextElement() ;
 						item.appendChild( doc.createTextNode( tmpStr.trim() ) ) ;
 						root.appendChild( item ) ;
 					} // end of while ()
@@ -526,7 +526,7 @@ public class Querytool implements Runnable , Observer
 			double moonValue = 0 ;
 			if( moon.isUp() )
 				moonValue = moon.getIllumination() * 100 ;
-			// Delete any existing value and repalce with the new
+			// Delete any existing value and replace with the new
 			NodeList list = root.getElementsByTagName( "moon" ) ;
 			if( list.getLength() != 0 )
 				root.removeChild( list.item( 0 ) ) ;

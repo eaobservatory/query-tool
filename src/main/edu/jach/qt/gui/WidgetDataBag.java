@@ -14,7 +14,7 @@ import java.util.Iterator ;
  * consisting of widget names as keys and the objects that define them
  * as the values.  The WidgetDataBag is instantiated in the WidgetPanel
  * class where widgets are added to the bag.  This essentially
- * regeisters the widget to be observed by the Querytool class.
+ * registers the widget to be observed by the Querytool class.
  *
  * Created: Mon Jul 23 13:02:58 2001
  *
@@ -23,7 +23,7 @@ import java.util.Iterator ;
  */
 public class WidgetDataBag implements Subject
 {
-	private Hashtable table = new Hashtable() ;
+	private Hashtable<String,Object> table = new Hashtable<String,Object>() ;
 	private ArrayList<Observer> observers = new ArrayList<Observer>() ;
 
 	/**
@@ -34,7 +34,7 @@ public class WidgetDataBag implements Subject
 	 * @param value an <code>Object</code> value
 	 * @return the previous <code>Object</code> value of the specified key, or null if it did not have one.
 	 */
-	public Object put( Object key , Object value )
+	public Object put( String key , Object value )
 	{
 		Object o = null ;
 		if( key != null )
@@ -62,27 +62,9 @@ public class WidgetDataBag implements Subject
 	 *
 	 * @return a <code>Hashtable</code> value
 	 */
-	public Hashtable getHash()
+	public Hashtable<String,Object> getHash()
 	{
 		return table ;
-	}
-
-	/**
-	 * The <code>remove</code> method removes "key" the Hashtable and
-	 * notifies subscribed observers.
-	 *
-	 * @param key a <code>String</code> value
-	 * @return a <code>String</code> value
-	 */
-	public String remove( String key )
-	{
-		if( table.containsKey( key ) )
-		{
-			String s = ( String )table.remove( key ) ;
-			notifyObservers() ;
-			return s ;
-		}
-		return null ;
 	}
 
 	/**
