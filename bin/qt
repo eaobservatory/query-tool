@@ -256,8 +256,11 @@ endif
 
 
 if (! ${scenario}) then
+
     # We want ample IMP_transmitter buffer space
-    setenv IMP_NET_KBYTES 10000
+    if( ! ${?IMP_NET_KBYTES} ) then
+    	setenv IMP_NET_KBYTES 45000
+    endif
 
     # check whether the CSO task is running
     ditsgetinfo -running CSOMON
