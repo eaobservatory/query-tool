@@ -49,9 +49,13 @@ import org.w3c.dom.NodeList ;
  * new _xmlString is written upon a gui state change.  As this seems
  * somewhat inefficient, I see it as the only way to get instantaneous
  * results.
+ * 
+ * As it is completely inefficient it has been changed so that XML updates
+ * only take place when the XMl is required.
  *
  * @author <a href="mailto:mrippa@jach.hawaii.edu">Mathew Rippa</a>
- * @version 1.0 */
+ * @version 1.0 
+ */
 public class Querytool implements Runnable , Observer
 {
 	static Logger logger = Logger.getLogger( Querytool.class ) ;
@@ -64,6 +68,7 @@ public class Querytool implements Runnable , Observer
 	private boolean remaining , observability , allocation , _q , zoneofavoidance ;
 	private String _queue ;
 	private String DISABLE_CONSTRAINT = "disableconstraint" ;
+	private int updatesSkipped = 0 ;
 
 	/**
 	 * Creates a new <code>Querytool</code> instance.
@@ -85,7 +90,6 @@ public class Querytool implements Runnable , Observer
 	public void setObservabilityConstraint( boolean flag )
 	{
 		observability = flag ;
-		buildXML( bag.getHash() ) ;
 	}
 
 	/**
@@ -97,7 +101,6 @@ public class Querytool implements Runnable , Observer
 	public void setRemainingConstraint( boolean flag )
 	{
 		remaining = flag ;
-		buildXML( bag.getHash() ) ;
 	}
 
 	/**
@@ -109,7 +112,6 @@ public class Querytool implements Runnable , Observer
 	public void setAllocationConstraint( boolean flag )
 	{
 		allocation = flag ;
-		buildXML( bag.getHash() ) ;
 	}
 
 	/**
@@ -121,7 +123,6 @@ public class Querytool implements Runnable , Observer
 	public void setZoneOfAvoidanceConstraint( boolean flag )
 	{
 		zoneofavoidance = flag ;
-		buildXML( bag.getHash() ) ;
 	}
 
 	public void setQueue( String q )
@@ -129,9 +130,6 @@ public class Querytool implements Runnable , Observer
 		_q = ( q != null && q != "" ) ;
 		if( _q )
 			_queue = q ;
-
-		buildXML( bag.getHash() ) ;
-		return ;
 	}
 
 	/**
@@ -144,8 +142,7 @@ public class Querytool implements Runnable , Observer
 	 */
 	public void update( Subject o )
 	{
-		if( o == bag )
-			buildXML( bag.getHash() ) ;
+		updatesSkipped++ ;
 	}
 
 	/**
@@ -154,7 +151,7 @@ public class Querytool implements Runnable , Observer
 	 * @param ht
 	 *            a <code>Hashtable</code> value
 	 */
-	public void buildXML( Hashtable<String,Object> ht ) throws NullPointerException
+	private void buildXML( Hashtable<String,Object> ht ) throws NullPointerException
 	{
 		try
 		{
@@ -432,6 +429,9 @@ public class Querytool implements Runnable , Observer
 	 */
 	public String getXML()
 	{
+		logger.debug( updatesSkipped + " updates skipped since last generation." ) ;
+		updatesSkipped = 0 ;
+		buildXML( bag.getHash() ) ;
 		return _xmlString ;
 	}
 
@@ -440,7 +440,7 @@ public class Querytool implements Runnable , Observer
 	 */
 	public void printXML()
 	{
-		logger.debug( _xmlString ) ; // Spit out DOM as a String
+		logger.debug( getXML() ) ; // Spit out DOM as a String
 	}
 
 	/**
@@ -448,7 +448,7 @@ public class Querytool implements Runnable , Observer
 	 */
 	public void run()
 	{
-		MsbClient.queryMSB( _xmlString ) ;
+		MsbClient.queryMSB( getXML() ) ;
 	}
 
 	/**
@@ -456,7 +456,7 @@ public class Querytool implements Runnable , Observer
 	 */
 	public boolean queryMSB()
 	{
-		return MsbClient.queryMSB( _xmlString ) ;
+		return MsbClient.queryMSB( getXML() ) ;
 	}
 
 	/**
