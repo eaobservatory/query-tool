@@ -1,10 +1,6 @@
 package edu.jach.qt.gui ;
 
 import java.util.Hashtable ;
-import edu.jach.qt.app.Subject ;
-import edu.jach.qt.app.Observer ;
-import java.util.ArrayList ;
-import java.util.Iterator ;
 
 /**
  * WidgetDataBag.java
@@ -21,10 +17,9 @@ import java.util.Iterator ;
  * @author <a href="mailto:mrippa@jach.hawaii.edu">Mathew Rippa</a>
  * $Id$
  */
-public class WidgetDataBag implements Subject
+public class WidgetDataBag
 {
 	private Hashtable<String,Object> table = new Hashtable<String,Object>() ;
-	private ArrayList<Observer> observers = new ArrayList<Observer>() ;
 
 	/**
 	 * The <code>put</code> method adds the key value pair to the
@@ -38,10 +33,7 @@ public class WidgetDataBag implements Subject
 	{
 		Object o = null ;
 		if( key != null )
-		{
 			o = table.put( key , value ) ;
-			notifyObservers() ;
-		}
 		return o ;
 	}
 
@@ -65,39 +57,6 @@ public class WidgetDataBag implements Subject
 	public Hashtable<String,Object> getHash()
 	{
 		return table ;
-	}
-
-	/**
-	 * The <code>addObserver</code> method adds an observer to the
-	 * ArrayList of observers.
-	 *
-	 * @param o an <code>Observer</code> value
-	 */
-	public void addObserver( Observer o )
-	{
-		observers.add( o ) ;
-	}
-
-	/**
-	 * The <code>removeObserver</code> method removes an observer from
-	 * the ArrayList of observers.
-	 *
-	 * @param o an <code>Observer</code> value
-	 */
-	public void removeObserver( Observer o )
-	{
-		observers.remove( o ) ;
-	}
-
-	private void notifyObservers()
-	{
-		// loop through and notify each observer 
-		Iterator<Observer> i = observers.iterator() ;
-		while( i.hasNext() )
-		{
-			Observer o = i.next() ;
-			o.update( this ) ;
-		}
 	}
 
 }// WidgetDataBag

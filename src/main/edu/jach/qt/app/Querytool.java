@@ -56,7 +56,7 @@ import org.w3c.dom.NodeList ;
  * @author <a href="mailto:mrippa@jach.hawaii.edu">Mathew Rippa</a>
  * @version 1.0 
  */
-public class Querytool implements Runnable , Observer
+public class Querytool implements Runnable
 {
 	static Logger logger = Logger.getLogger( Querytool.class ) ;
 	private String _xmlString ;
@@ -68,7 +68,6 @@ public class Querytool implements Runnable , Observer
 	private boolean remaining , observability , allocation , _q , zoneofavoidance ;
 	private String _queue ;
 	private String DISABLE_CONSTRAINT = "disableconstraint" ;
-	private int updatesSkipped = 0 ;
 
 	/**
 	 * Creates a new <code>Querytool</code> instance.
@@ -78,7 +77,6 @@ public class Querytool implements Runnable , Observer
 	public Querytool( WidgetDataBag bag )
 	{
 		this.bag = bag ;
-		bag.addObserver( this ) ;
 	}
 
 	/**
@@ -130,19 +128,6 @@ public class Querytool implements Runnable , Observer
 		_q = ( q != null && q != "" ) ;
 		if( _q )
 			_queue = q ;
-	}
-
-	/**
-	 * The <code>update</code> method is used to trigger
-	 * an action if a change is "Observed" in the "Subject".
-	 * This is the only method mandated by the Observer 
-	 * interface.
-	 *
-	 * @param o a <code>Subject</code> value
-	 */
-	public void update( Subject o )
-	{
-		updatesSkipped++ ;
 	}
 
 	/**
@@ -429,8 +414,6 @@ public class Querytool implements Runnable , Observer
 	 */
 	public String getXML()
 	{
-		logger.debug( updatesSkipped + " updates skipped since last generation." ) ;
-		updatesSkipped = 0 ;
 		buildXML( bag.getHash() ) ;
 		return _xmlString ;
 	}
