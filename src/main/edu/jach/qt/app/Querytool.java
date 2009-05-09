@@ -186,7 +186,7 @@ public class Querytool implements Runnable
 
 				if( next.equalsIgnoreCase( "instruments" ) )
 				{
-					for( final ListIterator iter = ( ( LinkedList )( ht.get( next ) ) ).listIterator( 0 ) ; iter.hasNext() ; iter.nextIndex() )
+					for( final ListIterator iter = (( LinkedList )ht.get( next )).listIterator( 0 ) ; iter.hasNext() ; iter.nextIndex() )
 					{
 						abstractButton = ( JCheckBox )( iter.next() ) ;
 						if( abstractButton.isSelected() )
