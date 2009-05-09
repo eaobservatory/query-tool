@@ -37,21 +37,15 @@ import org.w3c.dom.NodeList ;
 
 /**
  * The <code>Querytool</code> is main driver for the application side
- * of the OMP-QT.  It <em>Observes</em> the WidgetDataBag class 
- * (or Subject)on the gui side and is called an "observer" class.  As
- * such, it implements the Observer interface.  As an effect, the Querytool 
- * class has knowledge of changes to the primary attribute of the 
- * WidgetDataBag class, simply a Hashtable tracking the state of all 
- * Widgets contained in the bag.
-
- * This Observer Subject relationship allows instantaneous updates of
- * the state of the GUI.  The state data is represented in XML and a
- * new _xmlString is written upon a gui state change.  As this seems
- * somewhat inefficient, I see it as the only way to get instantaneous
- * results.
+ * of the OMP-QT.  It generates XML based on changes to the WidgetDataBag class.
  * 
- * As it is completely inefficient it has been changed so that XML updates
- * only take place when the XMl is required.
+ * Previously an observer pattern was used to update the XML on any UI change.
+ * This was completely inefficient and was noted as such at the time, while
+ * the basic idea was right, it prevented the QT from appearing when, what
+ * might be regarded as a race condition though was really a timing bug, 
+ * caused events to get backed up, and then attempts to access the window would
+ * freeze all UI code. The code has been changed so that XML updates only take 
+ * place when the XMl is required.
  *
  * @author <a href="mailto:mrippa@jach.hawaii.edu">Mathew Rippa</a>
  * @version 1.0 
