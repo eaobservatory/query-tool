@@ -25,7 +25,7 @@ public class WidgetDataBag
 	 * The <code>put</code> method adds the key value pair to the
 	 * Hashtable and notifies subscribed observers.
 	 *
-	 * @param key an <code>Object</code> value
+	 * @param key a <code>String</code> value
 	 * @param value an <code>Object</code> value
 	 * @return the previous <code>Object</code> value of the specified key, or null if it did not have one.
 	 */
