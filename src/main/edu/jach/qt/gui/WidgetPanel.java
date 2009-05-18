@@ -160,22 +160,11 @@ public class WidgetPanel extends JPanel implements ActionListener , MoonChangeLi
 					next = tr.readLine() ;
 					if( next.equals( "[EndSection]" ) )
 						break ;
-					
-					String toolTip = null ;
-					if( next.matches( ".*-.*" ) )
-					{
-						String[] split = next.split( "-" ) ;
-						next = split[ 0 ].trim() ;
-						toolTip = split[ 1 ].trim() ;
-					}
-					
+
 					cb[ num ] = new JCheckBox( next ) ;
 					cb[ num ].setHorizontalAlignment( SwingConstants.CENTER ) ;
 
 					cb[ num ].addActionListener( this ) ;
-					
-					if( toolTip != null )
-						cb[ num ].setToolTipText( toolTip ) ;
 					
 					add( cb[ num ] , gbc , 1 , num , 2 , 1 ) ;
 					num++ ;
