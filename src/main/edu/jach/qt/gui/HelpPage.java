@@ -5,8 +5,8 @@ import edu.jach.qt.utils.HTMLViewer ;
 
 /**
  * Display the current help information in local browser.
- * The help files are located inthe config directory in the
- * subdirectory Documents.
+ * The help files are located in the configuration directory in the
+ * sub directory Documents.
  * 
  * @author $Author$
  * @version $Id$
@@ -23,11 +23,11 @@ class HelpPage
 		String dir = tmp.getAbsoluteFile().getParent() ;
 		String helpFile = dir + File.separator + "Documents/AboutTheQT.html" ;
 
-		HTMLViewer htmlViewer = new HTMLViewer( null , helpFile ) ;
+		new HTMLViewer( null , helpFile ) ;
 	}
 
 	public static void main( String[] args )
 	{
-		HelpPage helpPage = new HelpPage() ;
+		new HelpPage() ;
 	}
 }
