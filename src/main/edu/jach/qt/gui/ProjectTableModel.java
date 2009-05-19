@@ -11,7 +11,7 @@ public class ProjectTableModel extends AbstractTableModel implements Runnable , 
 {
 	static Logger logger = Logger.getLogger( ProjectTableModel.class ) ;
 	private static String[] colName = { "projectid" , "priority" } ;
-	private static Class[] colClass = { String.class , Integer.class } ;
+	private static Class<?>[] colClass = { String.class , Integer.class } ;
 	private Vector<String> projectIds = new Vector<String>() ;
 	private Vector<Integer> priorities = new Vector<Integer>() ;
 
@@ -31,7 +31,7 @@ public class ProjectTableModel extends AbstractTableModel implements Runnable , 
 		return colName.length ;
 	}
 
-	public Class getColumnClass( int index )
+	public Class<?> getColumnClass( int index )
 	{
 		return colClass[ index ] ;
 	}
