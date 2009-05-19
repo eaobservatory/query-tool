@@ -871,6 +871,11 @@ public class QtFrame extends JFrame implements PopupMenuListener , ActionListene
 			{
 				new HelpPage() ;
 			}
+			else if( ABOUT.equalsIgnoreCase( thisText ) )
+			{
+				String version = System.getProperty( "version" , "unknown" ) ;
+				JOptionPane.showMessageDialog( null , "Build corresponds to Git commit : \n" + version ) ;
+			}
 			else if( EXIT.equalsIgnoreCase( thisText ) )
 			{
 				exitQT() ;
