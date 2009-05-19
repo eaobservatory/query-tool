@@ -68,10 +68,10 @@ import edu.jach.qt.utils.OrderedMap;
 /**
  * The <code>QtFrame</code> is responsible for how the main JFrame
  * is to look.  It starts 2 panel classes InfoPanel and InputPanel
- * adding them to the left side and top right resrectively.  Also,
- * a JTable is created with a sort model that is sensititve to column 
- * header clicks.  Each click sorts rows in decending order relative to 
- * the column clicked.  A shift-click has the effect of an acsending 
+ * adding them to the left side and top right respectively.  Also,
+ * a JTable is created with a sort model that is sensitive to column 
+ * header clicks.  Each click sorts rows in descending order relative to 
+ * the column clicked.  A shift-click has the effect of an ascending 
  * sort.  The JTable is placed in the bottom right of the JFrame.
  *
  * @author <a href="mailto:mrippa@jach.hawaii.edu">Mathew Rippa</a>
@@ -180,7 +180,7 @@ public class QtFrame extends JFrame implements PopupMenuListener , ActionListene
 			return ;
 		}
 
-		// Run cleanup at shutdown just incase we crossed a UT date boundry
+		// Run cleanup at shutdown just in case we crossed a UT date boundary
 		DeferredProgramList.cleanup() ;
 		
 		File cacheDir = new File( "/tmp/last_user" ) ;
@@ -199,7 +199,7 @@ public class QtFrame extends JFrame implements PopupMenuListener , ActionListene
 	}
 
 	/**
-	 * Component initialization. Initialises all of the components on the frame.
+	 * Component initialisation. Initialises all of the components on the frame.
 	 * 
 	 * @exception Exception
 	 *                on error.
@@ -261,7 +261,7 @@ public class QtFrame extends JFrame implements PopupMenuListener , ActionListene
 		add( topPanel , BorderLayout.NORTH ) ;
 		add( tablePanel , BorderLayout.CENTER ) ;
 
-		// Read the config to determine the widgets
+		// Read the configuration to determine the widgets
 		try
 		{
 			inputPanel.parseConfig( WIDGET_CONFIG_FILE ) ;
@@ -525,7 +525,7 @@ public class QtFrame extends JFrame implements PopupMenuListener , ActionListene
 
 	/**
 	 * Sends the selected MSB to the Staging Area.
-	 * The MSB must have frist been retriebed and selected from the results table 
+	 * The MSB must have first been retried and selected from the results table 
 	 * on the QT interface.
 	 */
 	public void sendToStagingArea()
@@ -765,8 +765,8 @@ public class QtFrame extends JFrame implements PopupMenuListener , ActionListene
 	}
 
 	/**
-	 * <code>menuDeselected</code> method is an action trggered when a 
-	 * menu is deselected.
+	 * <code>menuDeselected</code> method is an action triggered when a 
+	 * menu is unselected.
 	 *
 	 * @param evt a <code>MenuEvent</code> value
 	 */
@@ -774,7 +774,7 @@ public class QtFrame extends JFrame implements PopupMenuListener , ActionListene
 
 	/**
 	 * The <code>menuCanceled</code> method is an action triggered when a 
-	 * menu is canceled.
+	 * menu is cancelled.
 	 *
 	 * @param evt a <code>MenuEvent</code> value
 	 */
@@ -859,7 +859,7 @@ public class QtFrame extends JFrame implements PopupMenuListener , ActionListene
 			}
 			else if( thisItem.getText().equalsIgnoreCase( "Index" ) )
 			{
-				HelpPage helpPage = new HelpPage() ;
+				new HelpPage() ;
 			}
 			else if( thisItem.getText().equalsIgnoreCase( "Exit" ) )
 			{
@@ -867,14 +867,12 @@ public class QtFrame extends JFrame implements PopupMenuListener , ActionListene
 			}
 			else if( thisItem.getText().equalsIgnoreCase( "Columns..." ) )
 			{
-				ColumnSelector colSelector = new ColumnSelector( this ) ;
-				return ;
+				new ColumnSelector( this ) ;
 			}
 			else if( thisItem.getText().equalsIgnoreCase( "Log..." ) )
 			{
 				LogViewer viewer = new LogViewer() ;
 				viewer.showLog( System.getProperty( "QT_LOG_DIR" ) + "/QT.log" ) ;
-				return ;
 			}
 			else if( thisItem.getText().equalsIgnoreCase( "Infra Red" ) )
 			{
@@ -902,7 +900,7 @@ public class QtFrame extends JFrame implements PopupMenuListener , ActionListene
 	}
 
 	/**
-	 * The <code>makeMenu</code> method is a blackbox to make a 
+	 * The <code>makeMenu</code> method is a convenience to make a 
 	 * generic menu.
 	 *
 	 * @param parent an <code>Object</code> value
@@ -932,7 +930,7 @@ public class QtFrame extends JFrame implements PopupMenuListener , ActionListene
 	}
 
 	/**
-	 * The <code>makeMenuItem</code> method is a blackbox for a 
+	 * The <code>makeMenuItem</code> method is a convenience for a 
 	 * generic menu item.
 	 *
 	 * @param item an <code>Object</code> value
