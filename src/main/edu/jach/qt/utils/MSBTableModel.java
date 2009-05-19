@@ -11,7 +11,7 @@ public class MSBTableModel
 {
 	final private String _projectId ;
 	final private MsbColumns _columnData ;
-	final private TreeMap<String,Vector> treeMap ;
+	final private TreeMap<String,Vector<Object>> treeMap ;
 	private int rowCount ;
 	private boolean rowCountCached = false ;
 	private int widthCount ;
@@ -23,7 +23,7 @@ public class MSBTableModel
 	{
 		_projectId = project ;
 		_columnData = MsbClient.getColumnInfo() ;
-		treeMap = new TreeMap<String,Vector>() ;
+		treeMap = new TreeMap<String,Vector<Object>>() ;
 
 		indexes = new Vector<Integer>() ;
 	}
@@ -31,7 +31,7 @@ public class MSBTableModel
 	public void clear()
 	{
 		final int vectorSize = getRowCount() ;
-		Vector vector ;
+		Vector<Object> vector ;
 		while( treeMap.size() != 0 )
 		{
 			vector = treeMap.remove( treeMap.firstKey() ) ;
@@ -50,11 +50,11 @@ public class MSBTableModel
 
 	public void insertData( final String column , final Object data )
 	{
-		Vector vector = null ;
+		Vector<Object> vector = null ;
 		vector = treeMap.get( column ) ;
 		if( vector == null )
 		{
-			vector = new Vector() ;
+			vector = new Vector<Object>() ;
 			treeMap.put( column , vector ) ;
 		}
 		vector.add( data ) ;
@@ -69,7 +69,7 @@ public class MSBTableModel
 	{
 		if( !rowCountCached )
 		{
-			final Vector vector = treeMap.get( treeMap.firstKey() ) ;
+			final Vector<Object> vector = treeMap.get( treeMap.firstKey() ) ;
 			rowCount = vector.size() ;
 			rowCountCached = true ;
 		}
@@ -87,7 +87,7 @@ public class MSBTableModel
 	public Object getData( final int row , final int column )
 	{
 		final String name = _columnData.getNameForIndex( column ) ;
-		Vector vector = null ;
+		Vector<Object> vector = null ;
 		vector = treeMap.get( name ) ;
 		if( vector == null )
 			return null ;
