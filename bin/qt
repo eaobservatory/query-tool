@@ -20,7 +20,7 @@ if( ${MACHTYPE} == x86_64 ) then
         set MAXMEM = 512m
 endif
 
-set usage		= "Usage: $0 <telescope> [-h] [-options] \n\nwhere telescope is:\n\tukirt\t\tspecifies the UKIRT widget set\n\tjcmt\t\tspecifies the jcmt widget set\n\nand options include:\n\t-hilo <solaris_host>\t\tspecifies we are running in hilo and sets the solaris host\n\t-config <file>\tspecies the absolute path to the \042file\042 used for this session\n\t-scenario\tspecifies scenario mode (does not depend on drama)\n\n"
+set usage		= "Usage: $0 <telescope> [-options] \n\nwhere telescope is:\n\tukirt\t\tspecifies the UKIRT widget set\n\tjcmt\t\tspecifies the jcmt widget set\n\nand options include:\n\t-config <file>\tspecies the absolute path to the \042file\042 used for this session\n\t-scenario\tspecifies scenario mode (does not depend on drama)\n\n"
 
 set classic = ""
 set xdebug = ""
@@ -36,7 +36,6 @@ set toeng = "noeng"
 set debug = ""
 set dramaEnabled = "true"
 set scenario = 0
-set solHost = "UNDEF"
 set timeout = "20000"
 
 set VERSION = `git log | head -1 | sed -e "s/commit //g"`
@@ -121,13 +120,6 @@ while ($#argv != 0)
                 echo Science observing specified 
                 shift 
                 breaksw 
-            case -hilo:
-                shift
-                set solHost = $argv[1]
-                echo Global configs to be used
-                echo Host is ${solHost}
-                shift
-                breaksw
             case -logdir
                 shift
                 set LOGPATH = $argv[1]
@@ -135,7 +127,6 @@ while ($#argv != 0)
                 breaksw
             case -scenario
                 set scenario = 1
-                set solHost = ""
                 shift
                 breaksw
             case -config
@@ -183,20 +174,16 @@ set hsttime = `date +%H%M%S`
 
 set domain = ${SITE}
 if (${domain} == "ukirt") then
-    set solHost = "kiki"
     set taskname = UKIRT_QT_${hsttime}
 else if (${domain} == "jcmt") then
-    set solHost = "localhost"
     set taskname = JCMT_QT_${hsttime}
 else if (${domain} == "hilo") then
-    set solHost = ${solHost}
     if ( ${telescope} == "jcmt" ) then
         set taskname="JCMT_QT"
     else
         set taskname="UKIRT_QT"
     endif
-    if (${solHost} == "UNDEF") then
-        echo "\n\nIn Hilo you must specify -hilo <solaris_host> || -scenario"
+        echo "\n\nIn Hilo you must specify -scenario"
         printf "${usage}"
         exit 1
     endif
@@ -261,7 +248,7 @@ if (! ${scenario}) then
     ditsgetinfo -running CSOMON
     set run = $status
 
-    #If csomon is not running && we're on solaris, start it.
+    #If csomon is not running, start it.
     if ($run != 0 ) then
         echo "Starting CSOMON"
         /jac_sw/itsroot/src/oracda/scripts/getcso.pl &
@@ -277,7 +264,7 @@ setenv DTCL_DIR /jac_sw/drama/CurrentRelease/include/
 
 set CLASSPATH = ../lib/qt.jar:../lib/calpahtml.jar:../lib/xercesImpl.jar:../lib/xmlParserAPIs.jar:../lib/mail.jar:../lib/activation.jar:../lib/soap.jar:${OTROOT}/OT/install/classes:${OTROOT}/GEMINI/install/classes:${OTROOT}/ORAC/install/classes:${OTROOT}/OMP/install/classes:../lib/jsky.jar:../lib/diva.jar:../lib/junit.jar:../icons:/local/java/jdk/lib/tools.jar:/jac_sw/itsroot/install/dcHub/javalib/dcHub.jar:/jac_sw/drama/CurrentRelease/javalib:/star/starjava/lib/pal/pal.jar
 
-${JAVA} -Xms64m -Xmx${MAXMEM} ${classic} ${xdebug} ${xnoagent} ${xrunjdwptrans} ${xbootclasspath} -Ddebug=${debug} -DDRAMA_ENABLED=${dramaEnabled} -DSIMULATE=${tosim} -DENGINEERING=${toeng} -DQUICKLOOK=${toql} -Dtelescope=${telescope} -DSOLARIS_HOST=${solHost} -DqtConfig=${qtConfig} -Dot.cfgdir=${instConfigDir}/ -Dot.resource.cfgdir=./ -DwidgetFile=${widgetFile} -DQT_LOG_DIR=${QT_LOG_DIR} -DDOMAIN=${domain} -DOMP -DDCHUB_TIMEOUT=${timeout} -DTASKNAME=${taskname} ${NODEFER} -cp ${CLASSPATH}:${instConfigDir} -Dversion=${VERSION} edu.jach.qt.app.QT
+${JAVA} -Xms64m -Xmx${MAXMEM} ${classic} ${xdebug} ${xnoagent} ${xrunjdwptrans} ${xbootclasspath} -Ddebug=${debug} -DDRAMA_ENABLED=${dramaEnabled} -DSIMULATE=${tosim} -DENGINEERING=${toeng} -DQUICKLOOK=${toql} -Dtelescope=${telescope} -DqtConfig=${qtConfig} -Dot.cfgdir=${instConfigDir}/ -Dot.resource.cfgdir=./ -DwidgetFile=${widgetFile} -DQT_LOG_DIR=${QT_LOG_DIR} -DDOMAIN=${domain} -DOMP -DDCHUB_TIMEOUT=${timeout} -DTASKNAME=${taskname} ${NODEFER} -cp ${CLASSPATH}:${instConfigDir} -Dversion=${VERSION} edu.jach.qt.app.QT
 
     tidy: 
     onintr - 
