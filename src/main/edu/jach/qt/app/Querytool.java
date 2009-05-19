@@ -20,7 +20,7 @@ import java.util.Hashtable ;
 import java.util.ListIterator ;
 import java.util.LinkedList ;
 import java.util.Enumeration ;
-import javax.swing.JToggleButton ;
+import javax.swing.AbstractButton ;
 import javax.swing.JCheckBox ;
 import javax.swing.JRadioButton ;
 import javax.swing.JComboBox ;
@@ -138,7 +138,7 @@ public class Querytool implements Runnable
 			final Document doc = new DocumentImpl() ;
 			Element root = doc.createElement( "MSBQuery" ) ;
 			Element item , sub ;
-			JToggleButton abstractButton ;
+			AbstractButton abstractButton ;
 			Object obj ;
 
 			item = doc.createElement( "telescope" ) ;
@@ -188,7 +188,7 @@ public class Querytool implements Runnable
 				{
 					for( final ListIterator iter = (( LinkedList )ht.get( next )).listIterator( 0 ) ; iter.hasNext() ; iter.nextIndex() )
 					{
-						abstractButton = ( JCheckBox )( iter.next() ) ;
+						abstractButton = ( AbstractButton )( iter.next() ) ;
 						if( abstractButton.isSelected() )
 						{
 							item = doc.createElement( "instrument" ) ;
@@ -205,7 +205,7 @@ public class Querytool implements Runnable
 					final ListIterator iter = (( LinkedList )ht.get( next )).listIterator( 0 ) ;
 					for( ; iter.hasNext() ; iter.nextIndex() )
 					{
-						abstractButton = ( JCheckBox )( iter.next() ) ;
+						abstractButton = ( AbstractButton )( iter.next() ) ;
 						if( abstractButton.isSelected() )
 						{
 							item = doc.createElement( "semester" ) ;
@@ -223,7 +223,7 @@ public class Querytool implements Runnable
 					final ListIterator iter = (( LinkedList )ht.get( next )).listIterator( 0 ) ;
 					for( ; iter.hasNext() ; iter.nextIndex() )
 					{
-						abstractButton = ( JRadioButton )( iter.next() ) ;
+						abstractButton = ( AbstractButton )( iter.next() ) ;
 						if( abstractButton.isSelected() )
 						{
 							String tmpMoon = abstractButton.getText().trim() ;
@@ -245,7 +245,7 @@ public class Querytool implements Runnable
 					final ListIterator iter = (( LinkedList )ht.get( next )).listIterator( 0 ) ;
 					for( ; iter.hasNext() ; iter.nextIndex() )
 					{
-						abstractButton = ( JRadioButton )( iter.next() ) ;
+						abstractButton = ( AbstractButton )( iter.next() ) ;
 						if( abstractButton.isSelected() )
 						{
 							String tmpCloud = abstractButton.getText().trim() ;
@@ -276,7 +276,7 @@ public class Querytool implements Runnable
 					final ListIterator iter = (( LinkedList )ht.get( next )).listIterator( 0 ) ;
 					for( ; iter.hasNext() ; iter.nextIndex() )
 					{
-						abstractButton = ( JRadioButton )( iter.next() ) ;
+						abstractButton = ( AbstractButton )( iter.next() ) ;
 						if( abstractButton.isSelected() )
 						{
 							if( !abstractButton.getText().equalsIgnoreCase( "any" ) )
