@@ -102,7 +102,7 @@ public class HTMLViewer extends JDialog
 
 	synchronized public static void showViewer( String name )
 	{
-		HTMLViewer viewer = new HTMLViewer( null , name ) ;
+		new HTMLViewer( null , name ) ;
 	}
 
 	synchronized static public boolean visible()
@@ -115,7 +115,7 @@ public class HTMLViewer extends JDialog
 		JFrame frame = new JFrame( "Base" ) ;
 		frame.setVisible( true ) ;
 		frame.setSize( new Dimension( 100 , 100 ) ) ;
-		HTMLViewer md = new HTMLViewer( null , "/observe/ompodf/hettrans.html" ) ;
+		new HTMLViewer( null , "/observe/ompodf/hettrans.html" ) ;
 		System.out.println( "Control returned to main" ) ;
 		System.exit( 0 ) ;
 	}
