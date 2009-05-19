@@ -845,7 +845,7 @@ public class QtFrame extends JFrame implements PopupMenuListener , ActionListene
 			}
 			else
 			{
-				// Some constraints diabled - set to amber
+				// Some constraints disabled - set to amber
 				URL url = ClassLoader.getSystemResource( "amber_light1.gif" ) ;
 				ImageIcon icon = new ImageIcon( url ) ;
 				InfoPanel.searchButton.setIcon( icon ) ;
