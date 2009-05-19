@@ -11,7 +11,6 @@ SOURCES = \
 	AttributeOrigin.java \
 	AttributeTableModel.java \
 	ButtonPanel.java \
-	CalibrationArea.java \
 	ColumnSelector.java \
 	CompInfo.java \
 	DeferredProgramList.java \
