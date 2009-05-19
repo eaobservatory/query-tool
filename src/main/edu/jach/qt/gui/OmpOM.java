@@ -101,57 +101,57 @@ public class OmpOM extends JPanel
 		if( telescope.equalsIgnoreCase( "ukirt" ) )
 		{
 			/* Init UKIRT Instruments */
-			SpItem spItem = new SpInstUFTI() ;
-			spItem = new SpInstCGS4() ;
-			spItem = new SpInstIRCAM3() ;
-			spItem = new SpInstUIST() ;
-			spItem = new SpInstWFCAM() ;
-			spItem = new orac.ukirt.inst.SpDRRecipe() ;
+			new SpInstUFTI() ;
+			new SpInstCGS4() ;
+			new SpInstIRCAM3() ;
+			new SpInstUIST() ;
+			new SpInstWFCAM() ;
+			new orac.ukirt.inst.SpDRRecipe() ;
 
 			/* OMP Specific */
-			spItem = new SpIterChop() ;
+			new SpIterChop() ;
 
 			/* Init UKIRT SpTypes */
-			spItem = new SpIterBiasObs() ;
-			spItem = new SpIterBiasObs() ;
-			spItem = new SpIterCGS4() ;
-			spItem = new SpIterCGS4CalUnit() ;
-			spItem = new SpIterCGS4CalObs() ;
-			spItem = new SpIterCalUnit() ;
-			spItem = new SpIterDarkObs() ;
-			spItem = new SpIterFP() ;
-			spItem = new SpIterIRCAM3() ;
-			spItem = new SpIterIRPOL() ;
-			spItem = new SpIterNod() ;
-			spItem = new SpIterUFTI() ;
+			new SpIterBiasObs() ;
+			new SpIterBiasObs() ;
+			new SpIterCGS4() ;
+			new SpIterCGS4CalUnit() ;
+			new SpIterCGS4CalObs() ;
+			new SpIterCalUnit() ;
+			new SpIterDarkObs() ;
+			new SpIterFP() ;
+			new SpIterIRCAM3() ;
+			new SpIterIRPOL() ;
+			new SpIterNod() ;
+			new SpIterUFTI() ;
 
 			/* Init GEMINI Miscellaneous */
-			spItem = new SpIterRepeat() ;
-			spItem = new SpIterOffset() ;
-			spItem = new orac.ukirt.iter.SpIterObserve() ;
-			spItem = new orac.ukirt.iter.SpIterSky() ;
-			spItem = new SpSchedConstObsComp() ;
-			spItem = new SpSiteQualityObsComp() ;
+			new SpIterRepeat() ;
+			new SpIterOffset() ;
+			new orac.ukirt.iter.SpIterObserve() ;
+			new orac.ukirt.iter.SpIterSky() ;
+			new SpSchedConstObsComp() ;
+			new SpSiteQualityObsComp() ;
 		}
 		else if( telescope.equalsIgnoreCase( "jcmt" ) )
 		{
 			/* Init JCMT Instruments */
-			SpItem spItem = new SpInstHeterodyne() ;
+			new SpInstHeterodyne() ;
 
 			/* Init JCMT SpTypes */
-			spItem = new SpIterChop() ;
-			spItem = new orac.jcmt.inst.SpDRRecipe() ;
-			spItem = new SpIterFocusObs() ;
-			spItem = new SpIterFrequency() ;
-			spItem = new SpIterJiggleObs() ;
-			spItem = new SpIterNoiseObs() ;
-			spItem = new SpIterPOL() ;
-			spItem = new SpIterPointingObs() ;
-			spItem = new SpIterRasterObs() ;
-			spItem = new SpIterSkydipObs() ;
-			spItem = new SpIterStareObs() ;
+			new SpIterChop() ;
+			new orac.jcmt.inst.SpDRRecipe() ;
+			new SpIterFocusObs() ;
+			new SpIterFrequency() ;
+			new SpIterJiggleObs() ;
+			new SpIterNoiseObs() ;
+			new SpIterPOL() ;
+			new SpIterPointingObs() ;
+			new SpIterRasterObs() ;
+			new SpIterSkydipObs() ;
+			new SpIterStareObs() ;
 			/* Init JCMT Miscellaneous */
-			spItem = new orac.jcmt.obsComp.SpSiteQualityObsComp() ;
+			new orac.jcmt.obsComp.SpSiteQualityObsComp() ;
 		}
 	}
 
