@@ -183,10 +183,6 @@ else if (${domain} == "hilo") then
     else
         set taskname="UKIRT_QT"
     endif
-        echo "\n\nIn Hilo you must specify -scenario"
-        printf "${usage}"
-        exit 1
-    endif
 endif
 
 if !($?widgetFile) then
