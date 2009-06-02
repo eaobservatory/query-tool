@@ -16,7 +16,6 @@ import java.util.Properties ;
 import java.util.Calendar ;
 import java.util.GregorianCalendar ;
 import java.util.Vector ;
-import java.util.Enumeration ;
 import java.util.TimeZone ;
 
 import java.text.SimpleDateFormat ;
@@ -119,7 +118,6 @@ public class QtTools
 		if( status != 0 )
 			logger.error( "Error reported by instrument startup script, code was: " + status ) ;
 
-		task.stop() ;
 		try
 		{
 			task.join() ;

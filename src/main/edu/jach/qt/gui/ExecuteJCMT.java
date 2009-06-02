@@ -124,7 +124,7 @@ public class ExecuteJCMT extends Execute
 		{
 			if( fileName.toLowerCase().endsWith( "html" ) )
 			{
-				HTMLViewer viewer = new HTMLViewer( null , fileName ) ;
+				new HTMLViewer( null , fileName ) ;
 			}
 			else
 			{

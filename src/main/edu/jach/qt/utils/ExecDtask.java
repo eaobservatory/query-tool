@@ -159,12 +159,6 @@ public class ExecDtask extends Thread
 		waitFor = w ;
 	}
 
-	protected void finalize()
-	{
-		if( this.isAlive() )
-			this.stop() ;
-	}
-
 	private String getTaskString()
 	{
 		String argList = "" ;

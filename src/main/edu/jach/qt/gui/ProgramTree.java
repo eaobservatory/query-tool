@@ -1021,7 +1021,7 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 	public void dragGestureRecognized( DragGestureEvent event )
 	{
 		InputEvent ipe = event.getTriggerEvent() ;
-		if( ipe.getModifiers() == ipe.BUTTON1_MASK )
+		if( ipe.getModifiers() == InputEvent.BUTTON1_MASK )
 		{
 			Object selected = obsList.getSelectedValue() ;
 			enableList( false ) ;

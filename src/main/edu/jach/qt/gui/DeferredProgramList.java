@@ -62,10 +62,8 @@ import gemini.sp.SpProg ;
 import gemini.sp.SpFactory ;
 import gemini.sp.SpType ;
 import gemini.sp.obsComp.SpInstObsComp ;
-import gemini.sp.obsComp.SpTelescopeObsComp;
 
 /* ORAC imports */
-import orac.jcmt.inst.SpDRRecipe;
 import orac.util.SpInputXML ;
 
 /* ORAC-OM imports */

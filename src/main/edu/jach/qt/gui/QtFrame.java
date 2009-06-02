@@ -1,77 +1,78 @@
-package edu.jach.qt.gui;
+package edu.jach.qt.gui ;
 
 /* QT imports */
-import gemini.sp.SpItem;
+import gemini.sp.SpItem ;
 
 /* Miscellaneous imports */
 /* Standard imports */
-import edu.jach.qt.app.Querytool;
-import edu.jach.qt.utils.CalibrationList;
-import edu.jach.qt.utils.MsbClient;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.AWTEvent;
-import java.awt.Dimension;
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Color;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.io.IOException;
-import java.io.File;
-import java.util.Hashtable;
-import java.util.Vector;
-import javax.swing.JFrame;
-import javax.swing.JTable;
-import javax.swing.JMenuItem;
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JTabbedPane;
-import javax.swing.JMenu;
-import javax.swing.JPopupMenu;
-import javax.swing.JOptionPane;
-import javax.swing.JScrollPane;
-import javax.swing.JViewport;
-import javax.swing.JSplitPane;
-import javax.swing.ToolTipManager;
-import javax.swing.ListSelectionModel;
-import javax.swing.SwingUtilities;
-import javax.swing.SwingConstants;
-import javax.swing.ImageIcon;
-import javax.swing.JMenuBar;
-import javax.swing.JButton;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.PopupMenuListener;
-import javax.swing.event.MenuListener;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.event.MenuEvent;
-import javax.swing.event.PopupMenuEvent;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.TableColumnModelEvent;
-import javax.swing.event.TableColumnModelListener;
-import javax.swing.table.TableColumnModel;
-import javax.swing.table.TableColumn;
-import org.apache.log4j.Logger;
-import sun.misc.Signal;
-import sun.misc.SignalHandler;
-import java.util.EventListener;
-import edu.jach.qt.utils.Splash;
+import edu.jach.qt.app.Querytool ;
+import edu.jach.qt.utils.CalibrationList ;
+import edu.jach.qt.utils.MsbClient ;
+import java.awt.GridBagConstraints ;
+import java.awt.GridBagLayout ;
+import java.awt.AWTEvent ;
+import java.awt.Dimension ;
+import java.awt.BorderLayout ;
+import java.awt.Component ;
+import java.awt.Color ;
+import java.awt.event.ActionListener ;
+import java.awt.event.ActionEvent ;
+import java.awt.event.WindowAdapter ;
+import java.awt.event.WindowEvent ;
+import java.awt.event.MouseAdapter ;
+import java.awt.event.MouseEvent ;
+import java.io.IOException ;
+import java.io.File ;
+import java.net.URL ;
+import java.util.Hashtable ;
+import java.util.Vector ;
+import javax.swing.JFrame ;
+import javax.swing.JTable ;
+import javax.swing.JMenuItem ;
+import javax.swing.JCheckBoxMenuItem ;
+import javax.swing.JTabbedPane ;
+import javax.swing.JMenu ;
+import javax.swing.JPopupMenu ;
+import javax.swing.JOptionPane ;
+import javax.swing.JScrollPane ;
+import javax.swing.JViewport ;
+import javax.swing.JSplitPane ;
+import javax.swing.ToolTipManager ;
+import javax.swing.ListSelectionModel ;
+import javax.swing.SwingUtilities ;
+import javax.swing.SwingConstants ;
+import javax.swing.ImageIcon ;
+import javax.swing.JMenuBar ;
+import javax.swing.JButton ;
+import javax.swing.event.ChangeEvent ;
+import javax.swing.event.PopupMenuListener ;
+import javax.swing.event.MenuListener ;
+import javax.swing.event.ListSelectionListener ;
+import javax.swing.event.MenuEvent ;
+import javax.swing.event.PopupMenuEvent ;
+import javax.swing.event.ListSelectionEvent ;
+import javax.swing.event.TableColumnModelEvent ;
+import javax.swing.event.TableColumnModelListener ;
+import javax.swing.table.TableColumnModel ;
+import javax.swing.table.TableColumn ;
+import org.apache.log4j.Logger ;
+import sun.misc.Signal ;
+import sun.misc.SignalHandler ;
+import java.util.EventListener ;
+import edu.jach.qt.utils.Splash ;
 
-import edu.jach.qt.utils.MsbColumns;
+import edu.jach.qt.utils.MsbColumns ;
 
-import edu.jach.qt.utils.SpQueuedMap;
-import edu.jach.qt.utils.OrderedMap;
+import edu.jach.qt.utils.SpQueuedMap ;
+import edu.jach.qt.utils.OrderedMap ;
 
 /**
  * The <code>QtFrame</code> is responsible for how the main JFrame
  * is to look.  It starts 2 panel classes InfoPanel and InputPanel
- * adding them to the left side and top right resrectively.  Also,
- * a JTable is created with a sort model that is sensititve to column 
- * header clicks.  Each click sorts rows in decending order relative to 
- * the column clicked.  A shift-click has the effect of an acsending 
+ * adding them to the left side and top right respectively.  Also,
+ * a JTable is created with a sort model that is sensitive to column 
+ * header clicks.  Each click sorts rows in descending order relative to 
+ * the column clicked.  A shift-click has the effect of an ascending 
  * sort.  The JTable is placed in the bottom right of the JFrame.
  *
  * @author <a href="mailto:mrippa@jach.hawaii.edu">Mathew Rippa</a>
@@ -79,6 +80,15 @@ import edu.jach.qt.utils.OrderedMap;
  */
 public class QtFrame extends JFrame implements PopupMenuListener , ActionListener , MenuListener , ListSelectionListener
 {
+	private final static String INDEX = "Index" ;
+	private final static String EXIT = "Exit" ;
+	private final static String LOG = "Log..." ;
+	private final static String COLUMNS = "Columns..." ;
+	private final static String INFRA_RED = "Infra Red" ;
+	private final static String WATER_VAPOUR = "Water Vapour" ;
+	private static final String CALIBRATIONS = "Calibrations" ;
+	private static final String ABOUT = "About" ;
+
 	private static final String WIDGET_CONFIG_FILE = System.getProperty( "widgetFile" ) ;
 	static Logger logger = Logger.getLogger( QtFrame.class ) ;
 	private MSBQueryTableModel msbQTM ;
@@ -101,7 +111,7 @@ public class QtFrame extends JFrame implements PopupMenuListener , ActionListene
 	private InfoPanel infoPanel ;
 	private JPopupMenu popup ;
 	private OrderedMap<String,SpItem> calibrationList = new OrderedMap<String,SpItem>() ;
-	private JMenu calibrationMenu = new JMenu( "Calibrations" ) ;
+	private JMenu calibrationMenu = new JMenu( CALIBRATIONS ) ;
 	private WidgetPanel _widgetPanel ;
 	private int[] tableColumnSizes ;
 	private boolean queryExpired = false ;
@@ -180,7 +190,7 @@ public class QtFrame extends JFrame implements PopupMenuListener , ActionListene
 			return ;
 		}
 
-		// Run cleanup at shutdown just incase we crossed a UT date boundry
+		// Run cleanup at shutdown just in case we crossed a UT date boundary
 		DeferredProgramList.cleanup() ;
 		
 		File cacheDir = new File( "/tmp/last_user" ) ;
@@ -199,7 +209,7 @@ public class QtFrame extends JFrame implements PopupMenuListener , ActionListene
 	}
 
 	/**
-	 * Component initialization. Initialises all of the components on the frame.
+	 * Component initialisation. Initialises all of the components on the frame.
 	 * 
 	 * @exception Exception
 	 *                on error.
@@ -261,7 +271,7 @@ public class QtFrame extends JFrame implements PopupMenuListener , ActionListene
 		add( topPanel , BorderLayout.NORTH ) ;
 		add( tablePanel , BorderLayout.CENTER ) ;
 
-		// Read the config to determine the widgets
+		// Read the configuration to determine the widgets
 		try
 		{
 			inputPanel.parseConfig( WIDGET_CONFIG_FILE ) ;
@@ -525,7 +535,7 @@ public class QtFrame extends JFrame implements PopupMenuListener , ActionListene
 
 	/**
 	 * Sends the selected MSB to the Staging Area.
-	 * The MSB must have frist been retriebed and selected from the results table 
+	 * The MSB must have first been retried and selected from the results table 
 	 * on the QT interface.
 	 */
 	public void sendToStagingArea()
@@ -682,20 +692,20 @@ public class QtFrame extends JFrame implements PopupMenuListener , ActionListene
 		saveItem.setEnabled( false ) ;
 		saveAsItem = new JMenuItem( "Save As" ) ;
 		saveAsItem.setEnabled( false ) ;
-		exitItem = new JMenuItem( "Exit" ) ;
+		exitItem = new JMenuItem( EXIT ) ;
 
 		mbar.add( makeMenu( fileMenu , new Object[] { newItem , openItem , null , saveItem , saveAsItem , null , exitItem } , this ) ) ;
 
 		JMenu viewMenu = new JMenu( "View" ) ;
 		mbar.add( viewMenu ) ;
-		JMenuItem columnItem = new JMenuItem( "Columns..." ) ;
+		JMenuItem columnItem = new JMenuItem( COLUMNS ) ;
 		columnItem.addActionListener( this ) ;
-		JMenuItem logItem = new JMenuItem( "Log..." ) ;
+		JMenuItem logItem = new JMenuItem( LOG ) ;
 		logItem.addActionListener( this ) ;
 		JMenu satMenu = new JMenu( "Satellite Image" ) ;
-		JMenuItem irItem = new JMenuItem( "Infra Red" ) ;
+		JMenuItem irItem = new JMenuItem( INFRA_RED ) ;
 		irItem.addActionListener( this ) ;
-		JMenuItem wvItem = new JMenuItem( "Water Vapour" ) ;
+		JMenuItem wvItem = new JMenuItem( WATER_VAPOUR ) ;
 		wvItem.addActionListener( this ) ;
 		satMenu.add( irItem ) ;
 		satMenu.add( wvItem ) ;
@@ -727,7 +737,7 @@ public class QtFrame extends JFrame implements PopupMenuListener , ActionListene
 		JMenu helpMenu = new JMenu( "Help" ) ;
 		helpMenu.setMnemonic( 'H' ) ;
 
-		mbar.add( makeMenu( helpMenu , new Object[] { new JMenuItem( "Index" , 'I' ) , new JMenuItem( "About" , 'A' ) } , this ) ) ;
+		mbar.add( makeMenu( helpMenu , new Object[] { new JMenuItem( INDEX , 'I' ) , new JMenuItem( ABOUT , 'A' ) } , this ) ) ;
 
 		calibrationMenu.setEnabled( false ) ;
 		mbar.add( calibrationMenu ) ;
@@ -744,7 +754,7 @@ public class QtFrame extends JFrame implements PopupMenuListener , ActionListene
 	public void menuSelected( MenuEvent evt )
 	{
 		JMenu source = ( JMenu )evt.getSource() ;
-		if( source.getText().equals( "Calibrations" ) )
+		if( source.getText().equals( CALIBRATIONS ) )
 		{
 			Component[] cals = calibrationMenu.getMenuComponents() ;
 			if( tabbedPane != null )
@@ -765,8 +775,8 @@ public class QtFrame extends JFrame implements PopupMenuListener , ActionListene
 	}
 
 	/**
-	 * <code>menuDeselected</code> method is an action trggered when a 
-	 * menu is deselected.
+	 * <code>menuDeselected</code> method is an action triggered when a 
+	 * menu is unselected.
 	 *
 	 * @param evt a <code>MenuEvent</code> value
 	 */
@@ -774,7 +784,7 @@ public class QtFrame extends JFrame implements PopupMenuListener , ActionListene
 
 	/**
 	 * The <code>menuCanceled</code> method is an action triggered when a 
-	 * menu is canceled.
+	 * menu is cancelled.
 	 *
 	 * @param evt a <code>MenuEvent</code> value
 	 */
@@ -820,7 +830,7 @@ public class QtFrame extends JFrame implements PopupMenuListener , ActionListene
 			if( allocation.isSelected() && remaining.isSelected() && observability.isSelected() && zoneOfAvoidance.isSelected() )
 			{
 				// If all selected - set to green light
-				java.net.URL url = ClassLoader.getSystemResource( "green_light1.gif" ) ;
+				URL url = ClassLoader.getSystemResource( "green_light1.gif" ) ;
 				ImageIcon icon = new ImageIcon( url ) ;
 				InfoPanel.searchButton.setIcon( icon ) ;
 				table.setBackground( Color.WHITE ) ;
@@ -828,59 +838,62 @@ public class QtFrame extends JFrame implements PopupMenuListener , ActionListene
 			else if( !allocation.isSelected() && !remaining.isSelected() && !observability.isSelected() && !zoneOfAvoidance.isSelected() )
 			{
 				// No constraints disabled - set to red
-				java.net.URL url = ClassLoader.getSystemResource( "red_light1.gif" ) ;
+				URL url = ClassLoader.getSystemResource( "red_light1.gif" ) ;
 				ImageIcon icon = new ImageIcon( url ) ;
 				InfoPanel.searchButton.setIcon( icon ) ;
 				table.setBackground( Color.RED.darker() ) ;
 			}
 			else
 			{
-				// Some constraints diabled - set to amber
-				java.net.URL url = ClassLoader.getSystemResource( "amber_light1.gif" ) ;
+				// Some constraints disabled - set to amber
+				URL url = ClassLoader.getSystemResource( "amber_light1.gif" ) ;
 				ImageIcon icon = new ImageIcon( url ) ;
 				InfoPanel.searchButton.setIcon( icon ) ;
 				table.setBackground( Color.YELLOW.darker() ) ;
 			}
 		}
-
 		else if( source instanceof JMenuItem )
 		{
 			JMenuItem thisItem = ( JMenuItem )source ;
+			String thisText = thisItem.getText() ;
 			// Check to see if this came from the calibration list
-			if( calibrationList.find( thisItem.getText() ) != null )
+			if( calibrationList.find( thisText ) != null )
 			{
 				// Get the "MSB" that this represents
-				SpItem item = ( SpItem )calibrationList.find( thisItem.getText() ) ;
+				SpItem item = ( SpItem )calibrationList.find( thisText ) ;
 				// Add it to the deferred queue
 				DeferredProgramList.addCalibration( item ) ;
 				// Set the tabbed pane to show the Staging Area
 				if( tabbedPane.getTabCount() > 1 )
 					tabbedPane.setSelectedIndex( tabbedPane.getTabCount() - 1 ) ;
 			}
-			else if( thisItem.getText().equalsIgnoreCase( "Index" ) )
+			else if( INDEX.equalsIgnoreCase( thisText ) )
 			{
-				HelpPage helpPage = new HelpPage() ;
+				new HelpPage() ;
 			}
-			else if( thisItem.getText().equalsIgnoreCase( "Exit" ) )
+			else if( ABOUT.equalsIgnoreCase( thisText ) )
+			{
+				String version = System.getProperty( "version" , "unknown" ) ;
+				JOptionPane.showMessageDialog( null , "Build corresponds to Git commit : \n" + version ) ;
+			}
+			else if( EXIT.equalsIgnoreCase( thisText ) )
 			{
 				exitQT() ;
 			}
-			else if( thisItem.getText().equalsIgnoreCase( "Columns..." ) )
+			else if( COLUMNS.equalsIgnoreCase( thisText ) )
 			{
-				ColumnSelector colSelector = new ColumnSelector( this ) ;
-				return ;
+				new ColumnSelector( this ) ;
 			}
-			else if( thisItem.getText().equalsIgnoreCase( "Log..." ) )
+			else if( LOG.equalsIgnoreCase( thisText ) )
 			{
 				LogViewer viewer = new LogViewer() ;
 				viewer.showLog( System.getProperty( "QT_LOG_DIR" ) + "/QT.log" ) ;
-				return ;
 			}
-			else if( thisItem.getText().equalsIgnoreCase( "Infra Red" ) )
+			else if( INFRA_RED.equalsIgnoreCase( thisText ) )
 			{
 				infoPanel.getSatPanel().setDisplay( thisItem.getText() ) ;
 			}
-			else if( thisItem.getText().equalsIgnoreCase( "Water Vapour" ) )
+			else if( WATER_VAPOUR.equalsIgnoreCase( thisText ) )
 			{
 				infoPanel.getSatPanel().setDisplay( thisItem.getText() ) ;
 			}
@@ -889,7 +902,7 @@ public class QtFrame extends JFrame implements PopupMenuListener , ActionListene
 		{
 			JButton thisButton = ( JButton )source ;
 
-			if( thisButton.getText().equals( "Exit" ) )
+			if( thisButton.getText().equals( EXIT ) )
 			{
 				exitQT() ;
 			}
@@ -902,7 +915,7 @@ public class QtFrame extends JFrame implements PopupMenuListener , ActionListene
 	}
 
 	/**
-	 * The <code>makeMenu</code> method is a blackbox to make a 
+	 * The <code>makeMenu</code> method is a convenience to make a 
 	 * generic menu.
 	 *
 	 * @param parent an <code>Object</code> value
@@ -932,7 +945,7 @@ public class QtFrame extends JFrame implements PopupMenuListener , ActionListene
 	}
 
 	/**
-	 * The <code>makeMenuItem</code> method is a blackbox for a 
+	 * The <code>makeMenuItem</code> method is a convenience for a 
 	 * generic menu item.
 	 *
 	 * @param item an <code>Object</code> value

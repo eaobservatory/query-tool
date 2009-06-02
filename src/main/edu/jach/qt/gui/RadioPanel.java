@@ -1,5 +1,6 @@
 package edu.jach.qt.gui ;
 
+import java.awt.Component;
 import java.awt.GridLayout ;
 import java.awt.event.ActionListener ;
 import java.awt.event.ActionEvent ;
@@ -84,7 +85,7 @@ public class RadioPanel extends WidgetPanel implements ActionListener
 				rb.setToolTipText( toolTip ) ;
 
 			add( rb ) ;
-			rb.setAlignmentX( rb.LEFT_ALIGNMENT ) ;
+			rb.setAlignmentX( Component.LEFT_ALIGNMENT ) ;
 			group.add( rb ) ;
 			radioElems.add( rb ) ;
 			if( ( iterator.nextIndex() - 1 ) == 0 )
