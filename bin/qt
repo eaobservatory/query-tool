@@ -269,8 +269,7 @@ if (! ${scenario}) then
     #If csomon is not running && we're on solaris, start it.
     if ($run != 0 ) then
         echo "Starting CSOMON"
-        /jac_sw/itsroot/src/oracda/scripts/getcso.pl &
-#      /home/dewitt/bin/telmon.pl &
+        /jac_sw/itsroot/install/oracda/bin/Linux/getcso.pl &
     else
         echo "CSOMON already running - will not start"
     endif
