@@ -8,7 +8,7 @@ import java.io.File ;
 import java.io.IOException ;
 import java.io.FileWriter ;
 
-import org.apache.log4j.Logger ;
+import edu.jach.qt.utils.JACLogger ;
 
 import gemini.sp.SpMSB ;
 import edu.jach.qt.utils.SpQueuedMap ;
@@ -25,7 +25,7 @@ import edu.jach.qt.utils.FileUtils ;
  */
 public class ExecuteJCMT extends Execute
 {
-	static Logger logger = Logger.getLogger( ExecuteJCMT.class ) ;
+	static final JACLogger logger = JACLogger.getLogger( ExecuteJCMT.class ) ;
 	private static SpItem _itemToExecute ;
 	private static String jcmtDir = null ;
 	static boolean isRunning = false ;

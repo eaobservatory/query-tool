@@ -24,7 +24,7 @@ import javax.swing.ImageIcon ;
 import javax.swing.SwingConstants ;
 import javax.swing.border.MatteBorder ;
 
-import org.apache.log4j.Logger ;
+import edu.jach.qt.utils.JACLogger ;
 
 import edu.jach.qt.utils.SpQueuedMap ;
 
@@ -40,7 +40,7 @@ import edu.jach.qt.utils.SpQueuedMap ;
  */
 public class InfoPanel extends JPanel implements ActionListener , OMPTimerListener
 {
-	private static final Logger logger = Logger.getLogger( InfoPanel.class ) ;
+	private static final JACLogger logger = JACLogger.getLogger( InfoPanel.class ) ;
 
 	/**
 	 * The constant <code>LOGO_IMAGE</code> specifies the String

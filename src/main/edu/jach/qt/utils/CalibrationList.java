@@ -28,7 +28,7 @@ import org.w3c.dom.Element ;
 import org.xml.sax.SAXException ;
 
 import orac.util.SpInputXML ;
-import org.apache.log4j.Logger ;
+import edu.jach.qt.utils.JACLogger ;
 import edu.jach.qt.gui.XmlUtils ;
 
 /**
@@ -47,7 +47,7 @@ public class CalibrationList
 {
 	private static final String ALL_DISABLED = "all" ;
 	public static final String ROOT_ELEMENT_TAG = "SpMSBSummary" ;
-	static Logger logger = Logger.getLogger( CalibrationList.class ) ;
+	static final JACLogger logger = JACLogger.getLogger( CalibrationList.class ) ;
 
 	/**
 	 * Constructor

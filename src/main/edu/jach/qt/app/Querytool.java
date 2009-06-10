@@ -12,6 +12,7 @@ import edu.jach.qt.utils.NoSuchParameterException ;
 import edu.jach.qt.utils.MsbClient ;
 import edu.jach.qt.utils.SimpleMoon ;
 import edu.jach.qt.utils.TimeUtils ;
+import edu.jach.qt.utils.JACLogger ;
 
 /* Standard imports */
 import java.awt.Color ;
@@ -21,13 +22,10 @@ import java.util.ListIterator ;
 import java.util.LinkedList ;
 import java.util.Enumeration ;
 import javax.swing.AbstractButton ;
-import javax.swing.JCheckBox ;
-import javax.swing.JRadioButton ;
 import javax.swing.JComboBox ;
 import java.util.StringTokenizer ;
 
 /* Miscellaneous imports */
-import org.apache.log4j.Logger ;
 import org.apache.xerces.dom.DocumentImpl ;
 import org.apache.xml.serialize.XMLSerializer ;
 import org.apache.xml.serialize.OutputFormat ;
@@ -52,7 +50,7 @@ import org.w3c.dom.NodeList ;
  */
 public class Querytool implements Runnable
 {
-	static Logger logger = Logger.getLogger( Querytool.class ) ;
+	static JACLogger logger = JACLogger.getLogger( Querytool.class ) ;
 	private String _xmlString ;
 	private WidgetDataBag bag ;
 	private final String OBSERVABILITY_DISABLED = "observability" ;

@@ -6,7 +6,7 @@ import au.gov.aao.drama.Arg ;
 import au.gov.aao.drama.DramaException ;
 import au.gov.aao.drama.DramaStatus ;
 import ocs.utils.CommandReceiver ;
-import org.apache.log4j.Logger ;
+import edu.jach.qt.utils.JACLogger ;
 
 /**
  * <code>MonitorResponse</code> is used to handle reponses to the
@@ -16,7 +16,7 @@ import org.apache.log4j.Logger ;
  * @version $Id$ */
 public abstract class MonitorResponse extends DramaMonitor.MonResponse
 {
-	protected static Logger logger = Logger.getRootLogger() ;
+	protected static JACLogger logger = JACLogger.getRootLogger() ;
 	protected CommandReceiver cr ;
 	public final boolean DEBUG = "true".equals( System.getProperty( "debug" , "false" ) ) ;
 

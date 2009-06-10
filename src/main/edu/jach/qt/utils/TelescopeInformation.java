@@ -13,7 +13,7 @@ import org.xml.sax.InputSource ;
 import org.xml.sax.SAXException ;
 import org.xml.sax.SAXNotRecognizedException ;
 import org.xml.sax.SAXNotSupportedException ;
-import org.apache.log4j.Logger ;
+import edu.jach.qt.utils.JACLogger ;
 
 /**
  * Read information about a specific telescope.
@@ -28,7 +28,7 @@ import org.apache.log4j.Logger ;
 public class TelescopeInformation
 {
 	private Hashtable<String,String> data = new Hashtable<String,String>() ;
-	static Logger logger = Logger.getLogger( TelescopeInformation.class ) ;
+	static final JACLogger logger = JACLogger.getLogger( TelescopeInformation.class ) ;
 
 	/**
 	 * Constructor.

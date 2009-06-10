@@ -3,11 +3,11 @@ package edu.jach.qt.utils ;
 import java.io.File ;
 import java.io.IOException ;
 
-import org.apache.log4j.Logger ;
+import edu.jach.qt.utils.JACLogger ;
 
 public class FileUtils
 {
-	private static final Logger logger = Logger.getLogger( FileUtils.class ) ;
+	private static final JACLogger logger = JACLogger.getLogger( FileUtils.class ) ;
 	private static String deferredDirName ;
 	private static String knownUTCDate ;
 	private static String todaysDeferredDirName ;

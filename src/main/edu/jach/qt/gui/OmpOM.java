@@ -46,6 +46,7 @@ import orac.jcmt.iter.SpIterStareObs ;
 import edu.jach.qt.utils.DragTreeCellRenderer ;
 import edu.jach.qt.utils.MyTreeCellRenderer ;
 import edu.jach.qt.utils.QtTools ;
+import edu.jach.qt.utils.JACLogger ;
 
 /* Standard imports */
 import java.awt.Dimension ;
@@ -59,7 +60,6 @@ import javax.swing.JSplitPane ;
 import javax.swing.JFrame ;
 
 /* Miscellaneous imports */
-import org.apache.log4j.Logger ;
 
 /**
  * This is the top most class of the OMP-OM.  This 
@@ -70,7 +70,7 @@ import org.apache.log4j.Logger ;
  */
 public class OmpOM extends JPanel
 {
-	static Logger logger = Logger.getLogger( OmpOM.class ) ;
+	static final JACLogger logger = JACLogger.getLogger( OmpOM.class ) ;
 	private ProgramTree ptree ;
 	private File file ;
 	private SpItem spItem ;

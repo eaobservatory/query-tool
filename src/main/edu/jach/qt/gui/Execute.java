@@ -10,7 +10,7 @@ import java.util.Random ;
 
 import javax.swing.JOptionPane ;
 
-import org.apache.log4j.Logger ;
+import edu.jach.qt.utils.JACLogger ;
 
 import edu.jach.qt.utils.FileUtils ;
 
@@ -29,7 +29,7 @@ public class Execute
 	 */
 	protected boolean isDeferred = false ;
 	private static Random random = new Random() ;
-	private static final Logger logger = Logger.getLogger( Execute.class ) ;
+	private static final JACLogger logger = JACLogger.getLogger( Execute.class ) ;
 
 	/**
 	 * Default constructor.

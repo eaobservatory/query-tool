@@ -18,13 +18,13 @@ import javax.swing.border.TitledBorder ;
 import ocs.utils.HubImplementor ;
 import ocs.utils.DcHub ;
 import ocs.utils.ObeyNotRegisteredException ;
-import org.apache.log4j.Logger ;
+import edu.jach.qt.utils.JACLogger ;
 import edu.jach.qt.utils.SimpleMoon ;
 import javax.swing.JOptionPane ;
 
 /**
  * A Data Panel on the QT.
- * All information is displayed on this panel, and can be used for seaching, fetching
+ * All information is displayed on this panel, and can be used for searching, fetching
  * and setting query parameters.
  *
  *
@@ -36,7 +36,7 @@ import javax.swing.JOptionPane ;
 
 public class TelescopeDataPanel extends JPanel implements ActionListener
 {
-	static Logger logger = Logger.getLogger( TelescopeDataPanel.class ) ;
+	static final JACLogger logger = JACLogger.getLogger( TelescopeDataPanel.class ) ;
 	public static boolean DRAMA_ENABLED = "true".equals( System.getProperty( "DRAMA_ENABLED" ) ) ;
 	public static String tauString = "-----" ;
 	private static JLabel csoTauValue ;

@@ -29,7 +29,7 @@ import javax.swing.ToolTipManager ;
 import edu.jach.qt.utils.MoonChangeListener ;
 
 /* Miscellaneous imports */
-import org.apache.log4j.Logger ;
+import edu.jach.qt.utils.JACLogger ;
 
 /**
  * WidgetPanel.java
@@ -47,7 +47,7 @@ import org.apache.log4j.Logger ;
  */
 public class WidgetPanel extends JPanel implements ActionListener , MoonChangeListener
 {
-	static Logger logger = Logger.getLogger( WidgetPanel.class ) ;
+	static final JACLogger logger = JACLogger.getLogger( WidgetPanel.class ) ;
 	private TextReader tr ;
 	private int numComponents = 0 ;
 	private JCheckBox[] cb = new JCheckBox[ 3 ] ;

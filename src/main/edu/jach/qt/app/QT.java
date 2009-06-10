@@ -15,9 +15,7 @@ import java.awt.Dimension ;
 import java.awt.Toolkit ;
 import java.awt.AWTError ;
 import jsky.app.ot.OtCfg ;
-import org.apache.log4j.Logger ;
-import org.apache.log4j.PropertyConfigurator ;
-
+import edu.jach.qt.utils.JACLogger ;
 /**
  * This is the top most OMP-QT class.  Upon init it instantiates 
  * the Querytool and QtFrame classes, in that order.  These two classes
@@ -34,18 +32,13 @@ import org.apache.log4j.PropertyConfigurator ;
  */
 final public class QT
 {
-	static Logger logger = Logger.getLogger( QT.class ) ;
+	static JACLogger logger = JACLogger.getLogger( QT.class ) ;
 
 	/**
 	 * Creates a new <code>QT</code> instance which starts a Querytool, the app itself, and a QtFrame, the user interface. The frame is also set be centered on the screen.
 	 */
 	public QT()
 	{
-		if( System.getProperty( "QT_LOG_DIR" ) == null || System.getProperty( "QT_LOG_DIR" ).equals( "" ) )
-			PropertyConfigurator.configure( "../../config/nolog4j.properties" ) ;
-		else
-			PropertyConfigurator.configure( "../config/log4j.properties" ) ;
-
 		logger.info( "-------WELCOME TO THE QT----------" ) ;
 
 		try

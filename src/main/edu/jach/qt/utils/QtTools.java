@@ -20,7 +20,7 @@ import java.util.TimeZone ;
 
 import java.text.SimpleDateFormat ;
 
-import org.apache.log4j.Logger ;
+import edu.jach.qt.utils.JACLogger ;
 
 import gemini.util.ConfigWriter ;
 
@@ -54,7 +54,7 @@ public class QtTools
 	public static final int OOS_ACTIVE = 4 ;
 	public static final int OOS_INACTIVE = 5 ;
 
-	static Logger logger = Logger.getLogger( QtTools.class ) ;
+	static final JACLogger logger = JACLogger.getLogger( QtTools.class ) ;
 
 	public static void loadConfig( String filename )
 	{

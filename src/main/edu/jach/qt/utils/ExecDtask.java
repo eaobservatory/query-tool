@@ -3,7 +3,7 @@ package edu.jach.qt.utils ;
 import java.io.InputStreamReader ;
 import java.io.BufferedReader ;
 import java.io.IOException ;
-import org.apache.log4j.Logger ;
+import edu.jach.qt.utils.JACLogger ;
 
 /**
  * ExecDtask is for staring a drama task to the client connection it
@@ -16,7 +16,7 @@ import org.apache.log4j.Logger ;
  */
 public class ExecDtask extends Thread
 {
-	static Logger logger = Logger.getLogger( ExecDtask.class ) ;
+	static JACLogger logger = JACLogger.getLogger( ExecDtask.class ) ;
 
 	/**
 	 public ExecDtask(String task) is

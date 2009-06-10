@@ -49,7 +49,7 @@ import java.io.FileNotFoundException ;
 import java.io.FileReader ;
 import java.text.SimpleDateFormat ;
 
-import org.apache.log4j.Logger ;
+import edu.jach.qt.utils.JACLogger ;
 
 import java.util.HashSet ;
 
@@ -95,7 +95,7 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 	private JMenuItem engItem = new JMenuItem( "Send for Engineering" ) ;
 	private boolean _useQueue = true ;
 	private static HashSet<SpItem> duplicates = new HashSet<SpItem>() ;
-	static Logger logger = Logger.getLogger( DeferredProgramList.class ) ;
+	static JACLogger logger = JACLogger.getLogger( DeferredProgramList.class ) ;
 	
 	private static final FileExtensionFilter xmlFilter = new FileExtensionFilter( ".xml" ) ;
 	private static boolean nodefer = false ;

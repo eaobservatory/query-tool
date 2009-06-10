@@ -10,7 +10,7 @@ import java.io.OutputStream ;
 import java.io.BufferedOutputStream ;
 import java.io.IOException ;
 
-import org.apache.log4j.Logger ;
+import edu.jach.qt.utils.JACLogger ;
 
 public class CuteProxy
 {	
@@ -19,7 +19,7 @@ public class CuteProxy
 	protected Integer localPort = 8080 ;
 	private static boolean active = false ;
 	
-	private static Logger logger = Logger.getLogger( CuteProxy.class ) ;
+	private static final JACLogger logger = JACLogger.getLogger( CuteProxy.class ) ;
 	
 	public static void main( String args[] )
 	{

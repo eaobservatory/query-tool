@@ -21,7 +21,7 @@ import java.text.DecimalFormat ;
 
 import edu.jach.qt.utils.TimeUtils ;
 import edu.jach.qt.utils.SimpleMoon ;
-import org.apache.log4j.Logger ;
+import edu.jach.qt.utils.JACLogger ;
 
 /**
  * LabeldRangeTextField.java
@@ -35,7 +35,7 @@ import org.apache.log4j.Logger ;
 
 public class LabeledRangeTextField extends WidgetPanel implements DocumentListener , ActionListener , KeyListener
 {
-	static Logger logger = Logger.getLogger( LabeledRangeTextField.class ) ;
+	static final JACLogger logger = JACLogger.getLogger( LabeledRangeTextField.class ) ;
 	private JTextField upperBound ;
 	private JTextField lowerBound ;
 	private JLabel widgetLabel ;

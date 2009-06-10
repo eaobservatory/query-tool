@@ -7,7 +7,6 @@ import javax.swing.table.AbstractTableModel ;
 import javax.xml.parsers.DocumentBuilderFactory ;
 import javax.xml.parsers.DocumentBuilder ;
 import javax.xml.parsers.ParserConfigurationException ;
-import org.apache.log4j.Logger ;
 import org.w3c.dom.Document ;
 import org.w3c.dom.Element ;
 import org.xml.sax.SAXException ;
@@ -17,7 +16,7 @@ import edu.jach.qt.utils.MsbClient ;
 import edu.jach.qt.utils.MsbColumnInfo ;
 import edu.jach.qt.utils.MsbColumns ;
 import edu.jach.qt.utils.MSBTableModel ;
-
+import edu.jach.qt.utils.JACLogger ;
 import edu.jach.qt.utils.OrderedMap ;
 
 /**
@@ -30,7 +29,7 @@ import edu.jach.qt.utils.OrderedMap ;
 
 public class MSBQueryTableModel extends AbstractTableModel implements Runnable
 {
-	private static Logger logger = Logger.getLogger( MSBQueryTableModel.class ) ;
+	private static final JACLogger logger = JACLogger.getLogger( MSBQueryTableModel.class ) ;
 	private String _projectId = null ;
 	public static final String ROOT_ELEMENT_TAG = "SpMSBSummary" ;
 	public static final String MSB_SUMMARY = System.getProperty( "msbSummary" ) + "." + System.getProperty( "user.name" ) ;

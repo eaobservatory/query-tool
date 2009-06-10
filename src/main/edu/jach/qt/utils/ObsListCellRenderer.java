@@ -9,7 +9,7 @@ import java.awt.Color ;
 import javax.swing.DefaultListCellRenderer ;
 import javax.swing.ImageIcon ;
 import javax.swing.JList ;
-import org.apache.log4j.Logger ;
+import edu.jach.qt.utils.JACLogger ;
 
 /**
  * ObsListCellRenderer.java
@@ -24,7 +24,7 @@ import org.apache.log4j.Logger ;
 public class ObsListCellRenderer extends DefaultListCellRenderer
 {
 	final static ImageIcon obsIcon = new ImageIcon( System.getProperty( "IMAG_PATH" ) + "observation.gif" ) ;
-	static Logger logger = Logger.getLogger( ObsListCellRenderer.class ) ;
+	static final JACLogger logger = JACLogger.getLogger( ObsListCellRenderer.class ) ;
 
 	// This is the only method defined by ListCellRenderer.
 	// We just reconfigure the JLabel each time we're called.

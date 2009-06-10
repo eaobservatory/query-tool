@@ -55,7 +55,7 @@ import javax.swing.event.TableColumnModelEvent ;
 import javax.swing.event.TableColumnModelListener ;
 import javax.swing.table.TableColumnModel ;
 import javax.swing.table.TableColumn ;
-import org.apache.log4j.Logger ;
+import edu.jach.qt.utils.JACLogger ;
 import sun.misc.Signal ;
 import sun.misc.SignalHandler ;
 import java.util.EventListener ;
@@ -90,7 +90,7 @@ public class QtFrame extends JFrame implements PopupMenuListener , ActionListene
 	private static final String ABOUT = "About" ;
 
 	private static final String WIDGET_CONFIG_FILE = System.getProperty( "widgetFile" ) ;
-	static Logger logger = Logger.getLogger( QtFrame.class ) ;
+	static JACLogger logger = JACLogger.getLogger( QtFrame.class ) ;
 	private MSBQueryTableModel msbQTM ;
 	private JTable projectTable ;
 	private QtTable table ;

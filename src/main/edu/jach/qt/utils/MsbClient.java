@@ -15,7 +15,7 @@ import java.net.URL ;
 import java.net.MalformedURLException ;
 
 // Miscellaneous imports
-import org.apache.log4j.Logger ;
+import edu.jach.qt.utils.JACLogger ;
 
 /**
  * MsbClient.java
@@ -31,7 +31,7 @@ import org.apache.log4j.Logger ;
  */
 public class MsbClient extends SoapClient
 {
-	static Logger logger = Logger.getLogger( MsbClient.class ) ;
+	static JACLogger logger = JACLogger.getLogger( MsbClient.class ) ;
 	private static URL url = null ;
 
 	private static URL getURL()

@@ -6,7 +6,7 @@ import au.gov.aao.drama.DramaException ;
 import au.gov.aao.drama.DramaMonitor ;
 import au.gov.aao.drama.DramaStatus ;
 import ocs.utils.CommandReceiver ;
-import org.apache.log4j.Logger ;
+import edu.jach.qt.utils.JACLogger ;
 
 /**
  * <code>TELPathResponseHandler</code> This class is used to
@@ -16,7 +16,7 @@ import org.apache.log4j.Logger ;
  * $Id$ */
 public class TELPathResponseHandler extends DramaPath.ResponseHandler
 {
-	static Logger logger = Logger.getRootLogger() ;
+	static JACLogger logger = JACLogger.getRootLogger() ;
 
 	private CommandReceiver cr ;
 

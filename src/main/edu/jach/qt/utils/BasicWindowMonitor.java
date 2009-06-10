@@ -3,17 +3,17 @@ package edu.jach.qt.utils ;
 import java.awt.event.WindowAdapter ;
 import java.awt.event.WindowEvent ;
 import java.awt.Window ;
-import org.apache.log4j.Logger ;
+import edu.jach.qt.utils.JACLogger ;
 
 /**
  * Class implementing a window listener.
  */
 public class BasicWindowMonitor extends WindowAdapter
 {
-	static Logger logger = Logger.getLogger( BasicWindowMonitor.class ) ;
+	static final JACLogger logger = JACLogger.getLogger( BasicWindowMonitor.class ) ;
 
 	/**
-	 * Impelentation of the WindowClosing method.
+	 * Implementation of the WindowClosing method.
 	 *
 	 * @see     java.awt.Window
 	 *

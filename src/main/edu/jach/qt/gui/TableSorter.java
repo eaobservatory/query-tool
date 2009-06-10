@@ -13,7 +13,7 @@ import javax.swing.table.TableColumnModel ;
 import javax.swing.table.JTableHeader ;
 import javax.swing.ToolTipManager ;
 
-import org.apache.log4j.Logger ;
+import edu.jach.qt.utils.JACLogger ;
 
 import edu.jach.qt.gui.MSBQueryTableModel ;
 
@@ -43,7 +43,7 @@ public class TableSorter extends TableMap
 	Vector<Integer> sortingColumns = new Vector<Integer>() ;
 	boolean ascending = true ;
 	int compares ;
-	static Logger logger = Logger.getLogger( WidgetPanel.class ) ;
+	static final JACLogger logger = JACLogger.getLogger( WidgetPanel.class ) ;
 
 	/**
 	 * Contructor.

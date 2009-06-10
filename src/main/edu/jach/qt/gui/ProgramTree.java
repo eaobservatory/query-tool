@@ -25,6 +25,7 @@ import edu.jach.qt.utils.ErrorBox ;
 import edu.jach.qt.utils.HTMLViewer ;
 import edu.jach.qt.utils.MyTreeCellRenderer ;
 import edu.jach.qt.utils.ObsListCellRenderer ;
+import edu.jach.qt.utils.JACLogger ;
 
 /* Standard imports */
 import java.awt.GridBagConstraints ;
@@ -95,7 +96,6 @@ import javax.swing.tree.DefaultMutableTreeNode ;
 import javax.swing.tree.TreePath ;
 
 /* Miscellaneous imports */
-import org.apache.log4j.Logger ;
 
 /**
  final public class programTree is a panel to select
@@ -106,7 +106,7 @@ import org.apache.log4j.Logger ;
  */
 final public class ProgramTree extends JPanel implements TreeSelectionListener , ActionListener , KeyListener , DragSourceListener , DragGestureListener , DropTargetListener
 {
-	static Logger logger = Logger.getLogger( ProgramTree.class ) ;
+	static final JACLogger logger = JACLogger.getLogger( ProgramTree.class ) ;
 	public static final String BIN_IMAGE = System.getProperty( "binImage" ) ;
 	public static final String BIN_SEL_IMAGE = System.getProperty( "binImage" ) ;
 	private GridBagConstraints gbc ;

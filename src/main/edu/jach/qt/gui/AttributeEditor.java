@@ -35,7 +35,7 @@ import javax.swing.event.ListSelectionEvent ;
 import javax.swing.table.TableCellRenderer ;
 import javax.swing.table.TableColumn ;
 import javax.swing.text.JTextComponent ;
-import org.apache.log4j.Logger ;
+import edu.jach.qt.utils.JACLogger ;
 import java.io.File ;
 
 /**
@@ -44,7 +44,7 @@ import java.io.File ;
  */
 public class AttributeEditor extends JDialog implements ActionListener , ListSelectionListener
 {
-	static Logger logger = Logger.getLogger( AttributeEditor.class ) ;
+	static final JACLogger logger = JACLogger.getLogger( AttributeEditor.class ) ;
 
 	/**
 	 * This constructor creates the table based attribute editor.

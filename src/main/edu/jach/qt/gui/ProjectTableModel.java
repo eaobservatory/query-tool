@@ -5,11 +5,11 @@ import javax.swing.event.TableModelListener ;
 import javax.swing.event.TableModelEvent ;
 import javax.swing.table.AbstractTableModel ;
 
-import org.apache.log4j.Logger ;
+import edu.jach.qt.utils.JACLogger ;
 
 public class ProjectTableModel extends AbstractTableModel implements Runnable , TableModelListener
 {
-	static Logger logger = Logger.getLogger( ProjectTableModel.class ) ;
+	static final JACLogger logger = JACLogger.getLogger( ProjectTableModel.class ) ;
 	private static String[] colName = { "projectid" , "priority" } ;
 	private static Class<?>[] colClass = { String.class , Integer.class } ;
 	private Vector<String> projectIds = new Vector<String>() ;

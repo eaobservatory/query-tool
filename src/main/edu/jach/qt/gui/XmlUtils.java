@@ -13,7 +13,6 @@ import org.xml.sax.Attributes ;
 import org.xml.sax.helpers.DefaultHandler ;
 import org.apache.xerces.parsers.DOMParser ;
 
-import org.apache.log4j.Logger ;
 import org.w3c.dom.Element ;
 import org.w3c.dom.Document ;
 import org.w3c.dom.NodeList ;
@@ -22,6 +21,7 @@ import org.xml.sax.SAXException ;
 
 import edu.jach.qt.utils.OrderedMap ;
 import edu.jach.qt.utils.MSBTableModel ;
+import edu.jach.qt.utils.JACLogger ;
 
 /**
  * <B>XmlUtils</B> is a utility method to get information about a 
@@ -34,7 +34,7 @@ import edu.jach.qt.utils.MSBTableModel ;
  */
 public class XmlUtils
 {
-	static Logger logger = Logger.getLogger( XmlUtils.class ) ;
+	static final JACLogger logger = JACLogger.getLogger( XmlUtils.class ) ;
 
 	/**
 	 Return an Element given an XML document, tag name, and index
