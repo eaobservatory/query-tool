@@ -47,47 +47,47 @@ public class JACLogger
 	
 	public void error( String msg )
 	{
-		logger.severe( msg ) ;
+		logger.logp( Level.SEVERE , "" , "" , msg ) ;
 	}
 	
 	public void error( String msg , Throwable thrown )
 	{
-		logger.log( Level.SEVERE , msg , thrown ) ;
+		logger.logp( Level.SEVERE , "" , "" , msg , thrown ) ;
 	}
 	
 	public void debug( String msg )
 	{
-		logger.fine( msg ) ;
+		logger.logp( Level.FINE , "" , "" , msg ) ;
 	}
 	
 	public void debug( String msg , Throwable thrown )
 	{
-		logger.log( Level.FINE , msg , thrown ) ;
+		logger.logp( Level.FINE , "" , "" , msg , thrown ) ;
 	}
 	
 	public void info( String msg )
 	{
-		logger.info( msg ) ;
+		logger.logp( Level.INFO , "" , "" , msg ) ;
 	}
 	
 	public void warn( String msg )
 	{
-		logger.warning( msg ) ;
+		logger.logp( Level.WARNING , "" , "" , msg ) ;
 	}
 	
 	public void warn( String msg , Throwable thrown )
 	{
-		logger.log( Level.WARNING , msg , thrown ) ;
+		logger.logp( Level.WARNING , "" , "" , msg , thrown ) ;
 	}
 	
 	public void fatal( String msg )
 	{
-		logger.severe( msg ) ;
+		logger.logp( Level.SEVERE , "" , "" , msg ) ;
 	}
 	
 	public void fatal( String msg , Throwable thrown )
 	{
-		logger.log( Level.SEVERE , msg , thrown ) ;
+		logger.logp( Level.SEVERE , "" , "" , msg , thrown ) ;
 	}
 
 	public void shutdown()
