@@ -122,8 +122,10 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable
 			}
 			_projectId = "all" ;
 			logger.info( "Result contained " + getRowCount() + " MSBs in " + modelIndex.size() + " Projects" ) ;
-			for( int index = 0 ; index < modelIndex.size() ; index++ )
-				logger.info( modelIndex.elementAt( index ) ) ;
+			String results = "" ;
+			for( String result : modelIndex )
+				results += result + "\n" ;
+			logger.info( results ) ;
 		}
 	}
 
