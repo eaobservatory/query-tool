@@ -205,6 +205,7 @@ public class QtFrame extends JFrame implements PopupMenuListener , ActionListene
 		}
 		setVisible( false ) ;
 		dispose() ;
+		logger.shutdown() ;
 		System.exit( 0 ) ;
 	}
 
