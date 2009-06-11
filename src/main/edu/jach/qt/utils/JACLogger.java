@@ -1,6 +1,6 @@
 package edu.jach.qt.utils ;
 
-import java.io.IOException;
+import java.io.IOException ;
 import java.util.logging.Level ;
 import java.util.logging.Logger ;
 import java.util.logging.FileHandler ;
