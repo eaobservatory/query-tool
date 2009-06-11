@@ -1,16 +1,17 @@
 package edu.jach.qt.utils ;
 
 import java.io.IOException;
-import java.util.logging.Level;
+import java.util.logging.Level ;
 import java.util.logging.Logger ;
 import java.util.logging.FileHandler ;
 import java.util.logging.SimpleFormatter ;
 
 public class JACLogger
 {
+	private static Logger logger = Logger.getAnonymousLogger() ;
+	private static FileHandler handler = null ;
 	private static JACLogger jacLogger = new JACLogger() ;
-	Logger logger = Logger.getAnonymousLogger() ;
-	
+
 	private JACLogger()
 	{
 		String logDir = System.getProperty( "QT_LOG_DIR" ) ;
@@ -20,7 +21,7 @@ public class JACLogger
             {
             	if( !logDir.endsWith( "/" ) )
             		logDir += "/" ;
-            	FileHandler handler = new FileHandler( logDir + "QT.log" ) ;
+            	handler = new FileHandler( logDir + "QT.log" ) ;
             	handler.setFormatter( new SimpleFormatter() ) ;
             	logger.addHandler( handler ) ;
             }
@@ -87,5 +88,14 @@ public class JACLogger
 	public void fatal( String msg , Throwable thrown )
 	{
 		logger.log( Level.SEVERE , msg , thrown ) ;
+	}
+
+	public void shutdown()
+	{
+		if( handler != null )
+		{
+			handler.flush() ;
+			handler.close() ;
+		}
 	}
 }
