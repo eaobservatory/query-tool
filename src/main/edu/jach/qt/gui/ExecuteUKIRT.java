@@ -3,14 +3,14 @@ package edu.jach.qt.gui ;
 import edu.jach.qt.utils.QtTools ;
 import gemini.sp.SpItem ;
 import gemini.sp.SpTreeMan ;
-import org.apache.log4j.Logger ;
+import edu.jach.qt.utils.JACLogger ;
 
 import gemini.sp.SpMSB ;
 import edu.jach.qt.utils.SpQueuedMap ;
 
 public class ExecuteUKIRT extends Execute implements Runnable
 {
-	private static final Logger logger = Logger.getLogger( ExecuteUKIRT.class ) ;
+	private static final JACLogger logger = JACLogger.getLogger( ExecuteUKIRT.class ) ;
 	private boolean _useQueue ;
 
 	public ExecuteUKIRT( boolean useQueue ) throws Exception
