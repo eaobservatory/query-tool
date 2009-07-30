@@ -8,6 +8,7 @@ import gemini.sp.SpItem ;
 import edu.jach.qt.app.Querytool ;
 import edu.jach.qt.utils.CalibrationList ;
 import edu.jach.qt.utils.MsbClient ;
+
 import java.awt.GridBagConstraints ;
 import java.awt.GridBagLayout ;
 import java.awt.AWTEvent ;
@@ -110,7 +111,7 @@ public class QtFrame extends JFrame implements PopupMenuListener , ActionListene
 	private Querytool localQuerytool ;
 	private InfoPanel infoPanel ;
 	private JPopupMenu popup ;
-	private OrderedMap<String,SpItem> calibrationList = new OrderedMap<String,SpItem>() ;
+	private OrderedMap<String,OrderedMap<String,SpItem>> calibrationList = new OrderedMap<String,OrderedMap<String,SpItem>>() ;
 	private JMenu calibrationMenu = new JMenu( CALIBRATIONS ) ;
 	private WidgetPanel _widgetPanel ;
 	private int[] tableColumnSizes ;
@@ -857,11 +858,15 @@ public class QtFrame extends JFrame implements PopupMenuListener , ActionListene
 		{
 			JMenuItem thisItem = ( JMenuItem )source ;
 			String thisText = thisItem.getText() ;
+
+			String folderName = thisItem.getName() ;
+			OrderedMap<String,SpItem> folder = calibrationList.find( folderName ) ;
+
 			// Check to see if this came from the calibration list
-			if( calibrationList.find( thisText ) != null )
+			if( folder != null )
 			{
 				// Get the "MSB" that this represents
-				SpItem item = ( SpItem )calibrationList.find( thisText ) ;
+				SpItem item = folder.find( thisText ) ;
 				// Add it to the deferred queue
 				DeferredProgramList.addCalibration( item ) ;
 				// Set the tabbed pane to show the Staging Area
@@ -1031,28 +1036,34 @@ public class QtFrame extends JFrame implements PopupMenuListener , ActionListene
 			JMenu nextMenu = calibrationMenu ;
 			int counter = 0 ;
 			String lastANDFolder = "" ;
-			int trimLength = "AND Folder:".length() ;
+			int trimLength = "AND Folder: ".length() ;
 			for( int index = 0 ; index < calibrationList.size() ; index++ )
 			{
-				String key = ( String )calibrationList.getNameForIndex( index ) ;
+				String key = calibrationList.getNameForIndex( index ) ;
+				OrderedMap<String,SpItem> folder = calibrationList.find( index ) ;
 				if( key.startsWith( "AND" ) )
 				{
 					lastANDFolder = key.substring( trimLength ) ;
 					nextMenu = new JMenu( lastANDFolder ) ;
 					nextMenu.addMenuListener( ( MenuListener )listener ) ;
 					calibrationMenu.add( nextMenu ) ;
-					continue ;
+
+					for( int subIndex = 0 ; subIndex < folder.size(); subIndex++ )
+					{
+						String name = folder.getNameForIndex( subIndex ) ;
+						item = new JMenuItem( name ) ;
+						item.setName( key ) ;
+						item.addActionListener( ( ActionListener )listener ) ;
+						if( counter++ > 50 )
+						{
+							nextMenu = new JMenu( lastANDFolder + " continued" ) ;
+							nextMenu.addMenuListener( ( MenuListener )listener ) ;
+							calibrationMenu.add( nextMenu ) ;
+							counter = 0 ;
+						}
+						nextMenu.add( item ) ;
+					}
 				}
-				item = new JMenuItem( key ) ;
-				item.addActionListener( ( ActionListener )listener ) ;
-				if( counter++ > 50 )
-				{
-					nextMenu = new JMenu( lastANDFolder + " continued" ) ;
-					nextMenu.addMenuListener( ( MenuListener )listener ) ;
-					calibrationMenu.add( nextMenu ) ;
-					counter = 0 ;
-				}
-				nextMenu.add( item ) ;
 			}
 			calibrationMenu.addMenuListener( ( MenuListener )listener ) ;
 			calibrationMenu.setEnabled( true ) ;

@@ -36,9 +36,9 @@ public class CalibrationList
 	 */
 	private CalibrationList(){}
 
-	public static OrderedMap<String,SpItem> getCalibrations()
+	public static OrderedMap<String,OrderedMap<String,SpItem>> getCalibrations()
 	{
-		OrderedMap<String,SpItem> orderedMap = new OrderedMap<String,SpItem>() ;
+		OrderedMap<String,OrderedMap<String,SpItem>> orderedMap = new OrderedMap<String,OrderedMap<String,SpItem>>() ;
 
 		try
 		{
@@ -57,7 +57,9 @@ public class CalibrationList
 		return orderedMap ;
 	}
 
-	private static OrderedMap<String,SpItem> pickApart( OrderedMap<String,SpItem> orderedMap , SpItem spItem )
+	private static OrderedMap<String,SpItem> folder = null ;
+
+	private static OrderedMap<String,OrderedMap<String,SpItem>> pickApart( OrderedMap<String,OrderedMap<String,SpItem>> orderedMap , SpItem spItem )
 	{
 		Enumeration<SpItem> enumeration = spItem.children() ;
 		String telescope = System.getProperty( "telescope" ) ;
@@ -70,19 +72,22 @@ public class CalibrationList
 			{
 				SpAND and = ( SpAND )object ;
 				String title = and.getTitle() ;
-				orderedMap.add( title , null ) ;
+				folder = new OrderedMap<String,SpItem>() ;
+				orderedMap.add( title , folder ) ;
 			}
 			else if( object instanceof SpObs && "UKIRT".equalsIgnoreCase( telescope ) )
 			{
 				SpObs obs = ( SpObs )object ;
 				String title = obs.getTitleAttr() ;
-				orderedMap.add( title , obs ) ;
+				if( folder != null )
+					folder.add( title , obs ) ;
 			}
 			else if( object instanceof SpMSB && !( object instanceof SpObs ) )
 			{
 				SpMSB msb = ( SpMSB )object ;
 				String title = msb.getTitleAttr() ;
-				orderedMap.add( title , msb ) ;
+				if( folder != null )
+					folder.add( title , msb ) ;
 			}
 			else if( object instanceof SpSurveyContainer )
 			{
