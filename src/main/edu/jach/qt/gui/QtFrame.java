@@ -859,21 +859,7 @@ public class QtFrame extends JFrame implements PopupMenuListener , ActionListene
 			JMenuItem thisItem = ( JMenuItem )source ;
 			String thisText = thisItem.getText() ;
 
-			String folderName = thisItem.getName() ;
-			OrderedMap<String,SpItem> folder = calibrationList.find( folderName ) ;
-
-			// Check to see if this came from the calibration list
-			if( folder != null )
-			{
-				// Get the "MSB" that this represents
-				SpItem item = folder.find( thisText ) ;
-				// Add it to the deferred queue
-				DeferredProgramList.addCalibration( item ) ;
-				// Set the tabbed pane to show the Staging Area
-				if( tabbedPane.getTabCount() > 1 )
-					tabbedPane.setSelectedIndex( tabbedPane.getTabCount() - 1 ) ;
-			}
-			else if( INDEX.equalsIgnoreCase( thisText ) )
+			if( INDEX.equalsIgnoreCase( thisText ) )
 			{
 				new HelpPage() ;
 			}
@@ -902,6 +888,26 @@ public class QtFrame extends JFrame implements PopupMenuListener , ActionListene
 			else if( WATER_VAPOUR.equalsIgnoreCase( thisText ) )
 			{
 				infoPanel.getSatPanel().setDisplay( thisItem.getText() ) ;
+			}
+			else
+			{
+				String folderName = thisItem.getName() ;
+				if( folderName != null )
+				{
+					OrderedMap<String,SpItem> folder = calibrationList.find( folderName ) ;
+
+					// Check to see if this came from the calibration list
+					if( folder != null )
+					{
+						// Get the "MSB" that this represents
+						SpItem item = folder.find( thisText ) ;
+						// Add it to the deferred queue
+						DeferredProgramList.addCalibration( item ) ;
+						// Set the tabbed pane to show the Staging Area
+						if( tabbedPane.getTabCount() > 1 )
+							tabbedPane.setSelectedIndex( tabbedPane.getTabCount() - 1 ) ;
+					}
+				}
 			}
 		}
 		else if( source instanceof JButton )
