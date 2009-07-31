@@ -1063,29 +1063,32 @@ public class QtFrame extends JFrame implements PopupMenuListener , ActionListene
 			int trimLength = "AND Folder: ".length() ;
 			for( int index = 0 ; index < calibrationList.size() ; index++ )
 			{
-				String key = calibrationList.getNameForIndex( index ) ;
 				OrderedMap<String,SpItem> folder = calibrationList.find( index ) ;
-				if( key.startsWith( "AND" ) )
+				if( folder.size() != 0 )
 				{
-					lastANDFolder = key.substring( trimLength ) ;
-					nextMenu = new JMenu( lastANDFolder ) ;
-					nextMenu.addMenuListener( ( MenuListener )listener ) ;
-					calibrationMenu.add( nextMenu ) ;
-
-					for( int subIndex = 0 ; subIndex < folder.size(); subIndex++ )
+					String key = calibrationList.getNameForIndex( index ) ;
+					if( key.startsWith( "AND" ) )
 					{
-						String name = folder.getNameForIndex( subIndex ) ;
-						item = new JMenuItem( name ) ;
-						item.setName( key ) ;
-						item.addActionListener( ( ActionListener )listener ) ;
-						if( counter++ > 50 )
+						lastANDFolder = key.substring( trimLength ) ;
+						nextMenu = new JMenu( lastANDFolder ) ;
+						nextMenu.addMenuListener( ( MenuListener )listener ) ;
+						calibrationMenu.add( nextMenu ) ;
+
+						for( int subIndex = 0 ; subIndex < folder.size(); subIndex++ )
 						{
-							nextMenu = new JMenu( lastANDFolder + " continued" ) ;
-							nextMenu.addMenuListener( ( MenuListener )listener ) ;
-							calibrationMenu.add( nextMenu ) ;
-							counter = 0 ;
+							String name = folder.getNameForIndex( subIndex ) ;
+							item = new JMenuItem( name ) ;
+							item.setName( key ) ;
+							item.addActionListener( ( ActionListener )listener ) ;
+							if( counter++ > 50 )
+							{
+								nextMenu = new JMenu( lastANDFolder + " continued" ) ;
+								nextMenu.addMenuListener( ( MenuListener )listener ) ;
+								calibrationMenu.add( nextMenu ) ;
+								counter = 0 ;
+							}
+							nextMenu.add( item ) ;
 						}
-						nextMenu.add( item ) ;
 					}
 				}
 			}
