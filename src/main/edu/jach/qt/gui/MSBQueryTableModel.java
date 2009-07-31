@@ -37,7 +37,7 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable
 	private int colCount ; // The number of columns TO DISPLAY
 	// This may be less than the actual number of columns
 
-	private OrderedMap model ;
+	private OrderedMap<String,Object> model ;
 	private Vector<String> modelIndex = new Vector<String>() ;
 
 	//DATA
