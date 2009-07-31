@@ -1,14 +1,20 @@
 package edu.jach.qt.gui ;
 
-/* QT imports */
+/* OT imports */
 import gemini.sp.SpItem ;
 
-/* Miscellaneous imports */
-/* Standard imports */
+/* QT imports */
 import edu.jach.qt.app.Querytool ;
 import edu.jach.qt.utils.CalibrationList ;
 import edu.jach.qt.utils.MsbClient ;
+import edu.jach.qt.utils.Splash ;
+import edu.jach.qt.utils.MsbColumns ;
+import edu.jach.qt.utils.SpQueuedMap ;
+import edu.jach.qt.utils.OrderedMap ;
+import edu.jach.qt.utils.JACLogger ;
 
+/* Miscellaneous imports */
+/* Standard imports */
 import java.awt.GridBagConstraints ;
 import java.awt.GridBagLayout ;
 import java.awt.AWTEvent ;
@@ -26,6 +32,7 @@ import java.io.IOException ;
 import java.io.File ;
 import java.net.URL ;
 import java.util.Hashtable ;
+import java.util.Set ;
 import java.util.Vector ;
 import javax.swing.JFrame ;
 import javax.swing.JTable ;
@@ -56,16 +63,10 @@ import javax.swing.event.TableColumnModelEvent ;
 import javax.swing.event.TableColumnModelListener ;
 import javax.swing.table.TableColumnModel ;
 import javax.swing.table.TableColumn ;
-import edu.jach.qt.utils.JACLogger ;
 import sun.misc.Signal ;
 import sun.misc.SignalHandler ;
 import java.util.EventListener ;
-import edu.jach.qt.utils.Splash ;
 
-import edu.jach.qt.utils.MsbColumns ;
-
-import edu.jach.qt.utils.SpQueuedMap ;
-import edu.jach.qt.utils.OrderedMap ;
 
 /**
  * The <code>QtFrame</code> is responsible for how the main JFrame
@@ -114,7 +115,7 @@ public class QtFrame extends JFrame implements PopupMenuListener , ActionListene
 	private OrderedMap<String,OrderedMap<String,SpItem>> calibrationList = new OrderedMap<String,OrderedMap<String,SpItem>>() ;
 	private JMenu calibrationMenu = new JMenu( CALIBRATIONS ) ;
 	private WidgetPanel _widgetPanel ;
-	private int[] tableColumnSizes ;
+	private Hashtable<JTable,int[]> columnSizes = new Hashtable<JTable,int[]>() ;
 	private boolean queryExpired = false ;
 	private JScrollPane resultsPanel ;
 	private JScrollPane projectPane ;
@@ -300,6 +301,8 @@ public class QtFrame extends JFrame implements PopupMenuListener , ActionListene
 		projectTable.setSelectionModel( new ProjectTableSelectionModel( this ) ) ;
 
 		projectTable.setVisible( true ) ;
+
+		columnSizes.put( projectTable , new int[ 0 ] ) ;
 	}
 
 	private void tableSetup()
@@ -450,6 +453,8 @@ public class QtFrame extends JFrame implements PopupMenuListener , ActionListene
 		tcm.addColumnModelListener( mover ) ;
 
 		table.setVisible( true ) ;
+
+		columnSizes.put( table , new int[ 0 ] ) ;
 	}
 
 	public void initProjectTable()
@@ -479,12 +484,19 @@ public class QtFrame extends JFrame implements PopupMenuListener , ActionListene
 	 */
 	public void updateColumnSizes()
 	{
-		TableColumnModel tcm = table.getColumnModel() ;
-		tableColumnSizes = new int[ table.getColumnCount() ] ;
-		for( int i = 0 ; i < msbQTM.getColumnCount() ; i++ )
+		Set<JTable> tables = columnSizes.keySet() ;
+
+		for( JTable current : tables )
 		{
-			int width = tcm.getColumn( i ).getWidth() ;
-			tableColumnSizes[ i ] = width ;
+			int[] tableColumnSizes = columnSizes.get( current ) ;
+			TableColumnModel tcm = current.getColumnModel() ;
+			tableColumnSizes = new int[ current.getColumnCount() ] ;
+			columnSizes.put( current , tableColumnSizes ) ;
+			for( int i = 0 ; i < current.getModel().getColumnCount() ; i++ )
+			{
+				int width = tcm.getColumn( i ).getWidth() ;
+				tableColumnSizes[ i ] = width ;
+			}
 		}
 	}
 
@@ -493,20 +505,26 @@ public class QtFrame extends JFrame implements PopupMenuListener , ActionListene
 	 */
 	public void setColumnSizes()
 	{
-		TableColumnModel tcm = table.getColumnModel() ;
-		if( tcm == null )
-			return ;
-		int columnCount = tcm.getColumnCount() ;
-		for( int i = 0 ; i < tableColumnSizes.length ; i++ )
+		Set<JTable> tables = columnSizes.keySet() ;
+		for( JTable current : tables )
 		{
-			if( i >= columnCount )
-				break ;
-			TableColumn column = tcm.getColumn( i ) ;
-			if( column != null )
-				column.setPreferredWidth( tableColumnSizes[ i ] ) ;
+			TableColumnModel tcm = current.getColumnModel() ;
+			if( tcm != null )
+			{
+				int columnCount = tcm.getColumnCount() ;
+				int[] tableColumnSizes = columnSizes.get( current ) ;
+				for( int i = 0 ; i < tableColumnSizes.length ; i++ )
+				{
+					if( i >= columnCount )
+						break ;
+					TableColumn column = tcm.getColumn( i ) ;
+					if( column != null )
+						column.setPreferredWidth( tableColumnSizes[ i ] ) ;
+				}
+				current.setColumnModel( tcm ) ;
+				current.updateUI() ;
+			}
 		}
-		table.setColumnModel( tcm ) ;
-		table.updateUI() ;
 	}
 
 	/**
