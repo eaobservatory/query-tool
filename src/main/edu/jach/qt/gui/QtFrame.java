@@ -522,7 +522,6 @@ public class QtFrame extends JFrame implements PopupMenuListener , ActionListene
 						column.setPreferredWidth( tableColumnSizes[ i ] ) ;
 				}
 				current.setColumnModel( tcm ) ;
-				current.updateUI() ;
 			}
 		}
 	}
