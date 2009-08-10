@@ -44,7 +44,6 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable
 	//DOM object to hold XML document contents
 	protected Document doc ;
 	protected Element msbIndex ;
-	public Integer[] projectIds ;
 
 	private boolean rowCountCached = false ;
 	private int cachedRowCount ;
@@ -56,8 +55,6 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable
 	{
 		updateColumns() ;
 		adjustColumnData() ;
-
-		projectIds = new Integer[ 200 ] ;
 	}
 
 	/**
@@ -231,16 +228,6 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable
 				return model.find( index ).getData( r , c ) ;
 		}
 		return null ;
-	}
-
-	/**
-	 * Get the Summary Identifier of the current row.
-	 * @param row  The selected row of the table.
-	 * @return The SpSummaryId from the selected row.
-	 */
-	public Integer getSpSummaryId( int row )
-	{
-		return projectIds[ row ] ;
 	}
 
 	/**
