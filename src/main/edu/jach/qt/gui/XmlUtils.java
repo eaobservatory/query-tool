@@ -273,7 +273,7 @@ public class XmlUtils
 
 	}
 
-	public static OrderedMap<String,Object> getNewModel( Document doc , String tag )
+	public static OrderedMap<String,MSBTableModel> getNewModel( Document doc , String tag )
 	{
 		if( doc == null )
 			return null ;
@@ -285,7 +285,7 @@ public class XmlUtils
 
 		NodeList children ;
 		// Create an OrderedMap containing the data for each project
-		OrderedMap<String,Object> projectData = new OrderedMap<String,Object>() ;
+		OrderedMap<String,MSBTableModel> projectData = new OrderedMap<String,MSBTableModel>() ;
 
 		// Loop through all the elements in the document and start populating the new model.
 		int rowsLength = rows.getLength() ;

@@ -37,7 +37,7 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable
 	private int colCount ; // The number of columns TO DISPLAY
 	// This may be less than the actual number of columns
 
-	private OrderedMap<String,Object> model ;
+	private OrderedMap<String,MSBTableModel> model ;
 	private Vector<String> modelIndex = new Vector<String>() ;
 
 	//DATA
@@ -118,7 +118,7 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable
 				// Create an internal map of projects to MSBs
 				int modelSize = model.size() ;
 				for( int i = 0 ; i < modelSize ; i++ )
-					modelIndex.add( ( ( MSBTableModel )model.find( i ) ).getProjectId() ) ;
+					modelIndex.add( model.find( i ).getProjectId() ) ;
 			}
 			_projectId = "all" ;
 			logger.info( "Result contained " + getRowCount() + " MSBs in " + modelIndex.size() + " Projects" ) ;
@@ -180,14 +180,14 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable
 			{
 				// Get the total number of rows returned
 				for( int index = 0 ; index < modelSize ; index++ )
-					rowCount += ( ( MSBTableModel )model.find( index ) ).getRowCount() ;
+					rowCount += model.find( index ).getRowCount() ;
 			}
 			else
 			{
 				// Get the total number of rows for the specified project
 				int index = modelIndex.indexOf( _projectId ) ;
 				if( index != -1 )
-					rowCount = ( ( MSBTableModel )model.find( index ) ).getRowCount() ;
+					rowCount = model.find( index ).getRowCount() ;
 			}
 			cachedRowCount = rowCount ;
 			rowCountCached = true ;
@@ -214,21 +214,21 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable
 			for( int index = 0 ; index < modelSize ; index++ )
 			{
 				// Get the number of rows in the current model
-				rowCount = ( ( MSBTableModel )model.find( index ) ).getRowCount() ;
+				rowCount = model.find( index ).getRowCount() ;
 				if( rowCount <= r )
 				{
 					// We have the right model, so get the data
 					r = r - rowCount ;
 					continue ;
 				}
-				return ( ( MSBTableModel )model.find( index ) ).getData( r , c ) ;
+				return model.find( index ).getData( r , c ) ;
 			}
 		}
 		else
 		{
 			int index = modelIndex.indexOf( _projectId ) ;
 			if( index != -1 )
-				return ( ( MSBTableModel )model.find( index ) ).getData( r , c ) ;
+				return model.find( index ).getData( r , c ) ;
 		}
 		return null ;
 	}
@@ -325,7 +325,7 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable
 		// Loop through each submodel
 		for( int i = 0 ; i < model.size() ; i++ )
 		{
-			MSBTableModel current = ( MSBTableModel )model.find( i ) ;
+			MSBTableModel current = model.find( i ) ;
 			for( int j = current.getWidth() - 1 ; j >= 0 ; j-- )
 			{
 				// Move the column to the end to hide it.
@@ -341,12 +341,8 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable
 		{
 			while( model.size() != 0 )
 			{
-				Object temp = model.remove( 0 ) ;
-				if( temp instanceof MSBTableModel )
-				{
-					MSBTableModel msbTableModel = ( MSBTableModel )temp ;
-					msbTableModel.clear() ;
-				}
+				MSBTableModel msbTableModel = model.remove( 0 ) ;
+				msbTableModel.clear() ;
 			}
 			model.clear() ;
 			rowCountCached = false ;
@@ -374,7 +370,7 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable
 			for( index = 0 ; index < modelSize ; index++ )
 			{
 				// Get the number of rows in the current model
-				msbTableModel = ( MSBTableModel )model.find( index ) ;
+				msbTableModel = model.find( index ) ;
 				vector = msbTableModel.getIndices() ;
 				size = vector.size() ;
 				for( int step = 0 ; step < size ; step++ )
