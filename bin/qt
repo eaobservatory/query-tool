@@ -8,7 +8,7 @@ umask 002
 
 set OTROOT              = /jac_sw/hlsroot/acsis_support/acsisot
 set OTROOT              = /jac_sw/orac3
-set JAVA		= /local/java/jdk/bin/java
+set JAVA		= /local/java/jdk1.6.0/bin/java
 set baseOTConfigDir	= ${OTROOT}/OT/install/cfg
 set qtConfig	        = ../config/qtSystem.conf
 set LOGPATH             = ""
