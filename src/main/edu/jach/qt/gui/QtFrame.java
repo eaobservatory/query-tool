@@ -120,6 +120,7 @@ public class QtFrame extends JFrame implements PopupMenuListener , ActionListene
 	private JScrollPane resultsPanel ;
 	private JScrollPane projectPane ;
 	SwingWorker msbWorker ;
+	private boolean menuBuilt = false ;
 
 	/**
 	 * Creates a new <code>QtFrame</code> instance.
@@ -695,7 +696,7 @@ public class QtFrame extends JFrame implements PopupMenuListener , ActionListene
 	 * The <code>buildMenu</code> method builds the menu system.
 	 * 
 	 */
-	public void buildMenu()
+	private void buildMenu()
 	{
 		JMenuBar mbar = new JMenuBar() ;
 		setJMenuBar( mbar ) ;
@@ -760,8 +761,26 @@ public class QtFrame extends JFrame implements PopupMenuListener , ActionListene
 
 		calibrationMenu.setEnabled( false ) ;
 		mbar.add( calibrationMenu ) ;
-		CalibrationThread calibrationThread = new CalibrationThread( this ) ;
-		calibrationThread.start() ;
+
+		menuBuilt = true ;
+	}
+
+	/**
+	 * Method to run the calibration fetching thread, so it can be done after everything else.
+	 */
+	public boolean fetchCalibrations()
+	{
+		if( menuBuilt )
+		{
+			CalibrationThread calibrationThread = new CalibrationThread( this ) ;
+			calibrationThread.start() ;
+		}
+		else
+		{
+			logger.error( "QtFrame menu not built." ) ;
+		}
+
+		return menuBuilt ;
 	}
 
 	/**
