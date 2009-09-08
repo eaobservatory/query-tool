@@ -92,6 +92,8 @@ final public class QT
 
 		logger.info( "QT should now be visible" ) ;
 
+		qtf.fetchCalibrations() ;
+
 		String bigTelescope = System.getProperty( "TELESCOPE" ) ;
 		if( bigTelescope == null || bigTelescope.equals( "" ) )
 			System.setProperty( "TELESCOPE" , System.getProperty( "telescope" ) ) ;
