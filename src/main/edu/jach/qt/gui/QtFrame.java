@@ -673,26 +673,6 @@ public class QtFrame extends JFrame implements PopupMenuListener , ActionListene
 	}
 
 	/**
-	 * This <code>add</code> method is a utility method to add
-	 * the current Component to the grid bag.
-	 *
-	 * @param c a <code>Component</code> value
-	 * @param gbc a <code>GridBagConstraints</code> value
-	 * @param x an <code>int</code> value
-	 * @param y an <code>int</code> value
-	 * @param w an <code>int</code> value
-	 * @param h an <code>int</code> value
-	 */
-	public void add( Component c , GridBagConstraints gbc , int x , int y , int w , int h )
-	{
-		gbc.gridx = x ;
-		gbc.gridy = y ;
-		gbc.gridwidth = w ;
-		gbc.gridheight = h ;
-		add( c , gbc ) ;
-	}
-
-	/**
 	 * The <code>buildMenu</code> method builds the menu system.
 	 * 
 	 */
