@@ -15,7 +15,6 @@ import edu.jach.qt.utils.JACLogger ;
 
 /* Miscellaneous imports */
 /* Standard imports */
-import java.awt.GridBagConstraints ;
 import java.awt.GridBagLayout ;
 import java.awt.AWTEvent ;
 import java.awt.Dimension ;
@@ -106,7 +105,6 @@ public class QtFrame extends JFrame implements PopupMenuListener , ActionListene
 	private JCheckBoxMenuItem allocation ;
 	private JCheckBoxMenuItem zoneOfAvoidance ;
 	private JTabbedPane tabbedPane ;
-	private GridBagConstraints gbc ;
 	private OmpOM om ;
 	private WidgetDataBag widgetBag ;
 	private Querytool localQuerytool ;
@@ -220,8 +218,6 @@ public class QtFrame extends JFrame implements PopupMenuListener , ActionListene
 	 */
 	private void compInit() throws Exception
 	{
-		gbc = new GridBagConstraints() ;
-
 		// Clean up deferred observations from previous UT dates
 		DeferredProgramList.cleanup() ;
 
