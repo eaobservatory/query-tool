@@ -68,6 +68,7 @@ JARSIGNER = $(shell which jarsigner)
 JAVA      = $(shell which java)
 
 JAVAC_FLAGS = \
+	-target 1.6 \
 	-d ${TARGETDIR} \
 	-classpath ${CLASSPATH} \
 	-sourcepath ${SOURCEDIR} \
