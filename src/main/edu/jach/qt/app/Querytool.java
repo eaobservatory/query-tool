@@ -270,17 +270,26 @@ public class Querytool implements Runnable
 				}
 				else if( next.equalsIgnoreCase( "country" ) )
 				{
-					item = doc.createElement( next ) ;
 					final ListIterator iter = (( LinkedList )ht.get( next )).listIterator( 0 ) ;
 					for( ; iter.hasNext() ; iter.nextIndex() )
 					{
 						abstractButton = ( AbstractButton )( iter.next() ) ;
 						if( abstractButton.isSelected() )
 						{
-							if( !abstractButton.getText().equalsIgnoreCase( "any" ) )
+							String text = abstractButton.getText() ;
+							if( !text.equalsIgnoreCase( "any" ) )
 							{
-								item.appendChild( doc.createTextNode( abstractButton.getText() ) ) ;
-								root.appendChild( item ) ;
+								String[] countries ;
+								if( text.indexOf( "+" ) != -1 )
+									countries = text.split( "\\+" ) ;
+								else
+									countries = new String[]{ text } ;
+								for( String country : countries )
+								{
+									item = doc.createElement( "country" ) ;
+									item.appendChild( doc.createTextNode( country ) ) ;
+									root.appendChild( item ) ;
+								}
 							}
 						}
 					}
