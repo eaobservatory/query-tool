@@ -15,18 +15,28 @@ public class JACLogger
 	private JACLogger()
 	{
 		String logDir = System.getProperty( "QT_LOG_DIR" ) ;
-    	if( logDir != null && !"".equals( logDir ) )
-    	{
-            try
-            {
-            	if( !logDir.endsWith( "/" ) )
-            		logDir += "/" ;
-            	handler = new FileHandler( logDir + "QT.log" ) ;
-            	handler.setFormatter( new SimpleFormatter() ) ;
-            	logger.addHandler( handler ) ;
-            }
-            catch( SecurityException e ){ e.printStackTrace() ; }
-            catch( IOException e ){ e.printStackTrace() ; }
+		if( logDir != null && !"".equals( logDir ) )
+		{
+			try
+			{
+				if( !logDir.endsWith( "/" ) )
+					logDir += "/" ;
+				handler = new FileHandler( logDir + "QT.log" ) ;
+				handler.setFormatter( new SimpleFormatter() ) ;
+				logger.addHandler( handler ) ;
+
+				if( !"".equals( System.getProperty( "debug" ) ) )
+				{
+					info( "Debugging ON" ) ;
+					logger.setLevel( Level.ALL ) ;
+				}
+				else
+				{
+					info( "Debugging OFF" ) ;
+				}
+			}
+			catch( SecurityException e ){ e.printStackTrace() ; }
+			catch( IOException e ){ e.printStackTrace() ; }
 		}
 	}
 	
