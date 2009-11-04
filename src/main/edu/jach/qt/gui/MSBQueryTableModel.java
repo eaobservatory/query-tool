@@ -17,7 +17,8 @@ import edu.jach.qt.utils.MsbColumnInfo ;
 import edu.jach.qt.utils.MsbColumns ;
 import edu.jach.qt.utils.MSBTableModel ;
 import edu.jach.qt.utils.JACLogger ;
-import edu.jach.qt.utils.OrderedMap ;
+
+import orac.util.OrderedMap ;
 
 /**
  * MSBQueryTableModel.java

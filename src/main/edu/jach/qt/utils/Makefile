@@ -11,7 +11,6 @@ SOURCES = \
 	MsbColumnInfo.java \
 	MsbColumns.java \
 	MSBTableModel.java \
-	OrderedMap.java \
 	ErrorBox.java \
 	ExecDtask.java \
 	InvalidUserException.java \

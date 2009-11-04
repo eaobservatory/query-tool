@@ -19,9 +19,10 @@ import org.w3c.dom.NodeList ;
 import org.w3c.dom.Node ;
 import org.xml.sax.SAXException ;
 
-import edu.jach.qt.utils.OrderedMap ;
 import edu.jach.qt.utils.MSBTableModel ;
 import edu.jach.qt.utils.JACLogger ;
+
+import orac.util.OrderedMap ;
 
 /**
  * <B>XmlUtils</B> is a utility method to get information about a 

@@ -2,6 +2,7 @@ package edu.jach.qt.gui ;
 
 /* OT imports */
 import gemini.sp.SpItem ;
+import orac.util.OrderedMap ;
 
 /* QT imports */
 import edu.jach.qt.app.Querytool ;
@@ -10,7 +11,6 @@ import edu.jach.qt.utils.MsbClient ;
 import edu.jach.qt.utils.Splash ;
 import edu.jach.qt.utils.MsbColumns ;
 import edu.jach.qt.utils.SpQueuedMap ;
-import edu.jach.qt.utils.OrderedMap ;
 import edu.jach.qt.utils.JACLogger ;
 
 /* Miscellaneous imports */

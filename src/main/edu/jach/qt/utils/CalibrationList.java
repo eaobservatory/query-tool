@@ -12,6 +12,7 @@ import gemini.sp.SpObs ;
 import java.util.Enumeration ;
 
 import orac.util.SpInputXML ;
+import orac.util.OrderedMap ;
 import edu.jach.qt.utils.JACLogger ;
 
 /**

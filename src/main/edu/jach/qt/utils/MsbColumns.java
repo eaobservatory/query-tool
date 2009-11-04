@@ -1,5 +1,7 @@
 package edu.jach.qt.utils ;
 
+import orac.util.OrderedMap ;
+
 public class MsbColumns extends OrderedMap<String,MsbColumnInfo>
 {
 	public void add( MsbColumnInfo msbColumnInfo )
