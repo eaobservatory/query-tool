@@ -36,6 +36,8 @@ import java.awt.event.ActionEvent ;
 import java.awt.event.MouseListener ;
 import java.awt.event.MouseEvent ;
 import java.awt.event.MouseAdapter ;
+import javax.swing.event.ListSelectionListener ;
+import javax.swing.event.ListSelectionEvent ;
 import java.util.Vector ;
 import java.util.HashMap ;
 import java.util.TooManyListenersException ;
@@ -81,7 +83,7 @@ import edu.jach.qt.utils.FileUtils ;
  * @author $Author$
  * @version $Id$
  */
-final public class DeferredProgramList extends JPanel implements DropTargetListener , DragSourceListener , DragGestureListener , ActionListener
+final public class DeferredProgramList extends JPanel implements DropTargetListener , DragSourceListener , DragGestureListener , ActionListener , ListSelectionListener
 {
 	private DropTarget dropTarget = null ;
 	private DragSource dragSource = null ;
@@ -136,7 +138,6 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 		// Set up the initial drop target
 		scrollPane.getViewport().setDropTarget( dropTarget ) ;
 		getCurrentList() ;
-		displayList() ;
 	}
 
 	public static void setCurrentItem( SpItem item )
@@ -299,24 +300,7 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 			public void mouseClicked( MouseEvent e )
 			{
 				if( e.getClickCount() == 2 )
-				{
 					execute() ;
-				}
-				else
-				{
-					if( getCurrentItem() != obsList.getSelectedValue() )
-					{
-						// Select the new item
-						setCurrentItem( ( SpItem )obsList.getSelectedValue() ) ;
-						NotePanel.setNote( getCurrentItem() ) ;
-						ProgramTree.clearSelection() ;
-					}
-					else
-					{
-						obsList.clearSelection() ;
-						setCurrentItem( null ) ;
-					}
-				}
 			}
 
 			public void mousePressed( MouseEvent e )
@@ -328,6 +312,7 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 			}
 		} ;
 		obsList.addMouseListener( ml ) ;
+		obsList.addListSelectionListener( this ) ;
 		// Add the listbox to a scrolling pane
 		scrollPane.getViewport().removeAll() ;
 		scrollPane.getViewport().add( obsList ) ;
@@ -793,6 +778,21 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 			{
 				markThisObservationAsDone( getCurrentItem() ) ;
 				logger.info( "Observation executed successfully" ) ;
+			}
+		}
+	}
+
+	public void valueChanged( ListSelectionEvent e )
+	{
+		Object source = e.getSource() ;
+		if( source == obsList )
+		{
+			SpItem item = ( SpItem )obsList.getSelectedValue() ;
+			if( item != null && getCurrentItem() != item )
+			{
+				setCurrentItem( item ) ;
+				NotePanel.setNote( getCurrentItem() ) ;
+				ProgramTree.clearSelection() ;
 			}
 		}
 	}
