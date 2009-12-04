@@ -52,11 +52,9 @@ import javax.swing.ImageIcon ;
 import javax.swing.JMenuBar ;
 import javax.swing.JButton ;
 import javax.swing.event.ChangeEvent ;
-import javax.swing.event.PopupMenuListener ;
 import javax.swing.event.MenuListener ;
 import javax.swing.event.ListSelectionListener ;
 import javax.swing.event.MenuEvent ;
-import javax.swing.event.PopupMenuEvent ;
 import javax.swing.event.ListSelectionEvent ;
 import javax.swing.event.TableColumnModelEvent ;
 import javax.swing.event.TableColumnModelListener ;
@@ -79,7 +77,7 @@ import java.util.EventListener ;
  * @author <a href="mailto:mrippa@jach.hawaii.edu">Mathew Rippa</a>
  * $Id$
  */
-public class QtFrame extends JFrame implements PopupMenuListener , ActionListener , MenuListener , ListSelectionListener
+public class QtFrame extends JFrame implements ActionListener , MenuListener , ListSelectionListener
 {
 	private final static String INDEX = "Index" ;
 	private final static String EXIT = "Exit" ;
@@ -998,38 +996,6 @@ public class QtFrame extends JFrame implements PopupMenuListener , ActionListene
 	public WidgetPanel getWidgets()
 	{
 		return _widgetPanel ;
-	}
-
-	// implementation of javax.swing.event.PopupMenuListener interface
-
-	/**
-	 * Implementation of the PopupMenuListener interface.
-	 *
-	 * @param param1 <description>
-	 */
-	public void popupMenuWillBecomeVisible( PopupMenuEvent param1 )
-	{
-	// TODO: implement this javax.swing.event.PopupMenuListener method
-	}
-
-	/**
-	 * Implementation of the PopupMenuListener interface.
-	 *
-	 * @param param1 <description>
-	 */
-	public void popupMenuWillBecomeInvisible( PopupMenuEvent param1 )
-	{
-	// TODO: implement this javax.swing.event.PopupMenuListener method
-	}
-
-	/**
-	 * Implementation of the PopupMenuListener interface.
-	 *
-	 * @param param1 <description>
-	 */
-	public void popupMenuCanceled( PopupMenuEvent param1 )
-	{
-	// TODO: implement this javax.swing.event.PopupMenuListener method
 	}
 
 	public void resetCurrentMSB()
