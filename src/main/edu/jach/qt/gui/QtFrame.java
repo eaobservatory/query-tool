@@ -914,6 +914,7 @@ public class QtFrame extends JFrame implements PopupMenuListener , ActionListene
 						// Get the "MSB" that this represents
 						SpItem item = folder.find( thisText ) ;
 						// Add it to the deferred queue
+						om.updateDeferredList() ;
 						DeferredProgramList.addCalibration( item ) ;
 						// Set the tabbed pane to show the Staging Area
 						if( tabbedPane.getTabCount() > 1 )
