@@ -138,6 +138,7 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 		// Set up the initial drop target
 		scrollPane.getViewport().setDropTarget( dropTarget ) ;
 		getCurrentList() ;
+		displayList() ;
 	}
 
 	public static void setCurrentItem( SpItem item )
