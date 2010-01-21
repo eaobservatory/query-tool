@@ -41,9 +41,6 @@ SOURCES = \
 	TableSorter.java \
 	TelescopeDataPanel.java \
 	TimePanel.java \
-	Timer.java \
-	TimerEvent.java \
-	TimerListener.java \
 	TrashCan.java \
 	TreeViewer.java \
 	WidgetDataBag.java \
