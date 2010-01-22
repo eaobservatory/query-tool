@@ -577,51 +577,6 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 	}
 
 	/**
-	 * public void addTree(String title,SpItem sp) is a public method to set
-	 * up a JTree GUI bit for a science program object in the panel and to
-	 * set up a listener too
-	 * 
-	 * @param String
-	 *                title and SpItem sp
-	 * @return none
-	 * @throws none
-	 * @deprecated Replaced by {@link #addList(SpItem)}
-	 * 
-	 */
-	public void addTree( SpItem sp )
-	{
-		setCurrentItem( sp ) ;
-
-		getItems( sp , root ) ;
-
-		// Create a new tree control
-		treeModel = new DefaultTreeModel( root ) ;
-		tree = new JTree( treeModel ) ;
-
-		MyTreeCellRenderer tcr = new MyTreeCellRenderer() ;
-		// Tell the tree it is being rendered by our application
-		tree.setCellRenderer( tcr ) ;
-		tree.addTreeSelectionListener( this ) ;
-		tree.addKeyListener( this ) ;
-
-		// Add the listbox to a scrolling pane
-		scrollPane.getViewport().removeAll() ;
-		scrollPane.getViewport().add( tree ) ;
-		scrollPane.getViewport().setOpaque( false ) ;
-
-		gbc.fill = GridBagConstraints.BOTH ;
-		gbc.insets.bottom = 5 ;
-		gbc.insets.left = 10 ;
-		gbc.insets.right = 5 ;
-		gbc.weightx = 100 ;
-		gbc.weighty = 100 ;
-		add( scrollPane , gbc , 0 , 0 , 2 , 1 ) ;
-
-		this.repaint() ;
-		this.validate() ;
-	}
-
-	/**
 	 * Set up the List GUI and populate it with the results of a query.
 	 * 
 	 * @param sp

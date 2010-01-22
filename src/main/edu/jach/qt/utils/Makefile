@@ -14,7 +14,6 @@ SOURCES = \
 	InvalidUserException.java \
 	HTMLViewer.java \
 	MsbClient.java \
-	MyTreeCellRenderer.java \
 	NoSuchParameterException.java \
 	ObsListCellRenderer.java \
 	OracColor.java \

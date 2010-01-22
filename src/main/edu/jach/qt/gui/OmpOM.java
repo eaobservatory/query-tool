@@ -304,22 +304,6 @@ public class OmpOM extends JPanel
 		return safeToExit ;
 	}
 
-	/**
-	 * Tests the display.
-	 */
-	public void test()
-	{
-		JFrame f = new JFrame() ;
-		f.setSize( 400 , 300 ) ;
-		DragDropObject ddo = new DragDropObject( spItem ) ;
-		MsbNode root = new MsbNode( ddo ) ;
-		getItems( spItem , root ) ;
-		DnDJTree ddt = new DnDJTree( root ) ;
-		ddt.setCellRenderer( new MyTreeCellRenderer() ) ;
-		f.add( ddt ) ;
-		f.show() ;
-	}
-
 	/** public void getItems (SpItem spItem,DefaultMutableTreeNode node)
 	 is a public method to add ALL the items of a sp object into the
 	 JTree *recursively*.
