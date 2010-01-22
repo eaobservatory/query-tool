@@ -170,7 +170,7 @@ public class OmpOM extends JPanel
 	 */
 	public void setExecutable( boolean flag )
 	{
-		ptree.setExecutable( flag ) ;
+		ProgramTree.setExecutable( flag ) ;
 	}
 
 	/**
