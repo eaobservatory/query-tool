@@ -25,6 +25,7 @@ public class ObsListCellRenderer extends DefaultListCellRenderer
 {
 	final static ImageIcon obsIcon = new ImageIcon( System.getProperty( "IMAG_PATH" ) + "observation.gif" ) ;
 	static final JACLogger logger = JACLogger.getLogger( ObsListCellRenderer.class ) ;
+	public static Color OracBlue = new Color( 0x80 , 0x80 , 0xFF ) ;
 
 	// This is the only method defined by ListCellRenderer.
 	// We just reconfigure the JLabel each time we're called.
@@ -115,7 +116,7 @@ public class ObsListCellRenderer extends DefaultListCellRenderer
 		setIcon( obsIcon ) ;
 
 		if( isSelected )
-			setBackground( OracColor.blue ) ;
+			setBackground( OracBlue ) ;
 		else
 			setBackground( list.getBackground() ) ;
 

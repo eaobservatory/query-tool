@@ -16,7 +16,6 @@ SOURCES = \
 	MsbClient.java \
 	NoSuchParameterException.java \
 	ObsListCellRenderer.java \
-	OracColor.java \
 	QtTools.java \
 	SimpleMoon.java \
 	TelescopeInformation.java \
