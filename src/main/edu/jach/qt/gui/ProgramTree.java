@@ -758,30 +758,6 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 	}
 
 	/**
-	 * public void getItems (SpItem spItem,DefaultMutableTreeNode node)
-	 * is a public method to add ALL the items of a sp object into the
-	 * JTree *recursively*.
-	 *   
-	 *   @param SpItem spItem,DefaultMutableTreeNode node
-	 *   @return  none
-	 *   @throws none
-	 
-	 */
-	private void getItems( SpItem spItem , DefaultMutableTreeNode node )
-	{
-		Enumeration<SpItem> children = spItem.children() ;
-		while( children.hasMoreElements() )
-		{
-			SpItem child = children.nextElement() ;
-
-			DefaultMutableTreeNode temp = new DefaultMutableTreeNode( child ) ;
-
-			node.add( temp ) ;
-			getItems( child , temp ) ;
-		}
-	}
-
-	/**
 	 * private void editAttributes()
 	 * 
 	 * Invokes the attribute editor on the current item, as long as that item is an observation.
