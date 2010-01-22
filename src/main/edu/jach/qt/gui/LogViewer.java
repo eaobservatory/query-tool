@@ -25,9 +25,9 @@ import java.util.Collections ;
  * It is displayed in a new window, and currently no attempt is made to hilight
  * the text.  The user is able to select the number of lines to display and
  * filter on severity level.  The available levels are
- * All, DEBUG, INFO, WARNING, ERROR
+ * All, FINE, INFO, WARNING, SEVERE
  * Messages including and more severe are shown when selecting the filter (i.e.
- * if the user selects INFO, only INFO,WARNING and ERROR messages are displayed)
+ * if the user selects INFO, only INFO,WARNING and SEVERE messages are displayed)
  *
  * @author   $Author$
  * @version  $Revision$
@@ -38,7 +38,7 @@ public class LogViewer
 	JFrame baseFrame = new JFrame( "QueryTool Log" ) ;
 	JTextArea dispArea = new JTextArea( 20 , 50 ) ;
 	String[] lineChoices = { "20" , "50" , "100" , "150" } ;
-	String[] levelChoice = { "All" , "DEBUG" , "INFO" , "WARNING" , "ERROR" } ;
+	String[] levelChoice = { "All" , "FINE:" , "INFO:" , "WARNING:" , "SEVERE:" } ;
 	ArrayList<String> data = new ArrayList<String>() ;
 	int nLines ;
 	int selectedLevel ;
