@@ -5,8 +5,6 @@ TOP = ../../../../../..
 PACKAGE = edu/jach/qt/utils
 
 SOURCES = \
-	BasicWindowMonitor.java \
-	Bench.java \
 	CalibrationList.java \
 	MsbColumnInfo.java \
 	MsbColumns.java \
@@ -15,7 +13,6 @@ SOURCES = \
 	ExecDtask.java \
 	InvalidUserException.java \
 	HTMLViewer.java \
-	MSBDoneDialog.java \
 	MsbClient.java \
 	MyTreeCellRenderer.java \
 	NoSuchParameterException.java \

@@ -1170,9 +1170,7 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 	}
 
 	/**
-	 * Request whether we can shutdown the QT at this point. It basically
-	 * calls the MSBDoneDialog and will return "true" if we can shutdown, or
-	 * false otherwise.
+	 * Request whether we can shutdown the QT at this point.
 	 */
 	public boolean shutDownRequest()
 	{
