@@ -42,7 +42,7 @@ public class AttributeTableModel extends AbstractTableModel
 	 * @param avPairs            List of (attribute, value) pairs for the table
 	 * @param iterAivTriplets    List of (attribute, value) pairs within an iterator.
 	 */
-	public AttributeTableModel( String instName , Vector avPairs , Vector iterAivTriplets )
+	public AttributeTableModel( String instName , Vector<AVPair> avPairs , Vector<AIVTriplet> iterAivTriplets )
 	{
 		super() ;
 		data = new Object[ avPairs.size() + iterAivTriplets.size() ][ 2 ] ;
@@ -50,13 +50,13 @@ public class AttributeTableModel extends AbstractTableModel
 		isChanged = new boolean[ avPairs.size() + iterAivTriplets.size() ] ;
 		originalValue = new String[ avPairs.size() + iterAivTriplets.size() ] ;
 		int index = 0 ;
-		Enumeration pairs ;
-		Enumeration triplets ;
+		Enumeration<AVPair> pairs ;
+		Enumeration<AIVTriplet> triplets ;
 
 		pairs = avPairs.elements() ;
 		while( pairs.hasMoreElements() )
 		{
-			AVPair pair = ( AVPair )pairs.nextElement() ;
+			AVPair pair = pairs.nextElement() ;
 			data[ index ][ 0 ] = pair.attribute() ;
 			data[ index ][ 1 ] = pair.value() ;
 			isNumber[ index ] = isANumber( ( String )pair.value() ) ;
@@ -68,7 +68,7 @@ public class AttributeTableModel extends AbstractTableModel
 		triplets = iterAivTriplets.elements() ;
 		while( triplets.hasMoreElements() )
 		{
-			AIVTriplet triplet = ( AIVTriplet )triplets.nextElement() ;
+			AIVTriplet triplet = triplets.nextElement() ;
 			data[ index ][ 0 ] = triplet.iterator() + ":" + triplet.attribute() ;
 			data[ index ][ 1 ] = triplet.value() ;
 			isNumber[ index ] = isANumber( ( String )triplet.value() ) ;
