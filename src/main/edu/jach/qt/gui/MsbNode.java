@@ -4,7 +4,7 @@ import javax.swing.tree.DefaultMutableTreeNode ;
 
 /** This class forces "male" nodes to have leaf icons and
  forbids male childbaring ability 
- @deprecated Not replaced.
+ Should be deprecated and not replaced, however it's used everywhere.
  */
 public class MsbNode extends DefaultMutableTreeNode
 {
