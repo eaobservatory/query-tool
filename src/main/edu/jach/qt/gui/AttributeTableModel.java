@@ -59,9 +59,9 @@ public class AttributeTableModel extends AbstractTableModel
 			AVPair pair = pairs.nextElement() ;
 			data[ index ][ 0 ] = pair.attribute() ;
 			data[ index ][ 1 ] = pair.value() ;
-			isNumber[ index ] = isANumber( ( String )pair.value() ) ;
+			isNumber[ index ] = isANumber( pair.value() ) ;
 			isChanged[ index ] = false ;
-			originalValue[ index ] = ( String )pair.value() ;
+			originalValue[ index ] = pair.value() ;
 			index++ ;
 		}
 
@@ -71,9 +71,9 @@ public class AttributeTableModel extends AbstractTableModel
 			AIVTriplet triplet = triplets.nextElement() ;
 			data[ index ][ 0 ] = triplet.iterator() + ":" + triplet.attribute() ;
 			data[ index ][ 1 ] = triplet.value() ;
-			isNumber[ index ] = isANumber( ( String )triplet.value() ) ;
+			isNumber[ index ] = isANumber( triplet.value() ) ;
 			isChanged[ index ] = false ;
-			originalValue[ index ] = ( String )triplet.value() ;
+			originalValue[ index ] = triplet.value() ;
 			index++ ;
 		}
 	}
