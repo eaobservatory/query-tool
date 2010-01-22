@@ -603,7 +603,7 @@ public class AttributeEditor extends JDialog implements ActionListener , ListSel
 
 		// Iterate over root's attributes
 		SpAvTable table = root.getTable() ;
-		Enumeration keys = table.attributes() ;
+		Enumeration<String> keys = table.attributes() ;
 
 		while( keys.hasMoreElements() )
 		{
