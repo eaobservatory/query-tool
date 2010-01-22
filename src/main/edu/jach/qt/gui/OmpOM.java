@@ -44,7 +44,6 @@ import orac.jcmt.iter.SpIterStareObs ;
 
 /* QT imports */
 import edu.jach.qt.utils.DragTreeCellRenderer ;
-import edu.jach.qt.utils.MyTreeCellRenderer ;
 import edu.jach.qt.utils.QtTools ;
 import edu.jach.qt.utils.JACLogger ;
 

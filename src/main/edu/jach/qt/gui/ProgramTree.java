@@ -23,7 +23,6 @@ import orac.ukirt.inst.SpInstUIST ;
 /* QT imports */
 import edu.jach.qt.utils.ErrorBox ;
 import edu.jach.qt.utils.HTMLViewer ;
-import edu.jach.qt.utils.MyTreeCellRenderer ;
 import edu.jach.qt.utils.ObsListCellRenderer ;
 import edu.jach.qt.utils.JACLogger ;
 
