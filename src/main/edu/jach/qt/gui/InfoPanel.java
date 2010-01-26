@@ -24,7 +24,7 @@ import javax.swing.ImageIcon ;
 import javax.swing.SwingConstants ;
 import javax.swing.border.MatteBorder ;
 
-import edu.jach.qt.utils.JACLogger ;
+import gemini.util.JACLogger ;
 
 import edu.jach.qt.utils.SpQueuedMap ;
 

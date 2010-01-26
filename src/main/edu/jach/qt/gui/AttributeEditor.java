@@ -11,6 +11,7 @@ import gemini.sp.SpObs ;
 import gemini.sp.SpTreeMan ;
 import gemini.sp.SpType ;
 import gemini.sp.SpAvTable ;
+import gemini.util.JACLogger ;
 import java.awt.Color ;
 import java.awt.Dimension ;
 import java.awt.Component ;
@@ -35,7 +36,6 @@ import javax.swing.event.ListSelectionEvent ;
 import javax.swing.table.TableCellRenderer ;
 import javax.swing.table.TableColumn ;
 import javax.swing.text.JTextComponent ;
-import edu.jach.qt.utils.JACLogger ;
 import java.io.File ;
 
 /**

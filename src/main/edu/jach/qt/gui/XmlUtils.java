@@ -20,7 +20,7 @@ import org.w3c.dom.Node ;
 import org.xml.sax.SAXException ;
 
 import edu.jach.qt.utils.MSBTableModel ;
-import edu.jach.qt.utils.JACLogger ;
+import gemini.util.JACLogger ;
 
 import orac.util.OrderedMap ;
 

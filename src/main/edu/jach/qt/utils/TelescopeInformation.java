@@ -13,7 +13,7 @@ import org.xml.sax.InputSource ;
 import org.xml.sax.SAXException ;
 import org.xml.sax.SAXNotRecognizedException ;
 import org.xml.sax.SAXNotSupportedException ;
-import edu.jach.qt.utils.JACLogger ;
+import gemini.util.JACLogger ;
 
 /**
  * Read information about a specific telescope.

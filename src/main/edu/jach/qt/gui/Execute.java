@@ -10,7 +10,7 @@ import java.util.Random ;
 
 import javax.swing.JOptionPane ;
 
-import edu.jach.qt.utils.JACLogger ;
+import gemini.util.JACLogger ;
 
 import edu.jach.qt.utils.FileUtils ;
 

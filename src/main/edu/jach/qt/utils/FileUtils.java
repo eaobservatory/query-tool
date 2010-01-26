@@ -3,7 +3,7 @@ package edu.jach.qt.utils ;
 import java.io.File ;
 import java.io.IOException ;
 
-import edu.jach.qt.utils.JACLogger ;
+import gemini.util.JACLogger ;
 
 public class FileUtils
 {

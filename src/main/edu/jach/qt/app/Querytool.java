@@ -2,6 +2,7 @@ package edu.jach.qt.app ;
 
 /* Gemini imports */
 import gemini.sp.SpItem ;
+import gemini.util.JACLogger ;
 
 /* QT imports */
 import edu.jach.qt.gui.WidgetDataBag ;
@@ -12,7 +13,6 @@ import edu.jach.qt.utils.NoSuchParameterException ;
 import edu.jach.qt.utils.MsbClient ;
 import edu.jach.qt.utils.SimpleMoon ;
 import edu.jach.qt.utils.TimeUtils ;
-import edu.jach.qt.utils.JACLogger ;
 
 /* Standard imports */
 import java.awt.Color ;

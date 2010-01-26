@@ -51,8 +51,6 @@ import java.io.FileNotFoundException ;
 import java.io.FileReader ;
 import java.text.SimpleDateFormat ;
 
-import edu.jach.qt.utils.JACLogger ;
-
 import java.util.HashSet ;
 
 /* Gemini imports */
@@ -64,6 +62,7 @@ import gemini.sp.SpProg ;
 import gemini.sp.SpFactory ;
 import gemini.sp.SpType ;
 import gemini.sp.obsComp.SpInstObsComp ;
+import gemini.util.JACLogger ;
 
 /* ORAC imports */
 import orac.util.SpInputXML ;

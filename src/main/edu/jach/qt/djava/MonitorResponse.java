@@ -6,7 +6,7 @@ import au.gov.aao.drama.Arg ;
 import au.gov.aao.drama.DramaException ;
 import au.gov.aao.drama.DramaStatus ;
 import ocs.utils.CommandReceiver ;
-import edu.jach.qt.utils.JACLogger ;
+import gemini.util.JACLogger ;
 
 /**
  * <code>MonitorResponse</code> is used to handle reponses to the

@@ -16,7 +16,7 @@ import edu.jach.qt.utils.MsbClient ;
 import edu.jach.qt.utils.MsbColumnInfo ;
 import edu.jach.qt.utils.MsbColumns ;
 import edu.jach.qt.utils.MSBTableModel ;
-import edu.jach.qt.utils.JACLogger ;
+import gemini.util.JACLogger ;
 
 import orac.util.OrderedMap ;
 

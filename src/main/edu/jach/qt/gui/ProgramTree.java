@@ -10,6 +10,7 @@ import gemini.sp.SpInsertData ;
 import gemini.sp.SpFactory ;
 import gemini.sp.obsComp.SpInstObsComp ;
 import gemini.sp.obsComp.SpTelescopeObsComp;
+import gemini.util.JACLogger ;
 
 /* JSKY imports */
 
@@ -24,7 +25,6 @@ import orac.ukirt.inst.SpInstUIST ;
 import edu.jach.qt.utils.ErrorBox ;
 import edu.jach.qt.utils.HTMLViewer ;
 import edu.jach.qt.utils.ObsListCellRenderer ;
-import edu.jach.qt.utils.JACLogger ;
 
 /* Standard imports */
 import java.awt.GridBagConstraints ;

@@ -10,7 +10,7 @@ import java.io.OutputStream ;
 import java.io.BufferedOutputStream ;
 import java.io.IOException ;
 
-import edu.jach.qt.utils.JACLogger ;
+import gemini.util.JACLogger ;
 
 public class CuteProxy
 {	

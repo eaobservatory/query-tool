@@ -6,7 +6,7 @@ import au.gov.aao.drama.DramaTask ;
 import au.gov.aao.drama.DramaException ;
 import au.gov.aao.drama.DramaStatus ;
 import ocs.utils.CommandReceiver ;
-import edu.jach.qt.utils.JACLogger ;
+import gemini.util.JACLogger ;
 
 /**
  * <code>CSOPathResponseHandler</code> This class is used to

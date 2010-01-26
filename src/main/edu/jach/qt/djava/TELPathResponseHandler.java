@@ -6,7 +6,7 @@ import au.gov.aao.drama.DramaException ;
 import au.gov.aao.drama.DramaMonitor ;
 import au.gov.aao.drama.DramaStatus ;
 import ocs.utils.CommandReceiver ;
-import edu.jach.qt.utils.JACLogger ;
+import gemini.util.JACLogger ;
 
 /**
  * <code>TELPathResponseHandler</code> This class is used to

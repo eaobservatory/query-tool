@@ -3,7 +3,7 @@ package edu.jach.qt.gui ;
 import edu.jach.qt.utils.QtTools ;
 import gemini.sp.SpItem ;
 import gemini.sp.SpTreeMan ;
-import edu.jach.qt.utils.JACLogger ;
+import gemini.util.JACLogger ;
 
 import gemini.sp.SpMSB ;
 import edu.jach.qt.utils.SpQueuedMap ;

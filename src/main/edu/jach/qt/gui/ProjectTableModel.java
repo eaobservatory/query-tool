@@ -5,7 +5,7 @@ import javax.swing.event.TableModelListener ;
 import javax.swing.event.TableModelEvent ;
 import javax.swing.table.AbstractTableModel ;
 
-import edu.jach.qt.utils.JACLogger ;
+import gemini.util.JACLogger ;
 
 public class ProjectTableModel extends AbstractTableModel implements Runnable , TableModelListener
 {

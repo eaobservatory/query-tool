@@ -29,7 +29,7 @@ import javax.swing.ToolTipManager ;
 import edu.jach.qt.utils.MoonChangeListener ;
 
 /* Miscellaneous imports */
-import edu.jach.qt.utils.JACLogger ;
+import gemini.util.JACLogger ;
 
 /**
  * WidgetPanel.java

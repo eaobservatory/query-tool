@@ -18,7 +18,7 @@ import javax.swing.border.TitledBorder ;
 import ocs.utils.HubImplementor ;
 import ocs.utils.DcHub ;
 import ocs.utils.ObeyNotRegisteredException ;
-import edu.jach.qt.utils.JACLogger ;
+import gemini.util.JACLogger ;
 import edu.jach.qt.utils.SimpleMoon ;
 import javax.swing.JOptionPane ;
 

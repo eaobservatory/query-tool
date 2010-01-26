@@ -15,7 +15,8 @@ import java.awt.Dimension ;
 import java.awt.Toolkit ;
 import java.awt.AWTError ;
 import jsky.app.ot.OtCfg ;
-import edu.jach.qt.utils.JACLogger ;
+import gemini.util.JACLogger ;
+
 /**
  * This is the top most OMP-QT class.  Upon init it instantiates 
  * the Querytool and QtFrame classes, in that order.  These two classes

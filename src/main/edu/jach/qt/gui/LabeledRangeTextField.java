@@ -21,7 +21,7 @@ import java.text.DecimalFormat ;
 
 import edu.jach.qt.utils.TimeUtils ;
 import edu.jach.qt.utils.SimpleMoon ;
-import edu.jach.qt.utils.JACLogger ;
+import gemini.util.JACLogger ;
 
 /**
  * LabeldRangeTextField.java

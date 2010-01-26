@@ -20,9 +20,8 @@ import java.util.TimeZone ;
 
 import java.text.SimpleDateFormat ;
 
-import edu.jach.qt.utils.JACLogger ;
-
 import gemini.util.ConfigWriter ;
+import gemini.util.JACLogger ;
 
 /***
  * QtTools.java

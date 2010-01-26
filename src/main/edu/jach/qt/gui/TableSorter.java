@@ -13,7 +13,7 @@ import javax.swing.table.TableColumnModel ;
 import javax.swing.table.JTableHeader ;
 import javax.swing.ToolTipManager ;
 
-import edu.jach.qt.utils.JACLogger ;
+import gemini.util.JACLogger ;
 
 import edu.jach.qt.gui.MSBQueryTableModel ;
 

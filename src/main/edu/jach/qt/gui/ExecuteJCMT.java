@@ -8,7 +8,7 @@ import java.io.File ;
 import java.io.IOException ;
 import java.io.FileWriter ;
 
-import edu.jach.qt.utils.JACLogger ;
+import gemini.util.JACLogger ;
 
 import gemini.sp.SpMSB ;
 import edu.jach.qt.utils.SpQueuedMap ;

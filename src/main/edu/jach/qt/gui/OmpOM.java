@@ -10,6 +10,7 @@ import gemini.sp.iter.SpIterRepeat ;
 import gemini.sp.iter.SpIterOffset ;
 import gemini.sp.obsComp.SpSiteQualityObsComp ;
 import gemini.sp.obsComp.SpSchedConstObsComp ;
+import gemini.util.JACLogger ;
 
 /* JSKY imports */
 import jsky.app.ot.OtFileIO ;
@@ -45,7 +46,6 @@ import orac.jcmt.iter.SpIterStareObs ;
 /* QT imports */
 import edu.jach.qt.utils.DragTreeCellRenderer ;
 import edu.jach.qt.utils.QtTools ;
-import edu.jach.qt.utils.JACLogger ;
 
 /* Standard imports */
 import java.awt.Dimension ;

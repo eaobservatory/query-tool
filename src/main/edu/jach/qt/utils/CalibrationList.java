@@ -7,13 +7,13 @@ import gemini.sp.SpAND ;
 import gemini.sp.SpMSB ;
 import gemini.sp.SpItem ;
 import gemini.sp.SpObs ;
+import gemini.util.JACLogger ;
 
 /* Standard imports */
 import java.util.Enumeration ;
 
 import orac.util.SpInputXML ;
-import orac.util.OrderedMap ;
-import edu.jach.qt.utils.JACLogger ;
+import orac.util.OrderedMap ;;
 
 /**
  * This class returns a <code>OrderedMap</code> of calibrations.  Each entry in the

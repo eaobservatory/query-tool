@@ -9,7 +9,7 @@ import java.awt.Color ;
 import javax.swing.DefaultListCellRenderer ;
 import javax.swing.ImageIcon ;
 import javax.swing.JList ;
-import edu.jach.qt.utils.JACLogger ;
+import gemini.util.JACLogger ;
 
 /**
  * ObsListCellRenderer.java

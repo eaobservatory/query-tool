@@ -2,6 +2,7 @@ package edu.jach.qt.utils ;
 
 // Gemini imports
 import gemini.sp.SpItem ;
+import gemini.util.JACLogger ;
 
 // ORAC imports
 import orac.util.SpInputXML ;
@@ -15,7 +16,6 @@ import java.net.URL ;
 import java.net.MalformedURLException ;
 
 // Miscellaneous imports
-import edu.jach.qt.utils.JACLogger ;
 
 /**
  * MsbClient.java
