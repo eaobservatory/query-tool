@@ -15,7 +15,6 @@ import gemini.util.JACLogger ;
 /* JSKY imports */
 
 /* ORAC imports */
-import orac.jcmt.inst.SpDRRecipe ;
 import orac.jcmt.inst.SpInstHeterodyne ;
 import orac.ukirt.inst.SpInstUIST ;
 
@@ -1003,16 +1002,18 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 			if( obsComp != null )
 				insert( obsComp , deferredObs ) ;
 		}
-		
+
+		String drrecipe = "orac." + System.getProperty( "telescope" ).toLowerCase() + ".inst.SpDRRecipe" ;
+
 		Vector<SpItem> recipes = null ;
 		SpItem obsParent = deferredObs.parent() ;
 		if( obsParent != null )
-			recipes = SpTreeMan.findAllInstances( obsParent , SpDRRecipe.class.getName() ) ;
+			recipes = SpTreeMan.findAllInstances( obsParent , drrecipe ) ;
 		if( recipes == null || recipes.size() == 0 )
 		{
 			obsParent = obs.parent() ;
 			if( obsParent != null )
-				recipes = SpTreeMan.findAllInstances( obsParent , SpDRRecipe.class.getName() ) ;
+				recipes = SpTreeMan.findAllInstances( obsParent , drrecipe ) ;
     		if( recipes != null && recipes.size() > 0 )
     		{
     			for( SpItem recipe : recipes )
