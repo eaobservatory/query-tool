@@ -5,43 +5,12 @@ import gemini.sp.SpItem ;
 import gemini.sp.SpObs;
 import gemini.sp.SpTreeMan ;
 import gemini.sp.SpMSB ;
-import gemini.sp.iter.SpIterChop ;
-import gemini.sp.iter.SpIterRepeat ;
-import gemini.sp.iter.SpIterOffset ;
-import gemini.sp.obsComp.SpSiteQualityObsComp ;
-import gemini.sp.obsComp.SpSchedConstObsComp ;
 import gemini.util.JACLogger ;
 
 /* JSKY imports */
 import jsky.app.ot.OtFileIO ;
 
 /* ORAC imports */
-import orac.ukirt.inst.SpInstUFTI ;
-import orac.ukirt.inst.SpInstCGS4 ;
-import orac.ukirt.inst.SpInstIRCAM3 ;
-import orac.ukirt.inst.SpInstUIST ;
-import orac.ukirt.inst.SpInstWFCAM ;
-import orac.ukirt.iter.SpIterBiasObs ;
-import orac.ukirt.iter.SpIterCGS4 ;
-import orac.ukirt.iter.SpIterCGS4CalUnit ;
-import orac.ukirt.iter.SpIterCGS4CalObs ;
-import orac.ukirt.iter.SpIterCalUnit ;
-import orac.ukirt.iter.SpIterDarkObs ;
-import orac.ukirt.iter.SpIterFP ;
-import orac.ukirt.iter.SpIterIRCAM3 ;
-import orac.ukirt.iter.SpIterIRPOL ;
-import orac.ukirt.iter.SpIterNod ;
-import orac.ukirt.iter.SpIterUFTI ;
-import orac.jcmt.inst.SpInstHeterodyne ;
-import orac.jcmt.iter.SpIterFocusObs ;
-import orac.jcmt.iter.SpIterFrequency ;
-import orac.jcmt.iter.SpIterJiggleObs ;
-import orac.jcmt.iter.SpIterNoiseObs ;
-import orac.jcmt.iter.SpIterPOL ;
-import orac.jcmt.iter.SpIterPointingObs ;
-import orac.jcmt.iter.SpIterRasterObs ;
-import orac.jcmt.iter.SpIterSkydipObs ;
-import orac.jcmt.iter.SpIterStareObs ;
 
 /* QT imports */
 import edu.jach.qt.utils.DragTreeCellRenderer ;
@@ -84,74 +53,8 @@ public class OmpOM extends JPanel
 	public OmpOM()
 	{
 		ptreeHashtable = new Hashtable<Integer,ProgramTree>() ;
-
-		/* 
-		 * Need to construct UKIRT-specific items so that their SpTypes are
-		 * statically initialised.  Otherwise the sp classes won't know about 
-		 * their types.  AB 19-Apr-2000
-		 */
-		this.initSpItems( System.getProperty( "telescope" ) ) ;
 		logger.info( "SpItems initialized" ) ;
 		ptree = new ProgramTree() ;
-	}
-
-	private void initSpItems( String telescope )
-	{
-		if( telescope.equalsIgnoreCase( "ukirt" ) )
-		{
-			/* Init UKIRT Instruments */
-			new SpInstUFTI() ;
-			new SpInstCGS4() ;
-			new SpInstIRCAM3() ;
-			new SpInstUIST() ;
-			new SpInstWFCAM() ;
-			new orac.ukirt.inst.SpDRRecipe() ;
-
-			/* OMP Specific */
-			new SpIterChop() ;
-
-			/* Init UKIRT SpTypes */
-			new SpIterBiasObs() ;
-			new SpIterBiasObs() ;
-			new SpIterCGS4() ;
-			new SpIterCGS4CalUnit() ;
-			new SpIterCGS4CalObs() ;
-			new SpIterCalUnit() ;
-			new SpIterDarkObs() ;
-			new SpIterFP() ;
-			new SpIterIRCAM3() ;
-			new SpIterIRPOL() ;
-			new SpIterNod() ;
-			new SpIterUFTI() ;
-
-			/* Init GEMINI Miscellaneous */
-			new SpIterRepeat() ;
-			new SpIterOffset() ;
-			new orac.ukirt.iter.SpIterObserve() ;
-			new orac.ukirt.iter.SpIterSky() ;
-			new SpSchedConstObsComp() ;
-			new SpSiteQualityObsComp() ;
-		}
-		else if( telescope.equalsIgnoreCase( "jcmt" ) )
-		{
-			/* Init JCMT Instruments */
-			new SpInstHeterodyne() ;
-
-			/* Init JCMT SpTypes */
-			new SpIterChop() ;
-			new orac.jcmt.inst.SpDRRecipe() ;
-			new SpIterFocusObs() ;
-			new SpIterFrequency() ;
-			new SpIterJiggleObs() ;
-			new SpIterNoiseObs() ;
-			new SpIterPOL() ;
-			new SpIterPointingObs() ;
-			new SpIterRasterObs() ;
-			new SpIterSkydipObs() ;
-			new SpIterStareObs() ;
-			/* Init JCMT Miscellaneous */
-			new orac.jcmt.obsComp.SpSiteQualityObsComp() ;
-		}
 	}
 
 	/**
