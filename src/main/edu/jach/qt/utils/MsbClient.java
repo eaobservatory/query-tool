@@ -3,6 +3,7 @@ package edu.jach.qt.utils ;
 // Gemini imports
 import gemini.sp.SpItem ;
 import gemini.sp.SpTreeMan ;
+import gemini.sp.obsComp.SpDRObsComp ;
 import gemini.util.JACLogger ;
 
 // ORAC imports
@@ -202,8 +203,7 @@ public class MsbClient extends SoapClient
 
 		if( System.getProperty( "telescope" ).equalsIgnoreCase( "ukirt" ) )
 		{
-			String drrecipe = "orac." + System.getProperty( "telescope" ).toLowerCase() + ".inst.SpDRRecipe" ;
-			Vector<SpItem> recipes = SpTreeMan.findAllInstances( spItem , drrecipe ) ;
+			Vector<SpItem> recipes = SpTreeMan.findAllInstances( spItem , SpDRObsComp.class.getName() ) ;
 			if( recipes.size() == 0 )
 				logger.error( "Fetched MSB contained no DR Recipe.\n" + spXML ) ;
 			else

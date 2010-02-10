@@ -8,6 +8,7 @@ import gemini.sp.SpTreeMan ;
 import gemini.sp.SpType ;
 import gemini.sp.SpInsertData ;
 import gemini.sp.SpFactory ;
+import gemini.sp.obsComp.SpDRObsComp ;
 import gemini.sp.obsComp.SpInstObsComp ;
 import gemini.sp.obsComp.SpTelescopeObsComp;
 import gemini.util.JACLogger ;
@@ -1003,17 +1004,15 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 				insert( obsComp , deferredObs ) ;
 		}
 
-		String drrecipe = "orac." + System.getProperty( "telescope" ).toLowerCase() + ".inst.SpDRRecipe" ;
-
 		Vector<SpItem> recipes = null ;
 		SpItem obsParent = deferredObs.parent() ;
 		if( obsParent != null )
-			recipes = SpTreeMan.findAllInstances( obsParent , drrecipe ) ;
+			recipes = SpTreeMan.findAllInstances( obsParent , SpDRObsComp.class.getName() ) ;
 		if( recipes == null || recipes.size() == 0 )
 		{
 			obsParent = obs.parent() ;
 			if( obsParent != null )
-				recipes = SpTreeMan.findAllInstances( obsParent , drrecipe ) ;
+				recipes = SpTreeMan.findAllInstances( obsParent , SpDRObsComp.class.getName() ) ;
     		if( recipes != null && recipes.size() > 0 )
     		{
     			for( SpItem recipe : recipes )
