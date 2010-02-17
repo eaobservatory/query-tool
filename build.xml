@@ -14,19 +14,14 @@
   <!-- ================================================ -->
   <!--    <property name="build.sysclasspath" value="first"/> -->
 
-  <property name="build.compiler" value="jikes"/>
-  <property name="build.compiler.emacs" value="true"/>
-
-  <property name="masterbuild.logdir" value="/home/mrippa/tmp/logs"/>
+  <property name="masterbuild.logdir" value="/tmp/logs"/>
   <property name="junit.results" value="test-results" />
-
-  <property name="cvs.repository" value="/jac_sw/cvsroot"/>
-  <property name="cvs.package" value="omp/QT"/>
-  <property name="cvs.workingcopy" value="" />
 
   <property name="Name" value="QT"/>
   <property name="name" value="qt"/>
-  <property name="version" value="_1p0"/>
+  <tstamp>
+	  <format property="version" pattern="_yyyyMMdd"/>
+  </tstamp>
   <property name="src.dir" value="src"/>
   <property name="lib.dir" value="lib"/>
   <property name="config.dir" value="config"/>
@@ -39,7 +34,7 @@
   <!--    ==================================================== -->
   <!--       Set the properties for the build area             -->
   <!--    ==================================================== -->
-  <property name="build.dir" value="/home/mrippa/netroot/install/omp/QT"/>
+  <property name="build.dir" value="/tmp/install/omp/QT"/>
   <property name="build.classes" value="${build.dir}/classes"/>
   <property name="build.config" value="${build.dir}/config"/>
   <property name="build.icons" value="${build.dir}/icons"/>
@@ -51,7 +46,7 @@
   <!--    ==================================================== -->
   <!--       Set the properties for the dist area             -->
   <!--    ==================================================== -->
-  <property name="dist.dir" value="/jac_sw/omp/${Name}${version}"/>
+  <property name="dist.dir" value="/tmp/install/jac_sw/omp/${Name}${version}"/>
   <property name="dist.classes" value="${dist.dir}/classes"/>
   <property name="dist.config" value="${dist.dir}/config"/>
   <property name="sys.dist.config" value="/jac_sw/omp/config"/>
@@ -60,6 +55,14 @@
   <property name="dist.lib" value="${dist.dir}/lib"/>
   <property name="dist.javadocs" value="${dist.dir}/javadocs"/>
   <property name="dist.tests" value="${dist.dir}/testcases"/>
+
+  <!--    ==================================================== -->
+  <!--       OT PATHS                                          -->
+  <!--    ==================================================== -->
+  <property name="ot.dir" value="/jac_sw/orac3/install"/>
+  <property name="ot.lib.dir" value="${ot.dir}/lib"/>
+  <property name="ot.tools.dir" value="${ot.dir}/tools"/>
+
 
   <path id="classpath">
   </path>
@@ -126,7 +129,8 @@
 
     <javac srcdir="${tests.dir}"
 	   destdir="${build.tests}"
-	   debug="${debug}" >
+	   debug="${debug}"
+	   target="1.6">
       <classpath>
 	<pathelement location="${build.classes}" />
 	<fileset dir="${build.lib}">
@@ -137,35 +141,11 @@
     </javac>
   </target>
 
-  <!--    ==================================================== -->
-  <!--               Get the source from CVS                   -->
-  <!--    ==================================================== -->
-  <target name="checkout" description="Update package from CVS">
-    <cvs cvsroot="${cvs.repository}" 
-	 package="${cvs.package}" 
-	 dest=".." />
-  </target>
-
-  <!--    ====================================================
-  *                             Modset                          
-  *       ==================================================== -->
-  <target name="modificationset" 
-	  depends="init" 
-	  description="Check modifications since last build">
-    <echo message="Checking for modifications..."/>
-    <modificationset lastbuild="${lastGoodBuildTime}" 
-		     quietperiod="30" 
-		     dateformat="yyyy-MMM-dd HH:mm:ss">
-      <cvselement cvsroot="${cvs.repository}"
-		  localworkingcopy="."/>
-    </modificationset>
-  </target>
-
   <!--    ====================================================
   *                             MasterBuild                          
   *       ==================================================== -->
   <target name="masterbuild" 
-	  depends="modificationset,checkout,compile,run-tests,jar" 
+	  depends="compile,run-tests,jar"
 	  description="Cruise control master build">
   </target>
 
@@ -177,11 +157,22 @@
 	   destdir="${build.classes}" 
 	   extdirs="${java.ext.dirs}"
 	   deprecation="off"
-	   debug="on">
+	   debug="on"
+	   target="1.6">
       <exclude name="edu/jach/qt/gui/MsbNode.java"/>
       <exclude name="edu/jach/qt/gui/DragDropObject.java"/>
-      <exclude name="edu/jach/qt/gui/PersonalInfo.java"/>
       <exclude name="edu/jach/qt/gui/DnDJTree.java"/>
+      <classpath>
+	      <fileset dir="${lib.dir}">
+		      <include name="*.jar"/>
+	      </fileset>
+	      <fileset dir="${ot.lib.dir}">
+		      <include name="*.jar"/>
+	      </fileset>
+	      <pathelement location="/jac_sw/itsroot/install/dcHub/javalib/dcHub.jar" />
+	      <pathelement location="/jac_sw/drama/CurrentRelease/javalib" />
+	      <pathelement location="${ot.tools.dir}/pal.jar" />
+      </classpath>
     </javac>
 
     <copy todir="${build.lib}">
@@ -225,11 +216,22 @@
     <javac srcdir="${java.dir}/" 
 	   destdir="${dist.classes}" 
 	   extdirs="${java.ext.dirs}"
-	   debug="on">
+	   debug="on"
+	   target="1.6">
       <exclude name="edu/jach/qt/gui/MsbNode.java"/>
       <exclude name="edu/jach/qt/gui/DragDropObject.java"/>
-      <exclude name="edu/jach/qt/gui/PersonalInfo.java"/>
       <exclude name="edu/jach/qt/gui/DnDJTree.java"/>
+      <classpath>
+	      <fileset dir="${lib.dir}">
+		      <include name="*.jar"/>
+	      </fileset>
+	      <fileset dir="${ot.lib.dir}">
+		      <include name="*.jar"/>
+	      </fileset>
+	      <pathelement location="/jac_sw/itsroot/install/dcHub/javalib/dcHub.jar" />
+	      <pathelement location="/jac_sw/drama/CurrentRelease/javalib" />
+	      <pathelement location="${ot.tools.dir}/pal.jar" />
+      </classpath>
     </javac>
 
     <copy todir="${dist.lib}">
