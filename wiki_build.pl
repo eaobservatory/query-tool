@@ -3,7 +3,7 @@ chomp( $cwd ) ;
 
 @packages = ( 'utils' , 'gui' , 'djava' , 'app' ) ;
 
-$ot_root = '/Users/shart/Desktop/ot/install' ;
+$ot_root = '/jac_sw/orac3/install' ;
 
 &clean ;
 &compile( &classpath ) ;
@@ -41,7 +41,8 @@ sub classpath
 		push( @jar_files , $file ) ;
 	}
 
-	push( @jar_files , "$cwd/drama/" ) ;
+	push( @jar_files , "/jac_sw/itsroot/install/dcHub/javalib/dcHub.jar" ) ;
+	push( @jar_files , "/jac_sw/drama/CurrentRelease/javalib" ) ;
 
 	$classpath = join( ':' , @jar_files ) ;
 
