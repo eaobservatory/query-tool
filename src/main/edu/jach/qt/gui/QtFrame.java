@@ -1,13 +1,10 @@
 package edu.jach.qt.gui ;
 
 /* OT imports */
-import gemini.sp.SpItem ;
-import orac.util.OrderedMap ;
 import gemini.util.JACLogger ;
 
 /* QT imports */
 import edu.jach.qt.app.Querytool ;
-import edu.jach.qt.utils.CalibrationList ;
 import edu.jach.qt.utils.MsbClient ;
 import edu.jach.qt.utils.Splash ;
 import edu.jach.qt.utils.MsbColumns ;
@@ -62,7 +59,6 @@ import javax.swing.table.TableColumnModel ;
 import javax.swing.table.TableColumn ;
 import sun.misc.Signal ;
 import sun.misc.SignalHandler ;
-import java.util.EventListener ;
 
 
 /**
@@ -85,7 +81,6 @@ public class QtFrame extends JFrame implements ActionListener , MenuListener , L
 	private final static String COLUMNS = "Columns..." ;
 	private final static String INFRA_RED = "Infra Red" ;
 	private final static String WATER_VAPOUR = "Water Vapour" ;
-	private static final String CALIBRATIONS = "Calibrations" ;
 	private static final String ABOUT = "About" ;
 
 	private static final String WIDGET_CONFIG_FILE = System.getProperty( "widgetFile" ) ;
@@ -108,8 +103,6 @@ public class QtFrame extends JFrame implements ActionListener , MenuListener , L
 	private Querytool localQuerytool ;
 	private InfoPanel infoPanel ;
 	private JPopupMenu popup ;
-	private OrderedMap<String,OrderedMap<String,SpItem>> calibrationList = new OrderedMap<String,OrderedMap<String,SpItem>>() ;
-	private JMenu calibrationMenu = new JMenu( CALIBRATIONS ) ;
 	private WidgetPanel _widgetPanel ;
 	private Hashtable<JTable,int[]> columnSizes = new Hashtable<JTable,int[]>() ;
 	private boolean queryExpired = false ;
@@ -117,6 +110,7 @@ public class QtFrame extends JFrame implements ActionListener , MenuListener , L
 	private JScrollPane projectPane ;
 	SwingWorker msbWorker ;
 	private boolean menuBuilt = false ;
+	private CalibrationsPanel calibrationMenu ;
 
 	/**
 	 * Creates a new <code>QtFrame</code> instance.
@@ -222,6 +216,7 @@ public class QtFrame extends JFrame implements ActionListener , MenuListener , L
 		// Input Panel Setup
 		WidgetPanel inputPanel = new WidgetPanel( new Hashtable<String,String>() , widgetBag ) ;
 		_widgetPanel = inputPanel ;
+		calibrationMenu = new CalibrationsPanel() ;
 		buildStagingPanel() ;
 		// Table setup
 		Splash splash = new Splash( this , "Waiting for database ..." ) ;
@@ -619,7 +614,7 @@ public class QtFrame extends JFrame implements ActionListener , MenuListener , L
 			tabbedPane = new JTabbedPane( SwingConstants.TOP ) ;
 			tabbedPane.addTab( "Query" , _widgetPanel ) ;
 			tabbedPane.addTab( om.getProgramName() , om.getTreePanel() ) ;
-			validate() ;
+			tabbedPane.addTab( "Calibrations" , calibrationMenu ) ;
 			tabbedPane.setVisible( true ) ;
 		}
 		else
@@ -733,9 +728,6 @@ public class QtFrame extends JFrame implements ActionListener , MenuListener , L
 
 		mbar.add( makeMenu( helpMenu , new Object[] { new JMenuItem( INDEX , 'I' ) , new JMenuItem( ABOUT , 'A' ) } , this ) ) ;
 
-		calibrationMenu.setEnabled( false ) ;
-		mbar.add( calibrationMenu ) ;
-
 		menuBuilt = true ;
 	}
 
@@ -744,16 +736,7 @@ public class QtFrame extends JFrame implements ActionListener , MenuListener , L
 	 */
 	public boolean fetchCalibrations()
 	{
-		if( menuBuilt )
-		{
-			CalibrationThread calibrationThread = new CalibrationThread( this ) ;
-			calibrationThread.start() ;
-		}
-		else
-		{
-			logger.error( "QtFrame menu not built." ) ;
-		}
-
+		calibrationMenu.init() ;
 		return menuBuilt ;
 	}
 
@@ -766,24 +749,9 @@ public class QtFrame extends JFrame implements ActionListener , MenuListener , L
 	public void menuSelected( MenuEvent evt )
 	{
 		JMenu source = ( JMenu )evt.getSource() ;
-		if( source.getText().equals( CALIBRATIONS ) )
-		{
-			Component[] cals = calibrationMenu.getMenuComponents() ;
-			if( tabbedPane != null )
-			{
-				for( int iloop = 0 ; iloop < cals.length ; iloop++ )
-					cals[ iloop ].setEnabled( true ) ;
-			}
-			else
-			{
-				for( int iloop = 0 ; iloop < cals.length ; iloop++ )
-					cals[ iloop ].setEnabled( false ) ;
-			}
-		}
-		else if( source.getText().equals( "View..." ) )
-		{
+
+		if( source.getText().equals( "View..." ) )
 			(( JMenuItem )source).setSelected( false ) ;
-		}
 	}
 
 	/**
@@ -899,27 +867,6 @@ public class QtFrame extends JFrame implements ActionListener , MenuListener , L
 			{
 				infoPanel.getSatPanel().setDisplay( thisItem.getText() ) ;
 			}
-			else
-			{
-				String folderName = thisItem.getName() ;
-				if( folderName != null )
-				{
-					OrderedMap<String,SpItem> folder = calibrationList.find( folderName ) ;
-
-					// Check to see if this came from the calibration list
-					if( folder != null )
-					{
-						// Get the "MSB" that this represents
-						SpItem item = folder.find( thisText ) ;
-						// Add it to the deferred queue
-						om.updateDeferredList() ;
-						DeferredProgramList.addCalibration( item ) ;
-						// Set the tabbed pane to show the Staging Area
-						if( tabbedPane.getTabCount() > 1 )
-							tabbedPane.setSelectedIndex( tabbedPane.getTabCount() - 1 ) ;
-					}
-				}
-			}
 		}
 		else if( source instanceof JButton )
 		{
@@ -1003,60 +950,4 @@ public class QtFrame extends JFrame implements ActionListener , MenuListener , L
 		if( om != null )
 			om.addNewTree( null ) ;
 	}
-
-	public class CalibrationThread extends Thread
-	{
-		private EventListener listener = null ;
-
-		public CalibrationThread( final EventListener listener )
-		{
-			this.listener = listener ;
-			calibrationMenu.setToolTipText( "Waiting for database ..." ) ;
-		}
-
-		public void run()
-		{
-			calibrationList = CalibrationList.getCalibrations() ;
-			JMenuItem item ;
-			JMenu nextMenu = calibrationMenu ;
-			int counter = 0 ;
-			String lastANDFolder = "" ;
-			int trimLength = "AND Folder: ".length() ;
-			for( int index = 0 ; index < calibrationList.size() ; index++ )
-			{
-				OrderedMap<String,SpItem> folder = calibrationList.find( index ) ;
-				if( folder.size() != 0 )
-				{
-					String key = calibrationList.getNameForIndex( index ) ;
-					if( key.startsWith( "AND" ) )
-					{
-						lastANDFolder = key.substring( trimLength ) ;
-						nextMenu = new JMenu( lastANDFolder ) ;
-						nextMenu.addMenuListener( ( MenuListener )listener ) ;
-						calibrationMenu.add( nextMenu ) ;
-
-						for( int subIndex = 0 ; subIndex < folder.size(); subIndex++ )
-						{
-							String name = folder.getNameForIndex( subIndex ) ;
-							item = new JMenuItem( name ) ;
-							item.setName( key ) ;
-							item.addActionListener( ( ActionListener )listener ) ;
-							if( counter++ > 50 )
-							{
-								nextMenu = new JMenu( lastANDFolder + " continued" ) ;
-								nextMenu.addMenuListener( ( MenuListener )listener ) ;
-								calibrationMenu.add( nextMenu ) ;
-								counter = 0 ;
-							}
-							nextMenu.add( item ) ;
-						}
-					}
-				}
-			}
-			calibrationMenu.addMenuListener( ( MenuListener )listener ) ;
-			calibrationMenu.setEnabled( true ) ;
-			calibrationMenu.setToolTipText( null ) ;
-		}
-	}
-
 }//QtFrame
