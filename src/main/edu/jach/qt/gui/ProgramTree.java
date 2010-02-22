@@ -772,7 +772,7 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 			try
 			{
 				if( !observation.equals( null ) )
-					new AttributeEditor( observation , new javax.swing.JFrame() , true ).show() ;
+					new AttributeEditor( observation , new javax.swing.JFrame() , true ).setVisible( true ) ;
 				else
 					JOptionPane.showMessageDialog( this , "Current selection is not an observation." , "Not an Obs!" , JOptionPane.INFORMATION_MESSAGE ) ;
 			}
@@ -802,7 +802,7 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 			SpObs observation = ( SpObs )getSelectedItem() ;
 			if( !observation.equals( null ) )
 			{
-				new AttributeEditor( observation , new javax.swing.JFrame() , true , "EXPTIME" , haveScaled.contains( observation ) , lastScaleFactor() , false ).show() ;
+				new AttributeEditor( observation , new javax.swing.JFrame() , true , "EXPTIME" , haveScaled.contains( observation ) , lastScaleFactor() , false ).setVisible( true ) ;
 				double sf = AttributeEditor.scaleFactorUsed() ;
 				if( sf > 0 )
 				{
@@ -836,7 +836,7 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 			SpObs observation = ( SpObs )getSelectedItem() ;
 			if( !observation.equals( null ) )
 			{
-				new AttributeEditor( observation , new javax.swing.JFrame() , true , "EXPTIME" , haveScaled.contains( observation ) , lastScaleFactor() , true ).show() ;
+				new AttributeEditor( observation , new javax.swing.JFrame() , true , "EXPTIME" , haveScaled.contains( observation ) , lastScaleFactor() , true ).setVisible( true ) ;
 				double sf = AttributeEditor.scaleFactorUsed() ;
 				if( sf > 0 )
 				{
