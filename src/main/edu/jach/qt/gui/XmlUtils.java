@@ -24,6 +24,8 @@ import gemini.util.JACLogger ;
 
 import orac.util.OrderedMap ;
 
+import edu.jach.qt.utils.ProjectData ;
+
 /**
  * <B>XmlUtils</B> is a utility method to get information about a 
  * XML document.  It also retrieve data in an XML document. 
@@ -145,7 +147,7 @@ public class XmlUtils
 			String s ;
 			for( int i = 0 ; i < nodes.getLength() ; i++ )
 			{
-				s = ( ( Node )nodes.item( i ) ).getNodeValue().trim() ;
+				s = nodes.item( i ).getNodeValue().trim() ;
 				if( s.equals( "" ) || s.equals( "\r" ) )
 					continue ;
 				else
@@ -207,7 +209,7 @@ public class XmlUtils
 		//iterate a given Node list
 		for( int ri = 0 ; ri < rows.getLength() ; ri++ )
 		{
-			Node n = ( Node )rows.item( ri ) ;
+			Node n = rows.item( ri ) ;
 			if( n instanceof Element )
 				System.out.print( "\tElement" ) ;
 			else
@@ -305,7 +307,7 @@ public class XmlUtils
 			}
 			else
 			{
-				currentModel = ( MSBTableModel )projectData.find( currentProject ) ;
+				currentModel = projectData.find( currentProject ) ;
 			}
 
 			currentModel.bumpIndex() ;
@@ -320,7 +322,7 @@ public class XmlUtils
 				name = children.item( j ).getNodeName().trim() ;
 				if( name.charAt( 0 ) == '#' )
 					continue ;
-				value = ( String )getValue( e , name ) ;
+				value = getValue( e , name ) ;
 				if( "timeest".equals( name ) )
 					value = convertStringToTime( value ) ;
 				currentModel.insertData( name , value ) ;
@@ -329,12 +331,12 @@ public class XmlUtils
 		return projectData ;
 	}
 
-	public static Vector[] getProjectData()
+	public static Vector<ProjectData> getProjectData()
 	{
 		return getProjectData( System.getProperty( "msbSummary" ) + "." + System.getProperty( "user.name" ) ) ;
 	}
 
-	public static Vector[] getProjectData( String xmlFileName )
+	public static Vector<ProjectData> getProjectData( String xmlFileName )
 	{
 		Document projectDoc = null ;
 		DOMParser parser = new DOMParser() ;
@@ -355,7 +357,7 @@ public class XmlUtils
 			return null ;
 		}
 		Vector<String> projectIds = new Vector<String>() ;
-		Vector<Integer> priorities = new Vector<Integer>() ;
+		Vector<ProjectData> projectData = new Vector<ProjectData>() ;
 		if( projectDoc != null )
 		{
 			int nElements = getSize( projectDoc , "SpMSBSummary" ) ;
@@ -364,19 +366,17 @@ public class XmlUtils
 				String value = getValue( getElement( projectDoc , "SpMSBSummary" , i ) , "projectid" ) ;
 				if( !( projectIds.contains( value ) ) )
 				{
-					projectIds.add( value ) ;
-					String priority = ( String )getValue( getElement( projectDoc , "SpMSBSummary" , i ) , "priority" ) ;
+					String priority = getValue( getElement( projectDoc , "SpMSBSummary" , i ) , "priority" ) ;
 					StringTokenizer st = new StringTokenizer( priority , "." ) ;
 					priority = st.nextToken() ;
 					Integer iPriority = new Integer( priority ) ;
-					priorities.add( iPriority ) ;
+					projectData.add( new ProjectData( value , iPriority ) ) ;
+					projectIds.add( value ) ;
 				}
 			}
 		}
-		projectIds.add( 0 , "All" ) ;
-		priorities.add( 0 , new Integer( 0 ) ) ;
-		Vector[] data = { projectIds , priorities } ;
-		return data ;
+		projectData.add( 0 , new ProjectData( "All" , new Integer( 0 ) ) ) ;
+		return projectData ;
 	}
 
 	public static void clearProjectData()
@@ -388,21 +388,22 @@ public class XmlUtils
 
 	public static int getProjectCount()
 	{
-		return getProjectData()[ 0 ].size() ;
+		return getProjectData().size() ;
 	}
 
 	public static String getProjectAt( int index )
 	{
-		Vector[] data = getProjectData() ;
-		return ( String )data[ 0 ].elementAt( index ) ;
+		Vector<ProjectData> data = getProjectData() ;
+		ProjectData projectData = data.elementAt( index ) ;
+		return projectData.projectID ;
 	}
 
 	public static String getPriorityAt( int index )
 	{
 		// Get the data
-		Vector[] data = getProjectData() ;
-
-		return data[ 1 ].elementAt( index ).toString() ;
+		Vector<ProjectData> data = getProjectData() ;
+		ProjectData projectData = data.elementAt( index ) ;
+		return projectData.priority.toString() ;
 	}
 
 	public static class SAXHandler extends DefaultHandler
@@ -463,6 +464,6 @@ public class XmlUtils
 			return priorities ;
 		}
 	}
-	
+
 }//end class
 

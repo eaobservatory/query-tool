@@ -70,7 +70,7 @@ public class ColumnSelector extends JFrame implements ActionListener
 		JCheckBox checkBox ;
 		for( int i = 0 ; i < columns.size() ; i++ )
 		{
-			final MsbColumnInfo columnInfo = ( MsbColumnInfo )columns.find( i ) ;
+			final MsbColumnInfo columnInfo = columns.find( i ) ;
 			checkBox = new JCheckBox( columnInfo.getName() ) ;
 			if( columnInfo.getVisible() )
 				checkBox.setSelected( true ) ;

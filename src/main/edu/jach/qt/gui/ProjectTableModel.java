@@ -5,6 +5,8 @@ import javax.swing.event.TableModelListener ;
 import javax.swing.event.TableModelEvent ;
 import javax.swing.table.AbstractTableModel ;
 
+import edu.jach.qt.utils.ProjectData ;
+
 import gemini.util.JACLogger ;
 
 public class ProjectTableModel extends AbstractTableModel implements Runnable , TableModelListener
@@ -64,11 +66,14 @@ public class ProjectTableModel extends AbstractTableModel implements Runnable , 
 	{
 		projectIds.clear() ;
 		priorities.clear() ;
-		Vector[] data = XmlUtils.getProjectData() ;
+		Vector<ProjectData> data = XmlUtils.getProjectData() ;
 		if( data != null )
 		{
-			projectIds = data[ 0 ] ;
-			priorities = data[ 1 ] ;
+			for( ProjectData projectData : data )
+			{
+				projectIds.add( projectData.projectID ) ;
+				priorities.add( projectData.priority ) ;
+			}
 		}
 	}
 

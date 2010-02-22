@@ -415,7 +415,7 @@ public class AttributeEditor extends JDialog implements ActionListener , ListSel
 		JTextComponent comp = ( JTextComponent )editorTable.getEditorComponent() ;
 
 		if( comp != null )// There is some editing going on
-			model.setValueAt( ( String )comp.getText() , editorTable.getEditingRow() , editorTable.getEditingColumn() ) ;
+			model.setValueAt( comp.getText() , editorTable.getEditingRow() , editorTable.getEditingColumn() ) ;
 	}
 
 	/**
@@ -610,7 +610,7 @@ public class AttributeEditor extends JDialog implements ActionListener , ListSel
 			String key ;
 			String lookupKey ;
 
-			key = ( String )keys.nextElement() ;
+			key = keys.nextElement() ;
 			if( key.endsWith( iterSuffix ) )
 				lookupKey = key.substring( 0 , key.length() - iterSuffix.length() ) ;
 			else

@@ -12,21 +12,21 @@ class CompInfo
 {
 	private String title = "" ;
 	private int view = -1 ;
-	private LinkedList list ;
+	private LinkedList<String> list ;
 
 	/**
 	 * Constructor.
 	 */
 	public CompInfo()
 	{
-		list = new LinkedList() ;
+		list = new LinkedList<String>() ;
 	}
 
 	/**
 	 * Add an object to the list
 	 * @param obj  The object to add.
 	 */
-	public void addElem( Object obj )
+	public void addElem( String obj )
 	{
 		list.add( obj ) ;
 	}
@@ -45,7 +45,7 @@ class CompInfo
 	 * Get the entrie list of objects.
 	 * @return All of objects in the list.
 	 */
-	public LinkedList getList()
+	public LinkedList<String> getList()
 	{
 		return list ;
 	}

@@ -103,7 +103,7 @@ public class SpQueuedMap
 
 	private SpItem getCorrectItem( SpItem item )
 	{
-		SpItem spitem = ( SpItem )item ;
+		SpItem spitem = item ;
 		if( item instanceof SpObs )
 		{
 			final SpItem parent = spitem.parent() ;

@@ -157,7 +157,7 @@ public class LogViewer
 		dispArea.setText( "" ) ;
 
 		// Convert ArrayList to Array
-		String[] dataArray = ( String[] )data.toArray( new String[ 0 ] ) ;
+		String[] dataArray = data.toArray( new String[ 0 ] ) ;
 
 		int count = 0 ;
 		ArrayList<String> displayData = new ArrayList<String>() ;
@@ -196,9 +196,7 @@ public class LogViewer
 		}
 		Collections.reverse( displayData ) ;
 		for( int i = 0 ; i < displayData.size() ; i++ )
-			dispArea.append( ( String )displayData.get( i ) ) ;
-
-		return ;
+			dispArea.append( displayData.get( i ) ) ;
 	}
 
 	/*

@@ -21,7 +21,8 @@ SOURCES = \
 	TelescopeInformation.java \
 	TextReader.java \
 	TimeUtils.java \
-        UkirtTranslator.java
+        UkirtTranslator.java \
+	ProjectData.java
 
 include ${TOP}/Makefile
 

@@ -56,7 +56,7 @@ public class ObsListCellRenderer extends DefaultListCellRenderer
 			if( titleAttr.endsWith( "*" ) )
 				hasBeenObserved = true ;
 		}
-		String duration = ( String )( ( SpObs )value ).getTable().get( "estimatedDuration" ) ;
+		String duration = (( SpObs )value).getTable().get( "estimatedDuration" ) ;
 		Double d = new Double( duration ) ;
 		NumberFormat nf = NumberFormat.getInstance() ;
 		nf.setMaximumFractionDigits( 1 ) ;

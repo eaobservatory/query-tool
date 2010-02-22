@@ -55,7 +55,7 @@ final public class DragTreeCellRenderer extends DefaultTreeCellRenderer
 	public Component getTreeCellRendererComponent( JTree tree , Object value , boolean bSelected , boolean bExpanded , boolean bLeaf , int iRow , boolean bHasFocus )
 	{
 		DragDropObject childDDO = ( DragDropObject )(( MsbNode )value).getUserObject() ;
-		SpItem item = ( SpItem )childDDO.getSpItem() ;
+		SpItem item = childDDO.getSpItem() ;
 
 		String text = item.getTitle() ;
 		String type = item.typeStr() ;

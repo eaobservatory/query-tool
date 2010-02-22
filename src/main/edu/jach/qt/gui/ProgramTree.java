@@ -85,9 +85,6 @@ import javax.swing.JOptionPane ;
 import javax.swing.border.TitledBorder ;
 import javax.swing.border.Border ;
 
-import javax.swing.event.TreeSelectionListener ;
-import javax.swing.event.TreeSelectionEvent ;
-
 import javax.swing.tree.DefaultTreeModel ;
 import javax.swing.tree.DefaultMutableTreeNode ;
 import javax.swing.tree.TreePath ;
@@ -101,7 +98,7 @@ import javax.swing.tree.TreePath ;
  @version 1.0 1st June 1999
  @author M.Tan@roe.ac.uk, modified by Mathew Rippa
  */
-final public class ProgramTree extends JPanel implements TreeSelectionListener , ActionListener , KeyListener , DragSourceListener , DragGestureListener , DropTargetListener
+final public class ProgramTree extends JPanel implements ActionListener , KeyListener , DragSourceListener , DragGestureListener , DropTargetListener
 {
 	static final JACLogger logger = JACLogger.getLogger( ProgramTree.class ) ;
 	public static final String BIN_IMAGE = System.getProperty( "binImage" ) ;
@@ -687,23 +684,6 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 	{
 		obsList.clearSelection() ;
 		setSelectedItem( null ) ;
-	}
-
-	/**
-	 public void valueChanged( TreeSelectionEvent event) is a public method
-	 to handle tree item selections
-	 
-	 @param TreeSelectionEvent event
-	 @return  none
-	 @throws none
-	 @deprecated Not replaced.
-	 
-	 */
-	public void valueChanged( TreeSelectionEvent event )
-	{
-		// Display the full selection path
-		if( event.getSource() == tree )
-			path = tree.getSelectionPath() ;
 	}
 
 	/**
