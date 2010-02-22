@@ -1,9 +1,13 @@
 package edu.jach.qt.utils ;
 
+import gemini.sp.SpInsertData ;
 import gemini.sp.SpTreeMan ;
 import gemini.sp.SpObs ;
 import gemini.sp.SpItem ;
 import gemini.sp.SpTranslationNotSupportedException ;
+import gemini.sp.obsComp.SpDRObsComp ;
+import gemini.sp.obsComp.SpInstObsComp ;
+import gemini.sp.obsComp.SpTelescopeObsComp ;
 
 import java.io.FileInputStream ;
 import java.io.BufferedReader ;
@@ -338,5 +342,72 @@ public class QtTools
 		}
 
 		return status ;
+	}
+
+	/**
+	 * Fix up deferred observations to include items from the original MSB.
+	 *
+	 * Clone the item passed in, if the clone contains any of the items we are looking for, skip, 
+	 * otherwise go back to the original item and look for the items in context, and if found, add.
+	 *
+	 * Items currently being sought : Instrument, Target list and DR recipes.
+	 * @param obs item to be cloned.
+	 * @return cloned item.
+	 */
+	public static SpItem fixupDeferredObs( SpItem obs )
+	{
+		SpItem deferredObs = obs.deepCopy() ;
+
+		SpInstObsComp inst = SpTreeMan.findInstrument( deferredObs ) ;
+		if( inst == null )
+		{
+			inst = SpTreeMan.findInstrument( obs ) ;
+			if( inst != null )
+				insert( inst , deferredObs ) ;
+		}
+
+		SpTelescopeObsComp obsComp = SpTreeMan.findTargetList( deferredObs ) ;
+		if( obsComp == null )
+		{
+			obsComp = SpTreeMan.findTargetList( obs ) ;
+			if( obsComp != null )
+				insert( obsComp , deferredObs ) ;
+		}
+
+		Vector<SpItem> recipes = null ;
+		SpItem obsParent = deferredObs.parent() ;
+		if( obsParent != null )
+			recipes = SpTreeMan.findAllInstances( obsParent , SpDRObsComp.class.getName() ) ;
+		if( recipes == null || recipes.size() == 0 )
+		{
+			obsParent = obs.parent() ;
+			if( obsParent != null )
+				recipes = SpTreeMan.findAllInstances( obsParent , SpDRObsComp.class.getName() ) ;
+			if( recipes != null && recipes.size() > 0 )
+			{
+				for( SpItem recipe : recipes )
+					insert( recipe , deferredObs ) ;
+			}
+		}
+		return deferredObs ;
+	}
+
+	/**
+	 * Convenience method.
+	 * Clone an item for insertion, and insert.
+	 * @param insert item to insert.
+	 * @param insertInto item to insert item into.
+	 * @return boolean indicating success.
+	 */
+	public static boolean insert( SpItem insert , SpItem insertInto )
+	{
+		boolean success = true ;
+		SpItem clonedItem = insert.deepCopy() ;
+		SpInsertData spid = SpTreeMan.evalInsertInside( clonedItem , insertInto ) ;
+		if( spid != null )
+			SpTreeMan.insert( spid ) ;
+		else
+			success = false ;
+		return success ;
 	}
 }

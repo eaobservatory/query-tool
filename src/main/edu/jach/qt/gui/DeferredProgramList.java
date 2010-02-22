@@ -61,7 +61,6 @@ import gemini.sp.SpInsertData ;
 import gemini.sp.SpProg ;
 import gemini.sp.SpFactory ;
 import gemini.sp.SpType ;
-import gemini.sp.obsComp.SpInstObsComp ;
 import gemini.util.JACLogger ;
 
 /* ORAC imports */
@@ -74,6 +73,7 @@ import edu.jach.qt.utils.ObsListCellRenderer ;
 import edu.jach.qt.utils.ErrorBox ;
 import edu.jach.qt.utils.FileExtensionFilter ;
 import edu.jach.qt.utils.FileUtils ;
+import edu.jach.qt.utils.QtTools ;
 
 /* Miscellaneous imports */
 
@@ -248,10 +248,7 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 
 			if( !duplicates.contains( thisObs ) )
 			{
-				SpInstObsComp inst = SpTreeMan.findInstrument( thisObs ) ;
-				SpInsertData insertable = SpTreeMan.evalInsertInside( inst , thisObs ) ;
-				if( insertable != null )
-					SpTreeMan.insert( insertable ) ;
+				QtTools.fixupDeferredObs( thisObs ) ;
 				duplicates.add( thisObs ) ;
 			}
 

@@ -8,9 +8,7 @@ import gemini.sp.SpTreeMan ;
 import gemini.sp.SpType ;
 import gemini.sp.SpInsertData ;
 import gemini.sp.SpFactory ;
-import gemini.sp.obsComp.SpDRObsComp ;
 import gemini.sp.obsComp.SpInstObsComp ;
-import gemini.sp.obsComp.SpTelescopeObsComp;
 import gemini.util.JACLogger ;
 
 /* JSKY imports */
@@ -25,6 +23,7 @@ import orac.ukirt.inst.SpInstUIST ;
 import edu.jach.qt.utils.ErrorBox ;
 import edu.jach.qt.utils.HTMLViewer ;
 import edu.jach.qt.utils.ObsListCellRenderer ;
+import edu.jach.qt.utils.QtTools ;
 
 /* Standard imports */
 import java.awt.GridBagConstraints ;
@@ -356,7 +355,7 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 			{
 				inst = SpTreeMan.findInstrument( itemToXpand ) ;
 				if( inst != null )
-					insert( inst , temp ) ;
+					QtTools.insert( inst , temp ) ;
 			}
 			
 			itemToXpand = temp ;
@@ -959,7 +958,7 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 	
 			if( selected != null )
 			{	
-				SpItem deferredObs = fixupDeferredObs( getSelectedItem() ) ;
+				SpItem deferredObs = QtTools.fixupDeferredObs( getSelectedItem() ) ;
 				setObservationToDefer( deferredObs ) ;
 	
 				StringSelection text = new StringSelection( getSelectedItem().toString() ) ;
@@ -972,73 +971,6 @@ final public class ProgramTree extends JPanel implements TreeSelectionListener ,
 				logger.warn( "nothing was selected to drag" ) ;
 			}
 		}
-	}
-	
-	/**
-	 * Fix up deferred observations to include items from the original MSB.
-	 * 
-	 * Clone the item passed in, if the clone contains any of the items we are looking for, skip, 
-	 * otherwise go back to the original item and look for the items in context, and if found, add.
-	 * 
-	 * Items currently being sought : Instrument, Target list and DR recipes.
-	 * @param obs item to be cloned.
-	 * @return cloned item.
-	 */
-	private SpItem fixupDeferredObs( SpItem obs )
-	{
-		SpItem deferredObs = getSelectedItem().deepCopy() ;
-		
-		SpInstObsComp inst = SpTreeMan.findInstrument( deferredObs ) ;
-		if( inst == null )
-		{
-			inst = SpTreeMan.findInstrument( obs ) ;		
-			if( inst != null )
-				insert( inst , deferredObs ) ;
-		}
-		
-		SpTelescopeObsComp obsComp = SpTreeMan.findTargetList( deferredObs ) ;
-		if( obsComp == null )
-		{
-			obsComp = SpTreeMan.findTargetList( obs ) ;	
-			if( obsComp != null )
-				insert( obsComp , deferredObs ) ;
-		}
-
-		Vector<SpItem> recipes = null ;
-		SpItem obsParent = deferredObs.parent() ;
-		if( obsParent != null )
-			recipes = SpTreeMan.findAllInstances( obsParent , SpDRObsComp.class.getName() ) ;
-		if( recipes == null || recipes.size() == 0 )
-		{
-			obsParent = obs.parent() ;
-			if( obsParent != null )
-				recipes = SpTreeMan.findAllInstances( obsParent , SpDRObsComp.class.getName() ) ;
-    		if( recipes != null && recipes.size() > 0 )
-    		{
-    			for( SpItem recipe : recipes )
-    				insert( recipe , deferredObs ) ;
-    		}
-		}
-		return deferredObs ;
-	}
-	
-	/**
-	 * Convenience method.
-	 * Clone an item for insertion, and insert.
-	 * @param insert item to insert.
-	 * @param insertInto item to insert item into.
-	 * @return boolean indicating success.
-	 */
-	private boolean insert( SpItem insert , SpItem insertInto )
-	{
-		boolean success = true ;
-    	SpItem clonedItem = insert.deepCopy() ;
-    	SpInsertData spid = SpTreeMan.evalInsertInside( clonedItem , insertInto ) ;
-    	if( spid != null )
-    		SpTreeMan.insert( spid ) ;
-    	else
-    		success = false ;
-    	return success ;
 	}
 
 	/**
