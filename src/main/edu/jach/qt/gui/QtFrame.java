@@ -57,8 +57,6 @@ import javax.swing.event.TableColumnModelEvent ;
 import javax.swing.event.TableColumnModelListener ;
 import javax.swing.table.TableColumnModel ;
 import javax.swing.table.TableColumn ;
-import sun.misc.Signal ;
-import sun.misc.SignalHandler ;
 
 
 /**
@@ -136,18 +134,6 @@ public class QtFrame extends JFrame implements ActionListener , MenuListener , L
 				exitQT() ;
 			}
 		} ) ;
-
-		SignalHandler handler = new SignalHandler()
-		{
-			public void handle( Signal sig )
-			{
-				// Handle SIGTERM
-				setVisible( false ) ;
-				dispose() ;
-				System.exit( 0 ) ;
-			}
-		} ;
-		Signal.handle( new Signal( "TERM" ) , handler ) ;
 
 		try
 		{
