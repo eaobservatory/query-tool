@@ -13,7 +13,7 @@ import gemini.util.JACLogger ;
 import java.util.Enumeration ;
 
 import orac.util.SpInputXML ;
-import orac.util.OrderedMap ;;
+import orac.util.OrderedMap ;
 
 /**
  * This class returns a <code>OrderedMap</code> of calibrations.  Each entry in the
@@ -29,7 +29,6 @@ import orac.util.OrderedMap ;;
 
 public class CalibrationList
 {
-	public static final String ROOT_ELEMENT_TAG = "SpMSBSummary" ;
 	static final JACLogger logger = JACLogger.getLogger( CalibrationList.class ) ;
 
 	/**
