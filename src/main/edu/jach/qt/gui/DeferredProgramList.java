@@ -248,7 +248,7 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 
 			if( !duplicates.contains( thisObs ) )
 			{
-				QtTools.fixupDeferredObs( thisObs ) ;
+				thisObs = QtTools.fixupDeferredObs( thisObs , false ) ;
 				duplicates.add( thisObs ) ;
 			}
 

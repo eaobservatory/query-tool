@@ -938,7 +938,7 @@ final public class ProgramTree extends JPanel implements ActionListener , KeyLis
 	
 			if( selected != null )
 			{	
-				SpItem deferredObs = QtTools.fixupDeferredObs( getSelectedItem() ) ;
+				SpItem deferredObs = QtTools.fixupDeferredObs( getSelectedItem() , true ) ;
 				setObservationToDefer( deferredObs ) ;
 	
 				StringSelection text = new StringSelection( getSelectedItem().toString() ) ;

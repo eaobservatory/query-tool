@@ -354,9 +354,13 @@ public class QtTools
 	 * @param obs item to be cloned.
 	 * @return cloned item.
 	 */
-	public static SpItem fixupDeferredObs( SpItem obs )
+	public static SpItem fixupDeferredObs( SpItem obs , boolean duplicate )
 	{
-		SpItem deferredObs = obs.deepCopy() ;
+		SpItem deferredObs = null ;
+		if( duplicate )
+			deferredObs = obs.deepCopy() ;
+		else
+			deferredObs = obs ;
 
 		SpInstObsComp inst = SpTreeMan.findInstrument( deferredObs ) ;
 		if( inst == null )
