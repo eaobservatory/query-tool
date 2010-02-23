@@ -605,8 +605,7 @@ public class QtFrame extends JFrame implements ActionListener , MenuListener , L
 		}
 		else
 		{
-			tabbedPane.remove( 1 ) ;
-			tabbedPane.addTab( om.getProgramName() , om.getTreePanel() ) ;
+			tabbedPane.setTitleAt( 1 , om.getProgramName() ) ;
 		}
 
 		tabbedPane.setSelectedIndex( 1 ) ;
