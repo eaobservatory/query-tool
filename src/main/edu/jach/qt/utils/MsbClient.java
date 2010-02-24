@@ -148,6 +148,7 @@ public class MsbClient extends SoapClient
 		logger.debug( "Sending fetchCalProgram: " + telescope ) ;
 		flushParameter() ;
 		addParameter( "telescope" , String.class , telescope ) ;
+		addParameter( "compress" , String.class , "gzip" ) ;
 		try
 		{
 			Object tmp = doCall( getURL() , "urn:OMP::MSBServer" , "fetchCalProgram" ) ;
