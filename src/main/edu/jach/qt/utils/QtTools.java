@@ -362,37 +362,17 @@ public class QtTools
 		else
 			deferredObs = obs ;
 
-		SpInstObsComp inst = SpTreeMan.findInstrument( deferredObs ) ;
-		if( inst == null )
-		{
-			inst = SpTreeMan.findInstrument( obs ) ;
-			if( inst != null )
-				insert( inst , deferredObs ) ;
-		}
+		SpInstObsComp inst = SpTreeMan.findInstrument( obs ) ;
+		if( inst != null )
+			insert( inst , deferredObs ) ;
 
-		SpTelescopeObsComp obsComp = SpTreeMan.findTargetList( deferredObs ) ;
-		if( obsComp == null )
-		{
-			obsComp = SpTreeMan.findTargetList( obs ) ;
-			if( obsComp != null )
-				insert( obsComp , deferredObs ) ;
-		}
+		SpTelescopeObsComp obsComp = SpTreeMan.findTargetList( obs ) ;
+		if( obsComp != null )
+			insert( obsComp , deferredObs ) ;
 
-		Vector<SpItem> recipes = null ;
-		SpItem obsParent = deferredObs.parent() ;
-		if( obsParent != null )
-			recipes = SpTreeMan.findAllInstances( obsParent , SpDRObsComp.class.getName() ) ;
-		if( recipes == null || recipes.size() == 0 )
-		{
-			obsParent = obs.parent() ;
-			if( obsParent != null )
-				recipes = SpTreeMan.findAllInstances( obsParent , SpDRObsComp.class.getName() ) ;
-			if( recipes != null && recipes.size() > 0 )
-			{
-				for( SpItem recipe : recipes )
-					insert( recipe , deferredObs ) ;
-			}
-		}
+		SpDRObsComp recipe = SpTreeMan.findDRRecipe( obs ) ;
+		if( recipe != null )
+			insert( recipe , deferredObs ) ;
 		return deferredObs ;
 	}
 
