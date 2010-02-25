@@ -2,470 +2,470 @@
 <!DOCTYPE project PUBLIC "-//ANT//DTD project//EN" "misc/project.dtd" >
 
 <project name="Omp" default="main" basedir=".">
-  
-  <!-- ==================================================== -->
-  <!--             OMP -QT BUILD TOOL-                      -->
-  <!-- ==================================================== -->
-  <!--    <taskdef name="modificationset" classname="net.sourceforge.cruisecontrol.ModificationSet"/> -->
-  <!--    <taskdef name="junit" classname="org.apache.tools.ant.taskdefs.optional.junit.JUnitTask" /> -->
 
-  <!-- ================================================ -->
-  <!--   Set the properties related to the source tree  -->
-  <!-- ================================================ -->
-  <!--    <property name="build.sysclasspath" value="first"/> -->
+	<!-- ==================================================== -->
+	<!--             OMP -QT BUILD TOOL-                      -->
+	<!-- ==================================================== -->
+	<!--    <taskdef name="modificationset" classname="net.sourceforge.cruisecontrol.ModificationSet"/> -->
+	<!--    <taskdef name="junit" classname="org.apache.tools.ant.taskdefs.optional.junit.JUnitTask" /> -->
 
-  <property name="masterbuild.logdir" value="/tmp/logs"/>
-  <property name="junit.results" value="test-results" />
+	<!-- ================================================ -->
+	<!--   Set the properties related to the source tree  -->
+	<!-- ================================================ -->
+	<!--    <property name="build.sysclasspath" value="first"/> -->
 
-  <property name="Name" value="QT"/>
-  <property name="name" value="qt"/>
-  <tstamp>
-	  <format property="version" pattern="_yyyyMMdd"/>
-  </tstamp>
-  <property name="src.dir" value="src"/>
-  <property name="classes.dir" value="classes"/>
-  <property name="lib.dir" value="lib"/>
-  <property name="config.dir" value="config"/>
-  <property name="icons.dir" value="icons"/>
-  <property name="bin.dir" value="bin"/>
-  <property name="java.dir" value="${src.dir}/main"/>
-  <property name="tests.dir" value="src/testcases"/>
-  <property name="manifest" value="src/etc/manifest"/>
-  <property name="javadocs.dir" value="javadocs"/>
+	<property name="masterbuild.logdir" value="/tmp/logs"/>
+	<property name="junit.results" value="test-results" />
 
-  <!--    ==================================================== -->
-  <!--       Set the properties for the build area             -->
-  <!--    ==================================================== -->
-  <property name="build.dir" value="/tmp/install/jac_sw/omp/${Name}${version}"/>
-  <property name="build.classes" value="${build.dir}/classes"/>
-  <property name="build.config" value="${build.dir}/config"/>
-  <property name="build.icons" value="${build.dir}/icons"/>
-  <property name="build.bin" value="${build.dir}/bin"/>
-  <property name="build.lib" value="${build.dir}/lib"/>
-  <property name="build.javadocs" value="${build.dir}/javadocs"/>
-  <property name="build.tests" value="${build.dir}/testcases"/>
+	<property name="Name" value="QT"/>
+	<property name="name" value="qt"/>
+	<tstamp>
+		<format property="version" pattern="_yyyyMMdd"/>
+	</tstamp>
+	<property name="src.dir" value="src"/>
+	<property name="classes.dir" value="classes"/>
+	<property name="lib.dir" value="lib"/>
+	<property name="config.dir" value="config"/>
+	<property name="icons.dir" value="icons"/>
+	<property name="bin.dir" value="bin"/>
+	<property name="java.dir" value="${src.dir}/main"/>
+	<property name="tests.dir" value="src/testcases"/>
+	<property name="manifest" value="src/etc/manifest"/>
+	<property name="javadocs.dir" value="javadocs"/>
 
-  <!--    ==================================================== -->
-  <!--       Set the properties for the dist area             -->
-  <!--    ==================================================== -->
-  <property name="dist.dir" value="/tmp/install/${name}${version}"/>
-  <property name="dist.classes" value="${dist.dir}/classes"/>
-  <property name="dist.config" value="${dist.dir}/config"/>
-  <property name="sys.dist.config" value="/jac_sw/omp/config"/>
-  <property name="dist.icons" value="${dist.dir}/icons"/>
-  <property name="dist.bin" value="${dist.dir}/bin"/>
-  <property name="dist.lib" value="${dist.dir}/lib"/>
-  <property name="dist.javadocs" value="${dist.dir}/javadocs"/>
-  <property name="dist.tests" value="${dist.dir}/testcases"/>
+	<!--    ==================================================== -->
+	<!--       Set the properties for the build area             -->
+	<!--    ==================================================== -->
+	<property name="build.dir" value="/tmp/install/jac_sw/omp/${Name}${version}"/>
+	<property name="build.classes" value="${build.dir}/classes"/>
+	<property name="build.config" value="${build.dir}/config"/>
+	<property name="build.icons" value="${build.dir}/icons"/>
+	<property name="build.bin" value="${build.dir}/bin"/>
+	<property name="build.lib" value="${build.dir}/lib"/>
+	<property name="build.javadocs" value="${build.dir}/javadocs"/>
+	<property name="build.tests" value="${build.dir}/testcases"/>
 
-  <!--    ==================================================== -->
-  <!--       OT PATHS                                          -->
-  <!--    ==================================================== -->
-  <property name="ot.dir" value="/jac_sw/orac3/install"/>
-  <property name="ot.lib.dir" value="${ot.dir}/lib"/>
-  <property name="ot.tools.dir" value="${ot.dir}/tools"/>
+	<!--    ==================================================== -->
+	<!--       Set the properties for the dist area             -->
+	<!--    ==================================================== -->
+	<property name="dist.dir" value="/tmp/install/${name}${version}"/>
+	<property name="dist.classes" value="${dist.dir}/classes"/>
+	<property name="dist.config" value="${dist.dir}/config"/>
+	<property name="sys.dist.config" value="/jac_sw/omp/config"/>
+	<property name="dist.icons" value="${dist.dir}/icons"/>
+	<property name="dist.bin" value="${dist.dir}/bin"/>
+	<property name="dist.lib" value="${dist.dir}/lib"/>
+	<property name="dist.javadocs" value="${dist.dir}/javadocs"/>
+	<property name="dist.tests" value="${dist.dir}/testcases"/>
+
+	<!--    ==================================================== -->
+	<!--       OT PATHS                                          -->
+	<!--    ==================================================== -->
+	<property name="ot.dir" value="/jac_sw/orac3/install"/>
+	<property name="ot.lib.dir" value="${ot.dir}/lib"/>
+	<property name="ot.tools.dir" value="${ot.dir}/tools"/>
 
 
-  <path id="classpath">
-  </path>
+	<path id="classpath">
+	</path>
 
-  <path id="runpath">
-  </path>
+	<path id="runpath">
+	</path>
 
-  <path id="tests-classpath">
-  </path>
+	<path id="tests-classpath">
+	</path>
 
-  <!--    ==================================================== -->
-  <!--                  WIKI INIT - PASS IN TARGET.DIR         -->
-  <!--    ==================================================== -->
-  <target name="wiki-init">
-    <tstamp />
-    <mkdir dir="${target.dir}"/>
-    <mkdir dir="${target.dir}/classes"/>
-    <mkdir dir="${target.dir}/lib"/>
-    <mkdir dir="${target.dir}/icons"/>
-    <mkdir dir="${target.dir}/bin"/>
-    <mkdir dir="${target.dir}/config"/>
-    <mkdir dir="${target.dir}/logdir"/>
-  </target>
+	<!--    ==================================================== -->
+	<!--                  WIKI INIT - PASS IN TARGET.DIR         -->
+	<!--    ==================================================== -->
+	<target name="wiki-init">
+		<tstamp />
+		<mkdir dir="${target.dir}"/>
+		<mkdir dir="${target.dir}/classes"/>
+		<mkdir dir="${target.dir}/lib"/>
+		<mkdir dir="${target.dir}/icons"/>
+		<mkdir dir="${target.dir}/bin"/>
+		<mkdir dir="${target.dir}/config"/>
+		<mkdir dir="${target.dir}/logdir"/>
+	</target>
 
-  <!--    ==================================================== -->
-  <!--                  Prepare                                -->
-  <!--    ==================================================== -->
-  <target name="init">
-    <antcall target="wiki-init">
-      <param name="target.dir" value="${basedir}"/>
-    </antcall>
-  </target>
+	<!--    ==================================================== -->
+	<!--                  Prepare                                -->
+	<!--    ==================================================== -->
+	<target name="init">
+		<antcall target="wiki-init">
+			<param name="target.dir" value="${basedir}"/>
+		</antcall>
+	</target>
 
-  <!--    ==================================================== -->
-  <!--                  Prepare the Build                      -->
-  <!--    ==================================================== -->
-  <target name="init-build">
-    <antcall target="wiki-init">
-      <param name="target.dir" value="${build.dir}"/>
-    </antcall>
-  </target>
+	<!--    ==================================================== -->
+	<!--                  Prepare the Build                      -->
+	<!--    ==================================================== -->
+	<target name="init-build">
+		<antcall target="wiki-init">
+			<param name="target.dir" value="${build.dir}"/>
+		</antcall>
+	</target>
 
-  <!--    ==================================================== -->
-  <!--                  Prepare the Dist                      -->
-  <!--    ==================================================== -->
-  <target name="init-dist">
-    <antcall target="wiki-init">
-      <param name="target.dir" value="${dist.dir}"/>
-    </antcall>
-  </target>
+	<!--    ==================================================== -->
+	<!--                  Prepare the Dist                      -->
+	<!--    ==================================================== -->
+	<target name="init-dist">
+		<antcall target="wiki-init">
+			<param name="target.dir" value="${dist.dir}"/>
+		</antcall>
+	</target>
 
-  <!--    ================================================ -->
-  <!--                   Compile testcases                 -->
-  <!--    ================================================ -->
-  <target name="compile-tests" depends="compile-build">
-    <mkdir dir="${build.tests}"/>
+	<!--    ================================================ -->
+	<!--                   Compile testcases                 -->
+	<!--    ================================================ -->
+	<target name="compile-tests" depends="compile-build">
+		<mkdir dir="${build.tests}"/>
 
-    <javac srcdir="${tests.dir}"
-	   destdir="${build.tests}"
-	   debug="${debug}"
-	   target="1.6">
-      <classpath>
-	<pathelement location="${build.classes}" />
-	<fileset dir="${build.lib}">
-	  <include name="xerces.jar"/>
-	</fileset>
-      </classpath>
+		<javac srcdir="${tests.dir}"
+			destdir="${build.tests}"
+			debug="${debug}"
+			target="1.6">
+			<classpath>
+				<pathelement location="${build.classes}" />
+				<fileset dir="${build.lib}">
+					<include name="xerces.jar"/>
+				</fileset>
+			</classpath>
 
-    </javac>
-  </target>
+		</javac>
+	</target>
 
-  <!--    ====================================================
-  *                             MasterBuild                          
-  *       ==================================================== -->
-  <target name="masterbuild" 
-	  depends="compile-build,run-tests,jar"
-	  description="Cruise control master build">
-  </target>
+	<!--    ====================================================
+	*                             MasterBuild
+	*       ==================================================== -->
+	<target name="masterbuild"
+		depends="compile-build,run-tests,jar"
+		description="Cruise control master build">
+	</target>
 
-  <!--    ==================================================== -->
-  <!--    WIKI COMPILE - PASS IN TARGET.CLASSES DIR            -->
-  <!--    ==================================================== -->
-  <target name="wiki-compile">
-    <depend srcdir="${java.dir}/"
-            destdir="${target.classes}"
-            cache="depcache"
-            closure="yes"/>
-    <javac srcdir="${java.dir}/"
-	   destdir="${target.classes}"
-	   extdirs="${java.ext.dirs}"
-	   deprecation="off"
-	   debug="on"
-           target="1.6">
-      <exclude name="edu/jach/qt/gui/MsbNode.java"/>
-      <exclude name="edu/jach/qt/gui/DragDropObject.java"/>
-      <exclude name="edu/jach/qt/gui/DnDJTree.java"/>
-      <classpath>
-	      <fileset dir="${lib.dir}">
-		      <include name="*.jar"/>
-	      </fileset>
-	      <fileset dir="${ot.lib.dir}">
-		      <include name="*.jar"/>
-	      </fileset>
-	      <pathelement location="/jac_sw/itsroot/install/dcHub/javalib/dcHub.jar" />
-	      <pathelement location="/jac_sw/drama/CurrentRelease/javalib" />
-          <pathelement location="${ot.tools.dir}/pal.jar" />
-      </classpath>
-    </javac>
-  </target>
+	<!--    ==================================================== -->
+	<!--    WIKI COMPILE - PASS IN TARGET.CLASSES DIR            -->
+	<!--    ==================================================== -->
+	<target name="wiki-compile">
+		<depend srcdir="${java.dir}/"
+			destdir="${target.classes}"
+			cache="depcache"
+			closure="yes"/>
+		<javac srcdir="${java.dir}/"
+			destdir="${target.classes}"
+			extdirs="${java.ext.dirs}"
+			deprecation="off"
+			debug="on"
+			target="1.6">
+			<exclude name="edu/jach/qt/gui/MsbNode.java"/>
+			<exclude name="edu/jach/qt/gui/DragDropObject.java"/>
+			<exclude name="edu/jach/qt/gui/DnDJTree.java"/>
+			<classpath>
+				<fileset dir="${lib.dir}">
+					<include name="*.jar"/>
+				</fileset>
+				<fileset dir="${ot.lib.dir}">
+					<include name="*.jar"/>
+				</fileset>
+				<pathelement location="/jac_sw/itsroot/install/dcHub/javalib/dcHub.jar" />
+				<pathelement location="/jac_sw/drama/CurrentRelease/javalib" />
+				<pathelement location="${ot.tools.dir}/pal.jar" />
+			</classpath>
+		</javac>
+	</target>
 
-  <!--    ==================================================== -->
-  <!--    WIKI COPY    - PASS IN TARGET.CLASSES DIR            -->
-  <!--    ==================================================== -->
+	<!--    ==================================================== -->
+	<!--    WIKI COPY    - PASS IN TARGET.CLASSES DIR            -->
+	<!--    ==================================================== -->
 
-  <target name="wiki-copy">
-      <copy todir="${target.dir}/lib">
-      <fileset dir="${lib.dir}">
-        <include name="*.jar" />
-      </fileset>
-    </copy>
+	<target name="wiki-copy">
+		<copy todir="${target.dir}/lib">
+			<fileset dir="${lib.dir}">
+				<include name="*.jar" />
+			</fileset>
+		</copy>
 
-    <copy todir="${target.dir}/config">
-      <fileset dir="${config.dir}">
-        <include name="*" />
-      </fileset>
-    </copy>
+		<copy todir="${target.dir}/config">
+			<fileset dir="${config.dir}">
+				<include name="*" />
+			</fileset>
+		</copy>
 
-    <chmod perm="+w">
-      <fileset dir="${target.dir}/config">
-        <include name="*" />
-      </fileset>
-    </chmod>
+		<chmod perm="+w">
+			<fileset dir="${target.dir}/config">
+				<include name="*" />
+			</fileset>
+		</chmod>
 
-    <copy todir="${target.dir}/icons">
-      <fileset dir="${icons.dir}">
-        <include name="*" />
-      </fileset>
-    </copy>
-  </target>
+		<copy todir="${target.dir}/icons">
+			<fileset dir="${icons.dir}">
+				<include name="*" />
+			</fileset>
+		</copy>
+	</target>
 
-  <!--    ==================================================== -->
-  <!--                      Compile It!                        -->
-  <!--    ==================================================== -->
-  <target name="compile" depends="init">
-    <antcall target="wiki-compile">
-      <param name="target.classes" value="${classes.dir}" />
-    </antcall>
-  </target>
+	<!--    ==================================================== -->
+	<!--                      Compile It!                        -->
+	<!--    ==================================================== -->
+	<target name="compile" depends="init">
+		<antcall target="wiki-compile">
+			<param name="target.classes" value="${classes.dir}" />
+		</antcall>
+	</target>
 
-  <!--    ==================================================== -->
-  <!--                      Build It!                          -->
-  <!--    ==================================================== -->
-  <target name="compile-build" depends="init-build">
-    <antcall target="wiki-compile">
-      <param name="target.classes" value="${build.classes}" />
-    </antcall>
+	<!--    ==================================================== -->
+	<!--                      Build It!                          -->
+	<!--    ==================================================== -->
+	<target name="compile-build" depends="init-build">
+		<antcall target="wiki-compile">
+			<param name="target.classes" value="${build.classes}" />
+		</antcall>
 
-    <antcall target="wiki-copy">
-      <param name="target.dir" value="${build.dir}" />
-    </antcall>
+		<antcall target="wiki-copy">
+			<param name="target.dir" value="${build.dir}" />
+		</antcall>
 
-    <copy todir="${build.bin}">
-      <fileset dir="${bin.dir}">
-        <include name="*" />
-      </fileset>
-    </copy>
+		<copy todir="${build.bin}">
+			<fileset dir="${bin.dir}">
+				<include name="*" />
+			</fileset>
+		</copy>
 
-    <chmod perm="+x">
-      <fileset dir="${build.bin}">
-        <include name="*" />
-      </fileset>
-    </chmod>
+		<chmod perm="+x">
+			<fileset dir="${build.bin}">
+				<include name="*" />
+			</fileset>
+		</chmod>
 
-    <chmod dir="${build.dir}" perm="g+w" includes="**/*"/>
+		<chmod dir="${build.dir}" perm="g+w" includes="**/*"/>
 
-  </target>
+	</target>
 
-  <!--    ==================================================== -->
-  <!--                      Build It for Dist!                 -->
-  <!--    ==================================================== -->
-  <target name="compile-dist" depends="init-dist">
-    <antcall target="wiki-compile">
-      <param name="target.classes" value="${dist.classes}" />
-    </antcall>
+	<!--    ==================================================== -->
+	<!--                      Build It for Dist!                 -->
+	<!--    ==================================================== -->
+	<target name="compile-dist" depends="init-dist">
+		<antcall target="wiki-compile">
+			<param name="target.classes" value="${dist.classes}" />
+		</antcall>
 
-    <antcall target="wiki-copy">
-      <param name="target.dir" value="${dist.dir}" />
-    </antcall>
+		<antcall target="wiki-copy">
+			<param name="target.dir" value="${dist.dir}" />
+		</antcall>
 
-    <copy todir="${sys.dist.config}">
-      <fileset dir="${config.dir}">
-        <include name="*" />
-      </fileset>
-    </copy>
+		<copy todir="${sys.dist.config}">
+			<fileset dir="${config.dir}">
+				<include name="*" />
+			</fileset>
+		</copy>
 
-    <copy todir="${dist.bin}">
-      <fileset dir="${bin.dir}">
-        <include name="qt" />
-      </fileset>
-    </copy>
+		<copy todir="${dist.bin}">
+			<fileset dir="${bin.dir}">
+				<include name="qt" />
+			</fileset>
+		</copy>
 
-    <chmod perm="+x">
-      <fileset dir="${dist.bin}">
-        <include name="*" />
-      </fileset>
-    </chmod>
-  </target>
+		<chmod perm="+x">
+			<fileset dir="${dist.bin}">
+				<include name="*" />
+			</fileset>
+		</chmod>
+	</target>
 
-	  <!--    ==================================================== -->
-	  <!--                     Run It!                             -->
-	  <!--    ==================================================== -->
-	  <target name="run" depends="compile">
-	    <java classname="edu.jach.qt.app.QT" fork="yes">
-	      <classpath>
-		    <pathelement location="${classes.dir}" />
-		      <fileset dir="${lib.dir}">
-		        <include name="*.jar"/>
-		      </fileset>
-	          <fileset dir="${ot.lib.dir}">
-	            <include name="*.jar"/>
-	          </fileset>
-	          <pathelement location="/jac_sw/itsroot/install/dcHub/javalib/dcHub.jar" />
-	          <pathelement location="/jac_sw/drama/CurrentRelease/javalib" />
-	      </classpath>
-	    </java>
-	  </target>
+	<!--    ==================================================== -->
+	<!--                     Run It!                             -->
+	<!--    ==================================================== -->
+	<target name="run" depends="compile">
+		<java classname="edu.jach.qt.app.QT" fork="yes">
+			<classpath>
+				<pathelement location="${classes.dir}" />
+				<fileset dir="${lib.dir}">
+					<include name="*.jar"/>
+				</fileset>
+				<fileset dir="${ot.lib.dir}">
+				<include name="*.jar"/>
+				</fileset>
+				<pathelement location="/jac_sw/itsroot/install/dcHub/javalib/dcHub.jar" />
+				<pathelement location="/jac_sw/drama/CurrentRelease/javalib" />
+			</classpath>
+		</java>
+	</target>
 
-  <!--    ==================================================== -->
-  <!--                     Run It!                             -->
-  <!--    ==================================================== -->
-  <target name="run-build" depends="compile-build">
-    <java classname="edu.jach.qt.app.QT" fork="yes">
-      <classpath>
-          <pathelement location="${build.classes}" />
-          <fileset dir="${build.lib}">
-            <include name="*.jar"/>
-          </fileset>
-          <fileset dir="${ot.lib.dir}">
-            <include name="*.jar"/>
-          </fileset>
-          <pathelement location="/jac_sw/itsroot/install/dcHub/javalib/dcHub.jar" />
-          <pathelement location="/jac_sw/drama/CurrentRelease/javalib" />
-      </classpath>
-    </java>
-  </target>
+	<!--    ==================================================== -->
+	<!--                     Run It!                             -->
+	<!--    ==================================================== -->
+	<target name="run-build" depends="compile-build">
+		<java classname="edu.jach.qt.app.QT" fork="yes">
+			<classpath>
+				<pathelement location="${build.classes}" />
+				<fileset dir="${build.lib}">
+				<include name="*.jar"/>
+				</fileset>
+				<fileset dir="${ot.lib.dir}">
+				<include name="*.jar"/>
+				</fileset>
+				<pathelement location="/jac_sw/itsroot/install/dcHub/javalib/dcHub.jar" />
+				<pathelement location="/jac_sw/drama/CurrentRelease/javalib" />
+			</classpath>
+		</java>
+	</target>
 
-  <!--    ==================================================== -->
-  <!--                   Run testcases                         -->
-  <!--    ==================================================== -->
-  <target name="run-tests" depends="init-build, compile-tests" description="Run unit tests">
-    <delete dir="${junit.results}"/>
-    <mkdir dir="${junit.results}"/>
-    <echo message="Running unit tests..."/>
-    <junit printsummary="no" 
-	   haltonerror="yes" 
-	   haltonfailure="yes"
-	   fork="yes">
-      <classpath>
-        <pathelement location="${build.classes}" />
-          <fileset dir="${build.lib}">
-            <include name="*.jar"/>
-          </fileset>
-          <fileset dir="${ot.lib.dir}">
-            <include name="*.jar"/>
-          </fileset>
-          <pathelement location="/jac_sw/itsroot/install/dcHub/javalib/dcHub.jar" />
-          <pathelement location="/jac_sw/drama/CurrentRelease/javalib" />
-        </classpath>
-      <formatter type="plain" usefile="false" />
-      <formatter type="xml" />
-      <batchtest todir="${junit.results}" >
-	<fileset dir="${tests.dir}">
-	  <include name="**/*Test*" />
-	</fileset>
-      </batchtest>
-    </junit>
-  </target>
+	<!--    ==================================================== -->
+	<!--                   Run testcases                         -->
+	<!--    ==================================================== -->
+	<target name="run-tests" depends="init-build, compile-tests" description="Run unit tests">
+		<delete dir="${junit.results}"/>
+		<mkdir dir="${junit.results}"/>
+		<echo message="Running unit tests..."/>
+		<junit printsummary="no"
+			haltonerror="yes"
+			haltonfailure="yes"
+			fork="yes">
+			<classpath>
+				<pathelement location="${build.classes}" />
+				<fileset dir="${build.lib}">
+					<include name="*.jar"/>
+				</fileset>
+				<fileset dir="${ot.lib.dir}">
+					<include name="*.jar"/>
+				</fileset>
+				<pathelement location="/jac_sw/itsroot/install/dcHub/javalib/dcHub.jar" />
+				<pathelement location="/jac_sw/drama/CurrentRelease/javalib" />
+			</classpath>
+			<formatter type="plain" usefile="false" />
+			<formatter type="xml" />
+			<batchtest todir="${junit.results}" >
+				<fileset dir="${tests.dir}">
+					<include name="**/*Test*" />
+				</fileset>
+			</batchtest>
+		</junit>
+	</target>
 
-  <!--    ==================================================== -->
-  <!--                 Create the qt.jar                       -->
-  <!--    ==================================================== -->
-  <target name="wiki-jar">
-    <jar jarfile="${target.dir}/lib/qt.jar">
-      <fileset dir="${target.dir}/classes"/>
-      <fileset dir="${target.dir}/icons"/>
-      <!--  manifest="${manifest}"> -->
-    </jar>
-  </target>
+	<!--    ==================================================== -->
+	<!--                 Create the qt.jar                       -->
+	<!--    ==================================================== -->
+	<target name="wiki-jar">
+		<jar jarfile="${target.dir}/lib/qt.jar">
+			<fileset dir="${target.dir}/classes"/>
+			<fileset dir="${target.dir}/icons"/>
+			<!--  manifest="${manifest}"> -->
+		</jar>
+	</target>
 
-  <!--    ==================================================== -->
-  <!--                 Create the qt.jar                       -->
-  <!--    ==================================================== -->
-  <target name="jar" depends="compile">
-    <antcall target="wiki-jar">
-      <param name="target.dir" value="${basedir}" />
-    </antcall>
-  </target>
+	<!--    ==================================================== -->
+	<!--                 Create the qt.jar                       -->
+	<!--    ==================================================== -->
+	<target name="jar" depends="compile">
+		<antcall target="wiki-jar">
+			<param name="target.dir" value="${basedir}" />
+		</antcall>
+	</target>
 
-  <!--    ==================================================== -->
-  <!--                 Create the qt.jar                       -->
-  <!--    ==================================================== -->
-  <target name="jar-build" depends="compile-build">
-    <antcall target="wiki-jar">
-      <param name="target.dir" value="${build.dir}" />
-    </antcall>
-  </target>
+	<!--    ==================================================== -->
+	<!--                 Create the qt.jar                       -->
+	<!--    ==================================================== -->
+	<target name="jar-build" depends="compile-build">
+		<antcall target="wiki-jar">
+			<param name="target.dir" value="${build.dir}" />
+		</antcall>
+	</target>
 
-  <!--    ==================================================== -->
-  <!--                 Create the qt.jar                       -->
-  <!--    ==================================================== -->
-  <target name="jar-dist" depends="compile-dist">
-    <antcall target="wiki-jar">
-      <param name="target.dir" value="${dist.dir}" />
-    </antcall>
-  </target>
+	<!--    ==================================================== -->
+	<!--                 Create the qt.jar                       -->
+	<!--    ==================================================== -->
+	<target name="jar-dist" depends="compile-dist">
+		<antcall target="wiki-jar">
+			<param name="target.dir" value="${dist.dir}" />
+		</antcall>
+	</target>
 
-  <!--  ====================================================== -->
-  <!--             Create the API documentation               -->               
-  <!--  ====================================================== -->
-  <target name="javadoc_check">
-    <uptodate property="javadoc.notrequired" targetfile="${dist.javadocs}/packages.html" >
-      <srcfiles dir= "${java.dir}" includes="**/*.java"/>
-    </uptodate>
-  </target>
+	<!--  ====================================================== -->
+	<!--             Create the API documentation                -->
+	<!--  ====================================================== -->
+	<target name="javadoc_check">
+		<uptodate property="javadoc.notrequired" targetfile="${dist.javadocs}/packages.html" >
+			<srcfiles dir= "${java.dir}" includes="**/*.java"/>
+		</uptodate>
+	</target>
 
-  <target name="javadocs" depends="init, javadoc_check" 
-	  unless="javadoc.notrequired"
-	  description="Creates the API documentation">
-    <mkdir dir="${javadocs.dir}"/>
-    <javadoc packagenames="edu.jach.qt.*"
-	     sourcepath="${java.dir}"
-	     destdir="${javadocs.dir}"
-	     author="true"
-	     version="true"
-	     windowtitle="${Name} API"
-	     doctitle="${Name}"
-	     bottom="Copyright &#169; 2001 - 2010 Joint Astronomy Centre. All Rights Reserved.">
-      <group title="QT Core" packages="edu.jach.qt*" />
-    </javadoc>
-  </target>
+	<target name="javadocs" depends="init, javadoc_check"
+			unless="javadoc.notrequired"
+			description="Creates the API documentation">
+		<mkdir dir="${javadocs.dir}"/>
+		<javadoc packagenames="edu.jach.qt.*"
+			sourcepath="${java.dir}"
+			destdir="${javadocs.dir}"
+			author="true"
+			version="true"
+			windowtitle="${Name} API"
+			doctitle="${Name}"
+			bottom="Copyright &#169; 2001 - 2010 Joint Astronomy Centre. All Rights Reserved.">
+			<group title="QT Core" packages="edu.jach.qt*" />
+		</javadoc>
+	</target>
 
-  <!--    ==================================================== -->
-  <!--                     WIKI Clean It                       -->
-  <!--    ==================================================== -->
-  <target name="clean" description="The default clean target. Deletes the install tree.">
-    <delete dir="${classes.dir}" />
-    <delete dir="${javadocs.dir}" />
-    <delete file="${lib.dir}/qt.jar" />
-    <delete file="${lib.dir}/qt-src.jar" />
-  </target>
+	<!--    ==================================================== -->
+	<!--                     WIKI Clean It                       -->
+	<!--    ==================================================== -->
+	<target name="clean" description="The default clean target. Deletes the install tree.">
+		<delete dir="${classes.dir}" />
+		<delete dir="${javadocs.dir}" />
+		<delete file="${lib.dir}/qt.jar" />
+		<delete file="${lib.dir}/qt-src.jar" />
+	</target>
 
-  <!--    ==================================================== -->
-  <!--                     Clean It!                           -->
-  <!--    ==================================================== -->
-  <target name="clean-build" description="The default clean target. Deletes the install tree.">
-    <delete dir="${build.dir}" />
-    <delete dir="${build.lib}" />
-    <delete dir="${build.javadocs}"/>
-  </target>
+	<!--    ==================================================== -->
+	<!--                     Clean It!                           -->
+	<!--    ==================================================== -->
+	<target name="clean-build" description="The default clean target. Deletes the install tree.">
+		<delete dir="${build.dir}" />
+		<delete dir="${build.lib}" />
+		<delete dir="${build.javadocs}"/>
+	</target>
 
-  <!--    ==================================================== -->
-  <!--                     Clean It!                           -->
-  <!--    ==================================================== -->
-  <target name="clean-dist" description="The dist clean target. Deletes the dist install tree.">
-    <delete dir="${dist.dir}" />
-    <delete dir="${dist.lib}" />
-    <delete dir="${dist.javadocs}"/>
-  </target>
+	<!--    ==================================================== -->
+	<!--                     Clean It!                           -->
+	<!--    ==================================================== -->
+	<target name="clean-dist" description="The dist clean target. Deletes the dist install tree.">
+		<delete dir="${dist.dir}" />
+		<delete dir="${dist.lib}" />
+		<delete dir="${dist.javadocs}"/>
+	</target>
 
-  <!--    ==================================================== -->
-  <!--                     Clean Build!                        -->
-  <!--    ==================================================== -->
-  <target name="cleanbuild" 
-	  depends="clean,masterbuild" 
-	  description="Cruise control clean build">
-  </target>
+	<!--    ==================================================== -->
+	<!--                     Clean Build!                        -->
+	<!--    ==================================================== -->
+	<target name="cleanbuild"
+		depends="clean,masterbuild"
+		description="Cruise control clean build">
+	</target>
 
-  <!--    ==================================================== -->
-  <!--                       MAIN                              -->
-  <!--    ==================================================== -->
-  <target name="main" depends="jar" description="The default target built when no args passed to ant.">
-    <!--      <antstructure output="project.dtd"/> -->
-    <echo message="EVERYTHING LOOKS GOOD!"/>
-    <echo message="Run ${basedir}/bin/qt"/>
-  </target>
+	<!--    ==================================================== -->
+	<!--                       MAIN                              -->
+	<!--    ==================================================== -->
+	<target name="main" depends="jar" description="The default target built when no args passed to ant.">
+		<!--      <antstructure output="project.dtd"/> -->
+		<echo message="EVERYTHING LOOKS GOOD!"/>
+		<echo message="Run ${basedir}/bin/qt"/>
+	</target>
 
-  <!--    ==================================================== -->
-  <!--                       MAIN                              -->
-  <!--    ==================================================== -->
-  <target name="build" depends="jar-build">
-    <!--      <antstructure output="project.dtd"/> -->
-    <echo message="EVERYTHING LOOKS GOOD!"/>
-    <echo message="Run ${build.dir}/bin/qt"/>
-  </target>
+	<!--    ==================================================== -->
+	<!--                       MAIN                              -->
+	<!--    ==================================================== -->
+	<target name="build" depends="jar-build">
+		<!--      <antstructure output="project.dtd"/> -->
+		<echo message="EVERYTHING LOOKS GOOD!"/>
+		<echo message="Run ${build.dir}/bin/qt"/>
+	</target>
 
-  <!--    ==================================================== -->
-  <!--                       DIST                              -->
-  <!--    ==================================================== -->
-  <target name="dist" depends="jar-dist">
-    <echo message="EVERYTHING LOOKS GOOD!"/>
-    <echo message="Run ${dist.dir}/bin/qt"/>
-  </target>
-  
+	<!--    ==================================================== -->
+	<!--                       DIST                              -->
+	<!--    ==================================================== -->
+	<target name="dist" depends="jar-dist">
+		<echo message="EVERYTHING LOOKS GOOD!"/>
+		<echo message="Run ${dist.dir}/bin/qt"/>
+	</target>
+
 </project>
