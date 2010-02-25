@@ -170,7 +170,7 @@
 	      </fileset>
 	      <pathelement location="/jac_sw/itsroot/install/dcHub/javalib/dcHub.jar" />
 	      <pathelement location="/jac_sw/drama/CurrentRelease/javalib" />
-              <pathelement location="${ot.tools.dir}/pal.jar" />
+          <pathelement location="${ot.tools.dir}/pal.jar" />
       </classpath>
     </javac>
   </target>
@@ -277,12 +277,17 @@
   <!--                     Run It!                             -->
   <!--    ==================================================== -->
   <target name="run" depends="compile-build">
-    <java classname="edu.jach.qt.app.Main" fork="yes">
+    <java classname="edu.jach.qt.app.QT" fork="yes">
       <classpath>
-	<pathelement location="${build.classes}" />
-	<fileset dir="${build.lib}">
-	  <include name="xerces.jar"/>
-	</fileset>
+	    <pathelement location="${build.classes}" />
+	      <fileset dir="${build.lib}">
+	        <include name="*.jar"/>
+	      </fileset>
+          <fileset dir="${ot.lib.dir}">
+            <include name="*.jar"/>
+          </fileset>
+          <pathelement location="/jac_sw/itsroot/install/dcHub/javalib/dcHub.jar" />
+          <pathelement location="/jac_sw/drama/CurrentRelease/javalib" />
       </classpath>
     </java>
   </target>
