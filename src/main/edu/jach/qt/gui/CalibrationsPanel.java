@@ -119,7 +119,7 @@ public class CalibrationsPanel extends JPanel implements ListSelectionListener ,
 				{
 					secondList.setModel( second( ( String )value ) ) ;
 				}
-				else if( list.equals( secondList ) )
+				else if( list.equals( secondList ) && e.getValueIsAdjusting() )
 				{
 					if( currentList != null )
 					{
