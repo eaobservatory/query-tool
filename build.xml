@@ -23,6 +23,7 @@
 	  <format property="version" pattern="_yyyyMMdd"/>
   </tstamp>
   <property name="src.dir" value="src"/>
+  <property name="classes.dir" value="classes"/>
   <property name="lib.dir" value="lib"/>
   <property name="config.dir" value="config"/>
   <property name="icons.dir" value="icons"/>
@@ -30,11 +31,12 @@
   <property name="java.dir" value="${src.dir}/main"/>
   <property name="tests.dir" value="src/testcases"/>
   <property name="manifest" value="src/etc/manifest"/>
+  <property name="javadocs.dir" value="javadocs"/>
   
   <!--    ==================================================== -->
   <!--       Set the properties for the build area             -->
   <!--    ==================================================== -->
-  <property name="build.dir" value="/tmp/install/omp/QT"/>
+  <property name="build.dir" value="/tmp/install/jac_sw/omp/${Name}${version}"/>
   <property name="build.classes" value="${build.dir}/classes"/>
   <property name="build.config" value="${build.dir}/config"/>
   <property name="build.icons" value="${build.dir}/icons"/>
@@ -46,7 +48,7 @@
   <!--    ==================================================== -->
   <!--       Set the properties for the dist area             -->
   <!--    ==================================================== -->
-  <property name="dist.dir" value="/tmp/install/jac_sw/omp/${Name}${version}"/>
+  <property name="dist.dir" value="/tmp/install/${name}${version}"/>
   <property name="dist.classes" value="${dist.dir}/classes"/>
   <property name="dist.config" value="${dist.dir}/config"/>
   <property name="sys.dist.config" value="/jac_sw/omp/config"/>
@@ -69,62 +71,55 @@
   
   <path id="runpath">
   </path>
-  
+
   <path id="tests-classpath">
   </path>
-  
+
+  <!--    ==================================================== -->
+  <!--                  WIKI INIT - PASS IN TARGET.DIR         -->
+  <!--    ==================================================== -->
+  <target name="wiki-init">
+    <tstamp />
+    <mkdir dir="${target.dir}"/>
+    <mkdir dir="${target.dir}/classes"/>
+    <mkdir dir="${target.dir}/lib"/>
+    <mkdir dir="${target.dir}/icons"/>
+    <mkdir dir="${target.dir}/bin"/>
+    <mkdir dir="${target.dir}/config"/>
+    <mkdir dir="${target.dir}/logdir"/>
+  </target>
+
+  <!--    ==================================================== -->
+  <!--                  Prepare                                -->
+  <!--    ==================================================== -->
+  <target name="init">
+    <antcall target="wiki-init">
+      <param name="target.dir" value="${basedir}"/>
+    </antcall>
+  </target>
+
   <!--    ==================================================== -->
   <!--                  Prepare the Build                      -->
   <!--    ==================================================== -->
-  <target name="init">
-    <tstamp />
-    <mkdir dir="${build.dir}"/>
-    <mkdir dir="${build.classes}"/>
-    <mkdir dir="${build.lib}"/>
-    <mkdir dir="${build.icons}"/>
-    <mkdir dir="${build.bin}"/>
-    <mkdir dir="${build.config}"/>
-    <mkdir dir="${masterbuild.logdir}"/>
+  <target name="init-build">
+    <antcall target="wiki-init">
+      <param name="target.dir" value="${build.dir}"/>
+    </antcall>
   </target>
 
   <!--    ==================================================== -->
   <!--                  Prepare the Dist                      -->
   <!--    ==================================================== -->
   <target name="init-dist">
-    <tstamp />
-    <mkdir dir="${dist.dir}"/>
-    <mkdir dir="${dist.classes}"/>
-    <mkdir dir="${dist.lib}"/>
-    <mkdir dir="${dist.icons}"/>
-    <mkdir dir="${dist.bin}"/>
-    <mkdir dir="${dist.config}"/>
-    <mkdir dir="${masterbuild.logdir}"/>
-  </target>
-
-  <!--    ==================================================== -->
-  <!--                  Check Dependencies                     -->
-  <!--    ==================================================== -->
-  <target name="mkdeps" depends="init">
-    <depend srcdir="${java.dir}/"
-	    destdir="${build.classes}"
-	    cache="depcache"
-	    closure="yes"/>
-  </target>
-
-  <!--    ==================================================== -->
-  <!--                  Check Dependencies for Dist            -->
-  <!--    ==================================================== -->
-  <target name="mkdeps-dist" depends="init-dist">
-    <depend srcdir="${java.dir}/"
-	    destdir="${dist.classes}"
-	    cache="depcache"
-	    closure="yes"/>
+    <antcall target="wiki-init">
+      <param name="target.dir" value="${dist.dir}"/>
+    </antcall>
   </target>
 
   <!--    ================================================ -->
   <!--                   Compile testcases                 -->
   <!--    ================================================ -->
-  <target name="compile-tests" depends="compile">
+  <target name="compile-tests" depends="compile-build">
     <mkdir dir="${build.tests}"/>
 
     <javac srcdir="${tests.dir}"
@@ -145,20 +140,24 @@
   *                             MasterBuild                          
   *       ==================================================== -->
   <target name="masterbuild" 
-	  depends="compile,run-tests,jar"
+	  depends="compile-build,run-tests,jar"
 	  description="Cruise control master build">
   </target>
 
   <!--    ==================================================== -->
-  <!--                      Build It!                          -->
+  <!--    WIKI COMPILE - PASS IN TARGET.CLASSES DIR            -->
   <!--    ==================================================== -->
-  <target name="compile" depends="mkdeps">
-    <javac srcdir="${java.dir}/" 
-	   destdir="${build.classes}" 
+  <target name="wiki-compile">
+    <depend srcdir="${java.dir}/"
+            destdir="${target.classes}"
+            cache="depcache"
+            closure="yes"/>
+    <javac srcdir="${java.dir}/"
+	   destdir="${target.classes}"
 	   extdirs="${java.ext.dirs}"
 	   deprecation="off"
 	   debug="on"
-	   target="1.6">
+           target="1.6">
       <exclude name="edu/jach/qt/gui/MsbNode.java"/>
       <exclude name="edu/jach/qt/gui/DragDropObject.java"/>
       <exclude name="edu/jach/qt/gui/DnDJTree.java"/>
@@ -171,27 +170,61 @@
 	      </fileset>
 	      <pathelement location="/jac_sw/itsroot/install/dcHub/javalib/dcHub.jar" />
 	      <pathelement location="/jac_sw/drama/CurrentRelease/javalib" />
-	      <pathelement location="${ot.tools.dir}/pal.jar" />
+              <pathelement location="${ot.tools.dir}/pal.jar" />
       </classpath>
     </javac>
+  </target>
 
-    <copy todir="${build.lib}">
+  <!--    ==================================================== -->
+  <!--    WIKI COPY    - PASS IN TARGET.CLASSES DIR            -->
+  <!--    ==================================================== -->
+
+  <target name="wiki-copy">
+      <copy todir="${target.dir}/lib">
       <fileset dir="${lib.dir}">
         <include name="*.jar" />
       </fileset>
     </copy>
 
-    <copy todir="${build.config}">
+    <copy todir="${target.dir}/config">
       <fileset dir="${config.dir}">
         <include name="*" />
       </fileset>
     </copy>
 
-    <copy todir="${build.icons}">
+    <chmod perm="+w">
+      <fileset dir="${target.dir}/config">
+        <include name="*" />
+      </fileset>
+    </chmod>
+
+    <copy todir="${target.dir}/icons">
       <fileset dir="${icons.dir}">
         <include name="*" />
       </fileset>
     </copy>
+  </target>
+
+  <!--    ==================================================== -->
+  <!--                      Compile It!                        -->
+  <!--    ==================================================== -->
+  <target name="compile" depends="init">
+    <antcall target="wiki-compile">
+      <param name="target.classes" value="${classes.dir}" />
+    </antcall>
+  </target>
+
+  <!--    ==================================================== -->
+  <!--                      Build It!                          -->
+  <!--    ==================================================== -->
+  <target name="compile-build" depends="init-build">
+    <antcall target="wiki-compile">
+      <param name="target.classes" value="${build.classes}" />
+    </antcall>
+
+    <antcall target="wiki-copy">
+      <param name="target.dir" value="${build.dir}" />
+    </antcall>
 
     <copy todir="${build.bin}">
       <fileset dir="${bin.dir}">
@@ -212,48 +245,17 @@
   <!--    ==================================================== -->
   <!--                      Build It for Dist!                 -->
   <!--    ==================================================== -->
-  <target name="compile-dist" depends="mkdeps-dist">
-    <javac srcdir="${java.dir}/" 
-	   destdir="${dist.classes}" 
-	   extdirs="${java.ext.dirs}"
-	   debug="on"
-	   target="1.6">
-      <exclude name="edu/jach/qt/gui/MsbNode.java"/>
-      <exclude name="edu/jach/qt/gui/DragDropObject.java"/>
-      <exclude name="edu/jach/qt/gui/DnDJTree.java"/>
-      <classpath>
-	      <fileset dir="${lib.dir}">
-		      <include name="*.jar"/>
-	      </fileset>
-	      <fileset dir="${ot.lib.dir}">
-		      <include name="*.jar"/>
-	      </fileset>
-	      <pathelement location="/jac_sw/itsroot/install/dcHub/javalib/dcHub.jar" />
-	      <pathelement location="/jac_sw/drama/CurrentRelease/javalib" />
-	      <pathelement location="${ot.tools.dir}/pal.jar" />
-      </classpath>
-    </javac>
+  <target name="compile-dist" depends="init-dist">
+    <antcall target="wiki-compile">
+      <param name="target.classes" value="${dist.classes}" />
+    </antcall>
 
-    <copy todir="${dist.lib}">
-      <fileset dir="${lib.dir}">
-        <include name="*.jar" />
-      </fileset>
-    </copy>
-
-    <copy todir="${dist.config}">
-      <fileset dir="${config.dir}">
-        <include name="*" />
-      </fileset>
-    </copy>
+    <antcall target="wiki-copy">
+      <param name="target.dir" value="${dist.dir}" />
+    </antcall>
 
     <copy todir="${sys.dist.config}">
       <fileset dir="${config.dir}">
-        <include name="*" />
-      </fileset>
-    </copy>
-
-    <copy todir="${dist.icons}">
-      <fileset dir="${icons.dir}">
         <include name="*" />
       </fileset>
     </copy>
@@ -274,7 +276,7 @@
   <!--    ==================================================== -->
   <!--                     Run It!                             -->
   <!--    ==================================================== -->
-  <target name="run" depends="compile">
+  <target name="run" depends="compile-build">
     <java classname="edu.jach.qt.app.Main" fork="yes">
       <classpath>
 	<pathelement location="${build.classes}" />
@@ -288,7 +290,7 @@
   <!--    ==================================================== -->
   <!--                   Run testcases                         -->
   <!--    ==================================================== -->
-  <target name="run-tests" depends="init, compile-tests" description="Run unit tests">
+  <target name="run-tests" depends="init-build, compile-tests" description="Run unit tests">
     <delete dir="${junit.results}"/>
     <mkdir dir="${junit.results}"/>
     <echo message="Running unit tests..."/>
@@ -315,14 +317,14 @@
       </batchtest>
     </junit>
   </target>
-  
+
   <!--    ==================================================== -->
   <!--                 Create the qt.jar                       -->
   <!--    ==================================================== -->
-  <target name="jar" depends="compile">
-    <jar jarfile="${build.lib}/qt.jar">
-      <fileset dir="${build.classes}"/>
-      <fileset dir="${icons.dir}"/>
+  <target name="wiki-jar">
+    <jar jarfile="${target.dir}/lib/qt.jar">
+      <fileset dir="${target.dir}/classes"/>
+      <fileset dir="${target.dir}/icons"/>
       <!--  manifest="${manifest}"> -->
     </jar>
   </target>
@@ -330,11 +332,28 @@
   <!--    ==================================================== -->
   <!--                 Create the qt.jar                       -->
   <!--    ==================================================== -->
+  <target name="jar" depends="compile">
+    <antcall target="wiki-jar">
+      <param name="target.dir" value="${basedir}" />
+    </antcall>
+  </target>
+
+  <!--    ==================================================== -->
+  <!--                 Create the qt.jar                       -->
+  <!--    ==================================================== -->
+  <target name="jar-build" depends="compile-build">
+    <antcall target="wiki-jar">
+      <param name="target.dir" value="${build.dir}" />
+    </antcall>
+  </target>
+
+  <!--    ==================================================== -->
+  <!--                 Create the qt.jar                       -->
+  <!--    ==================================================== -->
   <target name="jar-dist" depends="compile-dist">
-    <jar jarfile="${dist.lib}/qt.jar"
-	 basedir="${dist.classes}"
-	 manifest="${manifest}">
-    </jar>
+    <antcall target="wiki-jar">
+      <param name="target.dir" value="${dist.dir}" />
+    </antcall>
   </target>
 
   <!--  ====================================================== -->
@@ -349,25 +368,36 @@
   <target name="javadocs" depends="init, javadoc_check" 
 	  unless="javadoc.notrequired"
 	  description="Creates the API documentation">
-    <mkdir dir="${dist.javadocs}"/>
+    <mkdir dir="${javadocs.dir}"/>
     <javadoc packagenames="edu.jach.qt.*"
 	     sourcepath="${java.dir}"
-	     destdir="${dist.javadocs}"
+	     destdir="${javadocs.dir}"
 	     author="true"
 	     version="true"
 	     windowtitle="${Name} API"
 	     doctitle="${Name}"
-	     bottom="Copyright &#169; 2001 Joint Astronomy Centre. All Rights Reserved.">
+	     bottom="Copyright &#169; 2001 - 2010 Joint Astronomy Centre. All Rights Reserved.">
       <group title="QT Core" packages="edu.jach.qt*" />
     </javadoc>
   </target>
 
   <!--    ==================================================== -->
-  <!--                     Clean It!                           -->
+  <!--                     WIKI Clean It                       -->
   <!--    ==================================================== -->
   <target name="clean" description="The default clean target. Deletes the install tree.">
+    <delete dir="${classes.dir}" />
+    <delete dir="${javadocs.dir}" />
+    <delete file="${lib.dir}/qt.jar" />
+    <delete file="${lib.dir}/qt-src.jar" />
+  </target>
+
+  <!--    ==================================================== -->
+  <!--                     Clean It!                           -->
+  <!--    ==================================================== -->
+  <target name="build-clean" description="The default clean target. Deletes the install tree.">
     <delete dir="${build.dir}" />
     <delete dir="${build.lib}" />
+    <delete dir="${build.javadocs}"/>
   </target>
 
   <!--    ==================================================== -->
@@ -376,6 +406,7 @@
   <target name="dist-clean" description="The dist clean target. Deletes the dist install tree.">
     <delete dir="${dist.dir}" />
     <delete dir="${dist.lib}" />
+    <delete dir="${dist.javadocs}"/>
   </target>
 
   <!--    ==================================================== -->
@@ -390,6 +421,15 @@
   <!--                       MAIN                              -->
   <!--    ==================================================== -->
   <target name="main" depends="jar" description="The default target built when no args passed to ant.">
+    <!--      <antstructure output="project.dtd"/> -->
+    <echo message="EVERYTHING LOOKS GOOD!"/>
+    <echo message="Run ${basedir}/bin/qt"/>
+  </target>
+
+  <!--    ==================================================== -->
+  <!--                       MAIN                              -->
+  <!--    ==================================================== -->
+  <target name="build" depends="jar-build">
     <!--      <antstructure output="project.dtd"/> -->
     <echo message="EVERYTHING LOOKS GOOD!"/>
     <echo message="Run ${build.dir}/bin/qt"/>
