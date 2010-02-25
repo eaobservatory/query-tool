@@ -32,7 +32,7 @@
   <property name="tests.dir" value="src/testcases"/>
   <property name="manifest" value="src/etc/manifest"/>
   <property name="javadocs.dir" value="javadocs"/>
-  
+
   <!--    ==================================================== -->
   <!--       Set the properties for the build area             -->
   <!--    ==================================================== -->
@@ -68,7 +68,7 @@
 
   <path id="classpath">
   </path>
-  
+
   <path id="runpath">
   </path>
 
@@ -273,16 +273,35 @@
     </chmod>
   </target>
 
+	  <!--    ==================================================== -->
+	  <!--                     Run It!                             -->
+	  <!--    ==================================================== -->
+	  <target name="run" depends="compile">
+	    <java classname="edu.jach.qt.app.QT" fork="yes">
+	      <classpath>
+		    <pathelement location="${classes.dir}" />
+		      <fileset dir="${lib.dir}">
+		        <include name="*.jar"/>
+		      </fileset>
+	          <fileset dir="${ot.lib.dir}">
+	            <include name="*.jar"/>
+	          </fileset>
+	          <pathelement location="/jac_sw/itsroot/install/dcHub/javalib/dcHub.jar" />
+	          <pathelement location="/jac_sw/drama/CurrentRelease/javalib" />
+	      </classpath>
+	    </java>
+	  </target>
+
   <!--    ==================================================== -->
   <!--                     Run It!                             -->
   <!--    ==================================================== -->
-  <target name="run" depends="compile-build">
+  <target name="run-build" depends="compile-build">
     <java classname="edu.jach.qt.app.QT" fork="yes">
       <classpath>
-	    <pathelement location="${build.classes}" />
-	      <fileset dir="${build.lib}">
-	        <include name="*.jar"/>
-	      </fileset>
+          <pathelement location="${build.classes}" />
+          <fileset dir="${build.lib}">
+            <include name="*.jar"/>
+          </fileset>
           <fileset dir="${ot.lib.dir}">
             <include name="*.jar"/>
           </fileset>
@@ -303,16 +322,17 @@
 	   haltonerror="yes" 
 	   haltonfailure="yes"
 	   fork="yes">
-      <!--        <classpath refid="tests-classpath" /> -->
-      <!--        <sysproperty key="build.tests" value="${build.tests}"/> -->
       <classpath>
-	<pathelement location="${build.classes}" />
-	<fileset dir="${build.lib}">
-	  <include name="xerces.jar"/>
-	</fileset>
-	<pathelement location="${build.tests}" />
-	<pathelement path="${java.class.path}" />
-      </classpath>
+        <pathelement location="${build.classes}" />
+          <fileset dir="${build.lib}">
+            <include name="*.jar"/>
+          </fileset>
+          <fileset dir="${ot.lib.dir}">
+            <include name="*.jar"/>
+          </fileset>
+          <pathelement location="/jac_sw/itsroot/install/dcHub/javalib/dcHub.jar" />
+          <pathelement location="/jac_sw/drama/CurrentRelease/javalib" />
+        </classpath>
       <formatter type="plain" usefile="false" />
       <formatter type="xml" />
       <batchtest todir="${junit.results}" >
@@ -399,7 +419,7 @@
   <!--    ==================================================== -->
   <!--                     Clean It!                           -->
   <!--    ==================================================== -->
-  <target name="build-clean" description="The default clean target. Deletes the install tree.">
+  <target name="clean-build" description="The default clean target. Deletes the install tree.">
     <delete dir="${build.dir}" />
     <delete dir="${build.lib}" />
     <delete dir="${build.javadocs}"/>
@@ -408,7 +428,7 @@
   <!--    ==================================================== -->
   <!--                     Clean It!                           -->
   <!--    ==================================================== -->
-  <target name="dist-clean" description="The dist clean target. Deletes the dist install tree.">
+  <target name="clean-dist" description="The dist clean target. Deletes the dist install tree.">
     <delete dir="${dist.dir}" />
     <delete dir="${dist.lib}" />
     <delete dir="${dist.javadocs}"/>
