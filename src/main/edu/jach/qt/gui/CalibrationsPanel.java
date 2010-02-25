@@ -109,7 +109,7 @@ public class CalibrationsPanel extends JPanel implements ListSelectionListener ,
 	public void valueChanged( ListSelectionEvent e )
 	{
 		Object source = e.getSource() ;
-		if( source instanceof JList && e.getValueIsAdjusting() )
+		if( source instanceof JList )
 		{
 			JList list = ( JList )source ;
 			Object value = list.getSelectedValue() ;
