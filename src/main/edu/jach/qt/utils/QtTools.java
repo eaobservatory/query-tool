@@ -347,9 +347,6 @@ public class QtTools
 	/**
 	 * Fix up deferred observations to include items from the original MSB.
 	 *
-	 * Clone the item passed in, if the clone contains any of the items we are looking for, skip, 
-	 * otherwise go back to the original item and look for the items in context, and if found, add.
-	 *
 	 * Items currently being sought : Instrument, Target list and DR recipes.
 	 * @param obs item to be cloned.
 	 * @return cloned item.
