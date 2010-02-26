@@ -165,13 +165,18 @@ public class OmpOM extends JPanel
 		JSplitPane dsp = new JSplitPane( JSplitPane.VERTICAL_SPLIT , deferredList , notes ) ;
 		dsp.setDividerLocation( 150 ) ;
 		JSplitPane splitPane = new JSplitPane( JSplitPane.HORIZONTAL_SPLIT , ptree , dsp ) ;
+		updateNotes() ;
+		return splitPane ;
+	}
+
+	public void updateNotes()
+	{
 		if( ProgramTree.getCurrentItem() != null )
 			NotePanel.setNote( ProgramTree.getCurrentItem() ) ;
 		else if( DeferredProgramList.getCurrentItem() != null )
 			NotePanel.setNote( DeferredProgramList.getCurrentItem() ) ;
 		else
 			NotePanel.setNote( spItem ) ;
-		return splitPane ;
 	}
 
 	/**
