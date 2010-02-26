@@ -106,7 +106,6 @@ final public class ProgramTree extends JPanel implements ActionListener , KeyLis
 	private GridBagConstraints gbc ;
 	private static JButton engButton ;
 	private JButton xpand ;
-	private JTree tree ;
 	private static JList obsList ;
 	private DefaultListModel model ;
 	private JScrollPane scrollPane = new JScrollPane() ;;
