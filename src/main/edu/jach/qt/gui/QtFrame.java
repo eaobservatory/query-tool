@@ -368,6 +368,7 @@ public class QtFrame extends JFrame implements ActionListener , MenuListener , L
 
 						if( isStatusOK.booleanValue() )
 						{
+							DeferredProgramList.clearSelection() ;
 							om.addNewTree( msbID ) ;
 							buildStagingPanel() ;
 
