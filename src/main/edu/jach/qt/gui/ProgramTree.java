@@ -138,6 +138,9 @@ final public class ProgramTree extends JPanel implements ActionListener , KeyLis
 	
 	private static final String sendToQueue = "Send to Queue" ;
 	private static final String disabled = "Time constraint edited, click \"Set Default\"" ;
+
+	private SelectionListener selectionlistener = null ;
+	private MouseListener popupListener = null ;
 	
 	/** public programTree() is the constructor. The class
 	 has only one constructor so far.  a few thing are done during
@@ -599,62 +602,27 @@ final public class ProgramTree extends JPanel implements ActionListener , KeyLis
 				model.addElement( item ) ;
 		}
 
-		obsList = new JList( model ) ;
+		if( obsList == null )
+			obsList = new JList( model ) ;
+		else
+			obsList.setModel( model ) ;
+
 		ToolTipManager.sharedInstance().registerComponent( obsList ) ;
 		ToolTipManager.sharedInstance().setDismissDelay( 3000 ) ;
 		obsList.setCellRenderer( new ObsListCellRenderer() ) ;
 		obsList.setToolTipText( "<html>Optional observations are shown in GREEN<br>Calibrations which have been done are shown in BLUE<br>Suspended MSBs are shown in RED</html>" ) ;
-		MouseListener ml = new MouseAdapter()
+
+		if( selectionlistener == null )
 		{
-			public void mouseClicked( MouseEvent e )
-			{
-				if( e.getClickCount() == 2 )
-				{
-					_useQueue = true ;
-					setSelectedItem( ( SpItem )obsList.getSelectedValue() ) ;
-					doExecute() ;
-				}
-				else if( e.getClickCount() == 1 && ( e.getModifiers() & InputEvent.BUTTON1_MASK ) == InputEvent.BUTTON1_MASK )
-				{
-					if( getSelectedItem() != obsList.getSelectedValue() )
-					{
-						// Select the new item
-						setSelectedItem( ( SpItem )obsList.getSelectedValue() ) ;
-						DeferredProgramList.clearSelection() ;
-						NotePanel.setNote( ProgramTree.getCurrentItem() ) ;
-					}
-					else if( e.getClickCount() == 1 )
-					{
-						if( getSelectedItem() != obsList.getSelectedValue() )
-						{
-							// Select the new item
-							setSelectedItem( ( SpItem )obsList.getSelectedValue() ) ;
-							DeferredProgramList.clearSelection() ;
-							NotePanel.setNote( ProgramTree.getCurrentItem() ) ;
-						}
-						else
-						{
-							obsList.clearSelection() ;
-							setSelectedItem( null ) ;
-						}
-					}
-				}
-			}
+			selectionlistener = new SelectionListener() ;
+			obsList.addMouseListener( selectionlistener ) ;
+		}
+		if( popupListener == null )
+		{
+			popupListener = new PopupListener() ;
+			obsList.addMouseListener( popupListener ) ;
+		}
 
-			public void mousePressed( MouseEvent e )
-			{
-				DeferredProgramList.clearSelection() ;
-				enableList( false ) ;
-			}
-
-			public void mouseReleased( MouseEvent e )
-			{
-				enableList( true ) ;
-			}
-		} ;
-		obsList.addMouseListener( ml ) ;
-		MouseListener popupListener = new PopupListener() ;
-		obsList.addMouseListener( popupListener ) ;
 		if( model.size() > 0 )
 		{
 			obsList.setSelectedIndex( 0 ) ;
@@ -870,6 +838,55 @@ final public class ProgramTree extends JPanel implements ActionListener , KeyLis
 			// If this is an observation then show the popup
 			if( getSelectedItem() != null && getSelectedItem().type() == SpType.OBSERVATION )
 				scalePopup.show( e.getComponent() , e.getX() , e.getY() ) ;
+		}
+	}
+
+	class SelectionListener extends MouseAdapter
+	{
+		public void mouseClicked( MouseEvent e )
+		{
+			if( e.getClickCount() == 2 )
+			{
+				_useQueue = true ;
+				setSelectedItem( ( SpItem )obsList.getSelectedValue() ) ;
+				doExecute() ;
+			}
+			else if( e.getClickCount() == 1 && ( e.getModifiers() & InputEvent.BUTTON1_MASK ) == InputEvent.BUTTON1_MASK )
+			{
+				if( getSelectedItem() != obsList.getSelectedValue() )
+				{
+					// Select the new item
+					setSelectedItem( ( SpItem )obsList.getSelectedValue() ) ;
+					DeferredProgramList.clearSelection() ;
+					NotePanel.setNote( ProgramTree.getCurrentItem() ) ;
+				}
+				else if( e.getClickCount() == 1 )
+				{
+					if( getSelectedItem() != obsList.getSelectedValue() )
+					{
+						// Select the new item
+						setSelectedItem( ( SpItem )obsList.getSelectedValue() ) ;
+						DeferredProgramList.clearSelection() ;
+						NotePanel.setNote( ProgramTree.getCurrentItem() ) ;
+					}
+					else
+					{
+						obsList.clearSelection() ;
+						setSelectedItem( null ) ;
+					}
+				}
+			}
+		}
+
+		public void mousePressed( MouseEvent e )
+		{
+			DeferredProgramList.clearSelection() ;
+			enableList( false ) ;
+		}
+
+		public void mouseReleased( MouseEvent e )
+		{
+			enableList( true ) ;
 		}
 	}
 
