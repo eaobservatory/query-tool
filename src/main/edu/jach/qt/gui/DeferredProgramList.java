@@ -89,7 +89,7 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 	private static JList obsList ;
 	private GridBagConstraints gbc ;
 	private JScrollPane scrollPane = new JScrollPane() ;
-	private DefaultListModel model ;
+	private static DefaultListModel model ;
 	private static SpItem currentItem ;
 	private static HashMap<SpItem,String> fileToObjectMap = new HashMap<SpItem,String>() ;
 	private JPopupMenu engMenu = new JPopupMenu() ;
@@ -245,27 +245,27 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 			thisObs.getTable().set( "project" , "CAL" ) ;
 			thisObs.getTable().set( "msbid" , "CAL" ) ;
 			thisObs.getTable().set( ":msb" , "true" ) ;
-
-			if( !duplicates.contains( thisObs ) )
-			{
-				thisObs = QtTools.fixupDeferredObs( thisObs , false ) ;
-				duplicates.add( thisObs ) ;
-			}
-
-			if( thisObs.getTitleAttr().equals( "Observation" ) )
-				thisObs.setTitleAttr( cal.getTitleAttr() ) ;
 		}
 
+		if( thisObs.getTitleAttr().equals( "Observation" ) )
+			thisObs.setTitleAttr( cal.getTitleAttr() ) ;
+
 		(( SpObs )thisObs).setOptional( true ) ;
+
+		if( !duplicates.contains( thisObs ) )
+		{
+			thisObs = QtTools.fixupDeferredObs( thisObs , false ) ;
+			duplicates.add( thisObs ) ;
+		}
 
 		if( !isDuplicate( thisObs ) )
 		{
 			makePersistent( thisObs ) ;
-			( ( DefaultListModel )obsList.getModel() ).addElement( thisObs ) ;
+			model.addElement( thisObs ) ;
 		}
 		// This is a hack to fix fault [20021030.002]. It shouldn't happen but hopefully this will make sure...
 		obsList.setEnabled( true ) ;
-		obsList.setSelectedIndex( obsList.getModel().getSize() - 1 ) ;
+		obsList.setSelectedIndex( model.getSize() - 1 ) ;
 		setCurrentItem( ( SpItem )obsList.getSelectedValue() ) ;
 		NotePanel.setNote( getCurrentItem() ) ;
 		ProgramTree.clearSelection() ;
@@ -370,9 +370,9 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 		boolean isDuplicate = false ;
 
 		String currentObsXML = obs.toXML() ;
-		for( int i = 0 ; i < ( ( DefaultListModel )obsList.getModel() ).size() ; i++ )
+		for( int i = 0 ; i < model.size() ; i++ )
 		{
-			SpItem thisObs = ( SpItem )(( DefaultListModel )obsList.getModel()).elementAt( i ) ;
+			SpItem thisObs = ( SpItem )model.elementAt( i ) ;
 			String thisObsXML = thisObs.toXML() ;
 			if( thisObsXML.equals( currentObsXML ) )
 			{
@@ -608,12 +608,12 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 		}
 		int index = obsList.getSelectedIndex() ;
 		if( index > -1 )
-			( ( DefaultListModel )obsList.getModel() ).removeElementAt( index ) ;
+			model.removeElementAt( index ) ;
 		setCurrentItem( null ) ;
 
 		makePersistent( thisObservation ) ;
 
-		(( DefaultListModel )obsList.getModel()).addElement( thisObservation ) ;
+		model.addElement( thisObservation ) ;
 	}
 
 	/*
@@ -679,7 +679,7 @@ final public class DeferredProgramList extends JPanel implements DropTargetListe
 			// Remove the entry from the list
 			int index = obsList.getSelectedIndex() ;
 			if( index > -1 )
-				( ( DefaultListModel )obsList.getModel() ).removeElementAt( index ) ;
+				model.removeElementAt( index ) ;
 
 			setCurrentItem( null ) ;
 		}
