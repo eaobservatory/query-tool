@@ -13,10 +13,13 @@ sub clean
 {
 	foreach $package ( @packages )
 	{
-		`rm -rf $cwd/classes/edu/jach/qt/$package/*` ;
+		if( -e $cwd/classes/edu/jach/qt/$package )
+		{
+			`rm -rf $cwd/classes/edu/jach/qt/$package/*` ;
+		}
 	}
-
-	`rm -rf $cwd/lib/qt*.jar` ;
+	if( -e "$cwd/lib/qt.jar" ){ `rm -rf $cwd/lib/qt.jar` ; }
+	if( -e "$cwd/lib/qt-src.jar" ){ `rm -rf $cwd/lib/qt-src.jar` ; }
 	print "Cleaned \n" ;
 }
 
@@ -53,6 +56,13 @@ sub compile
 {
 	$classpath = shift or die "No classpath argument \n" ;
 	chdir( "$cwd/src/main/" ) or die "Could not cd to $cwd/src/main/ \n" ;
+	unless( -e "$cwd/classes/" )
+	{
+		if( system( 'mkdir' , ( "$cwd/classes/" ) ) )
+		{
+			die "Couldn't create $cwd/classes.\n" ;
+		}
+	}
 	foreach $package ( @packages )
 	{
 		@source_files = () ;
