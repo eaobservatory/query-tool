@@ -2,8 +2,6 @@ package edu.jach.qt.utils ;
 
 // Gemini imports
 import gemini.sp.SpItem ;
-import gemini.sp.SpTreeMan ;
-import gemini.sp.obsComp.SpDRObsComp ;
 import gemini.util.JACLogger ;
 
 // ORAC imports
@@ -16,7 +14,6 @@ import omp.SoapClient ;
 import java.io.FileWriter ;
 import java.net.URL ;
 import java.net.MalformedURLException ;
-import java.util.Vector ;
 
 // Miscellaneous imports
 
@@ -200,15 +197,6 @@ public class MsbClient extends SoapClient
 		{
 			logger.error( "fetchMSB threw Exception" , e ) ;
 			e.printStackTrace() ;
-		}
-
-		if( System.getProperty( "telescope" ).equalsIgnoreCase( "ukirt" ) )
-		{
-			Vector<SpItem> recipes = SpTreeMan.findAllInstances( spItem , SpDRObsComp.class.getName() ) ;
-			if( recipes.size() == 0 )
-				logger.error( "Fetched MSB contained no DR Recipe.\n" + spXML ) ;
-			else
-				logger.info( "Fetched MSB contined " + recipes.size() + " x DR recipe." ) ;
 		}
 
 		return spItem ;
