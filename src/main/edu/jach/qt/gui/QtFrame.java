@@ -366,7 +366,7 @@ public class QtFrame extends JFrame implements ActionListener , MenuListener , L
 						int msbIndex = columns.getIndexForKey( "msbid" ) ;
 						msbID = new Integer( ( String )sorter.getValueAt( selRow , msbIndex ) ) ;
 
-						if( isStatusOK.booleanValue() )
+						if( isStatusOK )
 						{
 							DeferredProgramList.clearSelection() ;
 							om.addNewTree( msbID ) ;

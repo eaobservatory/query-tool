@@ -290,7 +290,7 @@ public class TextReader
 		{
 			try
 			{
-				result = new Double( readWord() ).doubleValue() ;
+				result = new Double( readWord() ) ;
 				break ; // result is good, jump out of loop down to return result ;
 			}
 			catch( Exception e )

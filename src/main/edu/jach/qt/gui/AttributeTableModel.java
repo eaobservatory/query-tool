@@ -179,7 +179,7 @@ public class AttributeTableModel extends AbstractTableModel
 		{
 			if( isNumberAt( row ) )
 			{
-				double d = Double.valueOf( ( String )getValueAt( row , 1 ) ).doubleValue() ;
+				double d = Double.valueOf( ( String )getValueAt( row , 1 ) ) ;
 				d *= factor ;
 				_setValueAt( Double.toString( d ) , row , 1 ) ;
 			}

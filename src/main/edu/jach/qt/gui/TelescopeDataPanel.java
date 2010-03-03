@@ -321,12 +321,12 @@ public class TelescopeDataPanel extends JPanel implements ActionListener
 						try
 						{
 							currentAirmass = new Double( zCurrentAirmass ) ;
-							double upperLimit = currentAirmass.doubleValue() ;
+							double upperLimit = currentAirmass ;
 							upperLimit = upperLimit - 20. * upperLimit / 100. ;
 							if( upperLimit < 1. )
 								upperLimit = 1. ;
 
-							double lowerLimit = currentAirmass.doubleValue() ;
+							double lowerLimit = currentAirmass ;
 							lowerLimit = lowerLimit + 20. * lowerLimit / 100. ;
 							if( lowerLimit > 3. )
 								lowerLimit = 3. ;

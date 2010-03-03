@@ -168,10 +168,8 @@ public class TableSorter extends TableMap
 		}
 		else if( type == Boolean.class )
 		{
-			Boolean bool1 = ( Boolean )data.getValueAt( row1 , column ) ;
-			boolean b1 = bool1.booleanValue() ;
-			Boolean bool2 = ( Boolean )data.getValueAt( row2 , column ) ;
-			boolean b2 = bool2.booleanValue() ;
+			Boolean b1 = ( Boolean )data.getValueAt( row1 , column ) ;
+			Boolean b2 = ( Boolean )data.getValueAt( row2 , column ) ;
 
 			if( b1 == b2 )
 				return 0 ;
@@ -213,7 +211,7 @@ public class TableSorter extends TableMap
 		for( int level = 0 ; level < sortingColumns.size() ; level++ )
 		{
 			Integer column = sortingColumns.elementAt( level ) ;
-			int result = compareRowsByColumn( row1 , row2 , column.intValue() ) ;
+			int result = compareRowsByColumn( row1 , row2 , column ) ;
 			if( result != 0 )
 				return ascending ? result : -result ;
 		}

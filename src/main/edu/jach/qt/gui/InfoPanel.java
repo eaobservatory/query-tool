@@ -165,7 +165,7 @@ public class InfoPanel extends JPanel implements ActionListener , OMPTimerListen
 						logoPanel.stop() ;
 						qtf.setCursor( normalCursor ) ;
 						searchButton.setEnabled( true ) ;
-						if( isStatusOK.booleanValue() )
+						if( isStatusOK )
 						{
 							Thread tableFill = new Thread( msb_qtm ) ;
 							tableFill.start() ;
@@ -204,9 +204,9 @@ public class InfoPanel extends JPanel implements ActionListener , OMPTimerListen
 							String queryTimeout = System.getProperty( "queryTimeout" ) ;
 							System.out.println( "Query expiration: " + queryTimeout ) ;
 							Integer timeout = new Integer( queryTimeout ) ;
-							if( timeout.intValue() != 0 )
+							if( timeout != 0 )
 							{
-								int delay = timeout.intValue() * 60 * 1000 ; // Conversion from minutes of milliseconds
+								int delay = timeout * 60 * 1000 ; // Conversion from minutes of milliseconds
 								queryTask = OMPTimer.getOMPTimer().setTimer( delay , infoPanel , false ) ;
 							}
 						}

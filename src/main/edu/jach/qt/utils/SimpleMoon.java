@@ -43,8 +43,8 @@ public class SimpleMoon implements OMPTimerListener
 	private SimpleMoon()
 	{
 		ti = new TelescopeInformation( System.getProperty( "telescope" ) ) ;
-		latitude = ( ( Double )( ti.getValue( "latitude" ) ) ).doubleValue() ;
-		longitude = ( ( Double )( ti.getValue( "longitude" ) ) ).doubleValue() ;
+		latitude = ( Double )ti.getValue( "latitude" ) ;
+		longitude = ( Double )ti.getValue( "longitude" ) ;
 		getCurrentPosition() ;
 		OMPTimer.getOMPTimer().setTimer( 60 * 1000 , this ) ;
 	}

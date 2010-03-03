@@ -163,7 +163,7 @@ public class LabeledRangeTextField extends WidgetPanel implements DocumentListen
 	public void setUpperText( Double val )
 	{
 		DecimalFormat df = new DecimalFormat( "0.00" ) ;
-		String value = df.format( val.doubleValue() ) ;
+		String value = df.format( val ) ;
 		upperBound.setText( value ) ;
 	}
 
@@ -175,7 +175,7 @@ public class LabeledRangeTextField extends WidgetPanel implements DocumentListen
 	public void setLowerText( Double val )
 	{
 		DecimalFormat df = new DecimalFormat( "0.00" ) ;
-		String value = df.format( val.doubleValue() ) ;
+		String value = df.format( val ) ;
 		lowerBound.setText( value ) ;
 	}
 

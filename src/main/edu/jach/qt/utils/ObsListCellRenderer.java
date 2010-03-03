@@ -63,7 +63,7 @@ public class ObsListCellRenderer extends DefaultListCellRenderer
 		nf.setMinimumFractionDigits( 1 ) ;
 		try
 		{
-			duration = nf.format( d.doubleValue() ) ;
+			duration = nf.format( d ) ;
 		}
 		catch( Exception e ){}
 

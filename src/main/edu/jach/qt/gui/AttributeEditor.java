@@ -86,7 +86,7 @@ public class AttributeEditor extends JDialog implements ActionListener , ListSel
 	{
 		super( parent , "Attribute Scaling" , modal ) ;
 		commonInitialisation( observation ) ;
-		initScaleComponents( configAttribute , haveScaledThisObs , oldFactor.doubleValue() , rescale ) ;
+		initScaleComponents( configAttribute , haveScaledThisObs , oldFactor , rescale ) ;
 		doingScale = true ;
 	}
 
@@ -431,7 +431,7 @@ public class AttributeEditor extends JDialog implements ActionListener , ListSel
 		{
 			try
 			{
-				_scaleFactorUsed = Double.valueOf( scaleFactor.getText() ).doubleValue() ;
+				_scaleFactorUsed = Double.valueOf( scaleFactor.getText() ) ;
 				if( Math.abs( _scaleFactorUsed ) < 1e-6 )
 				{
 					message = "Zero (or very small) scale factor (" + scaleFactor.getText() + ")." ;

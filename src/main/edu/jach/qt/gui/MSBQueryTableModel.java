@@ -351,7 +351,6 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable
 			int modelSize = model.size() ;
 			MSBTableModel msbTableModel ;
 			Vector<Integer> vector ;
-			Integer integer ;
 			int intValue ;
 			int size ;
 			int currentPosition = 0 ;
@@ -363,8 +362,7 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable
 				size = vector.size() ;
 				for( int step = 0 ; step < size ; step++ )
 				{
-					integer = vector.elementAt( step ) ;
-					intValue = integer.intValue() ;
+					intValue = vector.elementAt( step ) ;
 					totalIndexes[ intValue ] = currentPosition++ ;
 				}
 			}

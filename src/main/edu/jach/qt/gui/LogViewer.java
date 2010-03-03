@@ -85,12 +85,12 @@ public class LogViewer
 			nLineChooser.addItem( lineChoices[ i ] ) ;
 
 		nLineChooser.setSelectedIndex( 0 ) ;
-		nLines = ( Integer.valueOf( lineChoices[ 0 ] ) ).intValue() ;
+		nLines = Integer.valueOf( lineChoices[ 0 ] ) ;
 		nLineChooser.addActionListener( new ActionListener()
 		{
 			public void actionPerformed( ActionEvent e )
 			{
-				nLines = ( Integer.valueOf( ( String )nLineChooser.getSelectedItem() ) ).intValue() ;
+				nLines = Integer.valueOf( ( String )nLineChooser.getSelectedItem() ) ;
 				showLog() ;
 			}
 		} ) ;
@@ -222,7 +222,7 @@ public class LogViewer
 		data.trimToSize() ;
 
 		// Cut this down to the maximum size we deal with
-		int maxSize = ( Integer.valueOf( lineChoices[ lineChoices.length - 1 ] ) ).intValue() ;
+		int maxSize = Integer.valueOf( lineChoices[ lineChoices.length - 1 ] ) ;
 		if( data.size() > maxSize )
 		{
 			data.subList( 0 , data.size() - maxSize ).clear() ;
