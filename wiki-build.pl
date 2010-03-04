@@ -13,7 +13,7 @@ sub clean
 {
 	foreach $package ( @packages )
 	{
-		if( -e $cwd/classes/edu/jach/qt/$package )
+		if( -e "$cwd/classes/edu/jach/qt/$package" )
 		{
 			`rm -rf $cwd/classes/edu/jach/qt/$package/*` ;
 		}
