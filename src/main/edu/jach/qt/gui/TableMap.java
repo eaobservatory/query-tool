@@ -19,6 +19,7 @@ import javax.swing.event.TableModelEvent ;
  * @version 1.4 12/17/97
  * @author Philip Milne */
 
+@SuppressWarnings( "serial" )
 public class TableMap extends AbstractTableModel implements TableModelListener
 {
 	protected TableModel model ;

@@ -33,6 +33,7 @@ import gemini.util.JACLogger ;
  * @version $Id$
  */
 
+@SuppressWarnings( "serial" )
 public class LabeledRangeTextField extends WidgetPanel implements DocumentListener , ActionListener , KeyListener
 {
 	static final JACLogger logger = JACLogger.getLogger( LabeledRangeTextField.class ) ;
@@ -330,9 +331,9 @@ public class LabeledRangeTextField extends WidgetPanel implements DocumentListen
 
 		Hashtable<String,Object> ht = widgetBag.getHash() ;
 		JRadioButton b = null ;
-		for( ListIterator iter = ( ( LinkedList )ht.get( "moon" ) ).listIterator( 0 ) ; iter.hasNext() ; iter.nextIndex() )
+		for( ListIterator<JRadioButton> iter = ( ( LinkedList<JRadioButton> )ht.get( "moon" ) ).listIterator( 0 ) ; iter.hasNext() ; iter.nextIndex() )
 		{
-			b = ( JRadioButton )iter.next() ;
+			b = iter.next() ;
 
 			if( moonValue == 0 )
 			{

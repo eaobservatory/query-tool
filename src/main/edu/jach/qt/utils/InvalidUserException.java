@@ -8,6 +8,7 @@ package edu.jach.qt.utils ;
  * @version $Header$
  */
 
+@SuppressWarnings( "serial" )
 public class InvalidUserException extends Exception
 {
 	InvalidUserException( String message )

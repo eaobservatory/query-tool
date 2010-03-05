@@ -21,6 +21,7 @@ import edu.jach.qt.utils.MsbColumns ;
  * @author  $Author$
  * @version $Id$
  */
+@SuppressWarnings( "serial" )
 public class ColumnSelector extends JFrame implements ActionListener
 {
 	private JPanel columnPanel ;

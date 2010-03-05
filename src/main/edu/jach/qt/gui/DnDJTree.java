@@ -43,6 +43,7 @@ import java.awt.dnd.DropTargetDragEvent ;
 import java.awt.event.InputEvent ;
 import java.io.IOException ;
 
+@SuppressWarnings( "serial" )
 public class DnDJTree extends JTree implements TreeSelectionListener , DragGestureListener , DropTargetListener , DragSourceListener
 {
 	/** Stores the selected node info */

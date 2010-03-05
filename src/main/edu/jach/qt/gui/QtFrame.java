@@ -71,6 +71,7 @@ import javax.swing.table.TableColumn ;
  * @author <a href="mailto:mrippa@jach.hawaii.edu">Mathew Rippa</a>
  * $Id$
  */
+@SuppressWarnings( "serial" )
 public class QtFrame extends JFrame implements ActionListener , MenuListener , ListSelectionListener
 {
 	private final static String INDEX = "Index" ;

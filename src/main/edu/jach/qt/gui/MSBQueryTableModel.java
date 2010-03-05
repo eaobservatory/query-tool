@@ -28,6 +28,7 @@ import orac.util.OrderedMap ;
  *
  */
 
+@SuppressWarnings( "serial" )
 public class MSBQueryTableModel extends AbstractTableModel implements Runnable
 {
 	private static final JACLogger logger = JACLogger.getLogger( MSBQueryTableModel.class ) ;

@@ -25,6 +25,7 @@ import edu.jach.qt.utils.OMPTimerListener ;
  * @version $Id$
  */
 
+@SuppressWarnings( "serial" )
 public class TimePanel extends JPanel implements OMPTimerListener
 {
 	JLabel local ;

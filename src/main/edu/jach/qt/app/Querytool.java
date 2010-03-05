@@ -184,9 +184,9 @@ public class Querytool implements Runnable
 
 				if( next.equalsIgnoreCase( "instruments" ) )
 				{
-					for( final ListIterator iter = (( LinkedList )ht.get( next )).listIterator( 0 ) ; iter.hasNext() ; iter.nextIndex() )
+					for( final ListIterator<AbstractButton> iter = (( LinkedList<AbstractButton> )ht.get( next )).listIterator( 0 ) ; iter.hasNext() ; iter.nextIndex() )
 					{
-						abstractButton = ( AbstractButton )( iter.next() ) ;
+						abstractButton = iter.next() ;
 						if( abstractButton.isSelected() )
 						{
 							item = doc.createElement( "instrument" ) ;
@@ -200,10 +200,10 @@ public class Querytool implements Runnable
 				}
 				else if( next.equalsIgnoreCase( "semesters" ) )
 				{
-					final ListIterator iter = (( LinkedList )ht.get( next )).listIterator( 0 ) ;
+					final ListIterator<AbstractButton> iter = (( LinkedList<AbstractButton> )ht.get( next )).listIterator( 0 ) ;
 					for( ; iter.hasNext() ; iter.nextIndex() )
 					{
-						abstractButton = ( AbstractButton )( iter.next() ) ;
+						abstractButton = iter.next() ;
 						if( abstractButton.isSelected() )
 						{
 							item = doc.createElement( "semester" ) ;
@@ -218,10 +218,10 @@ public class Querytool implements Runnable
 				else if( next.equalsIgnoreCase( "Moon" ) )
 				{
 					item = doc.createElement( next ) ;
-					final ListIterator iter = (( LinkedList )ht.get( next )).listIterator( 0 ) ;
+					final ListIterator<AbstractButton> iter = (( LinkedList<AbstractButton> )ht.get( next )).listIterator( 0 ) ;
 					for( ; iter.hasNext() ; iter.nextIndex() )
 					{
-						abstractButton = ( AbstractButton )( iter.next() ) ;
+						abstractButton = iter.next() ;
 						if( abstractButton.isSelected() )
 						{
 							String tmpMoon = abstractButton.getText().trim() ;
@@ -240,10 +240,10 @@ public class Querytool implements Runnable
 				else if( next.equalsIgnoreCase( "Clouds" ) )
 				{
 					item = doc.createElement( "cloud" ) ;
-					final ListIterator iter = (( LinkedList )ht.get( next )).listIterator( 0 ) ;
+					final ListIterator<AbstractButton> iter = (( LinkedList<AbstractButton> )ht.get( next )).listIterator( 0 ) ;
 					for( ; iter.hasNext() ; iter.nextIndex() )
 					{
-						abstractButton = ( AbstractButton )( iter.next() ) ;
+						abstractButton = iter.next() ;
 						if( abstractButton.isSelected() )
 						{
 							String tmpCloud = abstractButton.getText().trim() ;
@@ -264,16 +264,16 @@ public class Querytool implements Runnable
 				else if( next.equalsIgnoreCase( "Atmospheric Conditions" ) )
 				{
 					item = doc.createElement( next ) ;
-					final ListIterator iter = (( LinkedList )ht.get( next )).listIterator( 0 ) ;
+					final ListIterator<String> iter = (( LinkedList<String> )ht.get( next )).listIterator( 0 ) ;
 					for( ; iter.hasNext() ; iter.nextIndex() )
-						logger.debug( "ATMOS: " + ( String )iter.next() ) ;
+						logger.debug( "ATMOS: " + iter.next() ) ;
 				}
 				else if( next.equalsIgnoreCase( "country" ) )
 				{
-					final ListIterator iter = (( LinkedList )ht.get( next )).listIterator( 0 ) ;
+					final ListIterator<AbstractButton> iter = (( LinkedList<AbstractButton> )ht.get( next )).listIterator( 0 ) ;
 					for( ; iter.hasNext() ; iter.nextIndex() )
 					{
-						abstractButton = ( AbstractButton )( iter.next() ) ;
+						abstractButton = iter.next() ;
 						if( abstractButton.isSelected() )
 						{
 							String text = abstractButton.getText() ;

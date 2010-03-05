@@ -4,6 +4,7 @@ import javax.swing.DefaultListSelectionModel ;
 import javax.swing.event.ListSelectionListener ;
 import javax.swing.event.ListSelectionEvent ;
 
+@SuppressWarnings( "serial" )
 class ProjectTableSelectionModel extends DefaultListSelectionModel implements ListSelectionListener
 {
 

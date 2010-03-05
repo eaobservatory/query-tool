@@ -12,6 +12,7 @@ import java.beans.PropertyChangeEvent ;
 
 import calpa.html.CalHTMLPane ;
 
+@SuppressWarnings( "serial" )
 public class HTMLViewer extends JDialog
 {
 	static URL _baseURL ;

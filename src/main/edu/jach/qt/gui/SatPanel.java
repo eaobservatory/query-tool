@@ -26,6 +26,7 @@ import edu.jach.qt.utils.OMPTimerListener ;
  * @version $Id$
  */
 
+@SuppressWarnings( "serial" )
 public class SatPanel extends JLabel implements OMPTimerListener
 {
 	private TitledBorder satBorder ;

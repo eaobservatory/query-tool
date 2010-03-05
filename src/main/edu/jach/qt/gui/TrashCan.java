@@ -9,6 +9,7 @@ import java.net.MalformedURLException ;
  * Ultra simplistic Trashcan class.
  * All it does is associate a icon with a label!
  */
+@SuppressWarnings( "serial" )
 public class TrashCan extends JLabel
 {
 	public static final String BIN_IMAGE = System.getProperty( "binImage" ) ;

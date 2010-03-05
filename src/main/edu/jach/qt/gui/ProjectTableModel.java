@@ -9,6 +9,7 @@ import edu.jach.qt.utils.ProjectData ;
 
 import gemini.util.JACLogger ;
 
+@SuppressWarnings( "serial" )
 public class ProjectTableModel extends AbstractTableModel implements Runnable , TableModelListener
 {
 	static final JACLogger logger = JACLogger.getLogger( ProjectTableModel.class ) ;

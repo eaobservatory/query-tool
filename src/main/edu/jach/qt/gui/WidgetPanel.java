@@ -45,6 +45,7 @@ import gemini.util.JACLogger ;
  * @author <a href="mailto:mrippa@jach.hawaii.edu">Mathew Rippa</a>
  * $Id$
  */
+@SuppressWarnings( "serial" )
 public class WidgetPanel extends JPanel implements ActionListener , MoonChangeListener
 {
 	static final JACLogger logger = JACLogger.getLogger( WidgetPanel.class ) ;

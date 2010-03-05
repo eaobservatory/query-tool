@@ -21,6 +21,7 @@ import gemini.util.JACLogger ;
  * @version  $Id$
  */
 
+@SuppressWarnings( "serial" )
 public class ObsListCellRenderer extends DefaultListCellRenderer
 {
 	final static ImageIcon obsIcon = new ImageIcon( System.getProperty( "IMAG_PATH" ) + "observation.gif" ) ;

@@ -37,6 +37,7 @@ import edu.jach.qt.gui.MSBQueryTableModel ;
  * @author Philip Milne
  */
 
+@SuppressWarnings( "serial" )
 public class TableSorter extends TableMap
 {
 	int indexes[] ;

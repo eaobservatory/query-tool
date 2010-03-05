@@ -206,7 +206,8 @@ public class Execute
 		return Math.abs( random.nextLong() ) ;
 	}
 
-	public class PopUp extends Thread implements Serializable
+	@SuppressWarnings( "serial" )
+    public class PopUp extends Thread implements Serializable
 	{
 		String _message ;
 		String _title ;

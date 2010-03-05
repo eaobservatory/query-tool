@@ -21,6 +21,7 @@ import gemini.sp.SpItem ;
 // QT imports
 import edu.jach.qt.utils.CalibrationList ;
 
+@SuppressWarnings( "serial" )
 public class CalibrationsPanel extends JPanel implements ListSelectionListener , Runnable
 {
 	private final static String AND_STRING = "AND Folder: " ;

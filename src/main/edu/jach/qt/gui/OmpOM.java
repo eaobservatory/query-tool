@@ -36,6 +36,7 @@ import javax.swing.JFrame ;
  * @author <a href="mailto:mrippa@jach.hawaii.edu">Mathew Rippa</a>
  * $Id$
  */
+@SuppressWarnings( "serial" )
 public class OmpOM extends JPanel
 {
 	static final JACLogger logger = JACLogger.getLogger( OmpOM.class ) ;

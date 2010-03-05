@@ -6,6 +6,7 @@ import javax.swing.tree.DefaultMutableTreeNode ;
  forbids male childbaring ability 
  Should be deprecated and not replaced, however it's used everywhere.
  */
+@SuppressWarnings( "serial" )
 public class MsbNode extends DefaultMutableTreeNode
 {
 	public MsbNode( DragDropObject info )

@@ -22,10 +22,11 @@ import edu.jach.qt.gui.WidgetDataBag ;
  * @version $Id$
  */
 
+@SuppressWarnings( "serial" )
 public class ButtonPanel extends WidgetPanel
 {
 	LinkedList<JCheckBox> buttonList ;
-	ListIterator iterator ;
+	ListIterator<String> iterator ;
 	private String next , myTitle ;
 
 	/**
@@ -48,7 +49,7 @@ public class ButtonPanel extends WidgetPanel
 		JCheckBox wfcamTickBox = null ;
 		for( iterator.nextIndex() ; iterator.hasNext() ; iterator.nextIndex() )
 		{
-			next = ( String )iterator.next() ;
+			next = iterator.next() ;
 
 			JCheckBox cb = new JCheckBox( next ) ;
 			cb.addActionListener( this ) ;

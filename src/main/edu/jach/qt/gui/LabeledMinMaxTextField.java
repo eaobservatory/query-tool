@@ -22,6 +22,7 @@ import java.util.Hashtable ;
  * @author <a href="mailto: mrippa@jach.hawaii.edu"Mathew Rippa</a>
  */
 
+@SuppressWarnings( "serial" )
 public class LabeledMinMaxTextField extends LabeledTextField
 {
 	protected LinkedList<Serializable> valueList ;

@@ -21,6 +21,7 @@ import javax.swing.event.DocumentEvent ;
  * @version $Id$
  */
 
+@SuppressWarnings( "serial" )
 public class LabeledTextField extends WidgetPanel implements KeyListener , DocumentListener
 {
 	protected JTextField textField ;

@@ -14,6 +14,7 @@ import javax.swing.table.AbstractTableModel ;
  * Implements a table model for the attributes associated with an observation.
  * @author  ab
  */
+@SuppressWarnings( "serial" )
 public class AttributeTableModel extends AbstractTableModel
 {
 	final String[] columnNames = { "Attribute" , "Value" } ;

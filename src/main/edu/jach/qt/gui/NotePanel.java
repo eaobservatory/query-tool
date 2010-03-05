@@ -28,6 +28,7 @@ import gemini.sp.SpNote ;
  * @author $Author$
  * @version $Id$
  */
+@SuppressWarnings( "serial" )
 final public class NotePanel extends JPanel
 {
 	private GridBagConstraints gbc ;

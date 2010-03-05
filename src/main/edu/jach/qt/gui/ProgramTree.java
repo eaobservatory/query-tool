@@ -71,7 +71,6 @@ import java.util.TooManyListenersException ;
 import javax.swing.JPanel ;
 import javax.swing.DefaultListModel ;
 import javax.swing.JButton ;
-import javax.swing.JTree ;
 import javax.swing.JList ;
 import javax.swing.JScrollPane ;
 import javax.swing.JMenuItem ;
@@ -98,6 +97,7 @@ import javax.swing.tree.TreePath ;
  @version 1.0 1st June 1999
  @author M.Tan@roe.ac.uk, modified by Mathew Rippa
  */
+@SuppressWarnings( "serial" )
 final public class ProgramTree extends JPanel implements ActionListener , KeyListener , DragSourceListener , DragGestureListener , DropTargetListener
 {
 	static final JACLogger logger = JACLogger.getLogger( ProgramTree.class ) ;

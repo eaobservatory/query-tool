@@ -9,6 +9,7 @@ package edu.jach.qt.utils ;
  * @author <a href="mailto: mrippa@jach.hawaii.edu"Mathew Rippa</a>
  */
 
+@SuppressWarnings( "serial" )
 public class NoSuchParameterException extends Exception
 {
 	public NoSuchParameterException( String message )

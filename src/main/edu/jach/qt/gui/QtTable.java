@@ -10,6 +10,7 @@ import edu.jach.qt.utils.MsbColumns ;
 import edu.jach.qt.utils.MsbClient ;
 import edu.jach.qt.utils.SpQueuedMap ;
 
+@SuppressWarnings( "serial" )
 public class QtTable extends JTable
 {
 	private TableModel tableModel ;

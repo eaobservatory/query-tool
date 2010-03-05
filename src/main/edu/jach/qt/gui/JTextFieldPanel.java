@@ -22,11 +22,12 @@ import java.awt.Component ;
  * @author <a href="mailto:mrippa@jach.hawaii.edu">Mathew Rippa</a>
  * $Id$
  */
+@SuppressWarnings( "serial" )
 public class JTextFieldPanel extends WidgetPanel implements DocumentListener
 {
 	private String next , myTitle ;
-	private LinkedList myElems ;
-	private ListIterator iterator ;
+	private LinkedList<String> myElems ;
+	private ListIterator<String> iterator ;
 	private int viewPosition = BoxLayout.Y_AXIS ;
 
 	/**
@@ -137,7 +138,7 @@ public class JTextFieldPanel extends WidgetPanel implements DocumentListener
 
 		for( iter.nextIndex() ; iter.hasNext() ; iter.nextIndex() )
 		{
-			tf = ( LabeledTextField )iterator.next() ;
+			tf = iter.next() ;
 
 			name = tf.getName() ;
 			setAttribute( name.substring( 0 , name.length() - 1 ) , tf.getText() ) ;
@@ -158,7 +159,7 @@ public class JTextFieldPanel extends WidgetPanel implements DocumentListener
 
 		for( iter.nextIndex() ; iter.hasNext() ; iter.nextIndex() )
 		{
-			tf = ( LabeledTextField )iterator.next() ;
+			tf = iter.next() ;
 
 			name = tf.getName() ;
 			setAttribute( name.substring( 0 , name.length() - 1 ) , tf.getText() ) ;
@@ -178,7 +179,7 @@ public class JTextFieldPanel extends WidgetPanel implements DocumentListener
 
 		for( iter.nextIndex() ; iter.hasNext() ; iter.nextIndex() )
 		{
-			tf = ( LabeledTextField )iterator.next() ;
+			tf = iter.next() ;
 			name = tf.getName() ;
 
 			setAttribute( name.substring( 0 , name.length() - 1 ) , tf.getText() ) ;

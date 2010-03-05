@@ -42,6 +42,7 @@ import java.io.File ;
  *
  * @author  ab
  */
+@SuppressWarnings( "serial" )
 public class AttributeEditor extends JDialog implements ActionListener , ListSelectionListener
 {
 	static final JACLogger logger = JACLogger.getLogger( AttributeEditor.class ) ;
@@ -618,7 +619,7 @@ public class AttributeEditor extends JDialog implements ActionListener , ListSel
 
 			if( configAttributes.contains( lookupKey ) )
 			{
-				Vector val = table.getAll( key ) ;
+				Vector<String> val = table.getAll( key ) ;
 				if( val.size() == 1 )
 				{
 					iavTriplets.addElement( new AIVTriplet( concatPath( path , root ) , lookupKey , ( String )val.elementAt( 0 ) , new AttributeOrigin( root , key , 0 ) ) ) ;

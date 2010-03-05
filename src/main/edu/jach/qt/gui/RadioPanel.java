@@ -24,12 +24,13 @@ import edu.jach.qt.gui.WidgetDataBag ;
  * @author <a href="mailto:mrippa@jach.hawaii.edu">Mathew Rippa</a>
  * $Id$
  */
+@SuppressWarnings( "serial" )
 public class RadioPanel extends WidgetPanel implements ActionListener
 {
 	private JRadioButton rb ;
 	private String next , myTitle ;
-	private LinkedList myElems ;
-	private ListIterator iterator ;
+	private LinkedList<String> myElems ;
+	private ListIterator<String> iterator ;
 
 	/**
 	 * The variable <code>group</code> is the list of JRadioButtons.
@@ -71,7 +72,7 @@ public class RadioPanel extends WidgetPanel implements ActionListener
 
 		for( iterator.nextIndex() ; iterator.hasNext() ; iterator.nextIndex() )
 		{
-			next = ( String )iterator.next() ;
+			next = iterator.next() ;
 			String toolTip = null ;
 			if( next.matches( ".*-.*" ) )
 			{

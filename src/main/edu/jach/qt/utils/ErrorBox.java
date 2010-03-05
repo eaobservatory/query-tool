@@ -13,6 +13,7 @@ import javax.swing.JOptionPane ;
  @author M.Tan@roe.ac.uk
 
  */
+@SuppressWarnings( "serial" )
 final public class ErrorBox extends JFrame
 {
 	/**  public ErrorBox(String _m) is

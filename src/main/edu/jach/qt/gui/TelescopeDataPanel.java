@@ -34,6 +34,7 @@ import javax.swing.JOptionPane ;
  * @version $Id$
  */
 
+@SuppressWarnings( "serial" )
 public class TelescopeDataPanel extends JPanel implements ActionListener
 {
 	static final JACLogger logger = JACLogger.getLogger( TelescopeDataPanel.class ) ;
@@ -286,10 +287,10 @@ public class TelescopeDataPanel extends JPanel implements ActionListener
 		RadioPanel moonPanel = WidgetPanel.getMoonPanel() ;
 		if( moonPanel != null )
 		{
-			ListIterator iter = moonPanel.radioElems.listIterator( 0 ) ;
+			ListIterator<JRadioButton> iter = moonPanel.radioElems.listIterator( 0 ) ;
 			while( iter.hasNext() )
 			{
-				JToggleButton abstractButton = ( JRadioButton )iter.next() ;
+				JToggleButton abstractButton = iter.next() ;
 				if( abstractButton.getText().equalsIgnoreCase( "dark" ) && dark == true )
 					abstractButton.setSelected( true ) ;
 				else if( abstractButton.getText().equalsIgnoreCase( "Grey" ) && grey == true )

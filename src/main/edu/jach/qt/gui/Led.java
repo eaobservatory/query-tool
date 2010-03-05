@@ -20,6 +20,7 @@ import javax.swing.Timer ;
  * @deprecated  Not repalced.
  */
 
+@SuppressWarnings( "serial" )
 public class Led extends JPanel
 {
 	/** Handle for the "LED" button */

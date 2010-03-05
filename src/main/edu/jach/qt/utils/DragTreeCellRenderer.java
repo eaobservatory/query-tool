@@ -16,6 +16,7 @@ import edu.jach.qt.gui.MsbNode ;
  @version 1.0 1st June 1999
  @author M.Tan@roe.ac.uk
  */
+@SuppressWarnings( "serial" )
 final public class DragTreeCellRenderer extends DefaultTreeCellRenderer
 {
 	/** public treeCellRenderer() is

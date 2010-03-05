@@ -22,6 +22,7 @@ import javax.swing.Timer ;
  * @author <a href="mailto:mrippa@jach.hawaii.edu">Mathew Rippa</a>
  * $Id$
  */
+@SuppressWarnings( "serial" )
 public class LogoPanel extends JLabel implements Runnable , ActionListener
 {
 	static int frameNumber = -1 ;
