@@ -201,38 +201,42 @@ public class LabeledRangeTextField extends WidgetPanel implements DocumentListen
 	}
 
 	/**
-	 * Return the contents of the (maximum) text field as a <code>Vector</code>. A list of inputs may be specified by separating each entry with a comma.
-	 * 
+	 * Return the contents of the (maximum) text field as a <code>Vector&lt;String&gt;</code>.
+	 * A list of inputs may be specified by separating each entry with a comma.
+	 *
 	 * @return The contents of the text field.
 	 */
 	public Vector<String> getUpperList()
 	{
-		String tmpStr = getUpperText() ;
-		Vector<String> result = new Vector<String>() ;
-		String[] split = tmpStr.split( "," ) ;
-		int index = 0 ;
-		
-		while( index < split.length )
-			result.add( split[ index++ ] ) ;
-		
-		return result ;
+		return getList( getUpperText() ) ;
 	}
 
 	/**
-	 * Return the contents of the (minimum) text field as a <code>Vector</code>. A list of inputs may be specified by separating each entry with a comma.
-	 * 
+	 * Return the contents of the (minimum) text field as a <code>Vector&lt;String&gt;</code>.
+	 * A list of inputs may be specified by separating each entry with a comma.
+	 *
 	 * @return The contents of the text field.
 	 */
 	public Vector<String> getLowerList()
 	{
-		String tmpStr = getLowerText() ;
+		return getList( getLowerText() ) ;
+	}
+
+	/**
+	 * Return the contents of the text field as a <code>Vector&lt;String&gt;</code>.
+	 * A list of inputs may be specified by separating each entry with a comma.
+	 *
+	 * @return The contents of the text field.
+	 */
+	private Vector<String> getList( String list )
+	{
 		Vector<String> result = new Vector<String>() ;
-		String[] split = tmpStr.split( "," ) ;
+		String[] split = list.split( "," ) ;
 		int index = 0 ;
 
 		while( index < split.length )
 			result.add( split[ index++ ] ) ;
-		
+
 		return result ;
 	}
 
