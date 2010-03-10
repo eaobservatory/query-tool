@@ -16,7 +16,6 @@ import java.awt.event.MouseEvent ;
 import java.io.IOException ;
 import java.util.Hashtable ;
 import java.util.LinkedList ;
-import java.util.Enumeration ;
 import java.util.ListIterator ;
 import javax.swing.JPanel ;
 import javax.swing.JCheckBox ;
@@ -268,30 +267,27 @@ public class WidgetPanel extends JPanel implements ActionListener , MoonChangeLi
 	 */
 	public void setButtons()
 	{
-		if( ignoreMoonUpdates )
-			return ;
-
-		// Currently sets the moon based on whether it is up and the illuminated fraction
-		SimpleMoon moon = SimpleMoon.getInstance() ;
-		Hashtable<String,Object> ht = widgetBag.getHash() ;
-
-		boolean dark = false ;
-		boolean grey = false ;
-		boolean bright = false ;
-
-		if( moon.isUp() == false )
-			dark = true ;
-		else if( moon.getIllumination() < 0.25 )
-			grey = true ;
-		else
-			bright = true ;
-
-		for( Enumeration<String> e = ht.keys() ; e.hasMoreElements() ; )
+		if( !ignoreMoonUpdates )
 		{
-			String next = e.nextElement() ;
-			if( next.equalsIgnoreCase( "Moon" ) )
+			// Currently sets the moon based on whether it is up and the illuminated fraction
+			SimpleMoon moon = SimpleMoon.getInstance() ;
+			Hashtable<String,Object> ht = widgetBag.getHash() ;
+
+			boolean dark = false ;
+			boolean grey = false ;
+			boolean bright = false ;
+
+			if( moon.isUp() == false )
+				dark = true ;
+			else if( moon.getIllumination() < .25 )
+				grey = true ;
+			else
+				bright = true ;
+
+			Object tmp = ht.get( "Moon" ) ;
+			if( tmp != null && tmp instanceof LinkedList )
 			{
-				ListIterator iter = (( LinkedList )ht.get( next )).listIterator( 0 ) ;
+				ListIterator iter = (( LinkedList )tmp).listIterator( 0 ) ;
 				for( ; iter.hasNext() ; iter.nextIndex() )
 				{
 					Object o = iter.next() ;
@@ -309,16 +305,15 @@ public class WidgetPanel extends JPanel implements ActionListener , MoonChangeLi
 							}
 						} ) ;
 						String buttonName = abstractButton.getText() ;
-						if( buttonName.equalsIgnoreCase( "Dark" ) && dark == true )
-							abstractButton.setSelected( true ) ;
-						else if( buttonName.equalsIgnoreCase( "Grey" ) && grey == true )
-							abstractButton.setSelected( true ) ;
-						else if( buttonName.equalsIgnoreCase( "Bright" ) && bright == true )
-							abstractButton.setSelected( true ) ;
+						if( buttonName.equalsIgnoreCase( "Dark" ) )
+							abstractButton.setSelected( dark ) ;
+						else if( buttonName.equalsIgnoreCase( "Grey" ) )
+							abstractButton.setSelected( grey ) ;
+						else if( buttonName.equalsIgnoreCase( "Bright" ) )
+							abstractButton.setSelected( bright ) ;
 					}
 				}
 			}
-			break ;
 		}
 	}
 
