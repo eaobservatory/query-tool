@@ -288,7 +288,7 @@ public class WidgetPanel extends JPanel implements ActionListener , MoonChangeLi
 			if( tmp != null && tmp instanceof LinkedList )
 			{
 				ListIterator iter = (( LinkedList )tmp).listIterator( 0 ) ;
-				for( ; iter.hasNext() ; iter.nextIndex() )
+				while( iter.hasNext() )
 				{
 					Object o = iter.next() ;
 					if( o instanceof JRadioButton )
