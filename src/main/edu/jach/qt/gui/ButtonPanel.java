@@ -46,15 +46,12 @@ public class ButtonPanel extends WidgetPanel
 		buttonList = new LinkedList<JCheckBox>() ;
 
 		setLayout( new GridLayout( 3 , info.getSize() / 2 ) ) ;
-		JCheckBox wfcamTickBox = null ;
 		for( iterator.nextIndex() ; iterator.hasNext() ; iterator.nextIndex() )
 		{
 			next = iterator.next() ;
 
 			JCheckBox cb = new JCheckBox( next ) ;
 			cb.addActionListener( this ) ;
-			if( "WFCAM".equals( next ) )
-				wfcamTickBox = cb ;
 
 			add( cb ) ;
 			buttonList.add( cb ) ;

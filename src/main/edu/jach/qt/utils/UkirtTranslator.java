@@ -132,7 +132,7 @@ public class UkirtTranslator
 
 		try
 		{
-			UkirtTranslator r = new UkirtTranslator() ;
+			new UkirtTranslator() ;
 		}
 		catch( Exception e )
 		{
