@@ -184,6 +184,7 @@ public class QtTools
 			}
 			// Close off the entry
 			fw.write( "</QueueEntries>\n" ) ;
+			fw.flush() ;
 			fw.close() ;
 		}
 		catch( IOException ioe )
