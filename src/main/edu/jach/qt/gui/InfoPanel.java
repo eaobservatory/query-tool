@@ -16,6 +16,8 @@ import java.awt.event.ActionListener ;
 import java.awt.event.ActionEvent ;
 import edu.jach.qt.utils.OMPTimer ;
 import edu.jach.qt.utils.OMPTimerListener ;
+
+import java.net.URL ;
 import java.util.TimerTask ;
 
 import javax.swing.JPanel ;
@@ -25,6 +27,7 @@ import javax.swing.SwingConstants ;
 import javax.swing.border.MatteBorder ;
 
 import gemini.util.JACLogger ;
+import gemini.util.ObservingToolUtilities ;
 
 import edu.jach.qt.utils.SpQueuedMap ;
 
@@ -131,7 +134,7 @@ public class InfoPanel extends JPanel implements ActionListener , OMPTimerListen
 		/* Setup the SEARCH button */
 		InfoPanel.searchButton.setText( "Search" ) ;
 		InfoPanel.searchButton.setName( "Search" ) ;
-		final java.net.URL url = ClassLoader.getSystemResource( "green_light1.gif" ) ;
+		final URL url = ObservingToolUtilities.resourceURL( "green_light1.gif" ) ;
 		final ImageIcon icon = new ImageIcon( url ) ;
 		InfoPanel.searchButton.setIcon( icon ) ;
 		blinkIcon() ;

@@ -1,9 +1,14 @@
 package edu.jach.qt.utils ;
 
 import java.io.File ;
+import java.io.FileNotFoundException ;
 import java.io.FileReader ;
+import java.io.InputStream ;
+import java.io.InputStreamReader ;
 import java.io.StringReader ;
+import java.io.Reader ;
 import java.io.IOException ;
+import java.net.URL ;
 import java.util.Hashtable ;
 import org.w3c.dom.Node ;
 import org.w3c.dom.Document ;
@@ -14,6 +19,7 @@ import org.xml.sax.SAXException ;
 import org.xml.sax.SAXNotRecognizedException ;
 import org.xml.sax.SAXNotSupportedException ;
 import gemini.util.JACLogger ;
+import gemini.util.ObservingToolUtilities ;
 
 /**
  * Read information about a specific telescope.
@@ -45,18 +51,47 @@ public class TelescopeInformation
 
 		// Get the name of the current config directory:
 		String configDir = System.getProperty( "qtConfig" ) ;
-		configDir = configDir.substring( 0 , configDir.lastIndexOf( File.separatorChar ) ) ;
+		int index = configDir.lastIndexOf( File.separatorChar ) ;
+		if( index > 0 )
+			configDir = configDir.substring( 0 , index ) + File.separatorChar ;
+		else
+			configDir = "" ;
 
-		String configFile = configDir + File.separatorChar + System.getProperty( "telescopeConfig" ) ;
+		String configFile = configDir + System.getProperty( "telescopeConfig" ) ;
 
 		// Now try to build a document from this file
-		File dataFile = new File( configFile ) ;
-		if( !dataFile.exists() || !dataFile.canRead() )
-			logger.error( "Telescope data file does not exist:" + configFile ) ;
+		Reader reader = null ;
+		final URL url = ObservingToolUtilities.resourceURL( configFile ) ;
+		if( url != null )
+		{
+			InputStream is ;
+			try
+			{
+				is = url.openStream() ;
+				reader = new InputStreamReader( is ) ;
+			}
+			catch( IOException e )
+			{
+				e.printStackTrace() ;
+			}
+		}
+		else
+		{
+			File dataFile = new File( configFile ) ;
+			if( !dataFile.exists() || !dataFile.canRead() )
+				logger.error( "Telescope data file does not exist:" + configFile ) ;
+			try
+            {
+	            reader = new FileReader( dataFile ) ;
+            }
+            catch( FileNotFoundException e )
+            {
+	            e.printStackTrace() ;
+            }
+		}
 
 		try
 		{
-			FileReader reader = new FileReader( dataFile ) ;
 			char[] chars = new char[ 1024 ] ;
 			int readLength = 0 ;
 			StringBuffer buffer = new StringBuffer() ;

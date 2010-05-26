@@ -1,9 +1,13 @@
 package edu.jach.qt.utils ;
 
+import gemini.util.ObservingToolUtilities ;
+
 import java.io.IOException ;
+import java.io.InputStream ;
 import java.io.PushbackReader ;
 import java.io.InputStreamReader ;
 import java.io.FileReader ;
+import java.net.URL ;
 
 /**
  Class TextReader provides methods for reading character type data an input 
@@ -54,7 +58,17 @@ public class TextReader
 		// post: constructs a TextReader tied to the given file
 		try
 		{
-			in = new PushbackReader( new FileReader( fileName ) ) ;
+			final URL url = ObservingToolUtilities.resourceURL( fileName ) ;
+			if( url != null )
+			{
+				InputStream is = url.openStream() ;
+				InputStreamReader reader = new InputStreamReader( is ) ;
+				in = new PushbackReader( reader ) ;
+			}
+			else
+			{
+				in = new PushbackReader( new FileReader( fileName ) ) ;
+			}
 			rePrompting = false ;
 		}
 		catch( Exception e )

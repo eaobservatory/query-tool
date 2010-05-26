@@ -350,6 +350,7 @@
 		<jar jarfile="${target.dir}/lib/qt.jar">
 			<fileset dir="${target.dir}/classes"/>
 			<fileset dir="${target.dir}/icons"/>
+			<fileset dir="${target.dir}/${config.dir}"/>
 			<!--  manifest="${manifest}"> -->
 		</jar>
 	</target>

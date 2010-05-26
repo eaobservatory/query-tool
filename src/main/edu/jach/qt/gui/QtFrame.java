@@ -111,6 +111,9 @@ public class QtFrame extends JFrame implements ActionListener , MenuListener , L
 	private boolean menuBuilt = false ;
 	private CalibrationsPanel calibrationMenu ;
 
+	public JSplitPane topPanel ;
+	public JSplitPane tablePanel ;
+
 	/**
 	 * Creates a new <code>QtFrame</code> instance.
 	 * 
@@ -231,13 +234,13 @@ public class QtFrame extends JFrame implements ActionListener , MenuListener , L
 		projectPane = new JScrollPane( projectTable ) ;
 		projectPane.getViewport().setScrollMode( JViewport.BLIT_SCROLL_MODE ) ;
 
-		JSplitPane tablePanel = new JSplitPane( JSplitPane.HORIZONTAL_SPLIT , projectPane , resultsPanel ) ;
+		tablePanel = new JSplitPane( JSplitPane.HORIZONTAL_SPLIT , projectPane , resultsPanel ) ;
 		tablePanel.setDividerSize( 0 ) ;
 		tablePanel.validate() ;
 
 		tablePanel.setMinimumSize( new Dimension( -1 , 100 ) ) ;
 
-		JSplitPane topPanel = new JSplitPane( JSplitPane.HORIZONTAL_SPLIT , infoPanel , tabbedPane ) ;
+		topPanel = new JSplitPane( JSplitPane.HORIZONTAL_SPLIT , infoPanel , tabbedPane ) ;
 		topPanel.setMinimumSize( new Dimension( -1 , 450 ) ) ;
 		topPanel.setDividerSize( 0 ) ;
 		topPanel.validate() ;
