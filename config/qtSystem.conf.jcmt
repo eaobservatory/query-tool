@@ -79,6 +79,7 @@ CGS4_ATTRIBS: exposureTime coadds
 IRCAM3_ATTRIBS: exposureTime coadds
 Michelle_ATTRIBS: 
 UIST_ATTRIBS: expTimeOT exposureTime coadds
+SCUBA-2_ATTRIBS: integrations
 
 # Specify which elements are iterators on a per instrument basis.
 # Separate by spaces.
@@ -87,6 +88,7 @@ CGS4_ITERATORS: darkObs CGS4calUnitObs instCGS4
 IRCAM3_ITERATORS: darkObs instIRCAM3
 Michelle_ITERATORS:
 UIST_ITERATORS: darkObs UISTCalObs instUISTImaging instUIST instUISTSpecIFU
+SCUBA-2_ITERATORS: rasterObs
 
 # Specify the name of the attributes which correspond to exposure
 # times for each instrument
