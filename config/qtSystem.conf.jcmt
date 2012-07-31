@@ -79,7 +79,7 @@ CGS4_ATTRIBS: exposureTime coadds
 IRCAM3_ATTRIBS: exposureTime coadds
 Michelle_ATTRIBS: 
 UIST_ATTRIBS: expTimeOT exposureTime coadds
-SCUBA-2_ATTRIBS: integrations
+SCUBA-2_ATTRIBS: integrations sampleTime
 
 # Specify which elements are iterators on a per instrument basis.
 # Separate by spaces.
