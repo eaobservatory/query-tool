@@ -17,7 +17,7 @@ import gemini.util.JACLogger ;
 public class CSOPathResponseHandler extends DramaPath.ResponseHandler
 {
 	static JACLogger logger = JACLogger.getRootLogger() ;
-	private CommandReceiver cr ;
+	protected CommandReceiver cr ;
 
 	/**
 	 * Constructor.

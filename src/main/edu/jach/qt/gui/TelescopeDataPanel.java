@@ -49,9 +49,12 @@ public class TelescopeDataPanel extends JPanel implements ActionListener
 	private JButton updateButton ;
 	private InfoPanel infoPanel ;
 	private DcHub hub ;
-	private HubImplementor csomonHI , closeHI ;
+	private HubImplementor csomonHI , closeHI, enviroHI;
 	private static String lastCSOValue = "" ;
 	private static boolean acceptUpdates = true ;
+	private static boolean haveWvmReading = false;
+	private static boolean haveWvmToolTip = false;
+	private static boolean haveCsoToolTip = false;
 
 	/**
 	 * Constructor. This constructor does the following tasks:
@@ -84,10 +87,16 @@ public class TelescopeDataPanel extends JPanel implements ActionListener
 			csomonHI.setCallBack( "edu.jach.qt.djava.CSOPathResponseHandler" ) ;
 			csomonHI.setBuffers( 900 , 5 , 1800 , 12 ) ;
 
+			// ENVIRO
+			enviroHI = new HubImplementor("ENVIRO", "jcmt-aux");
+			enviroHI.setCallBack("edu.jach.qt.djava.WVMPathResponseHandler");
+			enviroHI.setBuffers(900, 5, 1800, 12);
+
 			// Closing
 			closeHI = new HubImplementor( "CloseDcHub" ) ;
 
 			hub.register( csomonHI ) ;
+			hub.register( enviroHI ) ;
 
 		}
 		config() ;
@@ -95,11 +104,28 @@ public class TelescopeDataPanel extends JPanel implements ActionListener
 
 	/**
 	 * Set the Tau value on the appropriate <code>JLabel</code>
+	 *
+	 * This method receives new values from the drama system.
 	 * 
 	 * @param val
 	 *            the value to set as a decimal number.
 	 */
-	public static void setTau( double val )
+	public static void setCsoTau(double val) {
+		if (! haveWvmReading) {
+			setTau(val);
+			if (! haveCsoToolTip) {
+				setTauTooltip("Changed to CSO tau");
+				haveCsoToolTip = true;
+				haveWvmToolTip = false;
+			}
+		}
+	}
+
+	/**
+	 * Actually set the tau display, based on a value either
+	 * from CSO or the JCMT WVM.
+	 */
+	private static void setTau( double val )
 	{
 		// The arg in the following constructor is a pattern for formating
 		DecimalFormat myFormatter = new DecimalFormat( "0.000" ) ;
@@ -127,6 +153,37 @@ public class TelescopeDataPanel extends JPanel implements ActionListener
 	}
 
 	/**
+	 * Set the Tau to a value from the JCMT WVM.
+	 *
+	 * This method receives new values from the drama system.
+	 */
+	public static void setWvmTau(double val) {
+		haveWvmReading = true;
+		setTau(val);
+		if (! haveWvmToolTip) {
+			setTauTooltip("Changed to JCMT WVM");
+			haveWvmToolTip = true;
+			haveCsoToolTip = false;
+		}
+	}
+
+	/**
+	 * Set the time at which the tau was received from the JCMT WVM.
+	 *
+	 * This method receives new values from the drama system.
+	 */
+	public static void setWvmTauTime(String time) {
+		if (time == null || time.equals("")) {
+			setTauTooltip("JCMT WVM, time = unknown");
+		}
+		else {
+			setTauTooltip("JCMT WVM, time = " + time);
+		}
+		haveWvmToolTip = true;
+		haveCsoToolTip = false;
+	}
+
+	/**
 	 * Set the Airmass value on the appropriate <code>JLabel</code>
 	 * 
 	 * @param val
@@ -141,12 +198,31 @@ public class TelescopeDataPanel extends JPanel implements ActionListener
 		TelescopeDataPanel.airmassValue.setText( "" + output ) ;
 	}
 
-	public static void setTauTooltip( String tip )
-	{
-		if( tip == null || tip.equals( "" ) )
-			csoTauValue.setToolTipText( "Source = unknown" ) ;
-		else
-			csoTauValue.setToolTipText( "Source = " + tip ) ;
+
+	/**
+	 * Set the source of the 'CSO' tau reading.
+	 *
+	 * This method receives new values from the drama system.
+	 */
+	public static void setCsoTauSource(String source) {
+		if (! haveWvmReading) {
+			if (source == null || source.equals("")) {
+				setTauTooltip("Source = unknown");
+			}
+			else {
+				setTauTooltip("Source = " + source);
+			}
+			haveCsoToolTip = true;
+			haveWvmToolTip = false;
+		}
+	}
+
+	/**
+	 * Actually set the tau tooltip, to show either the
+	 * 'CSO' tau source or the latest WVM reading time.
+	 */
+	private static void setTauTooltip(String tip) {
+		csoTauValue.setToolTipText(tip);
 	}
 
 	/**

@@ -40,17 +40,25 @@ public class QT_MonResponse extends MonitorResponse
 		if( name.equals( "CSOTAU" ) )
 		{
 			logger.info( "Tau update: " + value.RealValue( name ) ) ;
-			TelescopeDataPanel.setTau( value.RealValue( name ) ) ;
+			TelescopeDataPanel.setCsoTau(value.RealValue(name));
 		}
 		else if( name.equals( "CSOSRC" ) )
 		{
 			logger.info( "CSO Source updated to " + value.StringValue( name ) ) ;
-			TelescopeDataPanel.setTauTooltip( value.StringValue( name ) ) ;
+			TelescopeDataPanel.setCsoTauSource(value.StringValue(name));
 		}
 		else if( name.equals( "AIRMASS" ) )
 		{
 			logger.info( "AIRMASS update: " + value.RealValue( name ) ) ;
 			TelescopeDataPanel.setAirmass( value.RealValue( name ) ) ;
+		}
+		else if (name.equals("JCMT_TAU")) {
+			logger.info("JCMT tau update: " + value.RealValue(name));
+			TelescopeDataPanel.setWvmTau(value.RealValue(name));
+		}
+		else if (name.equals("JCMT_TAU_TIME")) {
+			logger.info("JCMT tau time update: " + value.StringValue(name));
+			TelescopeDataPanel.setWvmTauTime(value.StringValue(name));
 		}
 		else if( name.equals( "EXIT" ) )
 		{
