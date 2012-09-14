@@ -3,6 +3,7 @@ package edu.jach.qt.djava ;
 import au.gov.aao.drama.DramaMonitor ;
 import au.gov.aao.drama.DramaTask ;
 import au.gov.aao.drama.Arg ;
+import au.gov.aao.drama.SdsID ;
 import au.gov.aao.drama.DramaException ;
 import edu.jach.qt.gui.TelescopeDataPanel ;
 import ocs.utils.CommandReceiver ;
@@ -52,13 +53,27 @@ public class QT_MonResponse extends MonitorResponse
 			logger.info( "AIRMASS update: " + value.RealValue( name ) ) ;
 			TelescopeDataPanel.setAirmass( value.RealValue( name ) ) ;
 		}
-		else if (name.equals("JCMT_TAU")) {
-			logger.info("JCMT tau update: " + value.RealValue(name));
-			TelescopeDataPanel.setWvmTau(value.RealValue(name));
-		}
-		else if (name.equals("JCMT_TAU_TIME")) {
-			logger.info("JCMT tau time update: " + value.StringValue(name));
-			TelescopeDataPanel.setWvmTauTime(value.StringValue(name));
+		else if (name.equals("DYN_STATE")) {
+                        logger.info("Got DYN_STATE structure...");
+                        try {
+                                SdsID tau = new SdsID(value, "JCMT_TAU");
+                                double[] ary = new double[1];
+                                tau.Get(0, ary);
+                                logger.info("JCMT tau update: " + ary[0]);
+			        TelescopeDataPanel.setWvmTau(ary[0]);
+                        }
+                        catch (DramaException e) {
+                                logger.error("DRAMA error reading JCMT_TAU: " + e.toString());
+                        }
+                        try {
+                                SdsID tautime = new SdsID(value, "JCMT_TAU_TIME");
+                                String time = tautime.Get(0);
+                                logger.info("JCMT tau time update: " + time);
+			        TelescopeDataPanel.setWvmTauTime(time);
+                        }
+                        catch (DramaException e) {
+                                logger.error("DRAMA error reading JCMT_TAU_TIME: " + e.toString());
+                        }
 		}
 		else if( name.equals( "EXIT" ) )
 		{

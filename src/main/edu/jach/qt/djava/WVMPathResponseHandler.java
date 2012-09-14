@@ -27,7 +27,7 @@ public class WVMPathResponseHandler extends CSOPathResponseHandler
 		// Informational message
 		logger.info( "Got path to task " + path.TaskName() + "." ) ;
 
-		String[] params = new String[] { "JCMT_TAU" , "JCMT_TAU_TIME" } ;
+		String[] params = new String[] { "DYN_STATE" } ;
 
 		// Start the monitor operation.
 		DramaMonitor Monitor = new DramaMonitor( path , new QT_MonResponse( cr ) , true , params ) ;
