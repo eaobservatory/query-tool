@@ -83,21 +83,24 @@ public class TelescopeDataPanel extends JPanel implements ActionListener
 			hub.setParentComponent( this ) ; // Use for ErrorBox dialogs in the hub.
 
 			// CSOMON
-			csomonHI = new HubImplementor( "CSOMON" ) ;
+			csomonHI = new HubImplementor( "CSOMON", "localhost" ) ;
 			csomonHI.setCallBack( "edu.jach.qt.djava.CSOPathResponseHandler" ) ;
 			csomonHI.setBuffers( 900 , 5 , 1800 , 12 ) ;
+
+			hub.register( csomonHI ) ;
+
+                        try {Thread.sleep(1000);}
+                        catch (InterruptedException e) {}
 
 			// ENVIRO
 			enviroHI = new HubImplementor("ENVIRO", "jcmt-aux");
 			enviroHI.setCallBack("edu.jach.qt.djava.WVMPathResponseHandler");
 			enviroHI.setBuffers(900, 5, 1800, 12);
 
-			// Closing
-			closeHI = new HubImplementor( "CloseDcHub" ) ;
-
-			hub.register( csomonHI ) ;
 			hub.register( enviroHI ) ;
 
+			// Closing
+			closeHI = new HubImplementor( "CloseDcHub" ) ;
 		}
 		config() ;
 	}
@@ -144,7 +147,7 @@ public class TelescopeDataPanel extends JPanel implements ActionListener
 				lastCSOValue = output ;
 				WidgetPanel.getAtmospherePanel().setTextField( "tau:" , output ) ;
 			}
-			else if( !( lastCSOValue.equals( WidgetPanel.getAtmospherePanel().getText( "tau:" ) ) ) )
+			else if( WidgetPanel.getAtmospherePanel() != null && !( lastCSOValue.equals( WidgetPanel.getAtmospherePanel().getText( "tau:" ) ) ) )
 			{
 				acceptUpdates = false ;
 			}
