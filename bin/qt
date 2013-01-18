@@ -205,7 +205,7 @@ if ( ${LOGPATH} == "" ) then
     endif
 endif
 
-mkdir -p ${LOGPATH}
+mkdir -m 777 -p ${LOGPATH}
 
 #Make the log directory
 if (-dwx ${LOGPATH} ) then
