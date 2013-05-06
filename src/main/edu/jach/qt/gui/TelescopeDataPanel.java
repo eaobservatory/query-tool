@@ -68,7 +68,7 @@ public class TelescopeDataPanel extends JPanel implements ActionListener
 	 */
 	public TelescopeDataPanel( InfoPanel panel )
 	{
-		csoTau = new JLabel( "CSO Tau: " , JLabel.LEADING ) ;
+		csoTau = new JLabel( "225 GHz Tau: " , JLabel.LEADING ) ;
 		seeing = new JLabel( "Seeing: " , JLabel.LEADING ) ;
 		airmass = new JLabel( "Airmass: " , JLabel.LEADING ) ;
 		csoTauValue = new JLabel( tauString , JLabel.LEADING ) ;
