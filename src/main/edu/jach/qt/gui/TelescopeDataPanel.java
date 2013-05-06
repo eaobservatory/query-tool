@@ -53,8 +53,10 @@ public class TelescopeDataPanel extends JPanel implements ActionListener
 	private static String lastCSOValue = "" ;
 	private static boolean acceptUpdates = true ;
 	private static boolean haveWvmReading = false;
+	private static boolean haveCsoReading = false;
 	private static boolean haveWvmToolTip = false;
 	private static boolean haveCsoToolTip = false;
+	private final static boolean preferWvm = false;
 
 	/**
 	 * Constructor. This constructor does the following tasks:
@@ -114,7 +116,8 @@ public class TelescopeDataPanel extends JPanel implements ActionListener
 	 *            the value to set as a decimal number.
 	 */
 	public static void setCsoTau(double val) {
-		if (! haveWvmReading) {
+		if ((! preferWvm) || (! haveWvmReading)) {
+                        haveCsoReading = true;
 			setTau(val);
 			if (! haveCsoToolTip) {
 				setTauTooltip("Changed to CSO tau");
@@ -161,12 +164,14 @@ public class TelescopeDataPanel extends JPanel implements ActionListener
 	 * This method receives new values from the drama system.
 	 */
 	public static void setWvmTau(double val) {
-		haveWvmReading = true;
-		setTau(val);
-		if (! haveWvmToolTip) {
-			setTauTooltip("Changed to JCMT WVM");
-			haveWvmToolTip = true;
-			haveCsoToolTip = false;
+		if (preferWvm || (! haveCsoReading)) {
+			haveWvmReading = true;
+			setTau(val);
+			if (! haveWvmToolTip) {
+				setTauTooltip("Changed to JCMT WVM");
+				haveWvmToolTip = true;
+				haveCsoToolTip = false;
+			}
 		}
 	}
 
@@ -176,14 +181,16 @@ public class TelescopeDataPanel extends JPanel implements ActionListener
 	 * This method receives new values from the drama system.
 	 */
 	public static void setWvmTauTime(String time) {
-		if (time == null || time.equals("")) {
-			setTauTooltip("JCMT WVM, time = unknown");
+		if (preferWvm || (! haveCsoReading)) {
+			if (time == null || time.equals("")) {
+				setTauTooltip("JCMT WVM, time = unknown");
+			}
+			else {
+				setTauTooltip("JCMT WVM, time = " + time);
+			}
+			haveWvmToolTip = true;
+			haveCsoToolTip = false;
 		}
-		else {
-			setTauTooltip("JCMT WVM, time = " + time);
-		}
-		haveWvmToolTip = true;
-		haveCsoToolTip = false;
 	}
 
 	/**
@@ -208,7 +215,7 @@ public class TelescopeDataPanel extends JPanel implements ActionListener
 	 * This method receives new values from the drama system.
 	 */
 	public static void setCsoTauSource(String source) {
-		if (! haveWvmReading) {
+		if ((! preferWvm) || (! haveWvmReading)) {
 			if (source == null || source.equals("")) {
 				setTauTooltip("Source = unknown");
 			}
