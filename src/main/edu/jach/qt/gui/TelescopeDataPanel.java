@@ -56,7 +56,7 @@ public class TelescopeDataPanel extends JPanel implements ActionListener
 	private static boolean haveCsoReading = false;
 	private static boolean haveWvmToolTip = false;
 	private static boolean haveCsoToolTip = false;
-	private final static boolean preferWvm = false;
+	private final static boolean preferWvm = true;
 
 	/**
 	 * Constructor. This constructor does the following tasks:
