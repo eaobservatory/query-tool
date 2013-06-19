@@ -148,6 +148,16 @@ public class QtFrame extends JFrame implements ActionListener , MenuListener , L
 			compInit() ;
 			tabbedPane.setSelectedIndex( 0 ) ;
 			logger.info( "Tree validated" ) ;
+
+                        // Set the top panel's preferred size to its
+                        // current size to prevent it expanding if
+                        // an excessive amount of text is inserted
+                        // into the notes text pane.
+                        //
+                        // This is intended to fix fault: 20060807.007
+                        validate();
+                        topPanel.setPreferredSize(topPanel.getSize());
+                        logger.info("Top panel size fixed");
 		}
 		catch( Exception e )
 		{
