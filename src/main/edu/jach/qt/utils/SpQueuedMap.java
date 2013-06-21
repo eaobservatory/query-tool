@@ -24,11 +24,13 @@ public class SpQueuedMap
 	private static SpQueuedMap queuedMap = null ;
 	protected TreeMap<String,String> treeMap = null ;
 	protected TreeSet<String> treeSet = null ;
+	protected TreeSet<String> projectsWithOrFolders = null ;
 
 	private SpQueuedMap()
 	{
 		treeMap = new TreeMap<String,String>() ;
 		treeSet = new TreeSet<String>() ;
+		projectsWithOrFolders = new TreeSet<String>();
 	}
 
 	public static synchronized SpQueuedMap getSpQueuedMap()
@@ -51,6 +53,15 @@ public class SpQueuedMap
 				treeMap.put( checksum , "" + System.currentTimeMillis() ) ;
 			writeChecksumToDisk( ( SpMSB )item ) ;
 			treeSet.add( checksum ) ;
+
+                        // Check whether this is in an OR folder and if so
+                        // record the project ID.
+                        if (checksum.contains("O")) {
+                            String project = msbProject(item);
+                            if (! project.equals("")) {
+                                projectsWithOrFolders.add(project);
+                            }
+                        }
 		}
 		return replacement ;
 	}
@@ -68,6 +79,14 @@ public class SpQueuedMap
 		String checksum = msbChecksum( item ) ;
 		return treeMap.containsKey( checksum ) ;
 	}
+
+        /**
+         * Checks whether the given project is in the list of projects
+         * for which items from OR folders have been observed.
+         */
+        public boolean usedOrFolder(String project) {
+            return projectsWithOrFolders.contains(project);
+        }
 
 	public String containsMsbChecksum( String checksum )
 	{
@@ -100,6 +119,28 @@ public class SpQueuedMap
 		}
 		return checksum ;
 	}
+
+        /**
+         * Determine the project ID for this item.
+         *
+         * This is a version of msbChecksum which finds the
+         * project ID instead of the checksum.
+         */
+        private String msbProject(final SpItem item) {
+                String project = "";
+                if (item instanceof SpMSB) {
+                        final SpMSB msb = (SpMSB) item;
+                        String id = null ;
+                        Vector<SpItem> obses = gemini.sp.SpTreeMan.findAllItems( msb , SpObs.class.getName() ) ;
+                        if( obses.size() != 0 )
+                        {
+                                id = obses.remove(0).getTable().get("project", 0);
+                        }
+                        if (id != null)
+                                project = id ;
+                        }
+                return project;
+        }
 
 	private SpItem getCorrectItem( SpItem item )
 	{
