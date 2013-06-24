@@ -14,6 +14,7 @@ import edu.jach.qt.utils.QtTools ;
 import java.awt.Dimension ;
 import java.awt.Toolkit ;
 import java.awt.AWTError ;
+import javax.swing.SwingUtilities;
 import jsky.app.ot.OtCfg ;
 import gemini.util.JACLogger ;
 
@@ -31,7 +32,7 @@ import gemini.util.JACLogger ;
  *
  * $Id$
  */
-final public class QT
+final public class QT implements Runnable
 {
 	static JACLogger logger = JACLogger.getLogger( QT.class ) ;
 
@@ -41,6 +42,18 @@ final public class QT
 	public QT()
 	{
 		logger.info( "-------WELCOME TO THE QT----------" ) ;
+
+                // Since the whole process of launching the QT includes
+                // usage of Swing, and since Swing is not thread-safe,
+                // we must have this action performed in the Swing
+                // event dispatch thread.
+                SwingUtilities.invokeLater(this);
+        }
+
+        /**
+         * Thread run method to construct the QT GUI.
+         */
+        public void run() {
 
 		try
 		{
