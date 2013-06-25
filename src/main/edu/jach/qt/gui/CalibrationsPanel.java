@@ -11,6 +11,7 @@ import javax.swing.JOptionPane ;
 import javax.swing.JPanel ;
 import javax.swing.JScrollPane ;
 import javax.swing.ListSelectionModel ;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener ;
 
@@ -77,11 +78,17 @@ public class CalibrationsPanel extends JPanel implements ListSelectionListener ,
 	
 	public void run()
 	{
-		firstList = new JList( setup() ) ;
+            // Call the setup() method to actually fetch the calibrations.
+            final DefaultListModel listModel = setup();
+
+            // Creating the GUI needs to be done in the Swing thread,
+            // so use invokeLater.
+            SwingUtilities.invokeLater(new Runnable () {public void run() {
+		firstList = new JList( listModel ) ;
 		firstList.setSelectionMode( ListSelectionModel.SINGLE_INTERVAL_SELECTION );
 		firstList.setLayoutOrientation( JList.HORIZONTAL_WRAP );
 		firstList.setVisibleRowCount( -1 ) ;
-		firstList.addListSelectionListener( this ) ;
+		firstList.addListSelectionListener( CalibrationsPanel.this ) ;
 		firstScrollPane = new JScrollPane( firstList ) ;
 		firstScrollPane.setPreferredSize( new Dimension( 350 , 400 ) ) ;
 		left.remove( waiting ) ;
@@ -91,10 +98,11 @@ public class CalibrationsPanel extends JPanel implements ListSelectionListener ,
 		secondList.setSelectionMode( ListSelectionModel.SINGLE_INTERVAL_SELECTION );
 		secondList.setLayoutOrientation( JList.HORIZONTAL_WRAP );
 		secondList.setVisibleRowCount( -1 ) ;
-		secondList.addListSelectionListener( this ) ;
+		secondList.addListSelectionListener( CalibrationsPanel.this ) ;
 		secondScrollPane = new JScrollPane( secondList ) ;
 		secondScrollPane.setPreferredSize( new Dimension( 350 , 400 ) ) ;
 		right.add( secondScrollPane ) ;
+            }});
 	}
 
 	private DefaultListModel second( String selection )
