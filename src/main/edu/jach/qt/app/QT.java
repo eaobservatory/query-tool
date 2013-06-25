@@ -122,6 +122,15 @@ final public class QT implements Runnable
 
 		logger.info( "QT should now be visible" ) ;
 
+                // Set the top panel's preferred size to its
+                // current size to prevent it expanding if
+                // an excessive amount of text is inserted
+                // into the notes text pane.
+                //
+                // This is intended to fix fault: 20060807.007
+                qtf.topPanel.setPreferredSize(qtf.topPanel.getSize());
+                logger.info("Top panel size fixed");
+
 		qtf.fetchCalibrations() ;
 
 		String bigTelescope = System.getProperty( "TELESCOPE" ) ;
