@@ -6,7 +6,6 @@ import gemini.util.JACLogger ;
 /* QT imports */
 import edu.jach.qt.app.Querytool ;
 import edu.jach.qt.utils.MsbClient ;
-import edu.jach.qt.utils.Splash ;
 import edu.jach.qt.utils.MsbColumns ;
 import edu.jach.qt.utils.SpQueuedMap ;
 
@@ -219,7 +218,6 @@ public class QtFrame extends JFrame implements ActionListener , MenuListener , L
 		calibrationMenu = new CalibrationsPanel() ;
 		buildStagingPanel() ;
 		// Table setup
-		Splash splash = new Splash( this , "Waiting for database ..." ) ;
 		try
 		{
 			msbQTM = new MSBQueryTableModel() ;
@@ -235,7 +233,6 @@ public class QtFrame extends JFrame implements ActionListener , MenuListener , L
 		ProjectTableModel ptm = new ProjectTableModel() ;
 		projectTableSetup( ptm ) ;
 		tableSetup() ;
-		splash.done() ;
 
 		logger.info( "Table setup" ) ;
 

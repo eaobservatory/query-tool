@@ -4,10 +4,11 @@ package edu.jach.qt.app ;
 
 /* ORAC imports */
 /* QT imports */
-/* Standard imports */
 import edu.jach.qt.gui.QtFrame ;
 import edu.jach.qt.gui.WidgetDataBag ;
+import edu.jach.qt.utils.MsbClient;
 import edu.jach.qt.utils.QtTools ;
+import edu.jach.qt.utils.Splash ;
 
 /* Standard imports */
 
@@ -43,6 +44,24 @@ final public class QT implements Runnable
 	{
 		logger.info( "-------WELCOME TO THE QT----------" ) ;
 
+                QtTools.loadConfig(System.getProperty("qtConfig"));
+
+                // Fetch the MSB column info so that the MsbClient class
+                // has a cached copy ready to use later when constructing
+                // the GUI in the Swing thread.
+                Splash splash = new Splash("Waiting for database ...");
+                try
+                {
+                    MsbClient.getColumnInfo();
+                }
+                catch (Exception e)
+                {
+                    logger.error("Unable to fetch MSB column information", e);
+                    e.printStackTrace();
+                    System.exit(1);
+                }
+                splash.done();
+
                 // Since the whole process of launching the QT includes
                 // usage of Swing, and since Swing is not thread-safe,
                 // we must have this action performed in the Swing
@@ -54,7 +73,6 @@ final public class QT implements Runnable
          * Thread run method to construct the QT GUI.
          */
         public void run() {
-
 		try
 		{
 			OtCfg.init() ;
@@ -69,8 +87,6 @@ final public class QT implements Runnable
 			logger.fatal( "Talk to SHAUN!!!: PreTranslator ClassCircularityError starting the QT" , cce ) ;
 			System.exit( 1 ) ;
 		}
-
-		QtTools.loadConfig( System.getProperty( "qtConfig" ) ) ;
 
 		WidgetDataBag wdb = new WidgetDataBag() ;
 		Querytool qt = new Querytool( wdb ) ;
