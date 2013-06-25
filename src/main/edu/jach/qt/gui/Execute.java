@@ -9,6 +9,7 @@ import java.io.Serializable ;
 import java.util.Random ;
 
 import javax.swing.JOptionPane ;
+import javax.swing.SwingUtilities;
 
 import gemini.util.JACLogger ;
 
@@ -39,12 +40,12 @@ public class Execute
 	{
 		if( ProgramTree.getSelectedItem() == null && DeferredProgramList.getCurrentItem() == null )
 		{
-			new PopUp( "You have not selected an observation!" , "Please select an observation." , JOptionPane.ERROR_MESSAGE ).start() ;
+			new PopUp( "You have not selected an observation!" , "Please select an observation." , JOptionPane.ERROR_MESSAGE );
 			throw new Exception( "No Item Selected" ) ;
 		}
 		else if( ProgramTree.getSelectedItem() != null && DeferredProgramList.getCurrentItem() != null )
 		{
-			new PopUp( "You may only select one observation!" , "Please deselect an observation." , JOptionPane.ERROR_MESSAGE ).start() ;
+			new PopUp( "You may only select one observation!" , "Please deselect an observation." , JOptionPane.ERROR_MESSAGE );
 			throw new Exception( "Multiple Items Selected" ) ;
 		}
 		else if( DeferredProgramList.getCurrentItem() != null )
@@ -207,22 +208,13 @@ public class Execute
 	}
 
 	@SuppressWarnings( "serial" )
-    public class PopUp extends Thread implements Serializable
+    public class PopUp implements Serializable
 	{
-		String _message ;
-		String _title ;
-		int _errLevel ;
-
-		public PopUp( String title , String message , int errorLevel )
+		public PopUp(final String title, final String message, final int errorLevel)
 		{
-			_message = message ;
-			_title = title ;
-			_errLevel = errorLevel ;
-		}
-
-		public void run()
-		{
-			JOptionPane.showMessageDialog( null , _message , _title , _errLevel ) ;
+                    SwingUtilities.invokeLater(new Runnable() {public void run() {
+			JOptionPane.showMessageDialog( null , message , title , errorLevel ) ;
+                    }});
 		}
 	}
 	

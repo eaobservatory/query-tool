@@ -80,6 +80,7 @@ import javax.swing.ToolTipManager ;
 import javax.swing.JLabel ;
 import javax.swing.ImageIcon ;
 import javax.swing.JOptionPane ;
+import javax.swing.SwingUtilities;
 
 import javax.swing.border.TitledBorder ;
 import javax.swing.border.Border ;
@@ -1111,17 +1112,17 @@ final public class ProgramTree extends JPanel implements ActionListener , KeyLis
 							error.append( line ) ;
 							error.append( '\n' ) ;
 						}
-						new PopUp( "JCMT Execution Failed" , "Failed to send project for execution ; Error was \n" + error.toString() , JOptionPane.ERROR_MESSAGE ).start() ;
+						new PopUp( "JCMT Execution Failed" , "Failed to send project for execution ; Error was \n" + error.toString() , JOptionPane.ERROR_MESSAGE );
 					}
 					catch( IOException ioe )
 					{
 						// If we failed, output a default error message and reset the error buffer
-						new PopUp( "JCMT Execution Failed" , "Failed to send project for execution ; check log entries using the View>Log button" , JOptionPane.ERROR_MESSAGE ).start() ;
+						new PopUp( "JCMT Execution Failed" , "Failed to send project for execution ; check log entries using the View>Log button" , JOptionPane.ERROR_MESSAGE );
 					}
 				}
 				else
 				{
-					new PopUp( "JCMT Execution Failed" , "Failed to send project for execution ; check log entries using the View>Log button" , JOptionPane.ERROR_MESSAGE ).start() ;
+					new PopUp( "JCMT Execution Failed" , "Failed to send project for execution ; check log entries using the View>Log button" , JOptionPane.ERROR_MESSAGE );
 				}
 				failed = true ;
 			}
@@ -1155,23 +1156,13 @@ final public class ProgramTree extends JPanel implements ActionListener , KeyLis
 			logger.debug( "Enabling run button since the ExecuteJCMT task has completed" ) ;
 		}
 
-		public class PopUp extends Thread
+		public class PopUp
 		{
-			private String _message ;
-			private String _title ;
-			private int _errLevel ;
-
-			public PopUp( String title , String message , int errorLevel )
+			public PopUp(final String title, final String message, final int errorLevel)
 			{
-				super() ;
-				_message = message ;
-				_title = title ;
-				_errLevel = errorLevel ;
-			}
-
-			public void run()
-			{
-				JOptionPane.showMessageDialog( null , _message , _title , _errLevel ) ;
+                            SwingUtilities.invokeLater(new Runnable() {public void run() {
+				JOptionPane.showMessageDialog( null , message , title , errorLevel ) ;
+                            }});
 			}
 		}
 	}
