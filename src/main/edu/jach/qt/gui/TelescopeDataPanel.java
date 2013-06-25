@@ -14,6 +14,7 @@ import javax.swing.JButton ;
 import javax.swing.BorderFactory ;
 import javax.swing.JToggleButton ;
 import javax.swing.JRadioButton ;
+import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder ;
 import ocs.utils.HubImplementor ;
 import ocs.utils.DcHub ;
@@ -130,6 +131,9 @@ public class TelescopeDataPanel extends JPanel implements ActionListener
 	/**
 	 * Actually set the tau display, based on a value either
 	 * from CSO or the JCMT WVM.
+         *
+         * Calling setTextField() ends up calling JTextField.setText()
+         * which is thread-safe according to the documentation.
 	 */
 	private static void setTau( double val )
 	{
@@ -231,8 +235,10 @@ public class TelescopeDataPanel extends JPanel implements ActionListener
 	 * Actually set the tau tooltip, to show either the
 	 * 'CSO' tau source or the latest WVM reading time.
 	 */
-	private static void setTauTooltip(String tip) {
+	private static void setTauTooltip(final String tip) {
+            SwingUtilities.invokeLater(new Runnable() {public void run() {
 		csoTauValue.setToolTipText(tip);
+            }});
 	}
 
 	/**
