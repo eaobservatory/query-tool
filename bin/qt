@@ -154,6 +154,11 @@ while ($#argv != 0)
                 echo Telescope set to use jcmt widget set
                 shift
                 breaksw
+            case -jls:
+                shift
+                set widgetFile   = ../config/qtJcmtJlsWidget.conf
+                echo Restricting widgets to JLS
+                breaksw
             case -nodefer:
                 set NODEFER	= -DNODEFER
                 echo Ignoring deferred observations from current UT date
