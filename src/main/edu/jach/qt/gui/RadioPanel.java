@@ -74,7 +74,12 @@ public class RadioPanel extends WidgetPanel implements ActionListener
 		{
 			next = iterator.next() ;
 			String toolTip = null ;
-			if( next.matches( ".*-.*" ) )
+                        // Allow hyphens in entries by replacing them with ___
+                        if (next.contains("___"))
+                        {
+                            next = next.replace("___", "-");
+                        }
+                        else if( next.matches( ".*-.*" ) )
 			{
 				String[] split = next.split( "-" ) ;
 				next = split[ 0 ].trim() ;
