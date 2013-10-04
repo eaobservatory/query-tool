@@ -691,8 +691,11 @@ public class QtFrame extends JFrame implements ActionListener , MenuListener , L
 		viewMenu.add( satMenu ) ;
 
 		observability = new JCheckBoxMenuItem( "Observability" , true ) ;
+                observability.setToolTipText("Check that the source is observable.");
 		remaining = new JCheckBoxMenuItem( "Remaining" , true ) ;
+                remaining.setToolTipText("Check that the MSB has repeats remaining to be observed.");
 		allocation = new JCheckBoxMenuItem( "Allocation" , true ) ;
+                allocation.setToolTipText("Check that the project still has sufficient time allocated.");
 
 		String ZOA = System.getProperty( "ZOA" , "true" ) ;
 		boolean tickZOA = true ;
