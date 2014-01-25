@@ -8,6 +8,7 @@ import edu.jach.qt.app.Querytool ;
 import edu.jach.qt.utils.MsbClient ;
 import edu.jach.qt.utils.MsbColumns ;
 import edu.jach.qt.utils.SpQueuedMap ;
+import edu.jach.qt.vo.SampClient;
 
 /* Miscellaneous imports */
 /* Standard imports */
@@ -713,6 +714,8 @@ public class QtFrame extends JFrame implements ActionListener , MenuListener , L
 		pasteItem.setEnabled( false ) ;
 
 		mbar.add( makeMenu( "Edit" , new Object[] { cutItem , copyItem , pasteItem , null , makeMenu( "Constraints" , new Object[] { observability , remaining , allocation , zoneOfAvoidance , null , disableAll } , this ) } , this ) ) ;
+
+                mbar.add(SampClient.getInstance().buildMenu(this));
 
 		JMenu helpMenu = new JMenu( "Help" ) ;
 		helpMenu.setMnemonic( 'H' ) ;

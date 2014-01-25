@@ -261,7 +261,7 @@ setenv DUL_DIR /jac_sw/drama/CurrentRelease/include/
 setenv GIT_DIR /jac_sw/drama/CurrentRelease/include/
 setenv DTCL_DIR /jac_sw/drama/CurrentRelease/include/
 
-set CLASSPATH = ../lib/qt.jar:../lib/calpahtml.jar:../lib/xercesImpl.jar:../lib/xmlParserAPIs.jar:../lib/mail.jar:../lib/activation.jar:../lib/soap.jar:../lib/log4j-1.2.14.jar:${OTROOT}/OT/install/classes:${OTROOT}/GEMINI/install/classes:${OTROOT}/ORAC/install/classes:${OTROOT}/OMP/install/classes:../lib/jsky.jar:../lib/diva.jar:../lib/junit.jar:../icons:/local/java/jdk/lib/tools.jar:/jac_sw/itsroot/install/dcHub/javalib/dcHub.jar:/jac_sw/drama/CurrentRelease/javalib:/star/starjava/lib/pal/pal.jar
+set CLASSPATH = ../lib/qt.jar:../lib/calpahtml.jar:../lib/xercesImpl.jar:../lib/xmlParserAPIs.jar:../lib/mail.jar:../lib/activation.jar:../lib/soap.jar:../lib/log4j-1.2.14.jar:../lib/jsamp.jar:${OTROOT}/OT/install/classes:${OTROOT}/GEMINI/install/classes:${OTROOT}/ORAC/install/classes:${OTROOT}/OMP/install/classes:../lib/jsky.jar:../lib/diva.jar:../lib/junit.jar:../icons:/local/java/jdk/lib/tools.jar:/jac_sw/itsroot/install/dcHub/javalib/dcHub.jar:/jac_sw/drama/CurrentRelease/javalib:/star/starjava/lib/pal/pal.jar
 
 ${JAVA} -Xms64m -Xmx${MAXMEM} ${classic} ${xdebug} ${xnoagent} ${xrunjdwptrans} ${xbootclasspath} -Ddebug=${debug} -DDRAMA_ENABLED=${dramaEnabled} -DSIMULATE=${tosim} -DENGINEERING=${toeng} -DQUICKLOOK=${toql} -Dtelescope=${telescope} -DqtConfig=${qtConfig} -Dot.cfgdir=${instConfigDir}/ -Dot.resource.cfgdir=${instConfigDir}/ -DwidgetFile=${widgetFile} -DQT_LOG_DIR=${QT_LOG_DIR} -DDOMAIN=${domain} -DOMP -DDCHUB_TIMEOUT=${timeout} -DTASKNAME=${taskname} ${NODEFER} -cp ${CLASSPATH}:${instConfigDir} -Dversion=${VERSION} edu.jach.qt.app.QT
 
