@@ -715,7 +715,7 @@ public class QtFrame extends JFrame implements ActionListener , MenuListener , L
 
 		mbar.add( makeMenu( "Edit" , new Object[] { cutItem , copyItem , pasteItem , null , makeMenu( "Constraints" , new Object[] { observability , remaining , allocation , zoneOfAvoidance , null , disableAll } , this ) } , this ) ) ;
 
-                mbar.add(SampClient.getInstance().buildMenu(this));
+                mbar.add(SampClient.getInstance().buildMenu(this, msbQTM));
 
 		JMenu helpMenu = new JMenu( "Help" ) ;
 		helpMenu.setMnemonic( 'H' ) ;
