@@ -125,7 +125,8 @@
 		<javac srcdir="${tests.dir}"
 			destdir="${build.tests}"
 			debug="${debug}"
-			target="1.6">
+			target="1.6"
+                        source="1.6">
 			<classpath>
 				<pathelement location="${build.classes}" />
 				<fileset dir="${build.lib}">
@@ -157,7 +158,8 @@
 			extdirs="${java.ext.dirs}"
 			deprecation="off"
 			debug="on"
-			target="1.6">
+			target="1.6"
+                        source="1.6">
 			<exclude name="edu/jach/qt/gui/MsbNode.java"/>
 			<exclude name="edu/jach/qt/gui/DragDropObject.java"/>
 			<exclude name="edu/jach/qt/gui/DnDJTree.java"/>
