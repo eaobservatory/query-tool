@@ -3,6 +3,11 @@ package edu.jach.qt.vo;
 import java.awt.Component;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.table.TableModel;
@@ -11,6 +16,8 @@ import org.astrogrid.samp.Metadata;
 import org.astrogrid.samp.client.ClientProfile;
 import org.astrogrid.samp.client.DefaultClientProfile;
 import org.astrogrid.samp.gui.GuiHubConnector;
+import org.astrogrid.samp.httpd.HttpServer;
+import org.astrogrid.samp.httpd.UtilServer;
 
 import edu.jach.qt.utils.MsbClient;
 import edu.jach.qt.utils.MsbColumns;
@@ -21,10 +28,13 @@ import edu.jach.qt.utils.MsbColumns;
  * This class is to handle interaction between the
  * QT and the JSAMP library.
  */
-public class SampClient {
+public class SampClient implements HttpServer.Handler {
         private static SampClient instance = null;
 
         private GuiHubConnector conn;
+        private String basePath = null;
+        private HashMap<String,String> tableCoords = new HashMap<String,String>();
+        private int tableCoordsNum = 0;
 
         private SampClient() {
                 conn = new GuiHubConnector(DefaultClientProfile.getProfile());
@@ -154,5 +164,70 @@ public class SampClient {
                         "        </TABLE>\n" +
                         "    </RESOURCE>\n" +
                         "</VOTABLE>\n");
+
+                try {
+                        UtilServer server = UtilServer.getInstance();
+                        if (basePath == null) {
+                                basePath = "/" +  server.getBasePath("tablecoords");
+                                server.getServer().addHandler(this);
+                        }
+
+                        String path = basePath + "/" + Integer.toString(++ tableCoordsNum) + ".xml";
+
+                        String url = server.getServer().getBaseUrl().toString() + path;
+
+                        tableCoords.put(path, table.toString());
+
+                        Map msg = new HashMap();
+                        Map params = new HashMap();
+
+                        msg.put("samp.mtype", "table.load.votable");
+                        msg.put("samp.params", params);
+                        params.put("url", url);
+                        params.put("name", "QT_query_" + Integer.toString(tableCoordsNum));
+
+                        conn.getConnection().notifyAll(msg);
+
+                }
+                catch (IOException e) {
+                        System.err.println("I/O error sending table:");
+                        System.err.println(e.toString());
+                }
+        }
+
+        public HttpServer.Response serveRequest(HttpServer.Request request) {
+                String path = request.getUrl();
+                String method = request.getMethod();
+
+                if (! path.startsWith(basePath)) {
+                        return null;
+                }
+
+                final String table = (String) tableCoords.get(path);
+
+                if (table == null) {
+                        return HttpServer.createErrorResponse(404, "Not found");
+                }
+
+                Map header = new HashMap();
+                header.put("Content-Type", "application/x-votable+xml");
+                header.put("Content-Length", table.length());
+
+                if (method.equals("GET")) {
+                        return new HttpServer.Response(200, "OK", header) {
+                                public void writeBody (OutputStream out) {
+                                        PrintWriter pw = new PrintWriter(out);
+                                        pw.write(table);
+                                        pw.close();
+                                }
+                        };
+                }
+                else if (method.equals("HEAD")) {
+                        return new HttpServer.Response(200, "OK", header) {
+                                public void writeBody (OutputStream out) {}
+                        };
+                }
+
+                return HttpServer.create405Response(new String[] {"GET", "HEAD"});
         }
 }
