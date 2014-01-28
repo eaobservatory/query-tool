@@ -98,6 +98,10 @@ public class SampClient {
                         String raStr = (String) tableModel.getValueAt(i, raColumn);
                         String decStr = (String) tableModel.getValueAt(i, decColumn);
 
+                        if (raStr.equals("CAL") || decStr.equals("CAL")) {
+                                continue;
+                        }
+
                         String[] raArray = raStr.split("\\/");
                         String[] decArray = decStr.split("\\/");
 
