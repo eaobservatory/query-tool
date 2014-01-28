@@ -8,17 +8,26 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
+import javax.swing.AbstractAction;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.SwingUtilities;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ListDataListener;
+import javax.swing.event.ListDataEvent;
 import javax.swing.table.TableModel;
 
+import org.astrogrid.samp.Client;
 import org.astrogrid.samp.Metadata;
+import org.astrogrid.samp.Subscriptions;
 import org.astrogrid.samp.client.ClientProfile;
 import org.astrogrid.samp.client.DefaultClientProfile;
 import org.astrogrid.samp.gui.GuiHubConnector;
 import org.astrogrid.samp.httpd.HttpServer;
 import org.astrogrid.samp.httpd.UtilServer;
 
+import edu.jach.qt.utils.ErrorBox;
 import edu.jach.qt.utils.MsbClient;
 import edu.jach.qt.utils.MsbColumns;
 
@@ -38,11 +47,13 @@ public class SampClient implements HttpServer.Handler {
 
         private SampClient() {
                 conn = new GuiHubConnector(DefaultClientProfile.getProfile());
+                conn.declareSubscriptions(conn.computeSubscriptions());
 
                 Metadata meta = new Metadata();
                 meta.setName("QT");
                 meta.setDescriptionText("OMP Query Tool");
                 conn.declareMetadata(meta);
+
         }
 
         /**
@@ -64,22 +75,105 @@ public class SampClient implements HttpServer.Handler {
          */
         public JMenu buildMenu(final Component parent, final TableModel tableModel) {
                 JMenu menu = new JMenu("Interop");
-
                 menu.add(conn.createRegisterOrHubAction(parent, null));
                 menu.add(conn.createShowMonitorAction());
+                menu.add(new broadcastTableAction(tableModel));
 
-                JMenuItem item = new JMenuItem("Broadcast query result coordinates");
-                item.addActionListener(new ActionListener() {
-                        public void actionPerformed(ActionEvent e) {
-                            broadcastTableCoordinates(tableModel);
+                final JMenu sendMenu = new JMenu("Send query result coordinates to...");
+                sendMenu.setEnabled(conn.isConnected());
+                menu.add(sendMenu);
+                conn.addConnectionListener(new ChangeListener () {
+                        public void stateChanged(ChangeEvent e) {
+                                sendMenu.setEnabled(conn.isConnected());
                         }
                 });
-                menu.add(item);
 
+                conn.getClientListModel().addListDataListener(new ListDataListener () {
+                        public void contentsChanged(ListDataEvent e) {
+                                buildSendToMenu(sendMenu, tableModel);
+                        }
+                        public void intervalAdded(ListDataEvent e) {
+                                buildSendToMenu(sendMenu, tableModel);
+                        }
+                        public void intervalRemoved(ListDataEvent e) {
+                                buildSendToMenu(sendMenu, tableModel);
+                        }
+                });
+
+                buildSendToMenu(sendMenu, tableModel);
                 return menu;
         }
 
-        private void broadcastTableCoordinates(TableModel tableModel) {
+        /**
+         * Create the "send to" menu listing all connect clients which
+         * are subscribed to VO table load events.
+         */
+        private void buildSendToMenu(JMenu sendMenu, final TableModel tableModel) {
+                sendMenu.removeAll();
+                if (! conn.isConnected()) {
+                        return;
+                }
+
+                String selfId = "";
+                Map<String, Client> clients = (Map<String, Client>) conn.getClientMap();
+
+                try {
+                        selfId = conn.getConnection().getRegInfo().getSelfId();
+                }
+                catch (IOException e) {}
+
+                for (final Map.Entry<String, Client> client: clients.entrySet()) {
+                        Subscriptions subscriptions = client.getValue().getSubscriptions();
+                        if (client.getKey().equals(selfId)
+                            || (subscriptions == null)
+                            || ! subscriptions.isSubscribed("table.load.votable")) {
+                                continue;
+                        }
+                        JMenuItem menuItem = new JMenuItem(client.getValue().getMetadata().getName());
+                        sendMenu.add(menuItem);
+                        menuItem.addActionListener(new ActionListener () {
+                                public void actionPerformed(ActionEvent e) {
+                                        notifyTableCoordinates(tableModel, client.getKey());
+                                }
+                        });
+                }
+        }
+
+        /**
+         * Action for broadcasting the table to all SAMP clients.
+         *
+         * This enables/disables itself based on whether we are connected
+         * to a hub.
+         */
+        private class broadcastTableAction extends AbstractAction implements ChangeListener {
+                private TableModel tableModel;
+
+                public broadcastTableAction(TableModel tableModel) {
+                        super("Broadcast query result coordinates");
+                        this.tableModel = tableModel;
+                        conn.addConnectionListener(this);
+                        setEnabled(conn.isConnected());
+                }
+
+                public void actionPerformed(ActionEvent e) {
+                        notifyTableCoordinates(tableModel, null);
+                }
+
+                public void stateChanged(ChangeEvent e) {
+                        setEnabled(conn.isConnected());
+                }
+        };
+
+        /**
+         * Notify SAMP clients of VO table of the query coordinates to load.
+         *
+         * Can specify a particular client ID, or if this is set to null,
+         * the table is broadcast to all clients.
+         *
+         * This places the table in the tableCoords map and issues an
+         * URL by which the clients can retrieve it.
+         */
+        private void notifyTableCoordinates(TableModel tableModel, String clientId) {
                 MsbColumns columns = MsbClient.getColumnInfo();
                 int projectColumn = columns.getIndexForKey("projectid");
                 int targetColumn = columns.getIndexForKey("target");
@@ -186,15 +280,28 @@ public class SampClient implements HttpServer.Handler {
                         params.put("url", url);
                         params.put("name", "QT_query_" + Integer.toString(tableCoordsNum));
 
-                        conn.getConnection().notifyAll(msg);
+                        if (clientId == null) {
+                                conn.getConnection().notifyAll(msg);
+                        }
+                        else {
+                                conn.getConnection().notify(clientId, msg);
+                        }
 
                 }
                 catch (IOException e) {
-                        System.err.println("I/O error sending table:");
-                        System.err.println(e.toString());
+                        final String message = "Error sending table of coordinates:\n" + e.toString();
+                        SwingUtilities.invokeLater(new Runnable () {
+                                public void run() {
+                                        new ErrorBox(null, message);
+                                }
+                        });
                 }
         }
 
+        /**
+         * Handle HTTP requests from SAMP clients wishing to retrieve
+         * the VO tables.
+         */
         public HttpServer.Response serveRequest(HttpServer.Request request) {
                 String path = request.getUrl();
                 String method = request.getMethod();
