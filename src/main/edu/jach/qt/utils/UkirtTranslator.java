@@ -20,6 +20,7 @@ public class UkirtTranslator
 {
 	SpRootItem _root ;
 	static boolean _useClassic = false ;
+	static boolean _useQueue = false ;
 	static File _inputFile = null ;
 	static String _outDir = null ;
 
@@ -39,7 +40,13 @@ public class UkirtTranslator
 			System.exit( 1 ) ;
 		}
 
-		getObservations( _root ) ;
+                if (_useQueue) {
+                        String queueFile = QtTools.createQueueXML(_root);
+                        System.out.println("Wrote queue file: " + queueFile);
+                }
+                else {
+                        getObservations( _root ) ;
+                }
 	}
 
 	private void getObservations( SpItem root )
@@ -92,6 +99,8 @@ public class UkirtTranslator
 			{
 				if( args[ i ].equals( "-classic" ) )
 					_useClassic = true ;
+                                else if( args[ i ].equals( "-queue" ) )
+                                        _useQueue = true ;
 				else if( args[ i ].equals( "-i" ) || args[ i ].equals( "--inputFile" ) )
 					_inputFile = new File( args[ ++i ] ) ;
 				else if( args[ i ].equals( "-o" ) || args[ i ].equals( "--outDir" ) )
@@ -102,7 +111,7 @@ public class UkirtTranslator
 		}
 		catch( Exception e )
 		{
-			System.out.println( "Incorrect usage ; ukirtTranslator (-classic) (-i inputFile) (-o outputDir)" ) ;
+			System.out.println( "Incorrect usage ; ukirtTranslator (-classic) (-queue) (-i inputFile) (-o outputDir)" ) ;
 			System.exit( 1 ) ;
 		}
 
