@@ -26,8 +26,17 @@ public class UkirtTranslator
 
 	public UkirtTranslator() throws Exception
 	{
-		//System.setProperty( "EXEC_PATH" , _outDir ) ;
-		//System.setProperty( "CONF_PATH" , _outDir ) ;
+                // Load the QT configuration file.  This should define
+                // the output paths EXEC_PATH and CONF_PATH.
+                QtTools.loadConfig(System.getProperty("qtConfig"));
+
+                // If the user has actually specified an output directory,
+                // then override these properties in the QT configuration.
+                if (_outDir != null) {
+                        System.setProperty("EXEC_PATH", _outDir);
+                        System.setProperty("CONF_PATH", _outDir);
+                }
+
 		OtCfg.init() ;
 		BufferedReader rdr = new BufferedReader( new FileReader( _inputFile ) ) ;
 		try
@@ -135,9 +144,6 @@ public class UkirtTranslator
 				}
 			}
 		}
-
-		if( _outDir == null )
-			_outDir = System.getProperty( "user.dir" ) ;
 
 		try
 		{

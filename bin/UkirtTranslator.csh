@@ -10,8 +10,7 @@ set instConfigDir = ${OT_INSTALL_DIR}/install/cfg/ot/ukirt
 java -ms10m -mx500m -oss10m -DOMP -Dtelescope=${telescope} \
     -Dot.cfgdir=${instConfigDir}/ \
     -Dot.resource.cfgdir=${instConfigDir}/ \
-    -DEXEC_PATH=/ukirtdata/orac_data/sequences \
-    -DCONF_PATH=/ukirtdata/orac_data/configs \
+    -DqtConfig=${OMP_DIR}/config/qtSystem.conf.${telescope} \
     -cp ${CLASSPATH}:${instConfigDir} \
     edu.jach.qt.utils.UkirtTranslator \
     $argv[1-]
