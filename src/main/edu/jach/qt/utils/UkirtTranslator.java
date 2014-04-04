@@ -1,6 +1,8 @@
 package edu.jach.qt.utils ;
 
+import gemini.sp.SpAvTable;
 import gemini.sp.SpRootItem ;
+import gemini.sp.SpProg;
 import gemini.sp.SpItem ;
 import gemini.sp.SpObs ;
 import gemini.sp.SpTreeMan ;
@@ -49,6 +51,8 @@ public class UkirtTranslator
 			System.exit( 1 ) ;
 		}
 
+                prepareForTranslation(_root);
+
                 if (_useQueue) {
                         String queueFile = QtTools.createQueueXML(_root);
                         System.out.println("Wrote queue file: " + queueFile);
@@ -57,6 +61,47 @@ public class UkirtTranslator
                         getObservations( _root ) ;
                 }
 	}
+
+        /** Prepare a science program for translation.
+         *
+         * When the QT fetches an MSB from the database (for execution),
+         * the OMP actually edits the observations in the MSB to include
+         * additional information.  The lack of this information can
+         * cause a problem for the stand-alone UKIRT translator because
+         * it needs to be able to handle files which have been saved
+         * directly by the OT, and which have therefore not been through
+         * the OMP system.
+         *
+         * This method currently gets the project ID from the science
+         * program and inserts it into each observation.
+         */
+        private void prepareForTranslation(SpRootItem root) {
+                // We can only determine the project if we have a proper
+                // science program.
+                String project = null;
+                if (root instanceof SpProg) {
+                        SpProg prog = (SpProg) root;
+                        project = prog.getProjectID();
+                        // Unfortunately getProjectID returns "" instead of
+                        // null if it is not set.
+                        if (project.equals("")) {
+                                project = null;
+                        }
+                }
+
+                // Now iterate over observations and apply any corrections
+                // we need to them.
+                for (SpItem obs: SpTreeMan.findAllItems(root, SpObs.class.getName())) {
+                        SpAvTable table = obs.getTable();
+
+                        // Insert project if we found one in the program and
+                        // there is not one already present in the
+                        // observation.
+                        if ((project != null) && (! table.exists("project"))) {
+                                table.set("project", project);
+                        }
+                }
+        }
 
 	private void getObservations( SpItem root )
 	{
