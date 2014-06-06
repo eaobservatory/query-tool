@@ -116,3 +116,6 @@ ZOA: true
 
 #
 #TASKNAME: UKIRT_QT
+
+# Whether or not to connect to the JCMT "ENVIRO" task.
+connectToEnviro: false

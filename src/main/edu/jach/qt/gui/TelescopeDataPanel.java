@@ -92,15 +92,17 @@ public class TelescopeDataPanel extends JPanel implements ActionListener
 
 			hub.register( csomonHI ) ;
 
-                        try {Thread.sleep(1000);}
-                        catch (InterruptedException e) {}
-
 			// ENVIRO
-			enviroHI = new HubImplementor("ENVIRO", "jcmt-aux");
-			enviroHI.setCallBack("edu.jach.qt.djava.WVMPathResponseHandler");
-			enviroHI.setBuffers(900, 5, 1800, 12);
+			if ("true".equals(System.getProperty("connectToEnviro" , "false"))) {
+				try {Thread.sleep(1000);}
+				catch (InterruptedException e) {}
 
-			hub.register( enviroHI ) ;
+				enviroHI = new HubImplementor("ENVIRO", "jcmt-aux");
+				enviroHI.setCallBack("edu.jach.qt.djava.WVMPathResponseHandler");
+				enviroHI.setBuffers(900, 5, 1800, 12);
+
+				hub.register( enviroHI ) ;
+			}
 
 			// Closing
 			closeHI = new HubImplementor( "CloseDcHub" ) ;
