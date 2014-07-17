@@ -61,9 +61,8 @@
 	<!--    ==================================================== -->
 	<!--       OT PATHS                                          -->
 	<!--    ==================================================== -->
-	<property name="ot.dir" value="/jac_sw/orac3/install"/>
+	<property name="ot.dir" value="/jac_sw/orac3/output"/>
 	<property name="ot.lib.dir" value="${ot.dir}/lib"/>
-	<property name="ot.tools.dir" value="${ot.dir}/tools"/>
 
 
 	<path id="classpath">
@@ -172,7 +171,6 @@
 				</fileset>
 				<pathelement location="/jac_sw/itsroot/install/dcHub/javalib/dcHub.jar" />
 				<pathelement location="/jac_sw/drama/CurrentRelease/javalib" />
-				<pathelement location="${ot.tools.dir}/pal.jar" />
 			</classpath>
 		</javac>
 	</target>

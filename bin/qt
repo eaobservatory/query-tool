@@ -8,7 +8,7 @@ umask 002
 
 set OTROOT              = /jac_sw/orac3
 set JAVA		= java
-set baseOTConfigDir	= ${OTROOT}/install/cfg/ot
+set baseOTConfigDir	= ${OTROOT}/output/cfg/ot
 set qtConfig	        = ../config/qtSystem.conf
 set LOGPATH             = ""
 set NODEFER		= ""
@@ -270,10 +270,10 @@ set CLASSPATH = ${CLASSPATH}:../lib/activation.jar
 set CLASSPATH = ${CLASSPATH}:../lib/soap.jar
 set CLASSPATH = ${CLASSPATH}:../lib/log4j-1.2.14.jar
 set CLASSPATH = ${CLASSPATH}:../lib/jsamp.jar
-set CLASSPATH = ${CLASSPATH}:${OTROOT}/OT/install/classes
-set CLASSPATH = ${CLASSPATH}:${OTROOT}/GEMINI/install/classes
-set CLASSPATH = ${CLASSPATH}:${OTROOT}/ORAC/install/classes
-set CLASSPATH = ${CLASSPATH}:${OTROOT}/OMP/install/classes
+set CLASSPATH = ${CLASSPATH}:${OTROOT}/output/lib/ot.jar
+set CLASSPATH = ${CLASSPATH}:${OTROOT}/output/lib/gemini.jar
+set CLASSPATH = ${CLASSPATH}:${OTROOT}/output/lib/orac.jar
+set CLASSPATH = ${CLASSPATH}:${OTROOT}/output/lib/omp.jar
 set CLASSPATH = ${CLASSPATH}:../lib/jsky.jar
 set CLASSPATH = ${CLASSPATH}:../lib/diva.jar
 set CLASSPATH = ${CLASSPATH}:../lib/junit.jar
