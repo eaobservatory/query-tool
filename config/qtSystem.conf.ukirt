@@ -103,16 +103,16 @@ queryTimeout:15
 #hiddenColumns: msbid%checksum
 
 # Hidden columns ( `%` seperated ) for WFCAM
-hiddenColumns: msbid%checksum%disperser%obscount%remaining%type%pol%sky%moon%cloud%tau%coordstype%instrument%completion%schedpri
+#hiddenColumns: msbid%checksum%disperser%obscount%remaining%type%pol%sky%moon%cloud%tau%coordstype%instrument%completion%schedpri
 
 # Hidden columns ( `%` seperated ) for Cass
-#hiddenColumns: msbid%checksum%obscount%remaining%sky%moon%cloud%coordstype%completion
+hiddenColumns: msbid%checksum%obscount%remaining%sky%moon%cloud%coordstype%completion%pol
 
 # Directory for caching
 cacheFiles: orac_data
 
 # Zone of Avoidance constraint ticked
-ZOA: true
+ZOA: false
 
 #
 #TASKNAME: UKIRT_QT
