@@ -42,7 +42,6 @@ import edu.jach.qt.utils.OMPTimerListener ;
  * Created: Mon Apr  8 10:18:45 2002
  *
  * @author <a href="mailto: mrippa@jach.hawaii.edu"Mathew Rippa</a>
- * @version $Id$
  */
 
 @SuppressWarnings( "serial" )

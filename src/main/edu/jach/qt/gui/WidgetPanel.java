@@ -61,7 +61,6 @@ import gemini.util.JACLogger ;
  * Created: Tue Mar 20 16:41:13 2001
  *
  * @author <a href="mailto:mrippa@jach.hawaii.edu">Mathew Rippa</a>
- * $Id$
  */
 @SuppressWarnings( "serial" )
 public class WidgetPanel extends JPanel implements ActionListener , MoonChangeListener

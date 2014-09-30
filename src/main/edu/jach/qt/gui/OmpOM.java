@@ -53,7 +53,6 @@ import javax.swing.JFrame ;
  * starts off all subsequent OMP-OM specific classes.
  *
  * @author <a href="mailto:mrippa@jach.hawaii.edu">Mathew Rippa</a>
- * $Id$
  */
 @SuppressWarnings( "serial" )
 public class OmpOM extends JPanel

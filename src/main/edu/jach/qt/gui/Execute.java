@@ -38,8 +38,6 @@ import edu.jach.qt.utils.FileUtils ;
  * This class is a base class and should be extended to execute MSBs for
  * each telescope.  It basically is used to decide whether the project
  * being executed comes from the deferred or project list.
- * @author $Author$
- * @version $Id$
  */
 public class Execute
 {

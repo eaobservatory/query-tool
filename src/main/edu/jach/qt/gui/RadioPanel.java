@@ -41,7 +41,6 @@ import edu.jach.qt.gui.WidgetDataBag ;
  * Created: Tue Aug  7 09:35:40 2001
  *
  * @author <a href="mailto:mrippa@jach.hawaii.edu">Mathew Rippa</a>
- * $Id$
  */
 @SuppressWarnings( "serial" )
 public class RadioPanel extends WidgetPanel implements ActionListener

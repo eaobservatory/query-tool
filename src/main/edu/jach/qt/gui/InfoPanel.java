@@ -58,7 +58,6 @@ import edu.jach.qt.utils.SpQueuedMap ;
  *
  * @author <a href="mailto: "Mathew Rippa</a>
  * @author <a href="mailto:mrippa@jach.hawaii.edu">Mathew Rippa</a>
- * $Id$
  */
 @SuppressWarnings( "serial" )
 public class InfoPanel extends JPanel implements ActionListener , OMPTimerListener

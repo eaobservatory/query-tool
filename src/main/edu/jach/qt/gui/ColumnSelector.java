@@ -37,8 +37,6 @@ import edu.jach.qt.utils.MsbColumns ;
  * This class is used to display a series of checkboxes which allow a
  * user to define a subset of columns which they want to appear in a table.
  * Extends <code>JFrame</code> and implements <code>ActionListener</code>.
- * @author  $Author$
- * @version $Id$
  */
 @SuppressWarnings( "serial" )
 public class ColumnSelector extends JFrame implements ActionListener

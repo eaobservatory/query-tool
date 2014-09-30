@@ -39,8 +39,6 @@ import edu.jach.qt.utils.FileUtils ;
  * This is currently only usable for all OCSQUEUE CONFIG based observations.
  * @see edu.jach.qt.gui.Execute
  * Implements <code>Runnable</code>
- * @author $Author$
- * @version $Id$
  */
 public class ExecuteJCMT extends Execute
 {

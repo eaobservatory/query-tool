@@ -37,7 +37,6 @@ import gemini.util.JACLogger ;
  * Created: Mon Mar  4 15:05:01 2002
  *
  * @author <a href="mailto: mrippa@jach.hawaii.edu"Mathew Rippa</a>
- * @version  $Id$
  */
 
 @SuppressWarnings( "serial" )

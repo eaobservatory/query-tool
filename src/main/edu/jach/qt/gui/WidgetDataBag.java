@@ -34,7 +34,6 @@ import java.util.Hashtable ;
  * Created: Mon Jul 23 13:02:58 2001
  *
  * @author <a href="mailto:mrippa@jach.hawaii.edu">Mathew Rippa</a>
- * $Id$
  */
 public class WidgetDataBag
 {

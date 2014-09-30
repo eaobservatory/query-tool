@@ -26,9 +26,6 @@ import edu.jach.qt.utils.HTMLViewer ;
  * Display the current help information in local browser.
  * The help files are located in the configuration directory in the
  * sub directory Documents.
- * 
- * @author $Author$
- * @version $Id$
  */
 class HelpPage
 {

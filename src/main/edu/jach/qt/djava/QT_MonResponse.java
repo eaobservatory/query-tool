@@ -33,7 +33,6 @@ import ocs.utils.CommandReceiver ;
  * handler.
  *
  * @author <a href="mailto:mrippa@jach.hawaii.edu">Mathew Rippa</a>
- * $Id$ 
  */
 public class QT_MonResponse extends MonitorResponse
 {

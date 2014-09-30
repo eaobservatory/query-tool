@@ -32,7 +32,7 @@ import gemini.util.JACLogger ;
  * monitor messages created by the GetPath Success handler.
  *
  * @author <a href="mailto:mrippa@jach.hawaii.edu">Mathew Rippa</a>
- * @version $Id$ */
+ */
 public abstract class MonitorResponse extends DramaMonitor.MonResponse
 {
 	protected static JACLogger logger = JACLogger.getRootLogger() ;

@@ -51,7 +51,6 @@ import javax.swing.JOptionPane ;
  * Created: Tue Sep 25 18:02:01 2001
  *
  * @author <a href="mailto: mrippa@jach.hawaii.edu"Mathew Rippa</a>
- * @version $Id$
  */
 
 @SuppressWarnings( "serial" )

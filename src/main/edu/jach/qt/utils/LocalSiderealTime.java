@@ -18,7 +18,6 @@
  *
  *	Author : Sam Hart ( JAC )
  *	Based on Perl code by Tim Jenness which uses SLA Lib by Pat Wallace
- *  $Id$
  */
 package edu.jach.qt.utils ;
 

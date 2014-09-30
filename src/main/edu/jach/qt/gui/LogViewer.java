@@ -47,9 +47,6 @@ import java.util.Collections ;
  * All, FINE, INFO, WARNING, SEVERE
  * Messages including and more severe are shown when selecting the filter (i.e.
  * if the user selects INFO, only INFO,WARNING and SEVERE messages are displayed)
- *
- * @author   $Author$
- * @version  $Revision$
  */
 
 public class LogViewer

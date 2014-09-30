@@ -12,7 +12,6 @@ import gemini.util.JACLogger ;
 
  * @author M.Tan@roe.ac.uk
  * @author <a href="mailto:mrippa@jach.hawaii.edu">Mathew Rippa</a>
- * $Id$
  */
 public class ExecDtask extends Thread
 {

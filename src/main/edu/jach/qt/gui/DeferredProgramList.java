@@ -98,8 +98,6 @@ import edu.jach.qt.utils.QtTools ;
 
 /**
  * Implements the Deferred List functionality.
- * @author $Author$
- * @version $Id$
  */
 @SuppressWarnings( "serial" )
 final public class DeferredProgramList extends JPanel implements DropTargetListener , DragSourceListener , DragGestureListener , ActionListener , ListSelectionListener

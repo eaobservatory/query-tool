@@ -41,9 +41,6 @@ import orac.util.OrderedMap ;
  * Calibration entries are expected to be in the database and belong to a
  * project called "CAL".  This project must be unique and ONLY contain
  * calibration observations.
- *
- * @author   $Author$
- * @version  $Revision$
  */
 
 public class CalibrationList

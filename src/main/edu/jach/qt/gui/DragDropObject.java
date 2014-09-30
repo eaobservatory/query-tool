@@ -2,8 +2,6 @@
 // Observatory Control System, Gemini Telescopes Project.
 // See the file COPYRIGHT for complete details.
 //
-// $Id$
-//
 package edu.jach.qt.gui ;
 
 import java.awt.datatransfer.DataFlavor ;

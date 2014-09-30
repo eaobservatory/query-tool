@@ -88,7 +88,6 @@ import javax.swing.table.TableColumn ;
  * sort.  The JTable is placed in the bottom right of the JFrame.
  *
  * @author <a href="mailto:mrippa@jach.hawaii.edu">Mathew Rippa</a>
- * $Id$
  */
 @SuppressWarnings( "serial" )
 public class QtFrame extends JFrame implements ActionListener , MenuListener , ListSelectionListener

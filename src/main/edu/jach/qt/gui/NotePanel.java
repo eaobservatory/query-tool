@@ -44,8 +44,6 @@ import gemini.sp.SpNote ;
 
 /**
  * Constructs a scrollable text panel.
- * @author $Author$
- * @version $Id$
  */
 @SuppressWarnings( "serial" )
 final public class NotePanel extends JPanel

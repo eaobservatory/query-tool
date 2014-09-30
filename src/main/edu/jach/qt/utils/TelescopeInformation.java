@@ -46,9 +46,6 @@ import gemini.util.ObservingToolUtilities ;
  * telescopedata.xml.  Currently, only latitude and longitude are contained
  * in this file, but the class should be extensible to allow adding of new 
  * attributes without changing this class.
- *
- * @author    $Author$
- * @version   $Id$
  */
 public class TelescopeInformation
 {

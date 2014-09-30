@@ -39,7 +39,6 @@ import javax.swing.Timer ;
  * Created: Mon Apr  8 09:43:18 2002
  *
  * @author <a href="mailto:mrippa@jach.hawaii.edu">Mathew Rippa</a>
- * $Id$
  */
 @SuppressWarnings( "serial" )
 public class LogoPanel extends JLabel implements Runnable , ActionListener

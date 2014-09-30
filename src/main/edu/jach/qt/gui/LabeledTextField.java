@@ -37,7 +37,6 @@ import javax.swing.event.DocumentEvent ;
  * Created: Thu Mar 22 11:04:49 2001
  *
  * @author <a href="mailto: "Mathew Rippa</a>
- * @version $Id$
  */
 
 @SuppressWarnings( "serial" )

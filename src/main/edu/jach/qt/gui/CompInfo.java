@@ -25,7 +25,6 @@ import java.util.LinkedList ;
  * A linked list of interface components..
  *
  * @author <a href="mailto:mrippa@jach.hawaii.edu">Mathew Rippa</a>
- * $Id$
  */
 class CompInfo
 {

@@ -28,10 +28,6 @@ import java.util.Iterator ;
 /**
  * <code>SimpleMoon</code> is used to derive location and illumination
  * information about the moon.
- *
- * @author     $Author$
- * @version    $Revision$
- *
  */
 public class SimpleMoon implements OMPTimerListener
 {

@@ -32,7 +32,7 @@ import gemini.util.JACLogger ;
  * handle responses to the GetPath() method.
  *
  * @author <a href="mailto:mrippa@jach.hawaii.edu">Mathew Rippa</a>
- * $Id$ */
+ */
 public class TELPathResponseHandler extends DramaPath.ResponseHandler
 {
 	static JACLogger logger = JACLogger.getRootLogger() ;
@@ -87,31 +87,3 @@ public class TELPathResponseHandler extends DramaPath.ResponseHandler
 		return false ;
 	}
 }
-
-/*
- * $Log$
- * Revision 1.2  2002/07/29 22:40:44  dewitt
- * Updated commenting.
- *
- * Revision 1.1  2002/07/02 08:37:18  mrippa
- * Airmass callback
- *
- * Revision 1.6  2002/04/20 02:52:17  mrippa
- * Updated Log
- *
- * Revision 1.5  2002/04/20 02:41:24  mrippa
- * Added log4j functionality.
- *
- * Revision 1.4  2002/04/01 21:55:37  mrippa
- * Modified the setTaskLock() name to setPathLock()
- *
- * Revision 1.3  2002/03/07 20:27:43  mrippa
- * Unlock the CommandReceiver on error.!
- *
- * Revision 1.2  2002/03/05 22:12:10  mrippa
- * Provides CommanderReceiver to callback to.
- *
- * Revision 1.1  2002/02/24 06:55:06  mrippa
- * Added Drama support for monitoring tau values.
- *
- */
