@@ -26,10 +26,12 @@ import java.io.InputStreamReader ;
 import java.lang.Exception ;
 import java.net.URL ;
 import java.util.StringTokenizer ;
+import javax.imageio.ImageIO;
 import javax.swing.JLabel ;
 import javax.swing.SwingConstants ;
 import javax.swing.BorderFactory ;
 import javax.swing.ImageIcon ;
+import javax.swing.SwingWorker;
 import javax.swing.border.TitledBorder ;
 
 import edu.jach.qt.utils.OMPTimer ;
@@ -98,28 +100,31 @@ public class SatPanel extends JLabel implements OMPTimerListener
 			url = null ;
 		}
 		final URL thisURL = url ;
-		SwingWorker worker = new SwingWorker()
+		SwingWorker<TimedImage, Void> worker = new SwingWorker<TimedImage, Void>()
 		{
-			public Object construct()
+			public TimedImage doInBackground() throws Exception
 			{
-				try
-				{
-					String imageSuffix = URLReader.getImageString( thisURL ) ;
-					String timeString = imageSuffix.substring( imageSuffix.lastIndexOf( "/" ) + 1 , imageSuffix.lastIndexOf( "/" ) + 13 ) ;
+				String imageSuffix = URLReader.getImageString( thisURL ) ;
+				String timeString = imageSuffix.substring( imageSuffix.lastIndexOf( "/" ) + 1 , imageSuffix.lastIndexOf( "/" ) + 13 ) ;
 
+				return new TimedImage(timeString, ImageIO.read(new URL( InfoPanel.IMG_PREFIX + imageSuffix )));
+			}
+
+			protected void done() {
+				try {
+					TimedImage result = get();
 					// Make sure we scale the image
-					ImageIcon icon = new ImageIcon( new URL( InfoPanel.IMG_PREFIX + imageSuffix ) ) ;
-					icon.setImage( icon.getImage().getScaledInstance( 112 , 90 , Image.SCALE_DEFAULT ) ) ;
-					setIcon( icon ) ;
+					setIcon(new ImageIcon(result.image.getScaledInstance( 112 , 90 , Image.SCALE_DEFAULT ))) ;
 
-					satBorder.setTitle( timeString + " UTC" ) ;
+					satBorder.setTitle( result.time + " UTC" ) ;
 				}
-				catch( Exception e ){}
-				return null ;
+				catch( Exception e ){
+					System.err.println("Caught exception: " + e);
+				}
 			}
 		} ;
 		if( url != null )
-			worker.start() ;
+			worker.execute() ;
 	}
 
 	/**
@@ -136,6 +141,16 @@ public class SatPanel extends JLabel implements OMPTimerListener
 			currentWebPage = System.getProperty( "satelliteIRPage" ) ;
 
 		refreshIcon() ;
+	}
+
+	private class TimedImage {
+		public String time;
+		public Image image;
+
+		public TimedImage(String time, Image image) {
+			this.time = time;
+			this.image = image;
+		}
 	}
 }// SatPanel
 

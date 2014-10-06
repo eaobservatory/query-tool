@@ -43,6 +43,7 @@ import javax.swing.JPanel ;
 import javax.swing.JButton ;
 import javax.swing.ImageIcon ;
 import javax.swing.SwingConstants ;
+import javax.swing.SwingWorker;
 import javax.swing.border.MatteBorder ;
 
 import gemini.util.JACLogger ;
@@ -171,22 +172,27 @@ public class InfoPanel extends JPanel implements ActionListener , OMPTimerListen
 				ChecksumCacheThread checksumCacheThread = new ChecksumCacheThread() ;
 				checksumCacheThread.start() ;
 
-				final SwingWorker worker = new SwingWorker()
+				final SwingWorker<Boolean, Void> worker = new SwingWorker<Boolean, Void>()
 				{
-					Boolean isStatusOK ;
-
-					public Object construct()
+					public Boolean doInBackground()
 					{
-						isStatusOK = new Boolean( localQuerytool.queryMSB() ) ;
-						return isStatusOK ; // not used yet
+						Boolean isStatusOK = new Boolean( localQuerytool.queryMSB() ) ;
+						return isStatusOK ;
 					}
 
 					// Runs on the event-dispatching thread.
-					public void finished()
+					protected void done()
 					{
 						logoPanel.stop() ;
 						qtf.setCursor( normalCursor ) ;
 						searchButton.setEnabled( true ) ;
+
+						boolean isStatusOK = false;
+						try {
+						    isStatusOK = get();
+						}
+						catch (Exception e) {}
+
 						if( isStatusOK )
 						{
 							Thread tableFill = new Thread( msb_qtm ) ;
@@ -238,7 +244,7 @@ public class InfoPanel extends JPanel implements ActionListener , OMPTimerListen
 
 				localQuerytool.printXML() ;
 				logoPanel.start() ;
-				worker.start() ; // required for SwingWorker 3
+				worker.execute() ;
 			}
 		} ) ;
 

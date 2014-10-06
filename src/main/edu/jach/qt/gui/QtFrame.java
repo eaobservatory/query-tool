@@ -64,6 +64,7 @@ import javax.swing.ToolTipManager ;
 import javax.swing.ListSelectionModel ;
 import javax.swing.SwingUtilities ;
 import javax.swing.SwingConstants ;
+import javax.swing.SwingWorker;
 import javax.swing.ImageIcon ;
 import javax.swing.JMenuBar ;
 import javax.swing.JButton ;
@@ -104,6 +105,7 @@ public class QtFrame extends JFrame implements ActionListener , MenuListener , L
 	static JACLogger logger = JACLogger.getLogger( QtFrame.class ) ;
 	private MSBQueryTableModel msbQTM ;
 	private JTable projectTable ;
+	private TableSorter sorter;
 	private QtTable table ;
 	private int selRow ;
 	private JMenuItem saveItem ;
@@ -125,7 +127,6 @@ public class QtFrame extends JFrame implements ActionListener , MenuListener , L
 	private boolean queryExpired = false ;
 	private JScrollPane resultsPanel ;
 	private JScrollPane projectPane ;
-	SwingWorker msbWorker ;
 	private boolean menuBuilt = false ;
 	private CalibrationsPanel calibrationMenu ;
 
@@ -303,7 +304,7 @@ public class QtFrame extends JFrame implements ActionListener , MenuListener , L
 
 	private void tableSetup()
 	{
-		final TableSorter sorter = new TableSorter( msbQTM ) ;
+		sorter = new TableSorter( msbQTM ) ;
 		table = new QtTable( sorter ) ;
 		ToolTipManager.sharedInstance().unregisterComponent( table ) ;
 		ToolTipManager.sharedInstance().unregisterComponent( table.getTableHeader() ) ;
@@ -325,87 +326,6 @@ public class QtFrame extends JFrame implements ActionListener , MenuListener , L
 		{
 			public void mouseClicked( MouseEvent e )
 			{
-				msbWorker = new SwingWorker()
-				{
-					Boolean isStatusOK ;
-					Integer msbID ;
-					MsbColumns columns = MsbClient.getColumnInfo() ;
-
-					public Object construct()
-					{
-						InfoPanel.logoPanel.start() ;
-						logger.info( "Setting up staging panel for the first time." ) ;
-						om.enableList( false ) ;
-
-						if( om == null )
-							om = new OmpOM() ;
-
-						try
-						{
-							int checksumIndex = columns.getIndexForKey( "checksum" ) ;
-							String checksum = ( String )sorter.getValueAt( selRow , checksumIndex ) ;
-							if( remaining.isSelected() )
-							{
-								String time = SpQueuedMap.getSpQueuedMap().containsMsbChecksum( checksum ) ;
-								if( time != null )
-								{
-									int rtn = JOptionPane.showOptionDialog( null , "This observation was sent to the queue " + time + ".\n Continue ?" , "Duplicate execution warning" , JOptionPane.YES_NO_OPTION , JOptionPane.WARNING_MESSAGE , null , null , null ) ;
-									if( rtn == JOptionPane.NO_OPTION )
-									{
-										isStatusOK = new Boolean( false ) ;
-										return isStatusOK ;
-									}
-								}
-							}
-							int msbIndex = columns.getIndexForKey( "msbid" ) ;
-							msbID = new Integer( ( String )sorter.getValueAt( selRow , msbIndex ) ) ;
-							om.setSpItem( localQuerytool.fetchMSB( msbID ) ) ;
-							isStatusOK = new Boolean( true ) ;
-						}
-						catch( Exception e )
-						{
-							// exceptions are generally Null Pointers or Number Format Exceptions
-							JOptionPane.showMessageDialog( null , "Could not fetch MSB" , e.toString() , JOptionPane.ERROR_MESSAGE ) ;
-							logger.debug( e.getMessage() ) ;
-							isStatusOK = new Boolean( false ) ;
-						}
-						finally
-						{
-							om.enableList( true ) ;
-							InfoPanel.logoPanel.stop() ;
-						}
-						return isStatusOK ; // not used yet
-					}
-
-					// Runs on the event-dispatching thread.
-					public void finished()
-					{
-						InfoPanel.logoPanel.stop() ;
-						om.enableList( true ) ;
-
-						int msbIndex = columns.getIndexForKey( "msbid" ) ;
-						msbID = new Integer( ( String )sorter.getValueAt( selRow , msbIndex ) ) ;
-
-						if( isStatusOK )
-						{
-							DeferredProgramList.clearSelection() ;
-							om.addNewTree( msbID ) ;
-							buildStagingPanel() ;
-
-							int checksumIndex = columns.getIndexForKey( "checksum" ) ;
-							String checksum = ( String )sorter.getValueAt( selRow , checksumIndex ) ;
-							int projectIndex = columns.getIndexForKey( "projectid" ) ;
-							String projectid = ( String )sorter.getValueAt( selRow , projectIndex ) ;
-
-							logger.info( "MSB " + msbID + " INFO is: " + projectid + ", " + checksum ) ;
-						}
-						else
-						{
-							logger.error( "No msb ID retrieved!" ) ;
-						}
-					}
-				} ; // End inner class
-
 				if( SwingUtilities.isLeftMouseButton( e ) && e.getClickCount() == 2 )
 				{
 					if( selRow == -1 )
@@ -582,7 +502,7 @@ public class QtFrame extends JFrame implements ActionListener , MenuListener , L
 		if( table.getSelectedRow() != -1 )
 		{
 
-			msbWorker.start() ;
+			performSendToStagingArea();
 			om.updateDeferredList() ;
 		}
 		else
@@ -590,6 +510,102 @@ public class QtFrame extends JFrame implements ActionListener , MenuListener , L
 			JOptionPane.showMessageDialog( this , "Must select a project summary first!" ) ;
 		}
 
+	}
+
+	/**
+	 * Fetch the "selected" MSB and send it to the staging area.
+	 */
+	private void performSendToStagingArea() {
+		SwingWorker<Boolean, Void> msbWorker = new SwingWorker<Boolean, Void>()
+		{
+			Integer msbID ;
+			MsbColumns columns = MsbClient.getColumnInfo() ;
+
+			public Boolean doInBackground()
+			{
+				Boolean isStatusOK ;
+
+				InfoPanel.logoPanel.start() ;
+				logger.info( "Setting up staging panel for the first time." ) ;
+				om.enableList( false ) ;
+
+				if( om == null )
+					om = new OmpOM() ;
+
+				try
+				{
+					int checksumIndex = columns.getIndexForKey( "checksum" ) ;
+					String checksum = ( String )sorter.getValueAt( selRow , checksumIndex ) ;
+					if( remaining.isSelected() )
+					{
+						String time = SpQueuedMap.getSpQueuedMap().containsMsbChecksum( checksum ) ;
+						if( time != null )
+						{
+							int rtn = JOptionPane.showOptionDialog( null , "This observation was sent to the queue " + time + ".\n Continue ?" , "Duplicate execution warning" , JOptionPane.YES_NO_OPTION , JOptionPane.WARNING_MESSAGE , null , null , null ) ;
+							if( rtn == JOptionPane.NO_OPTION )
+							{
+								isStatusOK = new Boolean( false ) ;
+								return isStatusOK ;
+							}
+						}
+					}
+					int msbIndex = columns.getIndexForKey( "msbid" ) ;
+					msbID = new Integer( ( String )sorter.getValueAt( selRow , msbIndex ) ) ;
+					om.setSpItem( localQuerytool.fetchMSB( msbID ) ) ;
+					isStatusOK = new Boolean( true ) ;
+				}
+				catch( Exception e )
+				{
+					// exceptions are generally Null Pointers or Number Format Exceptions
+					JOptionPane.showMessageDialog( null , "Could not fetch MSB" , e.toString() , JOptionPane.ERROR_MESSAGE ) ;
+					logger.debug( e.getMessage() ) ;
+					isStatusOK = new Boolean( false ) ;
+				}
+				finally
+				{
+					om.enableList( true ) ;
+					InfoPanel.logoPanel.stop() ;
+				}
+				return isStatusOK ;
+			}
+
+			// Runs on the event-dispatching thread.
+			protected void done()
+			{
+				try {
+					Boolean isStatusOK = get();
+
+					InfoPanel.logoPanel.stop() ;
+					om.enableList( true ) ;
+
+					int msbIndex = columns.getIndexForKey( "msbid" ) ;
+					msbID = new Integer( ( String )sorter.getValueAt( selRow , msbIndex ) ) ;
+
+					if( isStatusOK )
+					{
+						DeferredProgramList.clearSelection() ;
+						om.addNewTree( msbID ) ;
+						buildStagingPanel() ;
+
+						int checksumIndex = columns.getIndexForKey( "checksum" ) ;
+						String checksum = ( String )sorter.getValueAt( selRow , checksumIndex ) ;
+						int projectIndex = columns.getIndexForKey( "projectid" ) ;
+						String projectid = ( String )sorter.getValueAt( selRow , projectIndex ) ;
+
+						logger.info( "MSB " + msbID + " INFO is: " + projectid + ", " + checksum ) ;
+					}
+					else
+					{
+						logger.error( "No msb ID retrieved!" ) ;
+					}
+				}
+				catch (Exception e) {
+					logger.error("Error retriving MSB: " + e);
+				}
+			}
+		} ; // End inner class
+
+		msbWorker.execute() ;
 	}
 
 	/**
@@ -891,7 +907,7 @@ public class QtFrame extends JFrame implements ActionListener , MenuListener , L
 			else
 			{
 				logger.debug( "Popup send MSB" ) ;
-				msbWorker.start() ;
+				performSendToStagingArea();
 			}
 		}
 	}
