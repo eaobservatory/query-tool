@@ -105,7 +105,16 @@ public class SatPanel extends JLabel implements OMPTimerListener
 			public TimedImage doInBackground() throws Exception
 			{
 				String imageSuffix = URLReader.getImageString( thisURL ) ;
-				String timeString = imageSuffix.substring( imageSuffix.lastIndexOf( "/" ) + 1 , imageSuffix.lastIndexOf( "/" ) + 13 ) ;
+
+				// The timestamp is now at the end of the URL before the file
+				// extension, separated by dots.  It is 12 digits long (plus
+				// one for the first dot.
+				int last_dot = imageSuffix.lastIndexOf('.');
+				int penu_dot = imageSuffix.lastIndexOf('.', last_dot - 1);
+
+				String timeString = ((last_dot > 0) && (penu_dot > 0) && (last_dot - penu_dot == 13))
+						  ? imageSuffix.substring(penu_dot + 1 , last_dot)
+						  : "Unknown";
 
 				return new TimedImage(timeString, ImageIO.read(new URL( InfoPanel.IMG_PREFIX + imageSuffix )));
 			}
