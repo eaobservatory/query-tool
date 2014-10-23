@@ -210,28 +210,6 @@ public class OmpOM extends JPanel
 		return safeToExit ;
 	}
 
-	/** public void getItems (SpItem spItem,DefaultMutableTreeNode node)
-	 is a public method to add ALL the items of a sp object into the
-	 JTree *recursively*.
-	 
-	 @param SpItem spItem,DefaultMutableTreeNode node
-	 @return  none
-	 @throws none
-	 
-	 */
-	private void getItems( SpItem spItem , MsbNode node )
-	{
-		Enumeration<SpItem> children = spItem.children() ;
-		while( children.hasMoreElements() )
-		{
-			SpItem childNode = children.nextElement() ;
-			DragDropObject ddo = new DragDropObject( childNode ) ;
-			MsbNode temp = new MsbNode( ddo ) ;
-			node.add( temp ) ;
-			getItems( childNode , temp ) ;
-		}
-	}
-
 	public void updateDeferredList()
 	{
 		deferredList.reload() ;
