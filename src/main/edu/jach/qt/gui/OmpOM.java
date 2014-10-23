@@ -32,7 +32,6 @@ import jsky.app.ot.OtFileIO ;
 /* ORAC imports */
 
 /* QT imports */
-import edu.jach.qt.utils.DragTreeCellRenderer ;
 import edu.jach.qt.utils.QtTools ;
 
 /* Standard imports */
