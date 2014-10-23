@@ -199,25 +199,6 @@ public class OmpOM extends JPanel
 	}
 
 	/**
-	 * Constructs a drag tree panel.
-	 * 
-	 * @return The <code>JSplitPanel</code> staging area.
-	 * @deprected Not Replaced.
-	 */
-	public JSplitPane getDragTreePanel()
-	{
-		DragDropObject ddo = new DragDropObject( spItem ) ;
-		MsbNode root = new MsbNode( ddo ) ;
-		getItems( spItem , root ) ;
-
-		DnDJTree ddt = new DnDJTree( root ) ;
-		ddt.setCellRenderer( new DragTreeCellRenderer() ) ;
-		JSplitPane splitPane = new JSplitPane( JSplitPane.HORIZONTAL_SPLIT , ptree , ddt ) ;
-
-		return splitPane ;
-	}
-
-	/**
 	 * See if we can shutdown the QT.  Checks whether the program tree still has
 	 * an MSB which requires actioning.
 	 */

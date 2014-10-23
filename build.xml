@@ -161,7 +161,6 @@
                         source="1.6">
 			<exclude name="edu/jach/qt/gui/MsbNode.java"/>
 			<exclude name="edu/jach/qt/gui/DragDropObject.java"/>
-			<exclude name="edu/jach/qt/gui/DnDJTree.java"/>
 			<classpath>
 				<fileset dir="${lib.dir}">
 					<include name="*.jar"/>
