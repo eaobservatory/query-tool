@@ -17,16 +17,14 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-package edu.jach.qt.utils ;
+package edu.jach.qt.utils;
 
-public class ProjectData
-{
-	public String projectID = null ;
-	public Integer priority = null ;
+public class ProjectData {
+    public String projectID = null;
+    public Integer priority = null;
 
-	public ProjectData( String projectID , Integer priority )
-	{
-		this.projectID = projectID ;
-		this.priority = priority ;
-	}
+    public ProjectData(String projectID, Integer priority) {
+        this.projectID = projectID;
+        this.priority = priority;
+    }
 }

@@ -17,23 +17,18 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-package edu.jach.qt.utils ;
+package edu.jach.qt.utils;
 
 /**
- * NoSuchParameterException.java
- *
+ * NoSuchParameterException
  *
  * Created: Fri Oct 11 16:54:53 2002
  *
- * @author <a href="mailto: mrippa@jach.hawaii.edu"Mathew Rippa</a>
+ * @author <a href="mailto:mrippa@jach.hawaii.edu">Mathew Rippa</a>
  */
-
-@SuppressWarnings( "serial" )
-public class NoSuchParameterException extends Exception
-{
-	public NoSuchParameterException( String message )
-	{
-		super( message ) ;
-	}
-
-}// NoSuchParameterException
+@SuppressWarnings("serial")
+public class NoSuchParameterException extends Exception {
+    public NoSuchParameterException(String message) {
+        super(message);
+    }
+}

@@ -28,15 +28,13 @@ import javax.swing.JFrame;
 import edu.jach.qt.app.Querytool;
 
 /**
- * GuiTest.java
- *
+ * GuiTest
  *
  * Created: Tue Aug 21 11:21:25 2001
  *
- * @author <a href="mailto: "Mathew Rippa</a>
+ * @author <a href="mailto:">Mathew Rippa</a>
  * @version
  */
-
 public class GuiTest extends JFCTestCase{
    private JFCTestHelper helper;
 
@@ -72,7 +70,7 @@ public class GuiTest extends JFCTestCase{
 
 	 //String search = "-Search".substring(1); //String with same text, different object.
 	 //assertTrue("Must have different ref to string containing 'Search'", !(search == "Search"));
-	 
+
 	 button = helper.findNamedComponent("Search", infoPanel, 0);
 	 assertNotNull("Must find 'Search' Button", button);
 
@@ -93,8 +91,5 @@ public class GuiTest extends JFCTestCase{
 
       //We should have created exactly one window
       assertEquals(1, windows.size());
-      
    }
-
-
-}// GuiTest
+}

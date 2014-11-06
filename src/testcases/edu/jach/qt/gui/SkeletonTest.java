@@ -27,7 +27,9 @@ import junit.framework.TestCase;
 import junit.framework.AssertionFailedError;
 
 /**
- * JUnit 3.2 testcases. Just a Skeleton test
+ * JUnit 3.2 testcases.
+ *
+ * Just a Skeleton test
  */
 public class SkeletonTest extends TestCase {
 

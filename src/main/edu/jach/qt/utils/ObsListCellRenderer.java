@@ -17,132 +17,123 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-package edu.jach.qt.utils ;
+package edu.jach.qt.utils;
 
-import java.text.NumberFormat ;
-import gemini.sp.SpItem ;
-import gemini.sp.SpObs ;
-import gemini.sp.SpMSB ;
-import java.awt.Component ;
-import java.awt.Color ;
-import javax.swing.DefaultListCellRenderer ;
-import javax.swing.ImageIcon ;
-import javax.swing.JList ;
-import gemini.util.JACLogger ;
+import java.text.NumberFormat;
+import gemini.sp.SpItem;
+import gemini.sp.SpObs;
+import gemini.sp.SpMSB;
+import java.awt.Component;
+import java.awt.Color;
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.ImageIcon;
+import javax.swing.JList;
+import gemini.util.JACLogger;
 
 /**
- * ObsListCellRenderer.java
+ * ObsListCellRenderer
  *
+ * Created: Mon Mar 4 15:05:01 2002
  *
- * Created: Mon Mar  4 15:05:01 2002
- *
- * @author <a href="mailto: mrippa@jach.hawaii.edu"Mathew Rippa</a>
+ * @author <a href="mailto:mrippa@jach.hawaii.edu">Mathew Rippa</a>
  */
+@SuppressWarnings("serial")
+public class ObsListCellRenderer extends DefaultListCellRenderer {
+    final static ImageIcon obsIcon = new ImageIcon(
+            System.getProperty("IMAG_PATH") + "observation.gif");
+    static final JACLogger logger = JACLogger
+            .getLogger(ObsListCellRenderer.class);
+    public static Color OracBlue = new Color(0x80, 0x80, 0xFF);
 
-@SuppressWarnings( "serial" )
-public class ObsListCellRenderer extends DefaultListCellRenderer
-{
-	final static ImageIcon obsIcon = new ImageIcon( System.getProperty( "IMAG_PATH" ) + "observation.gif" ) ;
-	static final JACLogger logger = JACLogger.getLogger( ObsListCellRenderer.class ) ;
-	public static Color OracBlue = new Color( 0x80 , 0x80 , 0xFF ) ;
+    // This is the only method defined by ListCellRenderer.
+    // We just reconfigure the JLabel each time we're called.
 
-	// This is the only method defined by ListCellRenderer.
-	// We just reconfigure the JLabel each time we're called.
+    public Component getListCellRendererComponent(JList list, Object value, // value
+                                                                            // to
+                                                                            // display
+            int index, // cell index
+            boolean isSelected, // is the cell selected
+            boolean cellHasFocus) // the list and the cell have the focus
+    {
+        if (value == null) {
+            logger.error("ObsListCellRenderer got a null value - this should not happen");
+            return this;
+        }
 
-	public Component getListCellRendererComponent( JList list , Object value , // value to display
-	int index , // cell index
-	boolean isSelected , // is the cell selected
-	boolean cellHasFocus ) // the list and the cell have the focus
-	{
-		if( value == null )
-		{
-			logger.error( "ObsListCellRenderer got a null value - this should not happen" ) ;
-			return this ;
-		}
+        if (!(value instanceof SpObs)) {
+            logger.error("ObsListCellRenderer got a value of type "
+                    + value.getClass().getName() + "- this should not happen");
+            return this;
+        }
+        String s = ((SpObs) value).getTitle();
+        // See if this observation is from the program list and has been done
+        // This is indicated by a * at the end of the title attribute
+        boolean hasBeenObserved = false;
+        String titleAttr = ((SpObs) value).getTitleAttr();
+        if (titleAttr != null && !(titleAttr.equals(""))) {
+            if (titleAttr.endsWith("*"))
+                hasBeenObserved = true;
+        }
+        String duration = ((SpObs) value).getTable().get("estimatedDuration");
+        Double d = new Double(duration);
+        NumberFormat nf = NumberFormat.getInstance();
+        nf.setMaximumFractionDigits(1);
+        nf.setMinimumFractionDigits(1);
+        try {
+            duration = nf.format(d);
+        } catch (Exception e) {
+        }
 
-		if( !( value instanceof SpObs ) )
-		{
-			logger.error( "ObsListCellRenderer got a value of type " + value.getClass().getName() + "- this should not happen" ) ;
-			return this ;
-		}
-		String s = ( ( SpObs )value ).getTitle() ;
-		// See if this observation is from the program list and has been done
-		// This is indicated by a * at the end of the title attribute
-		boolean hasBeenObserved = false ;
-		String titleAttr = ( ( SpObs )value ).getTitleAttr() ;
-		if( titleAttr != null && !( titleAttr.equals( "" ) ) )
-		{
-			if( titleAttr.endsWith( "*" ) )
-				hasBeenObserved = true ;
-		}
-		String duration = (( SpObs )value).getTable().get( "estimatedDuration" ) ;
-		Double d = new Double( duration ) ;
-		NumberFormat nf = NumberFormat.getInstance() ;
-		nf.setMaximumFractionDigits( 1 ) ;
-		nf.setMinimumFractionDigits( 1 ) ;
-		try
-		{
-			duration = nf.format( d ) ;
-		}
-		catch( Exception e ){}
+        s += "( " + duration + " seconds )";
+        setText(s);
+        boolean isDone = false;
 
-		s += "( " + duration + " seconds )" ;
-		setText( s ) ;
-		boolean isDone = false ;
+        String[] split = s.split("_");
+        int i = 0;
+        while (i < split.length) {
+            if (split[i++].equals("done")) {
+                isDone = true;
+                break;
+            }
+        }
 
-		String[] split = s.split( "_" ) ;
-		int i = 0 ;
-		while( i < split.length )
-		{
-			if( split[ i++ ].equals( "done" ) )
-			{
-				isDone = true ;
-				break ;
-			}
-		}
+        if (((SpObs) value).isOptional() == false)
+            setForeground(list.getForeground());
+        else
+            setForeground(Color.green);
 
-		if( ( ( SpObs )value ).isOptional() == false )
-			setForeground( list.getForeground() ) ;
-		else
-			setForeground( Color.green ) ;
+        if (((SpObs) value).isMSB() && ((SpObs) value).isSuspended()) {
+            setForeground(Color.red);
+        } else if (!((SpObs) value).isMSB()) {
+            // Find the parent MSB and see if it is suspended
+            SpItem parent = ((SpObs) value).parent();
+            while (parent != null && !(parent instanceof SpMSB))
+                parent = parent.parent();
 
-		if( ( ( SpObs )value ).isMSB() && ( ( SpObs )value ).isSuspended() )
-		{
-			setForeground( Color.red ) ;
-		}
-		else if( !( ( SpObs )value ).isMSB() )
-		{
-			// Find the parent MSB and see if it is suspended
-			SpItem parent = ( ( SpObs )value ).parent() ;
-			while( parent != null && !( parent instanceof SpMSB ) )
-				parent = parent.parent() ;
+            if (parent != null) {
+                if (((SpMSB) parent).isSuspended())
+                    setForeground(Color.red);
+            }
+        }
 
-			if( parent != null )
-			{
-				if( ( ( SpMSB )parent ).isSuspended() )
-					setForeground( Color.red ) ;
-			}
-		}
+        // Override the defaults
+        if (isDone)
+            setForeground(Color.blue); // Done calibrations appear red
 
-		// Override the defaults
-		if( isDone )
-			setForeground( Color.blue ) ; // Done calibrations appear red
-		
-		if( hasBeenObserved )
-			setForeground( Color.gray ) ; // Done Observations appear gray
+        if (hasBeenObserved)
+            setForeground(Color.gray); // Done Observations appear gray
 
-		setText( s ) ;
-		setIcon( obsIcon ) ;
+        setText(s);
+        setIcon(obsIcon);
 
-		if( isSelected )
-			setBackground( OracBlue ) ;
-		else
-			setBackground( list.getBackground() ) ;
+        if (isSelected)
+            setBackground(OracBlue);
+        else
+            setBackground(list.getBackground());
 
-		setEnabled( list.isEnabled() ) ;
-		setFont( list.getFont() ) ;
-		repaint() ;
-		return this ;
-	}
-
-}// ObsListCellRenderer
+        setEnabled(list.isEnabled());
+        setFont(list.getFont());
+        repaint();
+        return this;
+    }
+}

@@ -17,9 +17,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-package edu.jach.qt.utils ;
+package edu.jach.qt.utils;
 
-public interface OMPTimerListener
-{
-	public void timeElapsed() ;
+public interface OMPTimerListener {
+    public void timeElapsed();
 }

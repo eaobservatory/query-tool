@@ -19,43 +19,43 @@
  * Copyright (C) 2002-2010 Science and Technology Facilities Council.
  */
 
-package edu.jach.qt.utils ;
+package edu.jach.qt.utils;
 
-import java.awt.Component ;
-import javax.swing.JFrame ;
-import javax.swing.JOptionPane ;
+import java.awt.Component;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
-/** final public class ErrorBox is to bring up a box
- with a string to show errors
- Please note this is shown in a separate frame
- and there is no error handling treatment here.
-
- @version 1.0 1st June 1999
- @author M.Tan@roe.ac.uk
-
+/**
+ * ErrorBox is to bring up a box with a string to show errors.
+ *
+ * Please note this is shown in a separate frame and there is no error handling
+ * treatment here.
+ *
+ * @version 1.0 1st June 1999
+ * @author M.Tan@roe.ac.uk
  */
-@SuppressWarnings( "serial" )
-final public class ErrorBox extends JFrame
-{
-	/**  public ErrorBox(String _m) is
-	 the constructor. The class has only one constructor so far.
+@SuppressWarnings("serial")
+final public class ErrorBox extends JFrame {
+    /**
+     * public ErrorBox(String _m) is the constructor. The class has only one
+     * constructor so far.
+     *
+     * @param Strong m
+     * @return none
+     * @throws none
+     */
 
-	 @param   Strong m 
-	 @return  none
-	 @throws none
-	 */
+    public ErrorBox(String _m) {
+        m = _m;
+        JOptionPane.showMessageDialog(this, m, "Error Message",
+                JOptionPane.ERROR_MESSAGE);
+    }
 
-	public ErrorBox( String _m )
-	{
-		m = _m ;
-		JOptionPane.showMessageDialog( this , m , "Error Message" , JOptionPane.ERROR_MESSAGE ) ;
-	}
+    public ErrorBox(Component parent, String _m) {
+        m = _m;
+        JOptionPane.showMessageDialog(parent, m, "Error Message",
+                JOptionPane.ERROR_MESSAGE);
+    }
 
-	public ErrorBox( Component parent , String _m )
-	{
-		m = _m ;
-		JOptionPane.showMessageDialog( parent , m , "Error Message" , JOptionPane.ERROR_MESSAGE ) ;
-	}
-
-	private String m = new String() ;
+    private String m = new String();
 }

@@ -17,22 +17,19 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-package edu.jach.qt.utils ;
+package edu.jach.qt.utils;
 
-import java.io.FilenameFilter ;
-import java.io.File ;
+import java.io.FilenameFilter;
+import java.io.File;
 
-public class FileGlobFilter implements FilenameFilter
-{
-	String filterExpression ;
+public class FileGlobFilter implements FilenameFilter {
+    String filterExpression;
 
-	public FileGlobFilter( String expression )
-	{
-		filterExpression = expression ;
-	}
+    public FileGlobFilter(String expression) {
+        filterExpression = expression;
+    }
 
-	public boolean accept( File dir , String name )
-	{
-		return ( name.matches( filterExpression ) ) ;
-	}
+    public boolean accept(File dir, String name) {
+        return (name.matches(filterExpression));
+    }
 }
