@@ -1,13 +1,8 @@
 package edu.jach.qt.utils ;
 
-import gemini.util.ObservingToolUtilities ;
-
 import java.io.IOException ;
-import java.io.InputStream ;
 import java.io.PushbackReader ;
 import java.io.InputStreamReader ;
-import java.io.FileReader ;
-import java.net.URL ;
 
 /**
  Class TextReader provides methods for reading character type data an input 
@@ -52,28 +47,18 @@ public class TextReader
 	 *
 	 * @param fileName     Name of file dor reading.
 	 */
-	public TextReader( String fileName )
+	public TextReader( PushbackReader in )
 	{ 
 		// pre : fileName is the name of a file that can be opened for reading
 		// post: constructs a TextReader tied to the given file
 		try
 		{
-			final URL url = ObservingToolUtilities.resourceURL( fileName ) ;
-			if( url != null )
-			{
-				InputStream is = url.openStream() ;
-				InputStreamReader reader = new InputStreamReader( is ) ;
-				in = new PushbackReader( reader ) ;
-			}
-			else
-			{
-				in = new PushbackReader( new FileReader( fileName ) ) ;
-			}
+                        this.in = in;
 			rePrompting = false ;
 		}
 		catch( Exception e )
 		{
-			System.out.println( "Can't open input file '" + fileName + "', program terminated" ) ;
+			System.out.println( "Can't open input file, program terminated" ) ;
 			System.exit( 1 ) ;
 		}
 	}

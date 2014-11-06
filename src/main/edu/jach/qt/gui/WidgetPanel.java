@@ -32,7 +32,12 @@ import java.awt.event.ActionListener ;
 import java.awt.event.ActionEvent ;
 import java.awt.event.MouseAdapter ;
 import java.awt.event.MouseEvent ;
+import java.io.FileReader ;
+import java.io.InputStream ;
+import java.io.InputStreamReader ;
 import java.io.IOException ;
+import java.io.PushbackReader ;
+import java.net.URL ;
 import java.util.Hashtable ;
 import java.util.LinkedList ;
 import java.util.ListIterator ;
@@ -48,6 +53,7 @@ import edu.jach.qt.utils.MoonChangeListener ;
 
 /* Miscellaneous imports */
 import gemini.util.JACLogger ;
+import gemini.util.ObservingToolUtilities ;
 
 /**
  * WidgetPanel.java
@@ -115,7 +121,21 @@ public class WidgetPanel extends JPanel implements ActionListener , MoonChangeLi
 		GridBagConstraints gbc = new GridBagConstraints() ;
 		String widget , next , tmp ;
 
-		tr = new TextReader( file ) ;
+		final URL url = ObservingToolUtilities.resourceURL( file ) ;
+                PushbackReader in = null;
+		if( url != null )
+		{
+			InputStream is = url.openStream() ;
+			InputStreamReader reader = new InputStreamReader( is ) ;
+			in = new PushbackReader( reader ) ;
+		}
+		else
+		{
+			in = new PushbackReader( new FileReader( file ) ) ;
+		}
+
+		tr = new TextReader( in ) ;
+
 		while( tr.ready() )
 		{
 			//skip over comments
