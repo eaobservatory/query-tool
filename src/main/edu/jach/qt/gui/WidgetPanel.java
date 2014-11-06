@@ -20,7 +20,6 @@
 package edu.jach.qt.gui ;
 
 /* QT imports */
-import edu.jach.qt.utils.TextReader ;
 import edu.jach.qt.utils.SimpleMoon ;
 
 /* Standard imports */
@@ -36,7 +35,7 @@ import java.io.FileReader ;
 import java.io.InputStream ;
 import java.io.InputStreamReader ;
 import java.io.IOException ;
-import java.io.PushbackReader ;
+import java.io.BufferedReader ;
 import java.net.URL ;
 import java.util.Hashtable ;
 import java.util.LinkedList ;
@@ -72,7 +71,6 @@ import gemini.util.ObservingToolUtilities ;
 public class WidgetPanel extends JPanel implements ActionListener , MoonChangeListener
 {
 	static final JACLogger logger = JACLogger.getLogger( WidgetPanel.class ) ;
-	private TextReader tr ;
 	private int numComponents = 0 ;
 	private JCheckBox[] cb = new JCheckBox[ 3 ] ;
 	protected Hashtable<String,String> abbrevTable ;
@@ -122,33 +120,34 @@ public class WidgetPanel extends JPanel implements ActionListener , MoonChangeLi
 		String widget , next , tmp ;
 
 		final URL url = ObservingToolUtilities.resourceURL( file ) ;
-                PushbackReader in = null;
+                BufferedReader in = null;
 		if( url != null )
 		{
 			InputStream is = url.openStream() ;
 			InputStreamReader reader = new InputStreamReader( is ) ;
-			in = new PushbackReader( reader ) ;
+			in = new BufferedReader( reader ) ;
 		}
 		else
 		{
-			in = new PushbackReader( new FileReader( file ) ) ;
+			in = new BufferedReader( new FileReader( file ) ) ;
 		}
 
-		tr = new TextReader( in ) ;
-
-		while( tr.ready() )
+		while( in.ready() )
 		{
+                        String line = in.readLine().trim();
+
 			//skip over comments
-			while( tr.peek() == '#' )
-				tr.readLine() ;
+                        if ((line.length() == 0) || line.startsWith("#")) {
+                                continue;
+                        }
 
 			//which widget?
-			widget = tr.readWord() ;
+                        String[] words = line.split("\\s+", 2);
+			widget = words[0] ;
 
 			//JLabeldTextField
 			if( widget.equals( "JTextField" ) )
 			{
-				tr.readLine() ;
 				gbc.fill = GridBagConstraints.HORIZONTAL ;
 				gbc.anchor = GridBagConstraints.WEST ;
 				gbc.weightx = 100 ;
@@ -157,11 +156,10 @@ public class WidgetPanel extends JPanel implements ActionListener , MoonChangeLi
 				gbc.insets.bottom = 5 ;
 				gbc.insets.left = 10 ;
 				gbc.insets.right = 5 ;
-				addTextFields( "Labeled" , gbc ) ;
+				addTextFields( "Labeled" , gbc, in ) ;
 			}
 			else if( widget.equals( "JMinMaxField" ) )
 			{
-				tr.readLine() ;
 				gbc.fill = GridBagConstraints.HORIZONTAL ;
 				gbc.anchor = GridBagConstraints.NORTH ;
 				gbc.weightx = 100 ;
@@ -170,11 +168,10 @@ public class WidgetPanel extends JPanel implements ActionListener , MoonChangeLi
 				gbc.insets.bottom = 5 ;
 				gbc.insets.left = 10 ;
 				gbc.insets.right = 5 ;
-				addTextFields( "MinMax" , gbc ) ;
+				addTextFields( "MinMax" , gbc, in ) ;
 			}
 			else if( widget.equals( "JRangeField" ) )
 			{
-				tr.readLine() ;
 				gbc.fill = GridBagConstraints.HORIZONTAL ;
 				gbc.anchor = GridBagConstraints.NORTH ;
 				gbc.weightx = 100 ;
@@ -183,7 +180,7 @@ public class WidgetPanel extends JPanel implements ActionListener , MoonChangeLi
 				gbc.insets.bottom = 5 ;
 				gbc.insets.left = 10 ;
 				gbc.insets.right = 15 ;
-				addTextFields( "Range" , gbc ) ;
+				addTextFields( "Range" , gbc, in ) ;
 			}
 			else if( widget.equals( "JCheckBox" ) )
 			{
@@ -192,10 +189,9 @@ public class WidgetPanel extends JPanel implements ActionListener , MoonChangeLi
 				gbc.weightx = 100 ;
 				gbc.weighty = 0 ;
 				int num = 0 ;
-				next = tr.readLine() ;
 				do
 				{
-					next = tr.readLine() ;
+					next = in.readLine().trim() ;
 					if( next.equals( "[EndSection]" ) )
 						break ;
 
@@ -213,7 +209,7 @@ public class WidgetPanel extends JPanel implements ActionListener , MoonChangeLi
 			}
 			else if( widget.equals( "JRadioButtonGroup" ) || widget.equals( "JTextFieldGroup" ) )
 			{
-				CompInfo info = makeList() ;
+				CompInfo info = makeList(in) ;
 
 				WidgetPanel panel ;
 
@@ -275,7 +271,7 @@ public class WidgetPanel extends JPanel implements ActionListener , MoonChangeLi
 			}
 			else if( widget.equals( "JCheckBoxGroup" ) )
 			{
-				CompInfo info = makeList() ;
+				CompInfo info = makeList(in) ;
 
 				instrumentPanel = new ButtonPanel( abbrevTable , widgetBag , info ) ;
 				gbc.fill = GridBagConstraints.HORIZONTAL ;
@@ -376,12 +372,12 @@ public class WidgetPanel extends JPanel implements ActionListener , MoonChangeLi
 	 * @param gbc
 	 *            The GridBatConstraints class for these objects.
 	 */
-	private void addTextFields( String type , GridBagConstraints gbc )
+	private void addTextFields( String type , GridBagConstraints gbc, BufferedReader in ) throws IOException
 	{
 		String next , tmp ;
 		do
 		{
-			next = tr.readLine() ;
+			next = in.readLine().trim() ;
 			if( next.equals( "[EndSection]" ) )
 				break ;
 			
@@ -409,24 +405,23 @@ public class WidgetPanel extends JPanel implements ActionListener , MoonChangeLi
 	/**
 	 * Populate the linked list containing all of the text fields associated with this component.
 	 */
-	private CompInfo makeList()
+	private CompInfo makeList(BufferedReader in) throws IOException
 	{
 		String next , view , tmpTitle = "" ;
 		CompInfo info = new CompInfo() ;
 
-		next = tr.readLine() ;
 		do
 		{
-			next = tr.readLine() ;
+			next = in.readLine().trim() ;
 			if( next.equals( "GroupTitle" ) )
 			{
-				tmpTitle = tr.readLine() ;
+				tmpTitle = in.readLine().trim() ;
 				info.setTitle( tmpTitle ) ;
 				addTableEntry( tmpTitle ) ;
 			}
 			else if( next.equals( "view" ) )
 			{
-				view = tr.readLine() ;
+				view = in.readLine().trim() ;
 
 				if( view.trim().equals( "X" ) )
 					info.setView( BoxLayout.X_AXIS ) ;
