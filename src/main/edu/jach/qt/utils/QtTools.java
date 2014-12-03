@@ -55,17 +55,6 @@ import gemini.util.JACLogger;
  */
 public class QtTools {
 
-    /**
-     * COPIED FROM ORAC3-OM suite: public static void loadConfig(String
-     * filename) is a private method reads a configuration file and set up
-     * configuration. It is done by putting things into java system properties
-     * which is program-system-wide visible.
-     *
-     * @param String args
-     * @return none
-     * @throws none
-     */
-
     public static final int OOS_STATE_UNKNOWN = -1;
     public static final int OOS_STATE_IDLE = 0;
     public static final int OOS_STATE_STOPPED = 1;
@@ -76,6 +65,18 @@ public class QtTools {
 
     static final JACLogger logger = JACLogger.getLogger(QtTools.class);
 
+    /**
+     * Reads a configuration file and set up configuration.
+     *
+     * It is done by putting things into java system properties
+     * which is program-system-wide visible.
+     *
+     * COPIED FROM ORAC3-OM suite
+     *
+     * @param String args
+     * @return none
+     * @throws none
+     */
     public static void loadConfig(String filename) {
         try {
             String line_str;
@@ -87,9 +88,11 @@ public class QtTools {
 
             while ((line_str = d.readLine()) != null) {
                 lineno++;
+
                 if (line_str.length() > 0) {
-                    if (line_str.charAt(0) == '#')
+                    if (line_str.charAt(0) == '#') {
                         continue;
+                    }
 
                     try {
                         int colonpos = line_str.indexOf(":");
@@ -105,6 +108,7 @@ public class QtTools {
                     }
                 }
             }
+
             d.close();
             is.close();
 
@@ -127,9 +131,11 @@ public class QtTools {
 
         // Check for errors from the script
         int status = task.getExitStatus();
-        if (status != 0)
-            logger.error("Error reported by instrument startup script, code was: "
+        if (status != 0) {
+            logger.error(
+                    "Error reported by instrument startup script, code was: "
                     + status);
+        }
 
         try {
             task.join();
@@ -155,8 +161,9 @@ public class QtTools {
 
         // File will go into exec path and be called ukirt_yyyymmddThhmmss.xml
         String opDir = System.getProperty("EXEC_PATH");
-        if ("false".equalsIgnoreCase(System.getProperty("DRAMA_ENABLED")))
+        if ("false".equalsIgnoreCase(System.getProperty("DRAMA_ENABLED"))) {
             opDir = System.getProperty("user.home");
+        }
 
         Calendar cal = new GregorianCalendar(TimeZone.getTimeZone("UTC"));
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd'T'HHmmss");
@@ -176,6 +183,7 @@ public class QtTools {
             // for the obs.
             Vector<SpItem> obs = SpTreeMan.findAllItems(item,
                     SpObs.class.getName());
+
             for (SpItem obsItem : obs) {
                 SpObs currentObs = (SpObs) obsItem;
                 String inst = SpTreeMan.findInstrument(currentObs).type()
@@ -183,20 +191,24 @@ public class QtTools {
                 double time = currentObs.getElapsedTime();
                 fw.write("  <Entry totalDuration=\"" + time
                         + "\"  instrument=\"" + inst + "\">\n");
+
                 // if we are using the old translator, we need to add the exec
                 // path, otherwise we don't
                 String tName = translate((SpItem) currentObs, inst);
-                if (tName != null && tName.indexOf(opDir) == -1)
+                if (tName != null && tName.indexOf(opDir) == -1) {
                     fw.write("    " + opDir + File.separatorChar + tName + "\n");
-                else
+                } else {
                     fw.write("    " + tName + "\n");
+                }
 
                 fw.write("  </Entry>\n");
             }
+
             // Close off the entry
             fw.write("</QueueEntries>\n");
             fw.flush();
             fw.close();
+
         } catch (IOException ioe) {
             String message = "Unable to write queue file "
                     + fileName.toString();
@@ -209,7 +221,7 @@ public class QtTools {
 
     /**
      * String trans (SpItem observation) is a private method to translate an
-     * observation java object into an exec string and write it into a ascii
+     * observation java object into an exec string and write it into an ASCII
      * file where is located in "EXEC_PATH" directory and has a name stored in
      * "execFilename"
      *
@@ -220,25 +232,31 @@ public class QtTools {
     public static String translate(SpItem observation, String inst) {
         String tname = null;
         try {
-            if (observation == null)
+            if (observation == null) {
                 throw new NullPointerException(
                         "Observation passed to translate() is null");
+            }
 
             SpObs spObs = null;
+
             if (observation instanceof SpObs) {
                 spObs = (SpObs) observation;
             } else {
                 while (observation != null) {
                     observation = observation.parent();
+
                     if ((observation != null) && (observation instanceof SpObs)) {
                         spObs = (SpObs) observation;
+
                         break;
                     }
                 }
             }
-            if (spObs == null)
+
+            if (spObs == null) {
                 throw new NullPointerException(
                         "Observation passed to translate() not translatable");
+            }
 
             spObs.translate(new Vector<String>());
 
@@ -249,8 +267,10 @@ public class QtTools {
             properties.put(fileProperty, tname);
             logger.debug("System property " + fileProperty + " now set to "
                     + tname);
+
         } catch (NullPointerException e) {
             logger.fatal("Translation failed!, Missing value " + e);
+
         } catch (SpTranslationNotSupportedException sptnse) {
             logger.fatal("Translation failed! " + sptnse);
         }
@@ -285,8 +305,10 @@ public class QtTools {
 
     public static int oosTest(String[] cmd) {
         String argList = "";
-        for (int i = 0; i < cmd.length; i++)
+
+        for (int i = 0; i < cmd.length; i++) {
             argList += (" " + cmd[i]);
+        }
 
         logger.debug("oosTest argList is: " + argList);
 
@@ -297,9 +319,11 @@ public class QtTools {
                     p.getInputStream()));
 
             String s = null;
+
             while ((s = stdOut.readLine()) != null) {
                 System.err.println(s);
                 logger.debug("oosTest output: >>>" + s + "<<<");
+
                 if (s.endsWith("IS INACTIVE")) {
                     status = QtTools.OOS_INACTIVE;
                 } else if (s.endsWith("IS ACTIVE")) {
@@ -319,8 +343,10 @@ public class QtTools {
             }
 
             p.waitFor();
+
         } catch (IOException e) {
             logger.error("StdOut got IO exception:" + e.getMessage());
+
         } catch (InterruptedException ie) {
             logger.error("oosTest process was interrupted abnormally.", ie);
         }
@@ -338,27 +364,35 @@ public class QtTools {
      */
     public static SpItem fixupDeferredObs(SpItem obs, boolean duplicate) {
         SpItem deferredObs = null;
-        if (duplicate)
+
+        if (duplicate) {
             deferredObs = obs.deepCopy();
-        else
+        } else {
             deferredObs = obs;
+        }
 
         SpInstObsComp inst = SpTreeMan.findInstrument(obs);
-        if (inst != null)
+        if (inst != null) {
             insert(inst, deferredObs);
+        }
 
         SpTelescopeObsComp obsComp = SpTreeMan.findTargetList(obs);
-        if (obsComp != null)
+        if (obsComp != null) {
             insert(obsComp, deferredObs);
+        }
 
         SpDRObsComp recipe = SpTreeMan.findDRRecipe(obs);
-        if (recipe != null)
+        if (recipe != null) {
             insert(recipe, deferredObs);
+        }
+
         return deferredObs;
     }
 
     /**
-     * Convenience method. Clone an item for insertion, and insert.
+     * Clone an item for insertion, and insert.
+     *
+     * Convenience method.
      *
      * @param insert item to insert.
      * @param insertInto item to insert item into.
@@ -368,10 +402,13 @@ public class QtTools {
         boolean success = true;
         SpItem clonedItem = insert.deepCopy();
         SpInsertData spid = SpTreeMan.evalInsertInside(clonedItem, insertInto);
-        if (spid != null)
+
+        if (spid != null) {
             SpTreeMan.insert(spid);
-        else
+        } else {
             success = false;
+        }
+
         return success;
     }
 }

@@ -50,8 +50,8 @@ import gemini.util.ObservingToolUtilities;
  */
 public class TelescopeInformation {
     private Hashtable<String, String> data = new Hashtable<String, String>();
-    static final JACLogger logger = JACLogger
-            .getLogger(TelescopeInformation.class);
+    static final JACLogger logger =
+            JACLogger.getLogger(TelescopeInformation.class);
 
     /**
      * Constructor.
@@ -68,18 +68,22 @@ public class TelescopeInformation {
         // Get the name of the current config directory:
         String configDir = System.getProperty("qtConfig");
         int index = configDir.lastIndexOf(File.separatorChar);
-        if (index > 0)
+
+        if (index > 0) {
             configDir = configDir.substring(0, index) + File.separatorChar;
-        else
+        } else {
             configDir = "";
+        }
 
         String configFile = configDir + System.getProperty("telescopeConfig");
 
         // Now try to build a document from this file
         Reader reader = null;
         final URL url = ObservingToolUtilities.resourceURL(configFile);
+
         if (url != null) {
             InputStream is;
+
             try {
                 is = url.openStream();
                 reader = new InputStreamReader(is);
@@ -88,8 +92,11 @@ public class TelescopeInformation {
             }
         } else {
             File dataFile = new File(configFile);
-            if (!dataFile.exists() || !dataFile.canRead())
+
+            if (!dataFile.exists() || !dataFile.canRead()) {
                 logger.error("Telescope data file does not exist:" + configFile);
+            }
+
             try {
                 reader = new FileReader(dataFile);
             } catch (FileNotFoundException e) {
@@ -101,8 +108,11 @@ public class TelescopeInformation {
             char[] chars = new char[1024];
             int readLength = 0;
             StringBuffer buffer = new StringBuffer();
-            while ((readLength = reader.read(chars)) != -1)
+
+            while ((readLength = reader.read(chars)) != -1) {
                 buffer.append(chars, 0, readLength);
+            }
+
             reader.close();
             String buffer_z = buffer.toString();
 
@@ -130,13 +140,17 @@ public class TelescopeInformation {
         for (int oloop = 0; oloop < list.getLength(); oloop++) {
             String telescope = list.item(oloop).getAttributes()
                     .getNamedItem("name").getNodeValue();
+
             if (telescope.equalsIgnoreCase(name)) {
                 Node telNode = list.item(oloop);
                 NodeList children = telNode.getChildNodes();
-                for (int iloop = 0; iloop < children.getLength(); iloop++)
+
+                for (int iloop = 0; iloop < children.getLength(); iloop++) {
                     data.put(children.item(iloop).getNodeName().trim()
-                            .toLowerCase(), children.item(iloop)
-                            .getFirstChild().getNodeValue().trim());
+                                    .toLowerCase(),
+                            children.item(iloop).getFirstChild().getNodeValue()
+                                    .trim());
+                }
             }
         }
     }
@@ -145,7 +159,7 @@ public class TelescopeInformation {
      * See if the required information exists in the data.
      *
      * @param key The information required (e.g. latitude).
-     * @return <code>true</code> if the information exists ; <code>false</code>
+     * @return <code>true</code> if the information exists; <code>false</code>
      *         otherwise.
      */
     public boolean hasKey(Object key) {
@@ -176,6 +190,7 @@ public class TelescopeInformation {
             // Convert this to a char array to work out what we need to return
             // it as...
             char[] datum = value.toCharArray();
+
             for (int i = 0; i < datum.length; i++) {
                 if (Character.isLetter(datum[i])) {
                     // If any of the character is a letter, treat the return as
@@ -184,12 +199,14 @@ public class TelescopeInformation {
                     returnInt = false;
                     returnDbl = false;
                     break;
+
                 } else if (datum[i] == '.') {
                     // If we find a decimal point assume this is a double, but
                     // keep checking in case a letter follows
                     returnStr = false;
                     returnInt = false;
                     returnDbl = true;
+
                 } else if (Character.isDigit(datum[i]) && returnDbl == false) {
                     // If the charaacter is a number and we have not already
                     // assumed that the value is a double,
@@ -203,11 +220,12 @@ public class TelescopeInformation {
         }
 
         // Return the appropriate type of Object
-        if (returnStr)
+        if (returnStr) {
             return value;
-        else if (returnInt)
+        } else if (returnInt) {
             return new Integer(value);
-        else
+        } else {
             return new Double(value);
+        }
     }
 }

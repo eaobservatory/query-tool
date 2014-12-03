@@ -34,7 +34,7 @@ import javax.swing.event.TableModelListener;
 import javax.swing.event.TableModelEvent;
 
 /**
- * ****USED BY THE OMP-QT TO SORT THE COLUMNS OF THE RESULT TABLE.****
+ * Used by the OMP-QT to sort the columns of the result table.
  *
  * In a chain of data manipulators some behaviour is common. TableMap provides
  * most of this behavour and can be subclassed by filters that only need to

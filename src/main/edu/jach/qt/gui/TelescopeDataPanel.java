@@ -54,10 +54,10 @@ import javax.swing.JOptionPane;
  */
 @SuppressWarnings("serial")
 public class TelescopeDataPanel extends JPanel implements ActionListener {
-    static final JACLogger logger = JACLogger
-            .getLogger(TelescopeDataPanel.class);
-    public static boolean DRAMA_ENABLED = "true".equals(System
-            .getProperty("DRAMA_ENABLED"));
+    static final JACLogger logger =
+            JACLogger.getLogger(TelescopeDataPanel.class);
+    public static boolean DRAMA_ENABLED = "true".equals(
+            System.getProperty("DRAMA_ENABLED"));
     public static String tauString = "-----";
     private static JLabel csoTauValue;
     private static JLabel airmassValue;
@@ -78,7 +78,9 @@ public class TelescopeDataPanel extends JPanel implements ActionListener {
     private final static boolean preferWvm = true;
 
     /**
-     * Constructor. This constructor does the following tasks:
+     * Constructor.
+     *
+     * This constructor does the following tasks:
      * <ul>
      * <li>Checks to see if the QT is locked and if so converts to scenario
      * mode.
@@ -163,9 +165,10 @@ public class TelescopeDataPanel extends JPanel implements ActionListener {
         if (acceptUpdates && !output.equals(tauString)) {
             if (lastCSOValue.equals("")) {
                 lastCSOValue = output;
-                if (WidgetPanel.getAtmospherePanel() != null)
+                if (WidgetPanel.getAtmospherePanel() != null) {
                     WidgetPanel.getAtmospherePanel().setTextField("tau:",
                             output);
+                }
             } else if (WidgetPanel.getAtmospherePanel() != null
                     && lastCSOValue.equals(WidgetPanel.getAtmospherePanel()
                             .getText("tau:"))) {
@@ -177,6 +180,7 @@ public class TelescopeDataPanel extends JPanel implements ActionListener {
                 acceptUpdates = false;
             }
         }
+
         csoTauValue.setText(output);
     }
 
@@ -189,6 +193,7 @@ public class TelescopeDataPanel extends JPanel implements ActionListener {
         if (preferWvm || (!haveCsoReading)) {
             haveWvmReading = true;
             setTau(val);
+
             if (!haveWvmToolTip) {
                 setTauTooltip("Changed to JCMT WVM");
                 haveWvmToolTip = true;
@@ -209,6 +214,7 @@ public class TelescopeDataPanel extends JPanel implements ActionListener {
             } else {
                 setTauTooltip("JCMT WVM, time = " + time);
             }
+
             haveWvmToolTip = true;
             haveCsoToolTip = false;
         }
@@ -239,6 +245,7 @@ public class TelescopeDataPanel extends JPanel implements ActionListener {
             } else {
                 setTauTooltip("Source = " + source);
             }
+
             haveCsoToolTip = true;
             haveWvmToolTip = false;
         }
@@ -257,8 +264,9 @@ public class TelescopeDataPanel extends JPanel implements ActionListener {
     }
 
     /**
-     * Builds the components of the interface. Adds buttons, labels and other
-     * panels.
+     * Builds the components of the interface.
+     *
+     * Adds buttons, labels and other panels.
      */
     public void config() {
         setBackground(Color.black);
@@ -349,8 +357,9 @@ public class TelescopeDataPanel extends JPanel implements ActionListener {
     }
 
     /**
-     * Implementation of java.awt.event.ActionListener interface. This will
-     * update the following fields:
+     * Implementation of java.awt.event.ActionListener interface.
+     *
+     * This will update the following fields:
      * <ul>
      * <li>The Tau value
      * <li>The airmass value
@@ -377,29 +386,33 @@ public class TelescopeDataPanel extends JPanel implements ActionListener {
         boolean grey = false;
         boolean bright = false;
 
-        if (moon.isUp() == false)
+        if (moon.isUp() == false) {
             dark = true;
-        else if (moon.getIllumination() < 0.25)
+        } else if (moon.getIllumination() < 0.25) {
             grey = true;
-        else
+        } else {
             bright = true;
+        }
 
         infoPanel.getFrame().getWidgets().setMoonUpdatable(true);
         RadioPanel moonPanel = WidgetPanel.getMoonPanel();
         if (moonPanel != null) {
-            ListIterator<JRadioButton> iter = moonPanel.radioElems
-                    .listIterator(0);
+            ListIterator<JRadioButton> iter =
+                    moonPanel.radioElems.listIterator(0);
+
             while (iter.hasNext()) {
                 JToggleButton abstractButton = iter.next();
+
                 if (abstractButton.getText().equalsIgnoreCase("dark")
-                        && dark == true)
+                        && dark == true) {
                     abstractButton.setSelected(true);
-                else if (abstractButton.getText().equalsIgnoreCase("Grey")
-                        && grey == true)
+                } else if (abstractButton.getText().equalsIgnoreCase("Grey")
+                        && grey == true) {
                     abstractButton.setSelected(true);
-                else if (abstractButton.getText().equalsIgnoreCase("Bright")
-                        && bright == true)
+                } else if (abstractButton.getText().equalsIgnoreCase("Bright")
+                        && bright == true) {
                     abstractButton.setSelected(true);
+                }
             }
         }
 
@@ -407,28 +420,33 @@ public class TelescopeDataPanel extends JPanel implements ActionListener {
 
         WidgetPanel widgetPanel = infoPanel.getFrame().getWidgets();
         Component[] components = widgetPanel.getComponents();
+
         for (int i = 0; i < widgetPanel.getComponentCount(); i++) {
             if (components[i] instanceof LabeledTextField) {
                 ((LabeledTextField) components[i]).setText("");
+
             } else if (components[i] instanceof LabeledRangeTextField) {
                 LabeledRangeTextField lrtf = (LabeledRangeTextField) components[i];
+
                 if (components[i].getName().equalsIgnoreCase("airmass")) {
                     if (!TelescopeDataPanel.airmassValue.getText().equals(
                             tauString)) {
-                        String zCurrentAirmass = TelescopeDataPanel.airmassValue
-                                .getText();
+                        String zCurrentAirmass =
+                                TelescopeDataPanel.airmassValue.getText();
                         Double currentAirmass;
                         try {
                             currentAirmass = new Double(zCurrentAirmass);
                             double upperLimit = currentAirmass;
-                            upperLimit = upperLimit - 20. * upperLimit / 100.;
-                            if (upperLimit < 1.)
-                                upperLimit = 1.;
+                            upperLimit = upperLimit - 20.0 * upperLimit / 100.0;
+                            if (upperLimit < 1.0) {
+                                upperLimit = 1.0;
+                            }
 
                             double lowerLimit = currentAirmass;
-                            lowerLimit = lowerLimit + 20. * lowerLimit / 100.;
-                            if (lowerLimit > 3.)
-                                lowerLimit = 3.;
+                            lowerLimit = lowerLimit + 20.0 * lowerLimit / 100.0;
+                            if (lowerLimit > 3.0) {
+                                lowerLimit = 3.0;
+                            }
 
                             lrtf.setLowerText(new Double(upperLimit));
                             lrtf.setUpperText(new Double(lowerLimit));
@@ -441,6 +459,7 @@ public class TelescopeDataPanel extends JPanel implements ActionListener {
                 } else if (components[i].getName().equalsIgnoreCase(
                         "observation")) {
                     lrtf.restartTimer();
+
                     // Wait for the timer to restart
                     while (!(lrtf.timerRunning())) {
                         try {
@@ -452,25 +471,32 @@ public class TelescopeDataPanel extends JPanel implements ActionListener {
                             break;
                         }
                     }
+
                     // Wait a bit more to make sure things have settled down
                     try {
                         Thread.sleep(100);
                     } catch (InterruptedException ie) {
                         logger.debug("Interrupted wating for timer!", ie);
                     }
+
                     infoPanel.getFrame().resetCurrentMSB();
+
                 } else {
-                    LabeledRangeTextField temp = (LabeledRangeTextField) components[i];
+                    LabeledRangeTextField temp =
+                            (LabeledRangeTextField) components[i];
                     temp.setLowerText("");
                     temp.setUpperText("");
                 }
             }
         }
+
         int runSearch = JOptionPane.showConfirmDialog(this,
                 "Perform fresh search with defaults ?",
                 "Perform fresh search with defaults ?",
                 JOptionPane.YES_NO_OPTION);
-        if (runSearch == 0)
+
+        if (runSearch == 0) {
             InfoPanel.searchButton.doClick();
+        }
     }
 }

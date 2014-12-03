@@ -19,11 +19,7 @@
 
 package edu.jach.qt.gui;
 
-/* QT imports */
-import edu.jach.qt.app.Querytool;
-
 /* Standard imports */
-
 import java.awt.Cursor;
 import java.awt.GridBagLayout;
 import java.awt.Color;
@@ -33,8 +29,6 @@ import java.awt.Insets;
 import java.awt.Component;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import edu.jach.qt.utils.OMPTimer;
-import edu.jach.qt.utils.OMPTimerListener;
 
 import java.net.URL;
 import java.util.TimerTask;
@@ -46,13 +40,18 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingWorker;
 import javax.swing.border.MatteBorder;
 
+/* OT imports */
 import gemini.util.JACLogger;
 import gemini.util.ObservingToolUtilities;
 
+/* QT imports */
+import edu.jach.qt.app.Querytool;
 import edu.jach.qt.utils.SpQueuedMap;
+import edu.jach.qt.utils.OMPTimer;
+import edu.jach.qt.utils.OMPTimerListener;
 
 /**
- * InfoPanel
+ * InfoPanel.
  *
  * Created: Tue Apr 24 16:28:12 2001
  *
@@ -61,42 +60,32 @@ import edu.jach.qt.utils.SpQueuedMap;
 @SuppressWarnings("serial")
 public class InfoPanel extends JPanel implements ActionListener,
         OMPTimerListener {
-    private static final JACLogger logger = JACLogger
-            .getLogger(InfoPanel.class);
+    private static final JACLogger logger =
+            JACLogger.getLogger(InfoPanel.class);
 
     /**
-     * The constant <code>LOGO_IMAGE</code> specifies the String location for
-     * the QT logo image.
-     *
+     * Specifies the String location for the QT logo image.
      */
     public static final String LOGO_IMAGE = System.getProperty("qtLogo");
 
     /**
-     * The constant <code>SAT_WEBPAGE</code> specifies the webpage containing
-     * the String of the latest image to show.
-     *
+     * Specifies the webpage containing the String of the latest image to show.
      */
-    public static final String SAT_WEBPAGE = System
-            .getProperty("satellitePage");
+    public static final String SAT_WEBPAGE =
+            System.getProperty("satellitePage");
 
     /**
-     * The constant <code>IMG_PREFIX</code> is the static portion of the image
-     * source URL.
-     *
+     * The static portion of the image source URL.
      */
     public static final String IMG_PREFIX = System.getProperty("imagePrefix");
 
     /**
-     * The variable <code>searchButton</code> is the button clicked to start a
-     * query.
-     *
+     * The button clicked to start a query.
      */
     public static JButton searchButton = new JButton();
 
     /**
-     * The variable <code>logoPanel</code> is a reference to the easily get the
-     * LogoPanel.
-     *
+     * A reference to the easily get the LogoPanel.
      */
     public static LogoPanel logoPanel = new LogoPanel();
     private TelescopeDataPanel telescopeInfoPanel;
@@ -156,10 +145,10 @@ public class InfoPanel extends JPanel implements ActionListener,
         final ImageIcon icon = new ImageIcon(url);
         InfoPanel.searchButton.setIcon(icon);
         blinkIcon();
-        InfoPanel.searchButton
-                .setHorizontalTextPosition(SwingConstants.LEADING);
-        InfoPanel.searchButton
-                .setToolTipText("Red icon - all constraints disabled");
+        InfoPanel.searchButton.setHorizontalTextPosition(
+                SwingConstants.LEADING);
+        InfoPanel.searchButton.setToolTipText(
+                "Red icon - all constraints disabled");
         InfoPanel.searchButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 searchButton.setEnabled(false);
@@ -168,13 +157,15 @@ public class InfoPanel extends JPanel implements ActionListener,
                 qtf.updateColumnSizes();
                 qtf.repaint(0);
 
-                ChecksumCacheThread checksumCacheThread = new ChecksumCacheThread();
+                ChecksumCacheThread checksumCacheThread =
+                        new ChecksumCacheThread();
                 checksumCacheThread.start();
 
-                final SwingWorker<Boolean, Void> worker = new SwingWorker<Boolean, Void>() {
+                final SwingWorker<Boolean, Void> worker =
+                        new SwingWorker<Boolean, Void>() {
                     public Boolean doInBackground() {
-                        Boolean isStatusOK = new Boolean(localQuerytool
-                                .queryMSB());
+                        Boolean isStatusOK = new Boolean(
+                                localQuerytool.queryMSB());
                         return isStatusOK;
                     }
 
@@ -193,6 +184,7 @@ public class InfoPanel extends JPanel implements ActionListener,
                         if (isStatusOK) {
                             Thread tableFill = new Thread(msb_qtm);
                             tableFill.start();
+
                             try {
                                 tableFill.join();
                             } catch (InterruptedException iex) {
@@ -200,8 +192,8 @@ public class InfoPanel extends JPanel implements ActionListener,
                             }
 
                             synchronized (this) {
-                                Thread projectFill = new Thread(qtf
-                                        .getProjectModel());
+                                Thread projectFill = new Thread(
+                                        qtf.getProjectModel());
                                 projectFill.start();
                                 try {
                                     projectFill.join();
@@ -211,30 +203,33 @@ public class InfoPanel extends JPanel implements ActionListener,
 
                                 qtf.initProjectTable();
                             }
+
                             msb_qtm.setProjectId("All");
                             qtf.setColumnSizes();
                             qtf.resetScrollBars();
                             logoPanel.stop();
                             qtf.setCursor(normalCursor);
-                            if (queryTask != null)
+
+                            if (queryTask != null) {
                                 queryTask.cancel();
+                            }
+
                             qtf.setQueryExpired(false);
-                            String queryTimeout = System
-                                    .getProperty("queryTimeout");
+                            String queryTimeout = System.getProperty(
+                                    "queryTimeout");
                             System.out.println("Query expiration: "
                                     + queryTimeout);
                             Integer timeout = new Integer(queryTimeout);
                             if (timeout != 0) {
-                                int delay = timeout * 60 * 1000; // Conversion
-                                                                 // from minutes
-                                                                 // of
-                                                                 // milliseconds
+                                // Conversion from minutes of milliseconds
+                                int delay = timeout * 60 * 1000;
                                 queryTask = OMPTimer.getOMPTimer().setTimer(
                                         delay, infoPanel, false);
                             }
                         }
                     }
                 };
+
                 logger.info("Query Sent");
 
                 localQuerytool.printXML();
@@ -316,8 +311,7 @@ public class InfoPanel extends JPanel implements ActionListener,
     }
 
     /**
-     * <code>getXMLquery</code> will get the String that contains the current
-     * XML defining the query.
+     * Get the String that contains the current XML defining the query.
      *
      * @return a <code>String</code> representing the query.
      */
@@ -344,20 +338,23 @@ public class InfoPanel extends JPanel implements ActionListener,
     }
 
     /**
-     * <code>actionPerformed</code> satisfies the ActionListener interface. This
-     * is called when any ActionEvents are triggered by registered
-     * ActionListeners. In this case it's either the exit button or the fetchMSB
-     * button.
+     * Satisfies the ActionListener interface.
+     *
+     * This is called when any ActionEvents are triggered by registered
+     * ActionListeners. In this case it's either the exit button or the
+     * fetchMSB button.
      *
      * @param e an <code>ActionEvent</code> value
      */
     public void actionPerformed(ActionEvent e) {
         Object source = e.getSource();
         if (source == exitButton) {
-            if (TelescopeDataPanel.DRAMA_ENABLED)
+            if (TelescopeDataPanel.DRAMA_ENABLED) {
                 telescopeInfoPanel.closeHub();
+            }
 
             qtf.exitQT();
+
         } else if (source == fetchMSB) {
             qtf.sendToStagingArea();
         }
@@ -366,17 +363,21 @@ public class InfoPanel extends JPanel implements ActionListener,
     public void timeElapsed() {
         System.out.println("Query has expired");
         qtf.setQueryExpired(true);
-        if (queryTask != null)
+
+        if (queryTask != null) {
             queryTask.cancel();
+        }
     }
 
     private void blinkIcon() {
         javax.swing.Timer t = new javax.swing.Timer(500, new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                ImageIcon imageIcon = (ImageIcon) InfoPanel.searchButton
-                        .getIcon();
-                if (imageIcon == null)
+                ImageIcon imageIcon =
+                        (ImageIcon) InfoPanel.searchButton.getIcon();
+                if (imageIcon == null) {
                     return;
+                }
+
                 String iconName = imageIcon.toString();
                 if (iconName == null || iconName.indexOf("green_light") != -1) {
                     return;
@@ -384,8 +385,8 @@ public class InfoPanel extends JPanel implements ActionListener,
                     if (iconName.indexOf("_light1") != -1) {
                         // Set light to light 2
                         try {
-                            java.net.URL url = new java.net.URL(iconName
-                                    .replaceAll("light1", "light2"));
+                            java.net.URL url = new java.net.URL(
+                                    iconName.replaceAll("light1", "light2"));
                             ImageIcon icon = new ImageIcon(url);
                             InfoPanel.searchButton.setIcon(icon);
                         } catch (Exception x) {
@@ -394,8 +395,8 @@ public class InfoPanel extends JPanel implements ActionListener,
                     } else if (iconName.indexOf("_light2") != -1) {
                         // Set light to light 1
                         try {
-                            java.net.URL url = new java.net.URL(iconName
-                                    .replaceAll("light2", "light1"));
+                            java.net.URL url = new java.net.URL(
+                                    iconName.replaceAll("light2", "light1"));
                             ImageIcon icon = new ImageIcon(url);
                             InfoPanel.searchButton.setIcon(icon);
                         } catch (Exception x) {
@@ -407,6 +408,7 @@ public class InfoPanel extends JPanel implements ActionListener,
                 }
             }
         });
+
         t.start();
     }
 

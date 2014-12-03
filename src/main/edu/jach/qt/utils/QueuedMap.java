@@ -43,14 +43,18 @@ public class QueuedMap {
     }
 
     public static synchronized QueuedMap getQueuedMap() {
-        if (queuedMap == null)
+        if (queuedMap == null) {
             queuedMap = new QueuedMap();
+        }
+
         return queuedMap;
     }
 
     public boolean put(String key, Object value) {
-        if (key == null)
+        if (key == null) {
             return false;
+        }
+
         String hashed = hash(key);
         boolean replacement = treeMap.containsKey(hashed);
         treeMap.put(hashed, value);
@@ -58,22 +62,29 @@ public class QueuedMap {
     }
 
     public boolean contains(String key) {
-        if (key == null)
+        if (key == null) {
             return false;
+        }
+
         String hashed = hash(key);
         return treeMap.containsKey(hashed);
     }
 
     protected String hash(String input) {
-        if (input == null)
+        if (input == null) {
             return "";
+        }
+
         String hashed = input;
         byte[] bytes = input.getBytes();
+
         if (tryDigest) {
             try {
                 MessageDigest md = MessageDigest.getInstance(algorythm);
                 md.update(bytes);
+
                 return new String(md.digest());
+
             } catch (NoSuchAlgorithmException nsae) {
                 System.out.println("Cannot use " + algorythm
                         + " falling back to CRC32");
@@ -84,6 +95,7 @@ public class QueuedMap {
             crc32.update(bytes);
             hashed = String.valueOf(crc32.getValue());
         }
+
         return hashed;
     }
 }

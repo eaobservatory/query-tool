@@ -95,15 +95,20 @@ public class XmlUtils {
         int selectionCount = -1;
         NodeList rows = doc.getDocumentElement().getElementsByTagName(tagName);
         int count;
+
         for (count = 0; count < rows.getLength(); count++) {
             Element e = getElement(doc, tagName, count);
             String projectId = getValue(e, "projectid");
+
             if (projectId.trim().equals(selection.trim())) {
                 selectionCount++;
-                if (selectionCount == index)
+
+                if (selectionCount == index) {
                     break;
+                }
             }
         }
+
         return (Element) rows.item(count);
     }
 
@@ -131,20 +136,27 @@ public class XmlUtils {
         // given an XML document and a tag name return the number of ocurances
         int rowCount = 0;
         NodeList rows = doc.getDocumentElement().getElementsByTagName(tagName);
+
         for (int i = 0; i < rows.getLength(); i++) {
             Element e = getElement(doc, tagName, i);
             String projectId = getValue(e, "projectid");
-            if (projectId.trim().equals(includeThis.trim()))
+
+            if (projectId.trim().equals(includeThis.trim())) {
                 rowCount++;
+            }
         }
+
         return rowCount;
     }
 
     /**
      * Given a person element, must get the element specified by the tagName,
-     * then must traverse that Node to get the value. Step1) get Element of name
-     * tagName from e Step2) cast element to Node and then traverse it for its
-     * non-whitespace, cr/lf value. Step3) return it!
+     * then must traverse that Node to get the value.
+     *
+     * Step1) get Element of name tagName from e
+     * Step2) cast element to Node and then traverse it for its
+     *        non-whitespace, cr/lf value.
+     * Step3) return it!
      *
      * NOTE: Element is a subclass of Node
      *
@@ -162,12 +174,15 @@ public class XmlUtils {
 
             // find a value whose value is non-whitespace
             String s;
+
             for (int i = 0; i < nodes.getLength(); i++) {
                 s = nodes.item(i).getNodeValue().trim();
-                if (s.equals("") || s.equals("\r"))
+
+                if (s.equals("") || s.equals("\r")) {
                     continue;
-                else
+                } else {
                     return s;
+                }
             }
         } catch (Exception ex) {
             logger.error("XmlUtils getValueAt() threw exception", ex);
@@ -180,27 +195,35 @@ public class XmlUtils {
         // Conver string to document
         Document doc;
         String checksum = null;
+
         try {
-            DocumentBuilderFactory factory = DocumentBuilderFactory
-                    .newInstance();
+            DocumentBuilderFactory factory =
+                    DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
             doc = builder.parse(new InputSource(new StringReader(xmlString)));
         } catch (Exception e) {
             return checksum;
         }
+
         // Get the MSB element
         Element msb = getElement(doc, "SpMSB", 0);
+
         // Get the attribute checksum
         if (msb != null) {
             checksum = msb.getAttribute("checksum");
+
         } else {
             // See if this is an obs which is a MSB
             Element obs = getElement(doc, "SpObs", 0);
-            if (obs != null)
+
+            if (obs != null) {
                 checksum = obs.getAttribute("checksum");
+            }
         }
-        if (checksum == null)
+
+        if (checksum == null) {
             logger.error("Unable to determine checksum");
+        }
 
         return checksum;
     }
@@ -213,85 +236,106 @@ public class XmlUtils {
     public static void printNodeTypes(NodeList rows) {
         logger.debug("\tenumerating NodeList (of Elements):");
         logger.debug("\tClass\tNT\tNV");
+
         // iterate a given Node list
         for (int ri = 0; ri < rows.getLength(); ri++) {
             Node n = rows.item(ri);
-            if (n instanceof Element)
+
+            if (n instanceof Element) {
                 System.out.print("\tElement");
-            else
+            } else {
                 System.out.print("\tNode");
+            }
 
             // print out Node type and Node value
             logger.debug("\t" + n.getNodeType() + "\t" + n.getNodeValue());
         }
+
         logger.debug("");
     }
 
     private static String convertStringToTime(String oldTime) {
-        if (oldTime == null || oldTime.length() == 0)
+        if (oldTime == null || oldTime.length() == 0) {
             return "00h00m00s";
+        }
 
         boolean hasHours = (oldTime.indexOf('h') != -1);
         boolean hasMinutes = (oldTime.indexOf('m') != -1);
         StringBuffer rtn = new StringBuffer(oldTime);
+
         // Delete the seconds fields and replace other chars with colons
         rtn.deleteCharAt(oldTime.indexOf('s'));
-        if (hasMinutes)
-            rtn.setCharAt(oldTime.indexOf('m'), ':');
-        else
-            rtn.insert(0, "00:");
 
-        if (hasHours)
-            rtn.setCharAt(oldTime.indexOf('h'), ':');
-        else
+        if (hasMinutes) {
+            rtn.setCharAt(oldTime.indexOf('m'), ':');
+        } else {
             rtn.insert(0, "00:");
+        }
+
+        if (hasHours) {
+            rtn.setCharAt(oldTime.indexOf('h'), ':');
+        } else {
+            rtn.insert(0, "00:");
+        }
 
         StringTokenizer st = new StringTokenizer(rtn.toString(), ":");
         int index = 1;
         String hh = "00";
         String mm = "00";
         String ss = "00";
+
         while (st.hasMoreTokens()) {
             String toke = st.nextToken();
+
             switch (index) {
                 case 1:
-                    if (toke.length() < 2)
+                    if (toke.length() < 2) {
                         hh = "0" + toke;
-                    else
+                    } else {
                         hh = toke;
+                    }
                     break;
+
                 case 2:
-                    if (toke.length() < 2)
+                    if (toke.length() < 2) {
                         mm = "0" + toke;
-                    else
+                    } else {
                         mm = toke;
+                    }
                     break;
+
                 case 3:
-                    if (toke.length() < 2)
+                    if (toke.length() < 2) {
                         ss = "0" + toke;
-                    else
+                    } else {
                         ss = toke;
+                    }
                     break;
             }
+
             index++;
         }
-        return hh + "h" + mm + "m" + ss + "s";
 
+        return hh + "h" + mm + "m" + ss + "s";
     }
 
     public static OrderedMap<String, MSBTableModel> getNewModel(Document doc,
             String tag) {
-        if (doc == null)
+        if (doc == null) {
             return null;
+        }
 
         // Get all of the summary nodes
         NodeList rows = doc.getDocumentElement().getElementsByTagName(tag);
-        if (rows.getLength() == 0)
+        if (rows.getLength() == 0) {
             return null;
+        }
 
         NodeList children;
+
         // Create an OrderedMap containing the data for each project
-        OrderedMap<String, MSBTableModel> projectData = new OrderedMap<String, MSBTableModel>();
+        OrderedMap<String, MSBTableModel> projectData =
+                new OrderedMap<String, MSBTableModel>();
 
         // Loop through all the elements in the document and start populating
         // the new model.
@@ -299,9 +343,11 @@ public class XmlUtils {
         Element e;
         String currentProject;
         MSBTableModel currentModel;
+
         for (int i = 0; i < rowsLength; i++) {
             e = getElement(doc, tag, i);
             currentProject = getValue(e, "projectid");
+
             // Loop through all the models to see if there is one we can use
             if (projectData.find(currentProject) == null) {
                 currentModel = new MSBTableModel(currentProject);
@@ -318,16 +364,24 @@ public class XmlUtils {
             int numberOfChildren = children.getLength();
             String name;
             String value;
+
             for (int j = 0; j < numberOfChildren; j++) {
                 name = children.item(j).getNodeName().trim();
-                if (name.charAt(0) == '#')
+
+                if (name.charAt(0) == '#') {
                     continue;
+                }
+
                 value = getValue(e, name);
-                if ("timeest".equals(name))
+
+                if ("timeest".equals(name)) {
                     value = convertStringToTime(value);
+                }
+
                 currentModel.insertData(name, value);
             }
         }
+
         return projectData;
     }
 
@@ -339,6 +393,7 @@ public class XmlUtils {
     public static Vector<ProjectData> getProjectData(String xmlFileName) {
         Document projectDoc = null;
         DOMParser parser = new DOMParser();
+
         try {
             parser.parse(xmlFileName);
             projectDoc = parser.getDocument();
@@ -352,13 +407,17 @@ public class XmlUtils {
             sxe.printStackTrace();
             return null;
         }
+
         Vector<String> projectIds = new Vector<String>();
         Vector<ProjectData> projectData = new Vector<ProjectData>();
+
         if (projectDoc != null) {
             int nElements = getSize(projectDoc, "SpMSBSummary");
+
             for (int i = 0; i < nElements; i++) {
                 String value = getValue(
                         getElement(projectDoc, "SpMSBSummary", i), "projectid");
+
                 if (!(projectIds.contains(value))) {
                     String priority = getValue(
                             getElement(projectDoc, "SpMSBSummary", i),
@@ -371,15 +430,19 @@ public class XmlUtils {
                 }
             }
         }
+
         projectData.add(0, new ProjectData("All", new Integer(0)));
+
         return projectData;
     }
 
     public static void clearProjectData() {
         File pdf = new File(System.getProperty("msbSummary") + "."
                 + System.getProperty("user.name"));
-        if (pdf.exists() && pdf.canWrite())
+
+        if (pdf.exists() && pdf.canWrite()) {
             pdf.delete();
+        }
     }
 
     public static int getProjectCount() {
@@ -424,10 +487,10 @@ public class XmlUtils {
                 String s = new String(ch);
                 s = s.substring(start, start + length);
                 s = s.trim();
+
                 // This was added to trap some random problems with the SAX
-                // parser.
-                // I don't really know why it happens, but this trap should get
-                // rid of them
+                // parser.  I don't really know why it happens, but this trap
+                // should get rid of them.
                 if (!s.equals("") && !ids.contains(s) && start != 0
                         && length != 1) {
                     ids.add(s);

@@ -51,7 +51,9 @@ public class TimePanel extends JPanel implements OMPTimerListener {
     JLabel lst;
 
     /**
-     * Constructor. Sets a timer running and adds a listener.
+     * Constructor.
+     *
+     * Sets a timer running and adds a listener.
      */
     public TimePanel() {
         setBackground(Color.black);
@@ -92,8 +94,9 @@ public class TimePanel extends JPanel implements OMPTimerListener {
     }
 
     /**
-     * Implenetation of the <code>timeElapsed</code> interface. Updates the
-     * associated label.
+     * Implenetation of the <code>timeElapsed</code> interface.
+     *
+     * Updates the associated label.
      *
      * @param evt the <code>TimerEvent</code> to consume.
      */

@@ -100,10 +100,10 @@ public class WidgetPanel extends JPanel implements ActionListener,
     }
 
     /**
-     * The <code>parseConfig</code> method is the single method responsible for
-     * configuring Widgets at runtime. It parses the config/qtWidgets.conf file
-     * and sets up the determined widgets as described by the current layout
-     * manager.
+     * The single method responsible for configuring Widgets at runtime.
+     *
+     * It parses the config/qtWidgets.conf file and sets up the determined
+     * widgets as described by the current layout manager.
      *
      * @param file a <code>String</code> value
      * @exception IOException if an error occurs
@@ -117,6 +117,7 @@ public class WidgetPanel extends JPanel implements ActionListener,
 
         final URL url = ObservingToolUtilities.resourceURL(file);
         BufferedReader in = null;
+
         if (url != null) {
             InputStream is = url.openStream();
             InputStreamReader reader = new InputStreamReader(is);
@@ -148,6 +149,7 @@ public class WidgetPanel extends JPanel implements ActionListener,
                 gbc.insets.left = 10;
                 gbc.insets.right = 5;
                 addTextFields("Labeled", gbc, in);
+
             } else if (widget.equals("JMinMaxField")) {
                 gbc.fill = GridBagConstraints.HORIZONTAL;
                 gbc.anchor = GridBagConstraints.NORTH;
@@ -158,6 +160,7 @@ public class WidgetPanel extends JPanel implements ActionListener,
                 gbc.insets.left = 10;
                 gbc.insets.right = 5;
                 addTextFields("MinMax", gbc, in);
+
             } else if (widget.equals("JRangeField")) {
                 gbc.fill = GridBagConstraints.HORIZONTAL;
                 gbc.anchor = GridBagConstraints.NORTH;
@@ -168,16 +171,19 @@ public class WidgetPanel extends JPanel implements ActionListener,
                 gbc.insets.left = 10;
                 gbc.insets.right = 15;
                 addTextFields("Range", gbc, in);
+
             } else if (widget.equals("JCheckBox")) {
                 gbc.fill = GridBagConstraints.HORIZONTAL;
                 gbc.anchor = GridBagConstraints.WEST;
                 gbc.weightx = 100;
                 gbc.weighty = 0;
                 int num = 0;
+
                 do {
                     next = in.readLine().trim();
-                    if (next.equals("[EndSection]"))
+                    if (next.equals("[EndSection]")) {
                         break;
+                    }
 
                     cb[num] = new JCheckBox(next);
                     cb[num].setHorizontalAlignment(SwingConstants.CENTER);
@@ -189,6 +195,7 @@ public class WidgetPanel extends JPanel implements ActionListener,
                     tmp = abbreviate(next);
                     abbrevTable.put(next, tmp);
                 } while (true);
+
             } else if (widget.equals("JRadioButtonGroup")
                     || widget.equals("JTextFieldGroup")) {
                 CompInfo info = makeList(in);
@@ -196,11 +203,12 @@ public class WidgetPanel extends JPanel implements ActionListener,
                 WidgetPanel panel;
 
                 if (info.getView() != -1) {
-                    if (widget.equals("JRadioButtonGroup"))
+                    if (widget.equals("JRadioButtonGroup")) {
                         panel = new RadioPanel(abbrevTable, widgetBag, info);
-                    else
+                    } else {
                         panel = new JTextFieldPanel(abbrevTable, widgetBag,
                                 info);
+                    }
 
                     panel.setName(info.getTitle());
                     gbc.insets.top = 0;
@@ -212,6 +220,7 @@ public class WidgetPanel extends JPanel implements ActionListener,
                     gbc.anchor = GridBagConstraints.NORTH;
                     gbc.weightx = 50;
                     gbc.weighty = 0;
+
                     if (info.getView() == BoxLayout.Y_AXIS) {
                         if (info.getTitle().equalsIgnoreCase("Clouds")) {
                             add(panel, gbc, 2, 20, 1, info.getSize() + 1);
@@ -228,17 +237,21 @@ public class WidgetPanel extends JPanel implements ActionListener,
                             add(panel, gbc, numRadPanels, 20, 1,
                                     info.getSize() + 1);
                         }
+
                         totalNumRadRows += info.getSize() + 2;
+
                     } else {
                         add(panel, gbc, 0, numComponents + totalNumRadRows, 1,
                                 2);
                     }
 
                     numRadPanels++;
+
                 } else {
                     logger.error("FAILED to set radio position!");
                     System.exit(1);
                 }
+
             } else if (widget.equals("JCheckBoxGroup")) {
                 CompInfo info = makeList(in);
 
@@ -247,24 +260,28 @@ public class WidgetPanel extends JPanel implements ActionListener,
                 gbc.weightx = 100;
                 gbc.weighty = 100;
                 gbc.insets.left = 10;
-                if (info.getTitle().equalsIgnoreCase("Instruments"))
+
+                if (info.getTitle().equalsIgnoreCase("Instruments")) {
                     add(instrumentPanel, gbc, 0, 20, 2, 1);
-                else
+                } else {
                     add(instrumentPanel, gbc, 0, 21, 2, 1);
+                }
+
             } else if (!widget.equals("[Section]")) {
                 break;
             }
 
-        }// end while
+        }
 
         setButtons();
 
-    }// parseConfig
+    }
 
     /**
-     * Special function for setting the value of the Moon buttons. Assumes that
-     * dark occurs when the moon is set, grey when the moon is up but less than
-     * 25% illuminated and bright otherwise.
+     * Special function for setting the value of the Moon buttons.
+     *
+     * Assumes that dark occurs when the moon is set, grey when the moon is up
+     * but less than 25% illuminated and bright otherwise.
      */
     public void setButtons() {
         if (!ignoreMoonUpdates) {
@@ -277,37 +294,46 @@ public class WidgetPanel extends JPanel implements ActionListener,
             boolean grey = false;
             boolean bright = false;
 
-            if (moon.isUp() == false)
+            if (moon.isUp() == false) {
                 dark = true;
-            else if (moon.getIllumination() < .25)
+            } else if (moon.getIllumination() < 0.25) {
                 grey = true;
-            else
+            } else {
                 bright = true;
+            }
 
             Object tmp = ht.get("Moon");
+
             if (tmp != null && tmp instanceof LinkedList) {
                 ListIterator iter = ((LinkedList) tmp).listIterator(0);
+
                 while (iter.hasNext()) {
                     Object o = iter.next();
+
                     if (o instanceof JRadioButton) {
                         JToggleButton abstractButton = (JRadioButton) o;
+
                         abstractButton.addMouseListener(new MouseAdapter() {
                             public void mouseClicked(MouseEvent e) {
                                 ignoreMoonUpdates = true;
                                 ToolTipManager.sharedInstance()
                                         .registerComponent(moonPanel);
-                                moonPanel
-                                        .setToolTipText("Auto update disabled by user ; use \"Set Default\" to enable");
+                                moonPanel.setToolTipText(
+                                        "Auto update disabled by user;"
+                                        + " use \"Set Default\" to enable");
                                 moonPanel.setBackground(Color.red);
                             }
                         });
+
                         String buttonName = abstractButton.getText();
-                        if (buttonName.equalsIgnoreCase("Dark"))
+
+                        if (buttonName.equalsIgnoreCase("Dark")) {
                             abstractButton.setSelected(dark);
-                        else if (buttonName.equalsIgnoreCase("Grey"))
+                        } else if (buttonName.equalsIgnoreCase("Grey")) {
                             abstractButton.setSelected(grey);
-                        else if (buttonName.equalsIgnoreCase("Bright"))
+                        } else if (buttonName.equalsIgnoreCase("Bright")) {
                             abstractButton.setSelected(bright);
+                        }
                     }
                 }
             }
@@ -315,11 +341,14 @@ public class WidgetPanel extends JPanel implements ActionListener,
     }
 
     /**
-     * Set whether ot not updates should be made for each query. This is turned
-     * off by the mouse listener associated with each button on the moon panel
+     * Set whether or not updates should be made for each query.
+     *
+     * This is turned off by the mouse listener associated with each button
+     * on the moon panel
      */
     public void setMoonUpdatable(boolean flag) {
         ignoreMoonUpdates = !flag;
+
         if (flag == true && moonPanel != null) {
             moonPanel.setToolTipText(null);
             moonPanel.setBackground(instrumentPanel.getBackground());
@@ -330,19 +359,23 @@ public class WidgetPanel extends JPanel implements ActionListener,
      * Add a nes Text Field to the JTextFieldPanel.
      *
      * @param type The type of the textfield. Must one of
-     *            <italic>Labeled</italic>, <italic>MinMax</italic> or
-     *            <italic>Range</italic>.
+     *            <i>Labeled</i>, <i>MinMax</i> or
+     *            <i>Range</i>.
      * @param gbc The GridBatConstraints class for these objects.
      */
     private void addTextFields(String type, GridBagConstraints gbc,
             BufferedReader in) throws IOException {
         String next, tmp;
+
         do {
             next = in.readLine().trim();
-            if (next.equals("[EndSection]"))
+
+            if (next.equals("[EndSection]")) {
                 break;
+            }
 
             String toolTip = null;
+
             if (next.matches(".*-.*")) {
                 String[] split = next.split("-");
                 next = split[0].trim();
@@ -352,15 +385,17 @@ public class WidgetPanel extends JPanel implements ActionListener,
             tmp = abbreviate(next);
             abbrevTable.put(next, tmp);
 
-            if (type.equals("Labeled"))
+            if (type.equals("Labeled")) {
                 add(new LabeledTextField(abbrevTable, widgetBag, next, toolTip),
                         gbc, 0, numComponents, 1, 1);
-            else if (type.equals("MinMax"))
+            } else if (type.equals("MinMax")) {
                 add(new LabeledMinMaxTextField(abbrevTable, widgetBag, next,
                         toolTip), gbc, 0, numComponents, 1, 1);
-            else if (type.equals("Range"))
+            } else if (type.equals("Range")) {
                 add(new LabeledRangeTextField(abbrevTable, widgetBag, next,
                         toolTip), gbc, 0, numComponents, 1, 1);
+            }
+
         } while (true);
     }
 
@@ -374,31 +409,37 @@ public class WidgetPanel extends JPanel implements ActionListener,
 
         do {
             next = in.readLine().trim();
+
             if (next.equals("GroupTitle")) {
                 tmpTitle = in.readLine().trim();
                 info.setTitle(tmpTitle);
                 addTableEntry(tmpTitle);
+
             } else if (next.equals("view")) {
                 view = in.readLine().trim();
 
-                if (view.trim().equals("X"))
+                if (view.trim().equals("X")) {
                     info.setView(BoxLayout.X_AXIS);
-                else if (view.trim().equals("Y"))
+                } else if (view.trim().equals("Y")) {
                     info.setView(BoxLayout.Y_AXIS);
+                }
+
             } else if (next.equals("[EndSection]")) {
                 break;
+
             } else {
                 info.addElem(next);
                 addTableEntry(next);
             }
+
         } while (true);
+
         return info;
     }
 
     /**
-     * The <code>addTableEntry</code> method is used to keep track of key:value
-     * relationships between the JLabel of a widget(Key) and its abbreviation
-     * (value).
+     * Used to keep track of key:value relationships between the JLabel of a
+     * widget (key) and its abbreviation (value).
      *
      * @param entry a <code>String</code> value
      */
@@ -409,14 +450,15 @@ public class WidgetPanel extends JPanel implements ActionListener,
     }
 
     /**
-     * The <code>abbreviate</code> method is used to convert the text in a
-     * widget JLabel to an abbreviation used in the xml description.
+     * Used to convert the text in a widget JLabel to an abbreviation used
+     * in the xml description.
      *
      * @param next a <code>String</code> value
      * @return a <code>String</code> value
      */
     public String abbreviate(String next) {
         String result = "ERROR";
+
         if (!next.equals("")) {
             result = "";
             next.trim();
@@ -424,22 +466,22 @@ public class WidgetPanel extends JPanel implements ActionListener,
             String[] st = next.split("\\p{Space}");
             result = st[0].trim();
         }
+
         return result.toLowerCase();
     }
 
     /**
-     * The <code>printTable</code> method here gives subJPanels the ability to
-     * print the current abbreviation table.
-     *
+     * Gives subJPanels the ability to print the current abbreviation table.
      */
     protected void printTable() {
         logger.debug(abbrevTable.toString());
     }
 
     /**
-     * The <code>add</code> method here is a utility for adding widgets or
-     * subJPanels to the WdgetPanel. The layout manager is a GridBag and the
-     * current constraints (gbc) are passed to this method.
+     * A utility for adding widgets or subJPanels to the WdgetPanel.
+     *
+     * The layout manager is a GridBag and the current constraints (gbc)
+     * are passed to this method.
      *
      * @param c a <code>Component</code> value
      * @param gbc a <code>GridBagConstraints</code> value
@@ -466,8 +508,10 @@ public class WidgetPanel extends JPanel implements ActionListener,
      */
     public void setAtmospherePanel(WidgetPanel panel) {
         atmospherePanel = (JTextFieldPanel) panel;
-        if (!TelescopeDataPanel.getCSO().startsWith("-"))
+
+        if (!TelescopeDataPanel.getCSO().startsWith("-")) {
             atmospherePanel.setTextField("tau:", TelescopeDataPanel.getCSO());
+        }
     }
 
     /**
@@ -499,11 +543,12 @@ public class WidgetPanel extends JPanel implements ActionListener,
     }
 
     /**
-     * This <code>actionPerformed</code> method is mandated by ActionListener
-     * and is need particularly for the 2 checkbox widgets "Any Instrument" and
-     * "Photometric Whether Conditions". All other objects in this JPanel are
-     * themselves sub-JPanels and the actionPerformed methods are implemented in
-     * their respective classes. All subJPanels extend WidgetPanel.
+     * Mandated by ActionListener and is need particularly for the 2 checkbox
+     * widgets "Any Instrument" and "Photometric Whether Conditions".
+     *
+     * All other objects in this JPanel are themselves sub-JPanels and
+     * the actionPerformed methods are implemented in their respective classes.
+     * All subJPanels extend WidgetPanel.
      *
      * @param evt an <code>ActionEvent</code> value
      */
@@ -525,9 +570,10 @@ public class WidgetPanel extends JPanel implements ActionListener,
     }
 
     /**
-     * Provided for convenience, <code>setAttribute</code> method with this
-     * signature is supported but not encouraged. All classes using this methods
-     * should move towards the (String, LinkedList) signature as means of
+     * Provided for convenience this signature is supported but not encouraged.
+     *
+     * All classes using this methods should move towards
+     * the (String, LinkedList) signature as means of
      * updating widget state to the WidgetDataBag object.
      *
      * @param key a <code>String</code> value
@@ -538,9 +584,10 @@ public class WidgetPanel extends JPanel implements ActionListener,
     }
 
     /**
-     * Provided for convenience, <code>setAttribute</code> method with this
-     * signature is supported but not encouraged. All classes using this methods
-     * should move towards the (String, LinkedList) signature as means of
+     * Provided for convenience this signature is supported but not encouraged.
+     *
+     * All classes using this methods should move towards
+     * the (String, LinkedList) signature as means of
      * updating widget state to the WidgetDataBag object.
      *
      * @param key a <code>String</code> value
@@ -552,11 +599,13 @@ public class WidgetPanel extends JPanel implements ActionListener,
     }
 
     /**
-     * The primary means of notifying observers of widget state changes. The
-     * <code>setAttribute</code> method triggers all observers' update method.
-     * The update method of respective observers can be implemented in different
-     * ways, however the only known observer to date is app/Querytool which
-     * rewrites the XML description of this panels state.
+     * Triggers all observers' update method.
+     *
+     * The primary means of notifying observers of widget state changes.
+     *
+     * The update method of respective observers can be implemented in
+     * different ways, however the only known observer to date is app/Querytool
+     * which rewrites the XML description of this panels state.
      *
      * @param title a <code>String</code> value
      * @param list a <code>LinkedList</code> value
@@ -566,7 +615,7 @@ public class WidgetPanel extends JPanel implements ActionListener,
     }
 
     /**
-     * Returns The <code>WidgetDataBag</code> associated with this class.
+     * Return The <code>WidgetDataBag</code> associated with this class.
      *
      * @return The <code>WidgetDataBag</code> associated with this class.
      */

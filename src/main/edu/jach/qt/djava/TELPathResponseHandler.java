@@ -28,8 +28,7 @@ import ocs.utils.CommandReceiver;
 import gemini.util.JACLogger;
 
 /**
- * <code>TELPathResponseHandler</code> This class is used to handle responses to
- * the GetPath() method.
+ * This class is used to handle responses to the GetPath() method.
  *
  * @author <a href="mailto:mrippa@jach.hawaii.edu">Mathew Rippa</a>
  */
@@ -41,7 +40,7 @@ public class TELPathResponseHandler extends DramaPath.ResponseHandler {
     /**
      * Constuctor.
      *
-     * @apram p A DramaPath Object
+     * @param p A DramaPath Object
      * @param cr A CommandReceiver object
      */
     public TELPathResponseHandler(DramaPath p, CommandReceiver cr) {

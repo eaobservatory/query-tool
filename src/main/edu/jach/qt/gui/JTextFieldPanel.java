@@ -31,7 +31,7 @@ import javax.swing.event.DocumentListener;
 import java.awt.Component;
 
 /**
- * This class is a generic radioPanel with it's group of JTextFieldButtons
+ * This class is a generic radioPanel with its group of JTextFieldButtons
  * enclosed with a titled border.
  *
  * Created: Tue Aug 7 09:35:40 2001
@@ -46,10 +46,11 @@ public class JTextFieldPanel extends WidgetPanel implements DocumentListener {
     private int viewPosition = BoxLayout.Y_AXIS;
 
     /**
-     * The variable <code>radioElems</code> is a LinkedList of the buttons.
+     * A LinkedList of the buttons.
      *
      */
-    public LinkedList<LabeledTextField> fieldElems = new LinkedList<LabeledTextField>();
+    public LinkedList<LabeledTextField> fieldElems =
+            new LinkedList<LabeledTextField>();
 
     /**
      * Creates a new <code>JTextFieldPanel</code> instance.
@@ -78,14 +79,17 @@ public class JTextFieldPanel extends WidgetPanel implements DocumentListener {
                 TitledBorder.CENTER, TitledBorder.DEFAULT_POSITION));
         setLayout(new BoxLayout(this, viewPosition));
         LabeledTextField tf;
+
         for (iterator.nextIndex(); iterator.hasNext(); iterator.nextIndex()) {
             next = (String) iterator.next();
             String toolTip = null;
+
             if (next.matches(".*-.*")) {
                 String[] split = next.split("-");
                 next = split[0].trim();
                 toolTip = split[1].trim();
             }
+
             tf = new LabeledTextField(super.abbrevTable, super.widgetBag, next,
                     toolTip);
 
@@ -103,10 +107,13 @@ public class JTextFieldPanel extends WidgetPanel implements DocumentListener {
      */
     public void setTextField(String field, String val) {
         ListIterator<LabeledTextField> iterator = fieldElems.listIterator(0);
+
         while (iterator.hasNext()) {
             LabeledTextField thisTextField = iterator.next();
-            if (thisTextField.getName().equals(field))
+
+            if (thisTextField.getName().equals(field)) {
                 thisTextField.setText(val);
+            }
         }
     }
 
@@ -119,11 +126,15 @@ public class JTextFieldPanel extends WidgetPanel implements DocumentListener {
     public String getText(String field) {
         String rtn = null;
         ListIterator<LabeledTextField> iterator = fieldElems.listIterator(0);
+
         while (iterator.hasNext()) {
             LabeledTextField thisTextField = iterator.next();
-            if (thisTextField.getName().equals(field))
+
+            if (thisTextField.getName().equals(field)) {
                 rtn = thisTextField.getText();
+            }
         }
+
         return rtn;
     }
 
@@ -138,7 +149,8 @@ public class JTextFieldPanel extends WidgetPanel implements DocumentListener {
     }
 
     /**
-     * The <code>insertUpdate</code> adds the current text to the WidgetDataBag.
+     * Add the current text to the WidgetDataBag.
+     *
      * All observers are notified.
      *
      * @param e a <code>DocumentEvent</code> value
@@ -157,7 +169,8 @@ public class JTextFieldPanel extends WidgetPanel implements DocumentListener {
     }
 
     /**
-     * The <code>removeUpdate</code> adds the current text to the WidgetDataBag.
+     * Add the current text to the WidgetDataBag.
+     *
      * All observers are notified.
      *
      * @param e a <code>DocumentEvent</code> value
@@ -176,8 +189,6 @@ public class JTextFieldPanel extends WidgetPanel implements DocumentListener {
     }
 
     /**
-     * The <code>changedUpdate</code> method is not implemented.
-     *
      * @param e a <code>DocumentEvent</code> value
      */
     public void changedUpdate(DocumentEvent e) {
@@ -191,6 +202,5 @@ public class JTextFieldPanel extends WidgetPanel implements DocumentListener {
 
             setAttribute(name.substring(0, name.length() - 1), tf.getText());
         }
-
     }
 }

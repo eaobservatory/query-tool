@@ -57,8 +57,8 @@ class TreeViewer implements ActionListener {
     private TreeMap<String, TreeMap<String, String>> treemap = null;
 
     /*
-     * if hide is true, only show named components and values else show all
-     * components and values
+     * If hide is true, only show named components and values else show all
+     * components and values.
      */
     private static boolean hide = true;
 
@@ -71,7 +71,9 @@ class TreeViewer implements ActionListener {
     private SpItem currentItem = null;
 
     /**
-     * Constructor. Creates a tree view of the input.
+     * Constructor.
+     *
+     * Creates a tree view of the input.
      *
      * @param item An observation (SpItem class)
      */
@@ -147,8 +149,10 @@ class TreeViewer implements ActionListener {
         otTree.spItemsAdded(root, itemArray, (SpItem) null);
         EventListener[] listeners = otTree.getTree().getListeners(
                 KeyListener.class);
-        for (int i = 0; i < listeners.length; i++)
+
+        for (int i = 0; i < listeners.length; i++) {
             otTree.getTree().removeKeyListener((KeyListener) listeners[i]);
+        }
 
         return otTree;
     }
@@ -167,10 +171,13 @@ class TreeViewer implements ActionListener {
                 String className = item.getClass().getName();
                 if (!hide || treemap.containsKey(className)) {
                     TreeMap<String, String> values;
-                    if (hide)
+
+                    if (hide) {
                         values = treemap.get(className);
-                    else
+                    } else {
                         values = new TreeMap<String, String>();
+                    }
+
                     buffer.append("\n\n" + className + "\n\n");
 
                     SpAvTable table = item.getTable();
@@ -187,19 +194,25 @@ class TreeViewer implements ActionListener {
 
                         if (!hide || values.containsKey(key)) {
                             alias = values.get(key);
-                            if (alias == null)
+
+                            if (alias == null) {
                                 alias = key;
+                            }
+
                             value = table.get(key);
 
-                            if (key.length() > 10)
+                            if (key.length() > 10) {
                                 separator = "\t";
-                            else
+                            } else {
                                 separator = "\t\t";
+                            }
+
                             buffer.append("\t" + alias + " :" + separator
                                     + value + "\n");
                         }
                     }
                 }
+
                 item = vector.elementAt(index);
             }
         }
@@ -214,6 +227,7 @@ class TreeViewer implements ActionListener {
 
     private Vector<SpItem> unrollItem(SpItem item, Vector<SpItem> vector) {
         Enumeration<SpItem> children = item.children();
+
         while (children.hasMoreElements()) {
             SpItem nuItem = children.nextElement();
             unrollItem(nuItem, vector);
@@ -242,15 +256,21 @@ class TreeViewer implements ActionListener {
 
         try {
             FileReader file = new FileReader(fileName);
-            while (!file.ready())
-                ;
-            while ((readLength = file.read(chars)) != -1)
+
+            while (!file.ready()) {
+            }
+
+            while ((readLength = file.read(chars)) != -1) {
                 buffer.append(chars, 0, readLength);
+            }
+
             file.close();
             returnable = buffer.toString();
+
         } catch (FileNotFoundException fnfe) {
         } catch (IOException ioe) {
         }
+
         return returnable;
     }
 
@@ -266,20 +286,26 @@ class TreeViewer implements ActionListener {
                 String component = null;
 
                 String[] lines = contents.split("\n");
+
                 for (int index = 0; index < lines.length; index++) {
                     String line = lines[index].trim();
+
                     if (line.matches("^#.*")) {
                         // comment block
                         continue;
+
                     } else if (line.equals("")) {
                         // new component
                         newComponent = true;
                         values = null;
+
                     } else if (line.matches("[\\w ]*[,]{1}[\\w ]*")) {
                         // value with alias
                         String[] items = line.split(",");
-                        if (values != null)
+
+                        if (values != null) {
                             values.put(items[0].trim(), items[1].trim());
+                        }
                     } else if (line.matches("(\\w+\\.{1})+\\w+")) {
                         try {
                             if (Class.forName(line, false, this.getClass()
@@ -289,17 +315,21 @@ class TreeViewer implements ActionListener {
                                 newComponent = false;
                                 values = new TreeMap<String, String>();
                                 treemap.put(component, values);
+
                             } else {
-                                if (values != null)
+                                if (values != null) {
                                     values.put(line, null);
+                                }
                             }
                         } catch (ClassNotFoundException cnfe) {
-                            if (values != null)
+                            if (values != null) {
                                 values.put(line, null);
+                            }
                         }
                     } else if (line.matches("[\\w]+")) {
-                        if (values != null)
+                        if (values != null) {
                             values.put(line, null);
+                        }
                     }
                 }
             }
@@ -308,6 +338,7 @@ class TreeViewer implements ActionListener {
 
     public void actionPerformed(ActionEvent event) {
         Object sauce = event.getSource();
+
         if (sauce instanceof JCheckBox) {
             hide = ((JCheckBox) sauce).isSelected();
             redraw();

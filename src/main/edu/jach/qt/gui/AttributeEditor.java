@@ -113,29 +113,29 @@ public class AttributeEditor extends JDialog implements ActionListener,
     }
 
     /**
-     * private void commonInitialisation()
-     *
      * Does the common initialisation required by all AttributeEditors,
      * regardless of which type they are.
-     **/
+     */
     private void commonInitialisation(SpObs observation) {
         obs = observation;
         inst = (SpItem) SpTreeMan.findInstrument(obs);
+
         try {
             instName = inst.type().getReadable();
         } catch (NullPointerException nex) {
             logger.warn("No instrument in scope!", nex);
             instName = "None";
         }
+
         sequence = findSequence(obs);
     }
 
     /**
-     * private Vector getConfigNames(String configItem)
-     *
      * Look for the given configuration item (accessed via
-     * System.getProperty()). This should have a value which is a space
-     * separated list of tokens. Return a Vector of these tokens.
+     * System.getProperty()).
+     *
+     * This should have a value which is a space separated list of tokens.
+     * Return a Vector of these tokens.
      *
      * @param String configItem
      * @author David Clarke
@@ -143,22 +143,23 @@ public class AttributeEditor extends JDialog implements ActionListener,
     private Vector<String> getConfigNames(String configItem) {
         String list = System.getProperty(configItem);
 
-        if (list == null)
+        if (list == null) {
             return new Vector<String>();
+        }
 
         String[] tok = list.split(" ");
         Vector<String> names = new Vector<String>(tok.length);
 
-        for (int index = 0; index < tok.length; index++)
+        for (int index = 0; index < tok.length; index++) {
             names.addElement(tok[index]);
+        }
 
         return names;
     }
 
     /**
-     * private SpItem findSequence(SpObs observation)
-     *
      * Search the children of the given observation for the sequence component.
+     *
      * Returns the first one it finds (kind of assuming that there can be only
      * one), or null if it doesn't find one at all.
      *
@@ -170,21 +171,23 @@ public class AttributeEditor extends JDialog implements ActionListener,
 
         while (children.hasMoreElements()) {
             SpItem child = children.nextElement();
-            if (child.type().equals(SpType.SEQUENCE))
+
+            if (child.type().equals(SpType.SEQUENCE)) {
                 return child;
+            }
         }
+
         return null;
     }
 
     /**
-     * private String concatPath(String path, SpItem newBit)
-     *
-     * Add the representation of newBit to the given path and return the result.
+     * Add the representation of newBit to the given path and return
+     * the result.
      *
      * @param String path
      * @param SpItem newBit
      * @author David Clarke
-     **/
+     */
     private String concatPath(String path, SpItem newBit) {
         String result;
 
@@ -196,24 +199,25 @@ public class AttributeEditor extends JDialog implements ActionListener,
              * dialogue box down to a reasonable width. Otherwise, just start
              * with the new bit
              */
-            if ((newBit == obs) || (newBit == sequence))
+            if ((newBit == obs) || (newBit == sequence)) {
                 result = "";
-            else
+            } else {
                 result = newBit.getTitle();
+            }
         } else {
             // Path is not empty, bung on the new bit regardless, using a
             // separator
             result = path + File.separator + newBit.getTitle();
         }
+
         return result;
     }
 
     /**
-     * private void createComponents()
+     * Create all the various components used by the dialogues.
      *
-     * Create all the various components used by the dialogues. Don't lay them
-     * out yet, that is done by the initXXXComponents() methods.
-     **/
+     * Don't lay them out yet, that is done by the initXXXComponents() methods.
+     */
     private void createComponents(String attributes, String iterators,
             double oldFactor) {
         System.out.println("Editing attributes.");
@@ -235,8 +239,8 @@ public class AttributeEditor extends JDialog implements ActionListener,
         editorTable = new JTable(model);
         scrollPane = new JScrollPane(editorTable);
         initColumnSizes();
-        editorTable.setPreferredScrollableViewportSize(editorTable
-                .getPreferredSize());
+        editorTable.setPreferredScrollableViewportSize(
+                editorTable.getPreferredSize());
         editorTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         editorTable.getSelectionModel().addListSelectionListener(this);
 
@@ -285,8 +289,8 @@ public class AttributeEditor extends JDialog implements ActionListener,
         int height = scaleLabel.getMaximumSize().height;
         scaleFactor.setMinimumSize(new Dimension(
                 scaleFactor.getMinimumSize().width, height));
-        scaleFactor.setPreferredSize(new Dimension(scaleFactor
-                .getPreferredSize().width, height));
+        scaleFactor.setPreferredSize(new Dimension(
+                scaleFactor.getPreferredSize().width, height));
         scaleFactor.setMaximumSize(new Dimension(
                 scaleFactor.getMaximumSize().width, height));
 
@@ -295,8 +299,6 @@ public class AttributeEditor extends JDialog implements ActionListener,
     }
 
     /**
-     * private void initTableComponents()
-     *
      * Layout the editing form.
      */
     private void initTableComponents() {
@@ -331,11 +333,8 @@ public class AttributeEditor extends JDialog implements ActionListener,
     }
 
     /**
-     * private void initScaleComponents(String attribute, boolean
-     * haveScaledThisObs, double oldFactor, boolean rescale)
-     *
      * Layout the scaling form.
-     **/
+     */
     private void initScaleComponents(String attribute,
             boolean haveScaledThisObs, double oldFactor, boolean rescale) {
         boolean tableIsEmpty;
@@ -382,75 +381,81 @@ public class AttributeEditor extends JDialog implements ActionListener,
     }
 
     /**
-     * public void actionPerformed(ActionEvent evt)
+     * Called whenever a button on the editor has been pressed.
      *
-     * Called whenever a button on the editor has been pressed. If appropriate
-     * (ie. it is the OK button which has been pressed) write any updated values
-     * back to the observation sequence.
+     * If appropriate (ie. it is the OK button which has been pressed) write
+     * any updated values back to the observation sequence.
      *
      * @param ActionEvent evt
-     **/
+     */
     public void actionPerformed(ActionEvent evt) {
 
         Object source = evt.getSource();
 
         if (source == cancel) {
             // Do nothing
-            if (doingScale)
-                _scaleFactorUsed = -1.;
+            if (doingScale) {
+                _scaleFactorUsed = -1.0;
+            }
 
             closeDialog();
             System.out.println("Editing cancelled");
             logger.info("Editing cancelled");
         } else if (source == OK) {
-            if (makeChanges())
+            if (makeChanges()) {
                 closeDialog();
+            }
         }
     }
 
     /**
-     * private void flushChanges()
-     *
      * Look at the editorTable to see if there are any changes which have not
-     * been notified to the model. This can come about if the user has typed
-     * some changes into one of the editable cells in the table and pressed OK
-     * without explicitely blurring the cell. So check to see if there is a cell
-     * editor associated with the table, and if there is then wheek the value
-     * out of the editor and into the model.
+     * been notified to the model.
+     *
+     * This can come about if the user has typed some changes into one of
+     * the editable cells in the table and pressed OK without explicitly
+     * blurring the cell. So check to see if there is a cell editor associated
+     * with the table, and if there is then wheek the value out of the editor
+     * and into the model.
      *
      * @author Too ashamed to admit it
      */
     private void flushChanges() {
         JTextComponent comp = (JTextComponent) editorTable.getEditorComponent();
 
-        if (comp != null)// There is some editing going on
+        if (comp != null) {
+            // There is some editing going on
             model.setValueAt(comp.getText(), editorTable.getEditingRow(),
                     editorTable.getEditingColumn());
+        }
     }
 
     /**
-     * private boolean makeChanges()
-     *
      * Effect any scaling and then write back all changes to the observation.
+     *
      * Return value denotes whether or not the method completed normally.
      */
     private boolean makeChanges() {
         String message;
+
         if (doingScale) {
             try {
                 _scaleFactorUsed = Double.valueOf(scaleFactor.getText());
+
                 if (Math.abs(_scaleFactorUsed) < 1e-6) {
                     message = "Zero (or very small) scale factor ("
                             + scaleFactor.getText() + ").";
                     JOptionPane.showMessageDialog(this, message,
                             "Does not Compute", JOptionPane.WARNING_MESSAGE);
                     return false;
+
                 } else if (_scaleFactorUsed < 0) {
                     message = "Negative scale factor (" + scaleFactor.getText()
                             + ").";
                     JOptionPane.showMessageDialog(this, message,
                             "Does not Compute", JOptionPane.WARNING_MESSAGE);
                     return false;
+
                 } else {
                     model.scaleValuesBy(_scaleFactorUsed);
                 }
@@ -476,6 +481,7 @@ public class AttributeEditor extends JDialog implements ActionListener,
 
         while (pairs.hasMoreElements()) {
             AVPair pair = pairs.nextElement();
+
             if (model.isChangedAt(row)) {
                 if (!doneSome) {
                     logger.info("Updating attributes");
@@ -484,17 +490,24 @@ public class AttributeEditor extends JDialog implements ActionListener,
 
                 String name = "";
                 String value = "";
+
                 Object tmp = model.getValueAt(row, 0);
-                if (tmp instanceof String)
+                if (tmp instanceof String) {
                     name = (String) tmp;
+                }
+
                 tmp = model.getValueAt(row, 1);
-                if (tmp instanceof String)
+                if (tmp instanceof String) {
                     value = (String) tmp;
+                }
+
                 logger.info(name + " = '" + value + "'");
                 pair.origin().setValue((String) model.getValueAt(row, 1));
             }
+
             row++;
         }
+
         while (triplets.hasMoreElements()) {
             AIVTriplet triplet = triplets.nextElement();
             if (model.isChangedAt(row)) {
@@ -502,10 +515,12 @@ public class AttributeEditor extends JDialog implements ActionListener,
                     logger.info("Updating attributes");
                     doneSome = true;
                 }
+
                 logger.info(model.getValueAt(row, 0) + " = '"
                         + model.getValueAt(row, 1) + "'");
                 triplet.origin().setValue((String) model.getValueAt(row, 1));
             }
+
             row++;
         }
 
@@ -516,15 +531,17 @@ public class AttributeEditor extends JDialog implements ActionListener,
         return true;
     }
 
-    /** Closes the dialog */
+    /**
+     * Closes the dialog.
+     */
     private void closeDialog() {
         setVisible(false);
         dispose();
     }
 
     /**
-     * private Vector getInstAttValues (SpItem instrument) gets the current
-     * attribute values (for editable attributes) for the instrument.
+     * Get the current attribute values (for editable attributes) for
+     * the instrument.
      *
      * @param SpItem instrument
      * @return Vector
@@ -543,26 +560,30 @@ public class AttributeEditor extends JDialog implements ActionListener,
             AVPair avp;
 
             att = attributes.nextElement();
-            if (att != null)
+            if (att != null) {
                 val = avTable.get(att);
-            else
+            } else {
                 val = "No such attribute";
+            }
+
             if ((val != null) && (!val.equals(""))) {
                 avp = new AVPair(att, val, instrument, att, 0);
                 av.addElement(avp);
             }
         }
+
         return av;
     }
 
     /**
-     * private void getIterAttValues(SpObs observation)
+     * Walk the observation tree looking for things to edit.
      *
-     * Walk the observation tree looking for things to edit. We are interested
-     * in the attributes referred to in the config file. The top level
-     * attributes should have been found and put into the avPairs vector prior
-     * to invoking this method (currently done by getInstAttValues()). This
-     * method works in the following phases:
+     * We are interested in the attributes referred to in the config file.
+     * The top level attributes should have been found and put into the avPairs
+     * vector prior to invoking this method (currently done by
+     * getInstAttValues()).
+     *
+     * This method works in the following phases:
      *
      * Find, from the config file, the names of the iterator types we want to
      * edit Find, from the avPairs, the names of the attributes we want to edit
@@ -579,9 +600,7 @@ public class AttributeEditor extends JDialog implements ActionListener,
     }
 
     /**
-     * private void getLocalIterAttValues(SpItem root, String indent)
-     *
-     * Get the local attributes corresponding to the configAttributes
+     * Get the local attributes corresponding to the configAttributes.
      *
      * @param SpItem root
      * @param String subtype
@@ -603,36 +622,40 @@ public class AttributeEditor extends JDialog implements ActionListener,
             String lookupKey;
 
             key = keys.nextElement();
-            if (key.endsWith(iterSuffix))
-                lookupKey = key
-                        .substring(0, key.length() - iterSuffix.length());
-            else
+            if (key.endsWith(iterSuffix)) {
+                lookupKey =
+                        key.substring(0, key.length() - iterSuffix.length());
+            } else {
                 lookupKey = key;
+            }
 
             if (configAttributes.contains(lookupKey)) {
                 Vector<String> val = table.getAll(key);
+
                 if (val.size() == 1) {
                     iavTriplets.addElement(new AIVTriplet(
-                            concatPath(path, root), lookupKey, (String) val
-                                    .elementAt(0), new AttributeOrigin(root,
-                                    key, 0)));
+                            concatPath(path, root), lookupKey,
+                            (String) val.elementAt(0),
+                            new AttributeOrigin(root, key, 0)));
                 } else {
-                    for (int i = 0; i < val.size(); i++)
-                        iavTriplets.addElement(new AIVTriplet(concatPath(path,
-                                root), lookupKey + "[" + i + "]", (String) val
-                                .elementAt(i),
+                    for (int i = 0; i < val.size(); i++) {
+                        iavTriplets.addElement(new AIVTriplet(
+                                concatPath(path, root),
+                                lookupKey + "[" + i + "]",
+                                (String) val.elementAt(i),
                                 new AttributeOrigin(root, key, i)));
+                    }
                 }
             }
         }
     }
 
     /**
-     * private void getIterAttValues(SpItem root, String indent)
-     *
      * Recursively walk the observation tree (in pre-order) looking for
      * attributes specified in avPairs that are in iterators specified by
-     * configIterators. Get the value of any such attribute and append to the
+     * configIterators.
+     *
+     * Get the value of any such attribute and append to the
      * iavTriplets vector.
      *
      * @param SpItem root
@@ -647,8 +670,9 @@ public class AttributeEditor extends JDialog implements ActionListener,
 
             // If root is a suitable iterator, look through its attributes for
             // ones specified in avPairs
-            if (configIterators.contains(subtype))
+            if (configIterators.contains(subtype)) {
                 getLocalIterAttValues(root, subtype, path, indent + "   ");
+            }
 
             // Recurse over root's children
             Enumeration<SpItem> children = root.children();
@@ -660,7 +684,7 @@ public class AttributeEditor extends JDialog implements ActionListener,
     }
 
     /**
-     * private void initColumnSizes() picks good column sizes for the table.
+     * Pick good column sizes for the table.
      *
      * @author David Clarke
      */
@@ -679,20 +703,23 @@ public class AttributeEditor extends JDialog implements ActionListener,
             column = editorTable.getColumnModel().getColumn(i);
 
             TableCellRenderer r = column.getHeaderRenderer();
-            if (r == null)
+            if (r == null) {
                 comp = editorTable.getDefaultRenderer(model.getColumnClass(i))
-                        .getTableCellRendererComponent(editorTable,
-                                column.getHeaderValue(), false, false, 0, i);
-            else
+                        .getTableCellRendererComponent(
+                                editorTable, column.getHeaderValue(),
+                                false, false, 0, i);
+            } else {
                 comp = r.getTableCellRendererComponent(null,
                         column.getHeaderValue(), false, false, 0, 0);
+            }
 
             width = comp.getPreferredSize().width;
             maxWidth = Math.max(width, maxWidth);
 
             for (int row = 0; row < model.getRowCount(); row++) {
                 comp = editorTable.getDefaultRenderer(model.getColumnClass(i))
-                        .getTableCellRendererComponent(editorTable,
+                        .getTableCellRendererComponent(
+                                editorTable,
                                 model.getValueAt(row, i), false, false, 0, i);
                 width = comp.getPreferredSize().width;
                 maxWidth = Math.max(width, maxWidth);

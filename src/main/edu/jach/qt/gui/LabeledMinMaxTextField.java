@@ -91,8 +91,9 @@ public class LabeledMinMaxTextField extends LabeledTextField {
     }
 
     /**
-     * The <code>insertUpdate</code> method adds the current text in the text
-     * field to slot 1 of the valueList. The WidgetDataBag is updated.
+     * Add the current text in the text field to slot 1 of the valueList.
+     *
+     * The WidgetDataBag is updated.
      *
      * @param e a <code>DocumentEvent</code> value
      */
@@ -101,8 +102,9 @@ public class LabeledMinMaxTextField extends LabeledTextField {
     }
 
     /**
-     * The <code>removeUpdate</code> method adds the current text in the text
-     * field to slot 1 of the valueList. The WidgetDataBag is updated.
+     * Add the current text in the text field to slot 1 of the valueList.
+     *
+     * The WidgetDataBag is updated.
      *
      * @param e a <code>DocumentEvent</code> value
      */
@@ -112,8 +114,9 @@ public class LabeledMinMaxTextField extends LabeledTextField {
     }
 
     /**
-     * The <code>changedUpdate</code> method is not implemented. We don't
-     * require an action here.
+     * Not implemented.
+     *
+     * We don't require an action here.
      *
      * @param e a <code>DocumentEvent</code> value
      */
@@ -121,8 +124,9 @@ public class LabeledMinMaxTextField extends LabeledTextField {
     }
 
     /**
-     * The <code>getLabel</code> method adds the current text in the text field
-     * to slot 1 of the valueList. It returns the label of this object.
+     * Add the current text in the text field to slot 1 of the valueList.
+     *
+     * It returns the label of this object.
      *
      * @return a <code>String</code> value
      */

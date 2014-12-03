@@ -119,29 +119,37 @@ public class UkirtTranslator {
     private void getObservations(SpItem root) {
         Enumeration<SpItem> children = root.children();
         String rootTitle = root.getTitleAttr();
-        if (rootTitle == null || rootTitle.equals(""))
+        if (rootTitle == null || rootTitle.equals("")) {
             rootTitle = root.typeStr();
+        }
 
         while (children.hasMoreElements()) {
             SpItem child = children.nextElement();
-            if (child.getClass().getName().endsWith("SpObs"))
+
+            if (child.getClass().getName().endsWith("SpObs")) {
                 doTranslate(rootTitle, (SpObs) child);
-            else if (child.getClass().getName().endsWith("SpMSB"))
+            } else if (child.getClass().getName().endsWith("SpMSB")) {
                 getObservations(child);
+            }
         }
     }
 
     private void doTranslate(String parentName, SpObs obs) {
         String obsName = obs.getTitleAttr();
-        if (obsName == null || obsName.equals(""))
+
+        if (obsName == null || obsName.equals("")) {
             obsName = obs.typeStr();
+        }
 
         String tname;
 
         try {
             SpInstObsComp inst = SpTreeMan.findInstrument(obs);
-            if (inst == null)
+
+            if (inst == null) {
                 throw new Exception("No instrument selected");
+            }
+
             String instName = inst.type().getReadable();
             tname = QtTools.translate(obs, instName);
         } catch (Exception e) {
@@ -149,6 +157,7 @@ public class UkirtTranslator {
                     + obsName);
             return;
         }
+
         System.out.println("Translation for \"" + parentName + ":" + obsName
                 + "\" stored in " + tname);
     }
@@ -157,34 +166,41 @@ public class UkirtTranslator {
         // Should take one argument - the name of the input XML file
         try {
             for (int i = 0; i < args.length; i++) {
-                if (args[i].equals("-classic"))
+                if (args[i].equals("-classic")) {
                     _useClassic = true;
-                else if (args[i].equals("-queue"))
+                } else if (args[i].equals("-queue")) {
                     _useQueue = true;
-                else if (args[i].equals("-i") || args[i].equals("--inputFile"))
+                } else if (args[i].equals("-i")
+                        || args[i].equals("--inputFile")) {
                     _inputFile = new File(args[++i]);
-                else if (args[i].equals("-o") || args[i].equals("--outDir"))
+                } else if (args[i].equals("-o")
+                        || args[i].equals("--outDir")) {
                     _outDir = args[++i];
-                else
-                    System.out
-                            .println("Unknown option " + args[i] + " ignored");
+                } else {
+                    System.out.println("Unknown option " + args[i]
+                            + " ignored");
+                }
             }
         } catch (Exception e) {
-            System.out
-                    .println("Incorrect usage ; ukirtTranslator (-classic) (-queue) (-i inputFile) (-o outputDir)");
+            System.out.println("Incorrect usage;"
+                    + " ukirtTranslator (-classic) (-queue)"
+                    + " (-i inputFile) (-o outputDir)");
             System.exit(1);
         }
 
         if (_inputFile == null) {
             File tmpDir = new File(System.getProperty("java.io.tmpdir"));
             File[] files = tmpDir.listFiles();
+
             for (int i = 0; i < files.length; i++) {
                 if (files[i].getName().startsWith("msb.xml")) {
                     if (_inputFile == null) {
                         _inputFile = files[i];
                     } else {
-                        if (_inputFile.lastModified() < files[i].lastModified())
+                        if (_inputFile.lastModified()
+                                < files[i].lastModified()) {
                             _inputFile = files[i];
+                        }
                     }
                 }
             }

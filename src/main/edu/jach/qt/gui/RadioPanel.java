@@ -48,14 +48,12 @@ public class RadioPanel extends WidgetPanel implements ActionListener {
     private ListIterator<String> iterator;
 
     /**
-     * The variable <code>group</code> is the list of JRadioButtons.
-     *
+     * The list of JRadioButtons.
      */
     public ButtonGroup group = new ButtonGroup();
 
     /**
-     * The variable <code>radioElems</code> is a LinkedList of the buttons.
-     *
+     * A LinkedList of the buttons.
      */
     public LinkedList<JRadioButton> radioElems = new LinkedList<JRadioButton>();
 
@@ -70,6 +68,7 @@ public class RadioPanel extends WidgetPanel implements ActionListener {
     public RadioPanel(Hashtable<String, String> ht, WidgetDataBag wdb,
             CompInfo info) {
         super(ht, wdb);
+
         myTitle = info.getTitle();
         myElems = info.getList();
         config();
@@ -81,14 +80,17 @@ public class RadioPanel extends WidgetPanel implements ActionListener {
         setBorder(BorderFactory.createTitledBorder(
                 BorderFactory.createEtchedBorder(), myTitle,
                 TitledBorder.CENTER, TitledBorder.DEFAULT_POSITION));
-        if (myElems.size() > 3)
+
+        if (myElems.size() > 3) {
             setLayout(new GridLayout(0, 2));
-        else
+        } else {
             setLayout(new GridLayout(3, 0));
+        }
 
         for (iterator.nextIndex(); iterator.hasNext(); iterator.nextIndex()) {
             next = iterator.next();
             String toolTip = null;
+
             // Allow hyphens in entries by replacing them with ___
             if (next.contains("___")) {
                 next = next.replace("___", "-");
@@ -97,23 +99,29 @@ public class RadioPanel extends WidgetPanel implements ActionListener {
                 next = split[0].trim();
                 toolTip = split[1].trim();
             }
+
             rb = new JRadioButton(next);
             rb.addActionListener(this);
-            if (toolTip != null)
+
+            if (toolTip != null) {
                 rb.setToolTipText(toolTip);
+            }
 
             add(rb);
             rb.setAlignmentX(Component.LEFT_ALIGNMENT);
             group.add(rb);
             radioElems.add(rb);
-            if ((iterator.nextIndex() - 1) == 0)
+
+            if ((iterator.nextIndex() - 1) == 0) {
                 rb.doClick();
+            }
         }
     }
 
     /**
-     * The <code>actionPerformed</code> method will notify the WidgetDataBag of
-     * changes. This updates the XML string contained in the Querytool.
+     * Notify the WidgetDataBag of changes.
+     *
+     * This updates the XML string contained in the Querytool.
      *
      * @param evt an <code>ActionEvent</code> value
      */

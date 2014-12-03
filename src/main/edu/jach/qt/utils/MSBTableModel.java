@@ -44,10 +44,12 @@ public class MSBTableModel {
     public void clear() {
         final int vectorSize = getRowCount();
         Vector<Object> vector;
+
         while (treeMap.size() != 0) {
             vector = treeMap.remove(treeMap.firstKey());
             vector.clear();
         }
+
         rowCountCached = false;
 
         currentIndices -= vectorSize;
@@ -61,10 +63,12 @@ public class MSBTableModel {
     public void insertData(final String column, final Object data) {
         Vector<Object> vector = null;
         vector = treeMap.get(column);
+
         if (vector == null) {
             vector = new Vector<Object>();
             treeMap.put(column, vector);
         }
+
         vector.add(data);
     }
 
@@ -78,12 +82,15 @@ public class MSBTableModel {
             rowCount = vector.size();
             rowCountCached = true;
         }
+
         return rowCount;
     }
 
     public void moveColumnToEnd(final int index) {
-        if (index >= _columnData.size())
+        if (index >= _columnData.size()) {
             return;
+        }
+
         final MsbColumnInfo tmp = _columnData.removeIndex(index);
         _columnData.add(tmp);
     }
@@ -92,10 +99,15 @@ public class MSBTableModel {
         final String name = _columnData.getNameForIndex(column);
         Vector<Object> vector = null;
         vector = treeMap.get(name);
-        if (vector == null)
+
+        if (vector == null) {
             return null;
-        if (row > vector.size())
+        }
+
+        if (row > vector.size()) {
             return null;
+        }
+
         return vector.elementAt(row);
     }
 
@@ -104,8 +116,10 @@ public class MSBTableModel {
     }
 
     public int getWidth() {
-        if (!widthCached)
+        if (!widthCached) {
             widthCount = _columnData.size();
+        }
+
         return widthCount;
     }
 

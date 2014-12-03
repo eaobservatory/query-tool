@@ -28,16 +28,16 @@ import ocs.utils.CommandReceiver;
 import gemini.util.JACLogger;
 
 /**
- * <code>MonitorResponse</code> is used to handle reponses to the monitor
- * messages created by the GetPath Success handler.
+ * Used to handle reponses to the monitor messages created by the GetPath
+ * Success handler.
  *
  * @author <a href="mailto:mrippa@jach.hawaii.edu">Mathew Rippa</a>
  */
 public abstract class MonitorResponse extends DramaMonitor.MonResponse {
     protected static JACLogger logger = JACLogger.getRootLogger();
     protected CommandReceiver cr;
-    public final boolean DEBUG = "true".equals(System.getProperty("debug",
-            "false"));
+    public final boolean DEBUG = "true".equals(
+            System.getProperty("debug", "false"));
 
     /**
      * Constructor.
@@ -50,9 +50,10 @@ public abstract class MonitorResponse extends DramaMonitor.MonResponse {
     }
 
     /**
-     * Handles a sucessfull completion of the monitoring operation. This should
-     * not actually be invoked in this example, as the monitor is never
-     * cancelled.
+     * Handles a sucessfull completion of the monitoring operation.
+     *
+     * This should not actually be invoked in this example, as the monitor
+     * is never cancelled.
      *
      * @param monitor A DramaMonitor Object
      * @param task A DramaTask Object
@@ -68,9 +69,10 @@ public abstract class MonitorResponse extends DramaMonitor.MonResponse {
     }
 
     /**
-     * Handles an error completion of the monitoring operation. This may be
-     * invoked if the message to start monitoring fails or if the task dies
-     * whilst we are monitoring it.
+     * Handles an error completion of the monitoring operation.
+     *
+     * This may be invoked if the message to start monitoring fails or if
+     * the task dies whilst we are monitoring it.
      *
      * @param monitor A DramaMonitor Object
      * @param task A DramaTask Object
@@ -87,8 +89,9 @@ public abstract class MonitorResponse extends DramaMonitor.MonResponse {
     }
 
     /**
-     * This method is invoked when the monitor starts. It is used to set the GUI
-     * into its runtime state.
+     * This method is invoked when the monitor starts.
+     *
+     * It is used to set the GUI into its runtime state.
      *
      * @param monitor A DramaMonitor Object
      * @param task A DramaTask Object
@@ -104,8 +107,9 @@ public abstract class MonitorResponse extends DramaMonitor.MonResponse {
     }
 
     /**
-     * This function is invoked when a monitored parameter changes. This is the
-     * core of parameter monitoring.
+     * This function is invoked when a monitored parameter changes.
+     *
+     * This is the core of parameter monitoring.
      *
      * @param monitor A DramaMonitor Object
      * @param task A DramaTask Object

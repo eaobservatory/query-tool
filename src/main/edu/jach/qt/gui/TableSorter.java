@@ -46,7 +46,7 @@ import gemini.util.JACLogger;
 import edu.jach.qt.gui.MSBQueryTableModel;
 
 /**
- * ****USED BY THE OMP-QT TO SORT THE COLUMNS OF THE RESULT TABLE.****
+ * Used by the OMP-QT to sort the columns of the result table.
  *
  * A sorter for TableModels. The sorter has a model (conforming to TableModel)
  * and itself implements TableModel. TableSorter does not store or copy the data
@@ -104,8 +104,9 @@ public class TableSorter extends TableMap {
      * @param row1 The first row to use.
      * @param row2 The second row to use.
      * @param column The column of data we are comparing.
-     * @return -1 if value in row1 < value in row2, 1 if the value in row 1 >
-     *         value in row2 0 if the values are identical.
+     * @return -1 if value in row1 < value in row2,
+     *         1 if the value in row 1 > value in row2,
+     *         0 if the values are identical.
      */
     public int compareRowsByColumn(final int row1, final int row2,
             final int column) {
@@ -118,15 +119,17 @@ public class TableSorter extends TableMap {
         final Object o2 = data.getValueAt(row2, column);
 
         // If both values are null, return 0.
-        if (o1 == null && o2 == null)
+        if (o1 == null && o2 == null) {
             return 0;
-        else if (o1 == null)
+        } else if (o1 == null) {
             return -1; // Define null less than everything.
-        else if (o2 == null)
+        } else if (o2 == null) {
             return 1;
+        }
 
-        if (o1.toString().equals("??") || o1.toString().equals("??"))
+        if (o1.toString().equals("??") || o1.toString().equals("??")) {
             return -1;
+        }
 
         /*
          * We copy all returned values from the getValue call in case an
@@ -138,11 +141,12 @@ public class TableSorter extends TableMap {
          */
 
         if (type.getSuperclass() == Number.class || type == Number.class) {
-            final Number n1 = new Double(data.getValueAt(row1, column)
-                    .toString());
+            final Number n1 = new Double(
+                    data.getValueAt(row1, column).toString());
             Number n2 = new Double(data.getValueAt(row2, column).toString());
             double d1;
             double d2;
+
             if (type == Integer.class) {
                 d1 = n1.intValue();
                 d2 = n2.intValue();
@@ -151,45 +155,49 @@ public class TableSorter extends TableMap {
                 d2 = n2.doubleValue();
             }
 
-            if (d1 < d2)
+            if (d1 < d2) {
                 return -1;
-            else if (d1 > d2)
+            } else if (d1 > d2) {
                 return 1;
-            else
+            } else {
                 return 0;
+            }
         } else if (type == java.util.Date.class) {
             Date d1 = (Date) data.getValueAt(row1, column);
             long n1 = d1.getTime();
             Date d2 = (Date) data.getValueAt(row2, column);
             long n2 = d2.getTime();
 
-            if (n1 < n2)
+            if (n1 < n2) {
                 return -1;
-            else if (n1 > n2)
+            } else if (n1 > n2) {
                 return 1;
-            else
+            } else {
                 return 0;
+            }
         } else if (type == String.class) {
             String s1 = (String) data.getValueAt(row1, column);
             String s2 = (String) data.getValueAt(row2, column);
             int result = s1.compareTo(s2);
 
-            if (result < 0)
+            if (result < 0) {
                 return -1;
-            else if (result > 0)
+            } else if (result > 0) {
                 return 1;
-            else
+            } else {
                 return 0;
+            }
         } else if (type == Boolean.class) {
             Boolean b1 = (Boolean) data.getValueAt(row1, column);
             Boolean b2 = (Boolean) data.getValueAt(row2, column);
 
-            if (b1 == b2)
+            if (b1 == b2) {
                 return 0;
-            else if (b1)
+            } else if (b1) {
                 return 1; // Define false < true
-            else
+            } else {
                 return -1;
+            }
         } else {
             Object v1 = data.getValueAt(row1, column);
             String s1 = v1.toString();
@@ -197,12 +205,13 @@ public class TableSorter extends TableMap {
             String s2 = v2.toString();
             int result = s1.compareTo(s2);
 
-            if (result < 0)
+            if (result < 0) {
                 return -1;
-            else if (result > 0)
+            } else if (result > 0) {
                 return 1;
-            else
+            } else {
                 return 0;
+            }
         }
     }
 
@@ -211,23 +220,26 @@ public class TableSorter extends TableMap {
      *
      * @param row1 The first row to use in the comparison.
      * @param row2 The second row to use in the comparison.
-     * @returns (-1, 0, 1) depending on the values in the two rows and whether
+     * @return (-1, 0, 1) depending on the values in the two rows and whether
      *          the table is being sorted in ascending or descending order.
      * @see #compareRowsByColumn(int, int, int)
      */
     public int compare(final int row1, int row2) {
         compares++;
+
         for (int level = 0; level < sortingColumns.size(); level++) {
             Integer column = sortingColumns.elementAt(level);
             int result = compareRowsByColumn(row1, row2, column);
-            if (result != 0)
+            if (result != 0) {
                 return ascending ? result : -result;
+            }
         }
+
         return 0;
     }
 
     /**
-     * Sets up a new array of indexes with the right number of elements for the
+     * Set up a new array of indexes with the right number of elements for the
      * current <code>model</code>.
      */
     public void reallocateIndexes() {
@@ -237,8 +249,9 @@ public class TableSorter extends TableMap {
             int size = model.getRowCount();
             indexes = new int[size];
             int position = 0;
-            while (position < size)
+            while (position < size) {
                 indexes[position] = position++;
+            }
         }
     }
 
@@ -257,8 +270,9 @@ public class TableSorter extends TableMap {
      * current Table model.
      */
     public void checkModel() {
-        if (indexes.length != model.getRowCount())
+        if (indexes.length != model.getRowCount()) {
             logger.error("Sorter not informed of a change in model.");
+        }
     }
 
     /**
@@ -286,8 +300,9 @@ public class TableSorter extends TableMap {
         int rowCount = getRowCount();
         for (int i = 0; i < rowCount; i++) {
             for (int j = i + 1; j < rowCount; j++) {
-                if (compare(indexes[i], indexes[j]) == 1)
+                if (compare(indexes[i], indexes[j]) == 1) {
                     swap(i, j);
+                }
             }
         }
     }

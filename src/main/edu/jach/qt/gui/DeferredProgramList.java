@@ -85,16 +85,12 @@ import gemini.util.JACLogger;
 /* ORAC imports */
 import orac.util.SpInputXML;
 
-/* ORAC-OM imports */
-
 /* QT imports */
 import edu.jach.qt.utils.ObsListCellRenderer;
 import edu.jach.qt.utils.ErrorBox;
 import edu.jach.qt.utils.FileExtensionFilter;
 import edu.jach.qt.utils.FileUtils;
 import edu.jach.qt.utils.QtTools;
-
-/* Miscellaneous imports */
 
 /**
  * Implements the Deferred List functionality.
@@ -110,27 +106,30 @@ final public class DeferredProgramList extends JPanel implements
     private JScrollPane scrollPane = new JScrollPane();
     private static DefaultListModel model;
     private static SpItem currentItem;
-    private static HashMap<SpItem, String> fileToObjectMap = new HashMap<SpItem, String>();
+    private static HashMap<SpItem, String> fileToObjectMap =
+            new HashMap<SpItem, String>();
     private JPopupMenu engMenu = new JPopupMenu();
     private JMenuItem engItem = new JMenuItem("Send for Engineering");
     private boolean _useQueue = true;
     private static HashSet<SpItem> duplicates = new HashSet<SpItem>();
     static JACLogger logger = JACLogger.getLogger(DeferredProgramList.class);
 
-    private static final FileExtensionFilter xmlFilter = new FileExtensionFilter(
-            ".xml");
+    private static final FileExtensionFilter xmlFilter =
+            new FileExtensionFilter(".xml");
     private static boolean nodefer = false;
 
     /**
-     * Constructor. Creates the Interface and makes it a drop target.
+     * Constructor.
+     *
+     * Creates the Interface and makes it a drop target.
      */
     public DeferredProgramList() {
         nodefer = System.getProperty("NODEFER") != null;
 
-        Border border = BorderFactory
-                .createMatteBorder(2, 2, 2, 2, Color.white);
-        setBorder(new TitledBorder(border, "Deferred MSBs", 0, 0, new Font(
-                "Roman", Font.BOLD, 12), Color.black));
+        Border border = BorderFactory.createMatteBorder(
+                2, 2, 2, 2, Color.white);
+        setBorder(new TitledBorder(border, "Deferred MSBs", 0, 0,
+                new Font("Roman", Font.BOLD, 12), Color.black));
         setLayout(new BorderLayout());
 
         GridBagLayout gbl = new GridBagLayout();
@@ -176,34 +175,43 @@ final public class DeferredProgramList extends JPanel implements
     }
 
     /**
-     * Gets the current set of deferred observations. These observations are
-     * stored on disk, and the directory is read looking for suitable
-     * observations.
+     * Gets the current set of deferred observations.
+     *
+     * These observations are stored on disk, and the directory is read
+     * looking for suitable observations.
      */
     public void getCurrentList() {
         if (!nodefer) {
             String[] deferredFiles = getFileList();
 
             // parse through the xml files and add each one to the current list
-            for (int fileCounter = 0; fileCounter < deferredFiles.length; fileCounter++) {
+            for (int fileCounter = 0; fileCounter < deferredFiles.length;
+                    fileCounter++) {
                 // Only look for files which are readable
                 String currentFileName = deferredFiles[fileCounter];
                 File currentFile = new File(currentFileName);
 
                 if (currentFile.canRead() && currentFile.isFile()
-                        && currentFile.length() > 0 && !currentFile.isHidden()) {
+                        && currentFile.length() > 0
+                        && !currentFile.isHidden()) {
                     try {
                         FileReader reader = new FileReader(currentFile);
                         char[] chars = new char[1024];
                         int readLength = 0;
                         StringBuffer buffer = new StringBuffer();
-                        while (!reader.ready())
-                            ;
-                        while ((readLength = reader.read(chars)) != -1)
+
+                        while (!reader.ready()) {
+                        }
+
+                        while ((readLength = reader.read(chars)) != -1) {
                             buffer.append(chars, 0, readLength);
+                        }
+
                         reader.close();
-                        SpItem currentSpItem = (new SpInputXML())
-                                .xmlToSpItem(buffer.toString());
+
+                        SpItem currentSpItem = (new SpInputXML()).xmlToSpItem(
+                                buffer.toString());
+
                         if (currentSpItem != null) {
                             fileToObjectMap.put(currentSpItem, currentFileName);
                             addElement(currentSpItem);
@@ -240,18 +248,21 @@ final public class DeferredProgramList extends JPanel implements
         cal.getTable().set("project", "CAL");
         cal.getTable().set("msbid", "CAL");
         cal.getTable().set(":msb", "true");
+
         // A calibration observation is an SpProg - need to convert to an SpObs
         Vector<SpItem> theseObs = SpTreeMan.findAllItems(cal,
                 SpObs.class.getName());
         SpItem thisObs = theseObs.firstElement();
+
         if (thisObs != cal) {
             thisObs.getTable().set("project", "CAL");
             thisObs.getTable().set("msbid", "CAL");
             thisObs.getTable().set(":msb", "true");
         }
 
-        if (thisObs.getTitleAttr().equals("Observation"))
+        if (thisObs.getTitleAttr().equals("Observation")) {
             thisObs.setTitleAttr(cal.getTitleAttr());
+        }
 
         ((SpObs) thisObs).setOptional(true);
 
@@ -264,6 +275,7 @@ final public class DeferredProgramList extends JPanel implements
             makePersistent(thisObs);
             model.addElement(thisObs);
         }
+
         // This is a hack to fix fault [20021030.002]. It shouldn't happen but
         // hopefully this will make sure...
         obsList.setEnabled(true);
@@ -295,17 +307,20 @@ final public class DeferredProgramList extends JPanel implements
 
         MouseListener ml = new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() == 2)
+                if (e.getClickCount() == 2) {
                     execute();
+                }
             }
 
             public void mousePressed(MouseEvent e) {
-                if (e.isPopupTrigger() && getCurrentItem() != null)
+                if (e.isPopupTrigger() && getCurrentItem() != null) {
                     engMenu.show(e.getComponent(), e.getX(), e.getY());
-                else
+                } else {
                     ProgramTree.clearSelection();
+                }
             }
         };
+
         obsList.addMouseListener(ml);
         obsList.addListSelectionListener(this);
         // Add the listbox to a scrolling pane
@@ -332,6 +347,7 @@ final public class DeferredProgramList extends JPanel implements
         obs.getTable().set("msbid", "CAL");
         obs.getTable().set(":msb", "true");
         obs = makeNewObs(obs);
+
         if (isDuplicate(obs) == false) {
             makePersistent(obs);
             addElement(obs);
@@ -346,11 +362,13 @@ final public class DeferredProgramList extends JPanel implements
      */
     private static SpItem makeNewObs(SpItem current) {
         SpItem newItem = current;
+
         try {
             String xmlString = current.toXML();
             newItem = (new SpInputXML()).xmlToSpItem(xmlString);
         } catch (Exception e) {
         }
+
         return newItem;
     }
 
@@ -365,20 +383,24 @@ final public class DeferredProgramList extends JPanel implements
         boolean isDuplicate = false;
 
         String currentObsXML = obs.toXML();
+
         for (int i = 0; i < model.size(); i++) {
             SpItem thisObs = (SpItem) model.elementAt(i);
             String thisObsXML = thisObs.toXML();
+
             if (thisObsXML.equals(currentObsXML)) {
                 isDuplicate = true;
                 break;
             }
         }
+
         return isDuplicate;
     }
 
-    /*
-     * This more or less mimics the doExecute() method the ProgramTree.java. Its
-     * real purpose is to let users do calibrations even if the
+    /**
+     * This more or less mimics the doExecute() method the ProgramTree.java.
+     *
+     * Its real purpose is to let users do calibrations even if the
      * "Send for Execution" button is disabled.
      */
     private void execute() {
@@ -402,8 +424,10 @@ final public class DeferredProgramList extends JPanel implements
                     // Start the process and wait for it to complete
                     t.start();
                     t.join();
+
                     // Reset _useQueue
                     _useQueue = true;
+
                     // Now check the result
                     if (failFile.exists()) {
                         new ErrorBox(this, "Failed to Execute. Check messages.");
@@ -414,16 +438,18 @@ final public class DeferredProgramList extends JPanel implements
                         logger.info("Observation executed successfully");
                     } else {
                         // Neither file exists - report an error to the user
-                        new ErrorBox(
-                                "Unable to determine success status - assuming failed.");
+                        new ErrorBox("Unable to determine success status"
+                                + " - assuming failed.");
                         logger.error("Unable to determine success status for observation.");
                     }
 
                     // done with status files
-                    if (failFile.exists())
+                    if (failFile.exists()) {
                         failFile.delete();
-                    if (successFile.exists())
+                    }
+                    if (successFile.exists()) {
                         successFile.delete();
+                    }
                 } catch (Exception e) {
                     logger.error("Failed to execute thread.", e);
                     if (t != null && t.isAlive()) {
@@ -464,6 +490,7 @@ final public class DeferredProgramList extends JPanel implements
         if (!nodefer) {
             String fName = makeFilenameForDeferredObservation();
             FileWriter fw = null;
+
             try {
                 fw = new FileWriter(fName);
                 fw.write(item.toXML());
@@ -478,6 +505,7 @@ final public class DeferredProgramList extends JPanel implements
                     }
                 }
             }
+
             fileToObjectMap.put(item, fName);
         }
     }
@@ -506,22 +534,27 @@ final public class DeferredProgramList extends JPanel implements
     private static String[] getFileList() {
         String deferredFiles[] = {};
         File deferredDir = FileUtils.getTodaysDeferredDirectory();
-        String todaysDeferredDirName = FileUtils
-                .getTodaysDeferredDirectoryName();
+        String todaysDeferredDirName =
+                FileUtils.getTodaysDeferredDirectoryName();
+
         if (deferredDir != null) {
             String[] directoryContents = deferredDir.list(xmlFilter);
-            if (directoryContents != null)
+            if (directoryContents != null) {
                 deferredFiles = directoryContents;
+            }
 
             String currentFileName;
 
             for (int i = 0; i < deferredFiles.length; i++) {
                 currentFileName = deferredFiles[i];
-                if (!currentFileName.contains(File.separator))
+
+                if (!currentFileName.contains(File.separator)) {
                     deferredFiles[i] = todaysDeferredDirName + File.separator
                             + currentFileName;
+                }
             }
         }
+
         return deferredFiles;
     }
 
@@ -535,31 +568,43 @@ final public class DeferredProgramList extends JPanel implements
 
         if (deferredParent != null) {
             File[] files = deferredParent.listFiles();
+
             for (int index = 0; index < files.length; index++) {
                 File file = files[index];
-                if (!FileUtils.delete(file, deferred))
+
+                if (!FileUtils.delete(file, deferred)) {
                     logger.error("Could not delete " + file.getName());
+                }
             }
         }
+
         // Now clear the hashmap, just for completeness
-        if (!fileToObjectMap.isEmpty())
+        if (!fileToObjectMap.isEmpty()) {
             fileToObjectMap.clear();
+        }
     }
 
     /**
-     * Mark an observation as done. This is done by timestamping the title.
+     * Mark an observation as done.
+     *
+     * This is done by timestamping the title.
      */
     public static void markThisObservationAsDone(SpItem thisObservation) {
         // Add a dat-time stamp to the title
         String currentTitle = thisObservation.getTitle();
         String[] split = currentTitle.split("_");
         String baseName = "";
+
         for (int index = 0; index < split.length; index++) {
             String subStr = split[index];
-            if (subStr.equals("done"))
+
+            if (subStr.equals("done")) {
                 break;
+            }
+
             baseName += subStr;
         }
+
         currentTitle = baseName;
         SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd'T'HHmmss");
         Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
@@ -569,14 +614,18 @@ final public class DeferredProgramList extends JPanel implements
 
         // Delete the old entry and replace by the current
         String fileToRemove = fileToObjectMap.get(obsList.getSelectedValue());
+
         if (fileToRemove != null) {
             File f = new File(fileToRemove);
             f.delete();
             fileToObjectMap.remove(obsList.getSelectedValue());
         }
+
         int index = obsList.getSelectedIndex();
-        if (index > -1)
+        if (index > -1) {
             model.removeElementAt(index);
+        }
+
         setCurrentItem(null);
 
         makePersistent(thisObservation);
@@ -601,8 +650,10 @@ final public class DeferredProgramList extends JPanel implements
     }
 
     /**
-     * Implementation of <code>DropTargetListener</code> interface. Adds the
-     * currently selected item from the Program List to the deferred list.
+     * Add the currently selected item from the Program List to the deferred
+     * list.
+     *
+     * Implementation of <code>DropTargetListener</code> interface.
      *
      * @param evt A <code>DropTargetDropEvent</code> object.
      */
@@ -610,6 +661,7 @@ final public class DeferredProgramList extends JPanel implements
         if (this.dropTarget.isActive()) {
             evt.acceptDrop(DnDConstants.ACTION_MOVE);
             SpItem thisObs = ProgramTree.getObservationToDefer();
+
             if (((SpObs) thisObs).isOptional()) {
                 appendItem(thisObs);
                 evt.getDropTargetContext().dropComplete(true);
@@ -626,16 +678,18 @@ final public class DeferredProgramList extends JPanel implements
 
     /* DRAG SOURCE EVENTS */
     /**
-     * Implementation of the <code>DragSourceListener</code> interface. Removes
-     * the entry from the list on successful drop.
+     * Remove the entry from the list on successful drop.
+     *
+     * Implementation of the <code>DragSourceListener</code> interface.
      *
      * @param evt A <code>DragSourceDropEvent</code> object.
      */
     public void dragDropEnd(DragSourceDropEvent evt) {
         if (evt.getDropSuccess()) {
             // Delete the file
-            String fileToRemove = fileToObjectMap.get(obsList
-                    .getSelectedValue());
+            String fileToRemove = fileToObjectMap.get(
+                    obsList.getSelectedValue());
+
             if (fileToRemove != null) {
                 File f = new File(fileToRemove);
                 f.delete();
@@ -646,11 +700,13 @@ final public class DeferredProgramList extends JPanel implements
 
             // Remove the entry from the list
             int index = obsList.getSelectedIndex();
-            if (index > -1)
+            if (index > -1) {
                 model.removeElementAt(index);
+            }
 
             setCurrentItem(null);
         }
+
         obsList.setEnabled(true);
         this.dropTarget.setActive(true);
     }
@@ -675,9 +731,10 @@ final public class DeferredProgramList extends JPanel implements
     }
 
     /**
+     * Disables the current list from being a drop target temporarily so that
+     * we can't drop items from the list back on to the list.
+     *
      * Implementation of the <code>DragGestureListener</code> interface.
-     * Disables the current list from being a drop target temporarily so that we
-     * cant drop items from the list back on to the list.
      *
      * @param event A <code>DragGestureEvent</code> object.
      */
@@ -685,8 +742,10 @@ final public class DeferredProgramList extends JPanel implements
         SpItem selected = (SpItem) obsList.getSelectedValue();
         ProgramTree.clearSelection();
         obsList.setEnabled(false);
+
         if (selected != null) {
             StringSelection text = new StringSelection(selected.toString());
+
             // Disable dropping on this window
             this.dropTarget.setActive(false);
             dragSource.startDrag(event, DragSource.DefaultMoveNoDrop, text,
@@ -711,12 +770,19 @@ final public class DeferredProgramList extends JPanel implements
             _item.setPI("observer");
             _item.setCountry("JAC");
             _item.setTelescope();
-            if (_item.getProjectID() == null || _item.getProjectID().equals(""))
+
+            if (_item.getProjectID() == null
+                    || _item.getProjectID().equals("")) {
                 _item.setProjectID("CAL");
+            }
+
             _item.setTitleAttr(item.getTitleAttr());
             SpInsertData spID = SpTreeMan.evalInsertInside(item, _item);
-            if (spID != null)
+
+            if (spID != null) {
                 SpTreeMan.insert(spID);
+            }
+
             _isDeferred = deferred;
         }
 
@@ -725,8 +791,9 @@ final public class DeferredProgramList extends JPanel implements
             boolean failed = false;
 
             execute = ExecuteJCMT.getInstance(_item);
-            if (execute == null)
+            if (execute == null) {
                 return;
+            }
             execute.setDeferred(_isDeferred);
             failed = execute.run();
 
@@ -744,6 +811,7 @@ final public class DeferredProgramList extends JPanel implements
         Object source = e.getSource();
         if (source == obsList) {
             SpItem item = (SpItem) obsList.getSelectedValue();
+
             if (item != null && getCurrentItem() != item) {
                 setCurrentItem(item);
                 NotePanel.setNote(getCurrentItem());

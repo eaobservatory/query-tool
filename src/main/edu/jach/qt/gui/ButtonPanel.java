@@ -76,34 +76,36 @@ public class ButtonPanel extends WidgetPanel {
     }
 
     /**
-     * The <code>setEnabled</code> method enables or diables each JCheckBox
-     * depending on the value of <code>boolean</code>.
+     * Enables or diables each JCheckBox depending on the value of booleanFlag.
      *
      * @param booleanFlag a <code>boolean</code> value
      */
     public void setEnabled(boolean booleanFlag) {
         JCheckBox next;
-        for (ListIterator<JCheckBox> iter = buttonList.listIterator(); iter
-                .hasNext(); iter.nextIndex()) {
+        for (ListIterator<JCheckBox> iter = buttonList.listIterator();
+                iter.hasNext(); iter.nextIndex()) {
             next = iter.next();
+
             if (!next.getText().equals("Any Instrument")
                     && !next.getText().equals("Any Heterodyne")
-                    && !next.getText().equals("current"))
+                    && !next.getText().equals("current")) {
                 next.setEnabled(booleanFlag);
+            }
         }
     }
 
     /**
-     * The <code>setSelected</code> method selects or unselects each JCheckBox
-     * method depending on the value of <code>boolean</code>.
+     * Selects or unselects each JCheckBox method depending on the value
+     * of flag.
      *
      * @param flag a <code>boolean</code> value
      */
     public void setSelected(boolean flag) {
         JCheckBox next;
-        for (ListIterator<JCheckBox> iter = buttonList.listIterator(); iter
-                .hasNext(); iter.nextIndex()) {
+        for (ListIterator<JCheckBox> iter = buttonList.listIterator();
+                iter.hasNext(); iter.nextIndex()) {
             next = iter.next();
+
             if (!next.getText().equals("Any Instrument")
                     && !next.getText().equals("Any Heterodyne")
                     && !next.getText().equals("current")) {
@@ -115,9 +117,10 @@ public class ButtonPanel extends WidgetPanel {
 
     private void wfcamSelected(boolean selected) {
         JCheckBox next;
-        for (ListIterator<JCheckBox> iter = buttonList.listIterator(); iter
-                .hasNext(); iter.nextIndex()) {
+        for (ListIterator<JCheckBox> iter = buttonList.listIterator();
+                iter.hasNext(); iter.nextIndex()) {
             next = iter.next();
+
             // If flag is true, we need to deselect everything else and disable
             // the
             if (selected) {
@@ -129,12 +132,12 @@ public class ButtonPanel extends WidgetPanel {
                 next.setEnabled(!selected);
             }
         }
+
         setAttribute(myTitle, buttonList);
     }
 
     /**
-     * The <code>actionPerformed</code> method notifies the WidgetDataBag of the
-     * state of all JCheckBoxes.
+     * Notifies the WidgetDataBag of the state of all JCheckBoxes.
      *
      * @param evt an <code>ActionEvent</code> value
      */
@@ -146,6 +149,7 @@ public class ButtonPanel extends WidgetPanel {
             wfcamSelected(temp.isSelected());
             return;
         }
+
         if (temp.getText().equals("Any Instrument")
                 || temp.getText().equals("Any Heterodyne")
                 || temp.getText().equals("current")) {
@@ -156,9 +160,7 @@ public class ButtonPanel extends WidgetPanel {
                 setEnabled(true);
                 setSelected(false);
             }
-        }
-
-        else {
+        } else {
             setAttribute(myTitle, buttonList);
         }
     }

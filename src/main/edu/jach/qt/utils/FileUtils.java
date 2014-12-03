@@ -25,8 +25,8 @@ import java.io.IOException;
 import gemini.util.JACLogger;
 
 public class FileUtils {
-    private static final JACLogger logger = JACLogger
-            .getLogger(FileUtils.class);
+    private static final JACLogger logger =
+            JACLogger.getLogger(FileUtils.class);
     private static String deferredDirName;
     private static String knownUTCDate;
     private static String todaysDeferredDirName;
@@ -34,7 +34,7 @@ public class FileUtils {
     private static File todaysDeferredDir;
 
     /**
-     * Execute `chmod` in an external process.
+     * Execute 'chmod' in an external process.
      *
      * - The perms "666" are hardcoded for files.
      * - The perms "777" are hardcoded for directories.
@@ -51,27 +51,37 @@ public class FileUtils {
             StringBuffer buffer = new StringBuffer();
             buffer.append("chmod");
             buffer.append(" ");
-            if (file.isFile())
+
+            if (file.isFile()) {
                 buffer.append("666");
-            else
+            } else {
                 buffer.append("777");
+            }
+
             buffer.append(" ");
             buffer.append(file.getAbsolutePath());
             String command = buffer.toString();
             Process process = Runtime.getRuntime().exec(command);
             process.waitFor();
             int exitCode = process.exitValue();
-            if (exitCode != 0)
+
+            if (exitCode != 0) {
                 success = false;
+            }
+
             buffer = null;
+
         } catch (IOException ioe) {
             success = false;
+
         } catch (InterruptedException ie) {
             success = false;
         }
-        if (!success)
+
+        if (!success) {
             logger.error("Unable to change file access permissions "
                     + file.getAbsolutePath());
+        }
 
         return success;
     }
@@ -92,6 +102,7 @@ public class FileUtils {
             buffer = null;
             deferredDirName = deferredDirName.toLowerCase();
         }
+
         return deferredDirName;
     }
 
@@ -110,19 +121,23 @@ public class FileUtils {
             buffer = null;
             todaysDeferredDirName = todaysDeferredDirName.toLowerCase();
         }
+
         return todaysDeferredDirName;
     }
 
     public static File getDeferredDirectory() {
-        if (deferredDir == null)
+        if (deferredDir == null) {
             deferredDir = createDirectory(getDeferredDirectoryName());
+        }
 
         return deferredDir;
     }
 
     public static File getTodaysDeferredDirectory() {
-        if (checkUTCDate() || todaysDeferredDir == null)
-            todaysDeferredDir = createDirectory(getTodaysDeferredDirectoryName());
+        if (checkUTCDate() || todaysDeferredDir == null) {
+            todaysDeferredDir =
+                    createDirectory(getTodaysDeferredDirectoryName());
+        }
 
         return todaysDeferredDir;
     }
@@ -135,10 +150,13 @@ public class FileUtils {
     private static boolean checkUTCDate() {
         boolean changed = true;
         String UTCDate = TimeUtils.getUTCDate();
-        if (knownUTCDate == null)
+
+        if (knownUTCDate == null) {
             knownUTCDate = UTCDate;
-        else if (knownUTCDate.equals(UTCDate))
+        } else if (knownUTCDate.equals(UTCDate)) {
             changed = false;
+        }
+
         return changed;
     }
 
@@ -150,25 +168,31 @@ public class FileUtils {
      */
     public static File createDirectory(String fileName) {
         File dir = null;
+
         if (fileName != null) {
             dir = new File(fileName);
+
             if (!dir.exists()) {
                 logger.info("Creating deferred directory " + fileName);
+
                 if (!dir.mkdirs()) {
                     logger.error("Could not create directory " + fileName);
                     dir = null;
                 } else if (!chmod(dir)) {
                     dir = null;
                 }
+
             } else if (!dir.canRead()) {
                 logger.error("Unable to read deferred directory " + fileName);
                 dir = null;
+
             } else if (!dir.isDirectory()) {
                 logger.error(fileName + " is not a directory, deleting.");
                 dir.delete();
                 dir = null;
             }
         }
+
         return dir;
     }
 
@@ -185,22 +209,30 @@ public class FileUtils {
         if (!file.equals(skip)) {
             if (file.isDirectory()) {
                 File[] files = file.listFiles();
-                for (int index = 0; index < files.length; index++)
+
+                for (int index = 0; index < files.length; index++) {
                     delete(files[index], skip);
+                }
             }
 
             if (!file.delete()) {
                 String diagnostic = "";
-                if (!file.exists())
+
+                if (!file.exists()) {
                     diagnostic = "does not exist";
-                else if (!file.canWrite())
+                } else if (!file.canWrite()) {
                     diagnostic = "cannot be written to";
+                }
+
                 logger.error("Could not delete " + file.getName() + " "
                         + diagnostic + ".");
+
                 success = false;
+
             } else {
                 logger.warn("Deleted " + file.getName());
             }
+
         } else {
             logger.warn("Skipping " + file.getName());
         }

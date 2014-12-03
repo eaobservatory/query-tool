@@ -31,8 +31,8 @@ import gemini.util.JACLogger;
 @SuppressWarnings("serial")
 public class ProjectTableModel extends AbstractTableModel implements Runnable,
         TableModelListener {
-    static final JACLogger logger = JACLogger
-            .getLogger(ProjectTableModel.class);
+    static final JACLogger logger =
+            JACLogger.getLogger(ProjectTableModel.class);
     private static String[] colName = {"projectid", "priority"};
     private static Class<?>[] colClass = {String.class, Integer.class};
     private Vector<String> projectIds = new Vector<String>();
@@ -43,7 +43,6 @@ public class ProjectTableModel extends AbstractTableModel implements Runnable,
     }
 
     public void run() {
-
         fireTableChanged(null);
     }
 
@@ -64,14 +63,17 @@ public class ProjectTableModel extends AbstractTableModel implements Runnable,
     }
 
     public Object getValueAt(int r, int c) {
-        if (r < 0 || projectIds.size() == 0)
+        if (r < 0 || projectIds.size() == 0) {
             return "----";
-        if (colName[c].equalsIgnoreCase("projectid"))
+        }
+
+        if (colName[c].equalsIgnoreCase("projectid")) {
             return projectIds.elementAt(r);
-        else if (colName[c].equalsIgnoreCase("priority"))
+        } else if (colName[c].equalsIgnoreCase("priority")) {
             return priorities.elementAt(r);
-        else
+        } else {
             return "---";
+        }
     }
 
     public void setValueAt(Object value, int r, int c) {
@@ -81,6 +83,7 @@ public class ProjectTableModel extends AbstractTableModel implements Runnable,
         projectIds.clear();
         priorities.clear();
         Vector<ProjectData> data = XmlUtils.getProjectData();
+
         if (data != null) {
             for (ProjectData projectData : data) {
                 projectIds.add(projectData.projectID);

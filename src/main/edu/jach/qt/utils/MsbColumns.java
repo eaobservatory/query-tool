@@ -48,27 +48,33 @@ public class MsbColumns extends OrderedMap<String, MsbColumnInfo> {
 
     public void setVisibility(String name, boolean visible) {
         final MsbColumnInfo msbColumnInfo = findName(name);
-        if (msbColumnInfo != null)
+        if (msbColumnInfo != null) {
             msbColumnInfo.setVisible(visible);
+        }
     }
 
     public void setVisibility(int index, boolean visible) {
         MsbColumnInfo msbColumnInfo = findIndex(index);
-        if (msbColumnInfo != null)
+        if (msbColumnInfo != null) {
             msbColumnInfo.setVisible(visible);
+        }
     }
 
     public boolean getVisibility(String name) {
         MsbColumnInfo msbColumnInfo = findName(name);
-        if (msbColumnInfo != null)
+        if (msbColumnInfo != null) {
             return msbColumnInfo.getVisible();
+        }
+
         return false;
     }
 
     public boolean getVisibility(int index) {
         MsbColumnInfo msbColumnInfo = findIndex(index);
-        if (msbColumnInfo != null)
+        if (msbColumnInfo != null) {
             return msbColumnInfo.getVisible();
+        }
+
         return false;
     }
 }

@@ -46,11 +46,13 @@ public class HTMLViewer extends JDialog {
         _calPane.setPreferredSize(new Dimension(950, 700));
         _calPane.setVisible(true);
         URL url = null;
+
         try {
             url = new URL("file://" + fName);
         } catch (Exception e) {
             System.out.println("Error loasdinf doc");
         }
+
         _calPane.showHTMLDocument(url);
         _baseURL = url;
 
@@ -81,23 +83,28 @@ public class HTMLViewer extends JDialog {
 
                 if (isVisible()
                         && (e.getSource() == optionPane)
-                        && (prop.equals(JOptionPane.VALUE_PROPERTY) || prop
-                                .equals(JOptionPane.INPUT_VALUE_PROPERTY))) {
+                        && (prop.equals(JOptionPane.VALUE_PROPERTY)
+                                || prop.equals(JOptionPane.INPUT_VALUE_PROPERTY))) {
                     Object value = optionPane.getValue();
 
-                    if (value == JOptionPane.UNINITIALIZED_VALUE)
+                    if (value == JOptionPane.UNINITIALIZED_VALUE) {
                         return;
+                    }
 
                     optionPane.setValue(JOptionPane.UNINITIALIZED_VALUE);
 
                     if (value.equals(backString)) {
                         optionPane.setValue(JOptionPane.UNINITIALIZED_VALUE);
                         _calPane.showHTMLDocument(_baseURL);
+
                         return;
+
                     } else if (!value.equals(exitString)) {
                         optionPane.setValue(JOptionPane.UNINITIALIZED_VALUE);
+
                         return;
                     }
+
                     setVisible(false);
                     _isVisible = false;
                 }

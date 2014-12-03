@@ -43,8 +43,10 @@ public class QtTable extends JTable {
     public QtTable(TableModel model) {
         super(model);
         tableModel = model;
-        stringTableCellRenderer = (DefaultTableCellRenderer) getDefaultRenderer(String.class);
-        numberTableCellRenderer = (DefaultTableCellRenderer) getDefaultRenderer(Number.class);
+        stringTableCellRenderer =
+                (DefaultTableCellRenderer) getDefaultRenderer(String.class);
+        numberTableCellRenderer =
+                (DefaultTableCellRenderer) getDefaultRenderer(Number.class);
 
     }
 
@@ -52,16 +54,20 @@ public class QtTable extends JTable {
         Object object = tableModel.getValueAt(row, column);
         int checksumIndex = columns.getIndexForKey("checksum");
         String checksum;
-        if (column != checksumIndex)
+
+        if (column != checksumIndex) {
             checksum = (String) tableModel.getValueAt(row, checksumIndex);
-        else
+        } else {
             checksum = (String) object;
+        }
+
         Color colour = Color.white;
-        if (spQueuedMap.containsMsbChecksum(checksum) != null)
+
+        if (spQueuedMap.containsMsbChecksum(checksum) != null) {
             colour = Color.orange;
-        else if (spQueuedMap.seen(checksum))
+        } else if (spQueuedMap.seen(checksum)) {
             colour = unintrusiveGrey;
-        else if (checksum.contains("O")) {
+        } else if (checksum.contains("O")) {
             // This MSB is in an OR folder, so check whether we have
             // queued other OR folder MSBs from the same project.
             // (Because we don't have a way to determine which
@@ -79,8 +85,10 @@ public class QtTable extends JTable {
                 colour = orFolderColor;
             }
         }
+
         stringTableCellRenderer.setBackground(colour);
         numberTableCellRenderer.setBackground(colour);
+
         return object;
     }
 }

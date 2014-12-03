@@ -45,15 +45,16 @@ import orac.util.OrderedMap;
  * Created: Tue Aug 28 16:49:16 2001
  */
 @SuppressWarnings("serial")
-public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
-    private static final JACLogger logger = JACLogger
-            .getLogger(MSBQueryTableModel.class);
+public class MSBQueryTableModel extends AbstractTableModel
+        implements Runnable {
+    private static final JACLogger logger =
+            JACLogger.getLogger(MSBQueryTableModel.class);
     private String _projectId = null;
     public static final String ROOT_ELEMENT_TAG = "SpMSBSummary";
     public static final String MSB_SUMMARY = System.getProperty("msbSummary")
             + "." + System.getProperty("user.name");
-    public static final String MSB_SUMMARY_TEST = System
-            .getProperty("msbSummaryTest");
+    public static final String MSB_SUMMARY_TEST =
+            System.getProperty("msbSummaryTest");
     private int colCount; // The number of columns TO DISPLAY
     // This may be less than the actual number of columns
 
@@ -69,7 +70,9 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
     private int cachedRowCount;
 
     /**
-     * Constructor. Constructs a table model with 200 possible entries.
+     * Constructor.
+     *
+     * Constructs a table model with 200 possible entries.
      */
     public MSBQueryTableModel() throws Exception {
         updateColumns();
@@ -88,8 +91,9 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
     }
 
     /**
-     * Impelmentation of <code>Runnable</code> interface. Creates a DOM document
-     * for populating the table.
+     * Impelmentation of <code>Runnable</code> interface.
+     *
+     * Creates a DOM document for populating the table.
      */
     public void run() {
         // Clear the current model
@@ -98,22 +102,28 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
         // Parse the MSB summary which should have already been generated from
         // the query.
         try {
-            DocumentBuilderFactory factory = DocumentBuilderFactory
-                    .newInstance();
+            DocumentBuilderFactory factory =
+                    DocumentBuilderFactory.newInstance();
 
             DocumentBuilder builder = factory.newDocumentBuilder();
             doc = builder.parse(new File(MSB_SUMMARY));
+
         } catch (SAXException sxe) {
             Exception exception = sxe;
-            if (sxe.getException() != null)
+
+            if (sxe.getException() != null) {
                 exception = sxe.getException();
+            }
+
             logger.error("SAX Error generated during parsing", exception);
 
         } catch (ParserConfigurationException pce) {
             logger.error("ParseConfiguration Error generated during parsing",
                     pce);
+
         } catch (IOException ioe) {
-            logger.error("IO Error generated attempting to build Document", ioe);
+            logger.error("IO Error generated attempting to build Document",
+                    ioe);
         }
 
         // If the document exists, build a new model so we don't need to keep
@@ -121,20 +131,27 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
         if (doc != null) {
             logger.info("Building new model");
             model = XmlUtils.getNewModel(doc, ROOT_ELEMENT_TAG);
+
             // Move the columns around to the current bitset.
             adjustColumnData();
             if (model != null) {
                 // Create an internal map of projects to MSBs
                 int modelSize = model.size();
-                for (int i = 0; i < modelSize; i++)
+
+                for (int i = 0; i < modelSize; i++) {
                     modelIndex.add(model.find(i).getProjectId());
+                }
             }
+
             _projectId = "all";
             logger.info("Result contained " + getRowCount() + " MSBs in "
                     + modelIndex.size() + " Projects");
             String results = "";
-            for (String result : modelIndex)
+
+            for (String result : modelIndex) {
                 results += result + "\n";
+            }
+
             logger.info(results);
         }
     }
@@ -160,8 +177,10 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
     }
 
     /**
-     * Get the real number of columns in the model. This may be less than the
-     * number of columns displayed on the associated table.
+     * Get the real number of columns in the model.
+     *
+     * This may be less than the number of columns displayed on the associated
+     * table.
      *
      * @return The number of columns in the model.
      */
@@ -176,25 +195,34 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
      */
     public int getRowCount() {
         int rowCount = 0;
-        if (model == null || _projectId == null)
+
+        if (model == null || _projectId == null) {
             return rowCount;
+        }
+
         int modelSize = model.size();
-        if (modelSize == 0)
+        if (modelSize == 0) {
             return 0;
+        }
+
         if (!rowCountCached) {
             if (_projectId.equalsIgnoreCase("all")) {
                 // Get the total number of rows returned
-                for (int index = 0; index < modelSize; index++)
+                for (int index = 0; index < modelSize; index++) {
                     rowCount += model.find(index).getRowCount();
+                }
             } else {
                 // Get the total number of rows for the specified project
                 int index = modelIndex.indexOf(_projectId);
-                if (index != -1)
+                if (index != -1) {
                     rowCount = model.find(index).getRowCount();
+                }
             }
+
             cachedRowCount = rowCount;
             rowCountCached = true;
         }
+
         return cachedRowCount;
     }
 
@@ -210,21 +238,28 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
             // Need to get data for all the MSBs returned...
             int rowCount = 0;
             int modelSize = model.size();
+
             for (int index = 0; index < modelSize; index++) {
                 // Get the number of rows in the current model
                 rowCount = model.find(index).getRowCount();
+
                 if (rowCount <= r) {
                     // We have the right model, so get the data
                     r = r - rowCount;
+
                     continue;
                 }
+
                 return model.find(index).getData(r, c);
             }
         } else {
             int index = modelIndex.indexOf(_projectId);
-            if (index != -1)
+
+            if (index != -1) {
                 return model.find(index).getData(r, c);
+            }
         }
+
         return null;
     }
 
@@ -273,9 +308,11 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
 
     /**
      * Method to select a subset of columns in the model to display on the
-     * associated table. The <code>BitSet</code> input must be in the same order
-     * as that returned from a <code>getColumnNames</code> query. If a bit is
-     * set, it is assumed that column should be displayed.
+     * associated table.
+     *
+     * The <code>BitSet</code> input must be in the same order as that returned
+     * from a <code>getColumnNames</code> query. If a bit is set, it is assumed
+     * that column should be displayed.
      *
      * @see edu.jach.qt.utils.MsbClient#getColumnNames()
      * @param colSet The set of columns to display.
@@ -284,6 +321,7 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
         int nHidden = 0;
 
         MsbColumns columns = MsbClient.getColumnInfo();
+
         for (int i = columns.size() - 1; i >= 0; i--) {
             if (!columns.getVisibility(i)) {
                 nHidden++;
@@ -291,6 +329,7 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
                 columns.add((MsbColumnInfo) object);
             }
         }
+
         // Set the column count
         colCount = columns.size() - nHidden;
 
@@ -298,15 +337,19 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
     }
 
     public void adjustColumnData() {
-        if (model == null)
+        if (model == null) {
             return;
+        }
+
         // Loop through each submodel
         for (int i = 0; i < model.size(); i++) {
             MSBTableModel current = model.find(i);
+
             for (int j = current.getWidth() - 1; j >= 0; j--) {
                 // Move the column to the end to hide it.
-                if (!current.isVisible(j))
+                if (!current.isVisible(j)) {
                     current.moveColumnToEnd(j);
+                }
             }
         }
     }
@@ -317,19 +360,24 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
                 MSBTableModel msbTableModel = model.remove(0);
                 msbTableModel.clear();
             }
+
             model.clear();
             rowCountCached = false;
         }
+
         modelIndex.clear();
         updateColumns();
     }
 
     public int[] getIndexes() {
-        if (model == null)
+        if (model == null) {
             return new int[0];
+        }
+
         int indexSize = getRowCount();
         int[] totalIndexes = new int[indexSize];
         int index;
+
         if (_projectId.equalsIgnoreCase("all")) {
             int modelSize = model.size();
             MSBTableModel msbTableModel;
@@ -337,20 +385,24 @@ public class MSBQueryTableModel extends AbstractTableModel implements Runnable {
             int intValue;
             int size;
             int currentPosition = 0;
+
             for (index = 0; index < modelSize; index++) {
                 // Get the number of rows in the current model
                 msbTableModel = model.find(index);
                 vector = msbTableModel.getIndices();
                 size = vector.size();
+
                 for (int step = 0; step < size; step++) {
                     intValue = vector.elementAt(step);
                     totalIndexes[intValue] = currentPosition++;
                 }
             }
         } else {
-            for (index = 0; index < indexSize; index++)
+            for (index = 0; index < indexSize; index++) {
                 totalIndexes[index] = index;
+            }
         }
+
         return totalIndexes;
     }
 }

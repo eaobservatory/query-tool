@@ -70,7 +70,9 @@ public class OmpOM extends JPanel {
     }
 
     /**
-     * Set the SpItem. Set the SpItem to that passed in.
+     * Set the SpItem.
+     *
+     * Set the SpItem to that passed in.
      *
      * @param item The value of the SpItem to set.
      */
@@ -88,21 +90,26 @@ public class OmpOM extends JPanel {
     }
 
     /**
-     * Get the name of the program. Gets the name of the program from Title
-     * field in the first observation.
+     * Get the name of the program.
      *
-     * @return The program name, <italic>'No Observations'</italic> if no
-     *         program, or <italic>'Title Not Found'</italic> on error.
+     * Gets the name of the program from Title field in the first observation.
+     *
+     * @return The program name, <i>'No Observations'</i> if no
+     *         program, or <i>'Title Not Found'</i> on error.
      */
     public String getProgramName() {
         String returnString = "Title Not Found";
         SpItem currentItem = ProgramTree.getCurrentItem();
+
         if (currentItem != null) {
             Vector<SpItem> progVector = SpTreeMan.findAllItems(currentItem,
                     SpMSB.class.getName());
-            if (progVector == null || progVector.size() == 0)
+
+            if (progVector == null || progVector.size() == 0) {
                 progVector = SpTreeMan.findAllItems(currentItem,
                         SpObs.class.getName());
+            }
+
             try {
                 if (progVector != null && progVector.size() > 0) {
                     SpMSB spMsb = (SpMSB) progVector.firstElement();
@@ -115,6 +122,7 @@ public class OmpOM extends JPanel {
         } else {
             returnString = "No Observations";
         }
+
         return returnString;
     }
 
@@ -125,18 +133,19 @@ public class OmpOM extends JPanel {
      * @param msbID an <code>int</code> value
      */
     public void addNewTree(Integer msbID) {
-        if (msbID == null)
+        if (msbID == null) {
             ptree.addList(null);
-        else
+        } else {
             ptree.addList(spItem);
+        }
 
         ptree.setMinimumSize(new Dimension(400, 550));
     }
 
     /**
+     * The method used for debugging.
      *
-     * The method used for debugging. It loads in a hard-wired MSB file to use
-     * as the ProgramTree object.
+     * It loads in a hard-wired MSB file to use as the ProgramTree object.
      */
     public void addNewTree() {
         file = new File(System.getProperty("arrayTests",
@@ -158,8 +167,10 @@ public class OmpOM extends JPanel {
     }
 
     /**
-     * Construct the Staging Panel. Builds the deferred list and Observer Notes
-     * panel and displaays as a tabbed pane.
+     * Construct the Staging Panel.
+     *
+     * Builds the deferred list and Observer Notes panel and displaays as a
+     * tabbed pane.
      *
      * @return The <code>JSplitPanel</code> staging area.
      */
@@ -172,26 +183,32 @@ public class OmpOM extends JPanel {
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
                 ptree, dsp);
         updateNotes();
+
         return splitPane;
     }
 
     public void updateNotes() {
-        if (ProgramTree.getCurrentItem() != null)
+        if (ProgramTree.getCurrentItem() != null) {
             NotePanel.setNote(ProgramTree.getCurrentItem());
-        else if (DeferredProgramList.getCurrentItem() != null)
+        } else if (DeferredProgramList.getCurrentItem() != null) {
             NotePanel.setNote(DeferredProgramList.getCurrentItem());
-        else
+        } else {
             NotePanel.setNote(spItem);
+        }
     }
 
     /**
-     * See if we can shutdown the QT. Checks whether the program tree still has
-     * an MSB which requires actioning.
+     * See if we can shutdown the QT.
+     *
+     * Checks whether the program tree still has an MSB which requires
+     * actioning.
      */
     public boolean checkProgramTree() {
         boolean safeToExit = true;
-        if (ptree != null)
+
+        if (ptree != null) {
             safeToExit = ptree.shutDownRequest();
+        }
 
         return safeToExit;
     }

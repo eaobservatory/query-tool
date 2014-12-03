@@ -64,7 +64,9 @@ public class LabeledRangeTextField extends WidgetPanel implements
     private final String obsFieldName = "Observation Date";
 
     /**
-     * Constructor. Associates the input text with the field name, and add the
+     * Constructor.
+     *
+     * Associates the input text with the field name, and add the
      * object to the <code>WidgetDataBag</code> and <code>Hashtable</code>.
      * Constructs the Min and Max text fields.
      *
@@ -87,6 +89,7 @@ public class LabeledRangeTextField extends WidgetPanel implements
 
     private void init(String text, String toolTip) {
         widgetLabel = new JLabel(text + ": ", JLabel.LEADING);
+
         if (text.equalsIgnoreCase(obsFieldName)) {
             lowerLabel = new JLabel("Date (yyyy-mm-dd): ", JLabel.TRAILING);
             upperLabel = new JLabel("Time (hh:mm:ss): ", JLabel.TRAILING);
@@ -116,6 +119,7 @@ public class LabeledRangeTextField extends WidgetPanel implements
             timer.addActionListener(this);
             startTimer();
         }
+
         setup();
     }
 
@@ -148,8 +152,9 @@ public class LabeledRangeTextField extends WidgetPanel implements
     }
 
     /**
-     * Get the value in the Upper Value text field. this will either be the Max.
-     * value or the time for a date/time field.
+     * Get the value in the Upper Value text field.
+     *
+     * This will either be the Max. value or the time for a date/time field.
      *
      * @return The value contained in the field.
      */
@@ -158,8 +163,9 @@ public class LabeledRangeTextField extends WidgetPanel implements
     }
 
     /**
-     * Get the value in the Lower Value text field. this will either be the Min.
-     * value or the date for a date/time field.
+     * Get the value in the Lower Value text field.
+     *
+     * This will either be the Min. value or the date for a date/time field.
      *
      * @return The value contained in the field.
      */
@@ -168,8 +174,9 @@ public class LabeledRangeTextField extends WidgetPanel implements
     }
 
     /**
-     * Set the value in the upper text field. Sets a numeric value to two
-     * decimal places.
+     * Set the value in the upper text field.
+     *
+     * Sets a numeric value to two decimal places.
      *
      * @param val A <code>Double</code> object.
      */
@@ -180,8 +187,9 @@ public class LabeledRangeTextField extends WidgetPanel implements
     }
 
     /**
-     * Set the value in the lower text field. Sets a numeric value to two
-     * decimal places.
+     * Set the value in the lower text field.
+     *
+     * Sets a numeric value to two decimal places.
      *
      * @param val A <code>Double</code> object.
      */
@@ -192,7 +200,9 @@ public class LabeledRangeTextField extends WidgetPanel implements
     }
 
     /**
-     * Set the value in the upper text field. Sets the text to that passed in..
+     * Set the value in the upper text field.
+     *
+     * Sets the text to that passed in.
      *
      * @param val The text to set.
      */
@@ -201,7 +211,9 @@ public class LabeledRangeTextField extends WidgetPanel implements
     }
 
     /**
-     * Set the value in the lower text field. Sets the text to that passed in..
+     * Set the value in the lower text field.
+     *
+     * Sets the text to that passed in.
      *
      * @param val The text to set.
      */
@@ -211,8 +223,9 @@ public class LabeledRangeTextField extends WidgetPanel implements
 
     /**
      * Return the contents of the (maximum) text field as a
-     * <code>Vector&lt;String&gt;</code>. A list of inputs may be specified by
-     * separating each entry with a comma.
+     * <code>Vector&lt;String&gt;</code>.
+     *
+     * A list of inputs may be specified by separating each entry with a comma.
      *
      * @return The contents of the text field.
      */
@@ -222,8 +235,9 @@ public class LabeledRangeTextField extends WidgetPanel implements
 
     /**
      * Return the contents of the (minimum) text field as a
-     * <code>Vector&lt;String&gt;</code>. A list of inputs may be specified by
-     * separating each entry with a comma.
+     * <code>Vector&lt;String&gt;</code>.
+     *
+     * A list of inputs may be specified by separating each entry with a comma.
      *
      * @return The contents of the text field.
      */
@@ -233,8 +247,9 @@ public class LabeledRangeTextField extends WidgetPanel implements
 
     /**
      * Return the contents of the text field as a
-     * <code>Vector&lt;String&gt;</code>. A list of inputs may be specified by
-     * separating each entry with a comma.
+     * <code>Vector&lt;String&gt;</code>.
+     *
+     * A list of inputs may be specified by separating each entry with a comma.
      *
      * @return The contents of the text field.
      */
@@ -243,14 +258,16 @@ public class LabeledRangeTextField extends WidgetPanel implements
         String[] split = list.split(",");
         int index = 0;
 
-        while (index < split.length)
+        while (index < split.length) {
             result.add(split[index++]);
+        }
 
         return result;
     }
 
     /**
      * The <code>insertUpdate</code> adds the current text to the WidgetDataBag.
+     *
      * All observers are notified.
      *
      * @param e a <code>DocumentEvent</code> value
@@ -261,6 +278,7 @@ public class LabeledRangeTextField extends WidgetPanel implements
 
     /**
      * The <code>removeUpdate</code> adds the current text to the WidgetDataBag.
+     *
      * All observers are notified.
      *
      * @param e a <code>DocumentEvent</code> value
@@ -270,7 +288,7 @@ public class LabeledRangeTextField extends WidgetPanel implements
     }
 
     /**
-     * The <code>changedUpdate</code> method is not implemented.
+     * Not implemented.
      *
      * @param e a <code>DocumentEvent</code> value
      */
@@ -278,8 +296,9 @@ public class LabeledRangeTextField extends WidgetPanel implements
     }
 
     /**
-     * Implementation of <code>ActionListener</code> interface. Sets the
-     * Date/Time fields if present to the current values.
+     * Implementation of <code>ActionListener</code> interface.
+     *
+     * Sets the Date/Time fields if present to the current values.
      *
      * @param e An <code>ActionEvent</code> object.
      */
@@ -304,13 +323,18 @@ public class LabeledRangeTextField extends WidgetPanel implements
     public void keyReleased(KeyEvent evt) {
         String date = lowerBound.getText();
         String time = upperBound.getText();
-        // If either date or time is invalid, son't do anything
+
+        // If either date or time is invalid, don't do anything
         String datePattern = "\\d{4}-\\d{2}-\\d{2}";
         String timePattern = "\\d{1,2}(:\\d{1,2})?(:\\d{1,2})?";
-        if (!date.matches(datePattern))
+
+        if (!date.matches(datePattern)) {
             return;
-        if (!time.matches(timePattern))
+        }
+
+        if (!time.matches(timePattern)) {
             return;
+        }
 
         // See if we need to add anything to the time string
         String[] hms = time.split(":");
@@ -318,9 +342,11 @@ public class LabeledRangeTextField extends WidgetPanel implements
             case 1:
                 time = time + ":00:00";
                 break;
+
             case 2:
                 time = time + ":00";
                 break;
+
             default:
                 // nothing to do
         }
@@ -331,41 +357,54 @@ public class LabeledRangeTextField extends WidgetPanel implements
         // Recalculate moon
         // Try to update the moon Panel
         RadioPanel moonPanel = WidgetPanel.getMoonPanel();
-        if (moonPanel == null || moonPanel.getBackground() == Color.red)
+        if (moonPanel == null || moonPanel.getBackground() == Color.red) {
             return;
+        }
+
         double moonValue = 0;
         SimpleMoon moon = SimpleMoon.getInstance();
         moon.set(dateTime);
-        if (moon.isUp())
+
+        if (moon.isUp()) {
             moonValue = moon.getIllumination() * 100;
+        }
+
         moon = null;
 
         Hashtable<String, Object> ht = widgetBag.getHash();
         JRadioButton b = null;
-        for (ListIterator<JRadioButton> iter = ((LinkedList<JRadioButton>) ht
-                .get("moon")).listIterator(0); iter.hasNext(); iter.nextIndex()) {
+
+        for (ListIterator<JRadioButton> iter =
+                ((LinkedList<JRadioButton>) ht.get("moon")).listIterator(0);
+                iter.hasNext(); iter.nextIndex()) {
             b = iter.next();
 
             if (moonValue == 0) {
-                if (b.getText().equalsIgnoreCase("dark"))
+                if (b.getText().equalsIgnoreCase("dark")) {
                     break;
+                }
             } else {
                 if (moonValue <= 25) {
-                    if (b.getText().equalsIgnoreCase("grey"))
+                    if (b.getText().equalsIgnoreCase("grey")) {
                         break;
+                    }
                 } else {
-                    if (b.getText().equalsIgnoreCase("bright"))
+                    if (b.getText().equalsIgnoreCase("bright")) {
                         break;
+                    }
                 }
             }
         }
-        if (b != null)
+
+        if (b != null) {
             b.setSelected(true);
+        }
     }
 
     /**
-     * Implementation of <code>KeyListener</code> interface. Stops the Date/Time
-     * field from updating if either field is edited.
+     * Implementation of <code>KeyListener</code> interface.
+     *
+     * Stops the Date/Time field from updating if either field is edited.
      *
      * @param e An <code>ActionEvent</code> object.
      */
@@ -374,7 +413,9 @@ public class LabeledRangeTextField extends WidgetPanel implements
     }
 
     /**
-     * Starts the timer running. The timer keeps the Date/Time fields updating.
+     * Starts the timer running.
+     *
+     * The timer keeps the Date/Time fields updating.
      */
     public void startTimer() {
         timer.start();
@@ -382,8 +423,9 @@ public class LabeledRangeTextField extends WidgetPanel implements
     }
 
     /**
-     * ReStarts the timer running. The timer keeps the Date/Time fields
-     * updating.
+     * Restarts the timer running.
+     *
+     * The timer keeps the Date/Time fields updating.
      */
     public void restartTimer() {
         timer.restart();
@@ -391,7 +433,9 @@ public class LabeledRangeTextField extends WidgetPanel implements
     }
 
     /**
-     * Stops the timer running. The timer keeps the Date/Time fields updating.
+     * Stops the timer running.
+     *
+     * The timer keeps the Date/Time fields updating.
      */
     public void stopTimer() {
         timer.stop();
@@ -400,9 +444,9 @@ public class LabeledRangeTextField extends WidgetPanel implements
 
     /**
      * Check whether the timer used for updating the Date/Time field is
-     * running..
+     * running.
      *
-     * @return <code>true</code> if the timer is running ; <code>flase</code>
+     * @return <code>true</code> if the timer is running; <code>false</code>
      *         otherwise.
      */
     public boolean timerRunning() {

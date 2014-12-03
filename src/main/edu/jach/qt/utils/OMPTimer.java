@@ -46,10 +46,12 @@ public class OMPTimer {
                 timer.purge();
             }
         };
-        if (repeat)
+
+        if (repeat) {
             timer.scheduleAtFixedRate(task, interval, interval);
-        else
+        } else {
             timer.schedule(task, interval, interval);
+        }
 
         return task;
     }

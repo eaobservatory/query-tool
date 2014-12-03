@@ -39,8 +39,8 @@ import java.net.MalformedURLException;
  *
  * Created: Mon Aug 27 18:30:31 2001
  *
- * @author <a href="mailto:mrippa@jach.hawaii.edu">Mathew Rippa</a>, modified by
- *         Martin Folger
+ * @author <a href="mailto:mrippa@jach.hawaii.edu">Mathew Rippa</a>,
+ *         modified by Martin Folger
  */
 public class MsbClient extends SoapClient {
     static JACLogger logger = JACLogger.getLogger(MsbClient.class);
@@ -55,6 +55,7 @@ public class MsbClient extends SoapClient {
                 mue.printStackTrace();
             }
         }
+
         return url;
     }
 
@@ -69,17 +70,18 @@ public class MsbClient extends SoapClient {
             filename = buffer.toString();
             buffer = null;
         }
+
         return filename;
     }
 
     /**
      * Perform a query to the MsbServer with the given query String.
      *
-     * Success will return a true value and write the msbSummary xml to file.
+     * Success will return a true value and write the msbSummary XML to file.
      * A unique file will be written for each user to allow multiple users on
      * the same machine. This file should not be read by the code.
      *
-     * @param xmlQueryString a <code>String</code> value. The xml representing
+     * @param xmlQueryString a <code>String</code> value. The XML representing
      *            the query.
      * @return a <code>boolean</code> value indicating success.
      */
@@ -99,11 +101,14 @@ public class MsbClient extends SoapClient {
                 fw.flush();
                 fw.close();
             }
+
             success = true;
+
         } catch (Exception e) {
             logger.error("queryMSB threw Exception", e);
             e.printStackTrace();
         }
+
         return success;
     }
 
@@ -111,11 +116,11 @@ public class MsbClient extends SoapClient {
      * Perform a query to the MsbServer with the special calibration query
      * String.
      *
-     * Success will return a true value and write the msbSummary xml to file.
+     * Success will return a true value and write the msbSummary XML to file.
      * A unique file will be written for each user to allow multiple users on
      * the same machine. This file should not be read by the code.
      *
-     * @param xmlQueryString a <code>String</code> value. The xml representing
+     * @param xmlQueryString a <code>String</code> value. The XML representing
      *            the query.
      * @return a <code>String</code> value of the results in XML.
      */
@@ -125,6 +130,7 @@ public class MsbClient extends SoapClient {
         flushParameter();
         addParameter("xmlquery", String.class, xmlQueryString);
         addParameter("maxcount", Integer.class, new Integer(2000));
+
         try {
             Object tmp = doCall(getURL(), "urn:OMP::MSBServer", "queryMSB");
             returnString = tmp.toString();
@@ -132,6 +138,7 @@ public class MsbClient extends SoapClient {
             logger.error("queryCalibration threw Exception", e);
             e.printStackTrace();
         }
+
         return returnString;
     }
 
@@ -142,15 +149,18 @@ public class MsbClient extends SoapClient {
         flushParameter();
         addParameter("telescope", String.class, telescope);
         addParameter("compress", String.class, "gzip");
+
         try {
             Object tmp = doCall(getURL(), "urn:OMP::MSBServer",
                     "fetchCalProgram");
-            if (tmp instanceof byte[])
+            if (tmp instanceof byte[]) {
                 xml = new String((byte[]) tmp);
+            }
         } catch (Exception e) {
             logger.error("fetchCalibrationProgram threw Exception", e);
             e.printStackTrace();
         }
+
         return xml;
     }
 
@@ -170,15 +180,18 @@ public class MsbClient extends SoapClient {
         flushParameter();
         addParameter("key", Integer.class, msbid);
         addParameter("compress", String.class, "gzip");
+
         try {
             FileWriter fw = new FileWriter(getFilename());
             Object o = doCall(getURL(), "urn:OMP::MSBServer", "fetchMSB");
 
             if (o != null) {
-                if (o instanceof byte[])
+                if (o instanceof byte[]) {
                     spXML = new String((byte[]) o);
-                else if (o instanceof String)
+                } else if (o instanceof String) {
                     spXML = (String) o;
+                }
+
                 fw.write(spXML);
                 fw.flush();
                 fw.close();
@@ -196,36 +209,43 @@ public class MsbClient extends SoapClient {
     private static MsbColumns columns;
 
     public synchronized static MsbColumns getColumnInfo() {
-        if (columns == null)
+        if (columns == null) {
             columns = new MsbColumns();
-        else
+        } else {
             return columns;
+        }
 
         String[] names = getColumnNames();
         String[] types = getColumnClasses();
 
         String hiddenColumns = System.getProperty("hiddenColumns");
         String[] hidden = new String[0];
-        if (hiddenColumns != null)
+        if (hiddenColumns != null) {
             hidden = hiddenColumns.split("%");
+        }
 
         if (names != null && types != null) {
             if (names.length == types.length) {
                 MsbColumnInfo columnInfo;
+
                 for (int index = 0; index < names.length; index++) {
                     String name = names[index];
                     String type = types[index];
                     columnInfo = new MsbColumnInfo(name, type);
+
                     for (int i = 0; i < hidden.length; i++) {
-                        if (hidden[i].equalsIgnoreCase(name))
+                        if (hidden[i].equalsIgnoreCase(name)) {
                             columnInfo.setVisible(false);
+                        }
                     }
+
                     columns.add(columnInfo);
                 }
             }
         } else {
             columns = new MsbColumns();
         }
+
         return columns;
     }
 
@@ -239,10 +259,13 @@ public class MsbClient extends SoapClient {
     private static String[] columnNames;
 
     private static String[] getColumnNames() {
-        if (columnNames != null)
+        if (columnNames != null) {
             return columnNames;
+        }
+
         flushParameter();
         addParameter("telescope", String.class, System.getProperty("telescope"));
+
         try {
             Object o = doCall(getURL(), "urn:OMP::MSBServer",
                     "getResultColumns");
@@ -250,6 +273,7 @@ public class MsbClient extends SoapClient {
         } catch (Exception e) {
             logger.error("getColumnNames threw exception", e);
         }
+
         return columnNames;
     }
 
@@ -263,16 +287,20 @@ public class MsbClient extends SoapClient {
     private static String[] columnClasses;
 
     private static String[] getColumnClasses() {
-        if (columnClasses != null)
+        if (columnClasses != null) {
             return columnClasses;
+        }
+
         flushParameter();
         addParameter("telescope", String.class, System.getProperty("telescope"));
+
         try {
             Object o = doCall(getURL(), "urn:OMP::MSBServer", "getTypeColumns");
             columnClasses = (String[]) o;
         } catch (Exception e) {
             logger.error("getColumnNames threw exception", e);
         }
+
         return columnClasses;
     }
 

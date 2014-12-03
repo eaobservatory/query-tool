@@ -49,20 +49,28 @@ public class SpQueuedMap {
     }
 
     public static synchronized SpQueuedMap getSpQueuedMap() {
-        if (queuedMap == null)
+        if (queuedMap == null) {
             queuedMap = new SpQueuedMap();
+        }
+
         return queuedMap;
     }
 
     public boolean putSpItem(final SpItem item) {
-        if (item == null)
+        if (item == null) {
             return false;
+        }
+
         boolean replacement = false;
         final String checksum = msbChecksum(item);
+
         if (!checksum.equals("")) {
             replacement = treeMap.containsKey(checksum);
-            if (((SpMSB) item).getNumberRemaining() < 2)
+
+            if (((SpMSB) item).getNumberRemaining() < 2) {
                 treeMap.put(checksum, "" + System.currentTimeMillis());
+            }
+
             writeChecksumToDisk((SpMSB) item);
             treeSet.add(checksum);
 
@@ -70,11 +78,13 @@ public class SpQueuedMap {
             // record the project ID.
             if (checksum.contains("O")) {
                 String project = msbProject(item);
+
                 if (!project.equals("")) {
                     projectsWithOrFolders.add(project);
                 }
             }
         }
+
         return replacement;
     }
 
@@ -83,10 +93,13 @@ public class SpQueuedMap {
     }
 
     public boolean containsSpItem(SpItem item) {
-        if (item == null)
+        if (item == null) {
             return false;
+        }
+
         item = getCorrectItem(item);
         String checksum = msbChecksum(item);
+
         return treeMap.containsKey(checksum);
     }
 
@@ -99,31 +112,43 @@ public class SpQueuedMap {
     }
 
     public String containsMsbChecksum(String checksum) {
-        if (checksum == null)
+        if (checksum == null) {
             return null;
-        if (treeMap.containsKey(checksum))
+        }
+
+        if (treeMap.containsKey(checksum)) {
             return convertTimeStamp(treeMap.get(checksum));
+        }
+
         String onDisk = isChecksumOnDisk(checksum);
-        if (onDisk != null)
+
+        if (onDisk != null) {
             treeMap.put(checksum, onDisk);
+        }
+
         return convertTimeStamp(onDisk);
     }
 
     private String msbChecksum(final SpItem item) {
         String checksum = "";
+
         if (item instanceof SpMSB) {
             final SpMSB msb = (SpMSB) item;
             checksum = msb.getChecksum();
             String id = null;
             Vector<SpItem> obses = gemini.sp.SpTreeMan.findAllItems(msb,
                     SpObs.class.getName());
+
             if (obses.size() != 0) {
                 SpItem obs = obses.remove(0);
                 id = obs.getTable().get("msbid", 0);
             }
-            if (id != null)
+
+            if (id != null) {
                 checksum = id;
+            }
         }
+
         return checksum;
     }
 
@@ -135,27 +160,36 @@ public class SpQueuedMap {
      */
     private String msbProject(final SpItem item) {
         String project = "";
+
         if (item instanceof SpMSB) {
             final SpMSB msb = (SpMSB) item;
             String id = null;
             Vector<SpItem> obses = gemini.sp.SpTreeMan.findAllItems(msb,
                     SpObs.class.getName());
+
             if (obses.size() != 0) {
                 id = obses.remove(0).getTable().get("project", 0);
             }
-            if (id != null)
+
+            if (id != null) {
                 project = id;
+            }
         }
+
         return project;
     }
 
     private SpItem getCorrectItem(SpItem item) {
         SpItem spitem = item;
+
         if (item instanceof SpObs) {
             final SpItem parent = spitem.parent();
-            if (parent instanceof SpMSB)
+
+            if (parent instanceof SpMSB) {
                 spitem = parent;
+            }
         }
+
         return spitem;
     }
 
@@ -175,10 +209,12 @@ public class SpQueuedMap {
         String fileName = buffer.toString();
 
         File file = new File(fileName);
+
         try {
             success = file.createNewFile();
         } catch (IOException ioe) {
         }
+
         return success;
     }
 
@@ -194,22 +230,31 @@ public class SpQueuedMap {
             directoryContentsLength = directoryContents.length;
         int highestRepeatCount = 0;
         long nearestDate = 0;
+
         for (int index = 0; index < directoryContentsLength; index++) {
             String[] split = directoryContents[index].split("_");
+
             try {
                 int repeatCount = Integer.parseInt(split[1]);
-                if (repeatCount > highestRepeatCount)
+
+                if (repeatCount > highestRepeatCount) {
                     highestRepeatCount = repeatCount;
+                }
+
                 long date = Long.parseLong(split[2]);
-                if (date > nearestDate)
+
+                if (date > nearestDate) {
                     nearestDate = date;
+                }
             } catch (NumberFormatException nfe) {
                 highestRepeatCount = 0;
             }
         }
+
         if (directoryContentsLength != 0
-                && highestRepeatCount <= directoryContentsLength)
+                && highestRepeatCount <= directoryContentsLength) {
             success = "" + nearestDate;
+        }
 
         return success;
     }
@@ -242,14 +287,19 @@ public class SpQueuedMap {
             String cacheFiles = buffer.toString();
 
             String home = System.getProperty("user.home");
-            if (cacheFiles == null || cacheFiles.equals(""))
+
+            if (cacheFiles == null || cacheFiles.equals("")) {
                 cacheFiles = home;
+            }
 
             buffer.delete(0, buffer.length());
 
             buffer.append(cacheFiles);
-            if (!cacheFiles.endsWith(File.separator))
+
+            if (!cacheFiles.endsWith(File.separator)) {
                 buffer.append(File.separator);
+            }
+
             buffer.append("QT");
             buffer.append(File.separator);
 
@@ -258,6 +308,7 @@ public class SpQueuedMap {
             buffer.append(date);
             cachePath = buffer.toString();
             File directory = new File(cachePath);
+
             if (!directory.exists()) {
                 File QTHomeDirectory = new File(QTCacheFiles);
                 deleteDirectory(QTHomeDirectory);
@@ -266,11 +317,14 @@ public class SpQueuedMap {
                     System.out.println("Unable to create " + cachePath
                             + " using " + home);
                     cachePath = home;
-                    if (!cachePath.endsWith(File.separator))
+
+                    if (!cachePath.endsWith(File.separator)) {
                         cachePath += File.separator;
+                    }
                 }
             }
         }
+
         return cachePath;
     }
 
@@ -279,21 +333,30 @@ public class SpQueuedMap {
                 && directory.isDirectory()) {
             File[] contents = directory.listFiles();
             int contentsLength = 0;
-            if (contents != null)
+
+            if (contents != null) {
                 contentsLength = contents.length;
+            }
+
             File temp;
+
             for (int i = 0; i < contentsLength; i++) {
                 temp = contents[i];
-                if (temp.isDirectory())
+
+                if (temp.isDirectory()) {
                     deleteDirectory(temp);
+                }
+
                 temp.delete();
             }
+
             directory.delete();
         }
     }
 
     private String convertTimeStamp(String time) {
         String returnString = null;
+
         try {
             long parsedTime = Long.parseLong(time);
             StringBuffer buffer = new StringBuffer();
@@ -303,34 +366,49 @@ public class SpQueuedMap {
             long minutes = seconds / 60;
             long hours = minutes / 60;
             minutes %= 60;
+
             if (hours != 0) {
                 buffer.append(hours);
                 buffer.append(" ");
                 buffer.append("hour");
-                if (hours > 1)
+
+                if (hours > 1) {
                     buffer.append("s");
+                }
+
                 buffer.append(" ");
             }
+
             if (minutes != 0) {
                 buffer.append(minutes);
                 buffer.append(" ");
                 buffer.append("minute");
-                if (minutes > 1)
+
+                if (minutes > 1) {
                     buffer.append("s");
+                }
+
                 buffer.append(" ");
             }
+
             if (buffer.toString().equals("")) {
                 buffer.append(seconds);
                 buffer.append(" ");
                 buffer.append("second");
-                if (seconds > 1)
+
+                if (seconds > 1) {
                     buffer.append("s");
+                }
+
                 buffer.append(" ");
             }
+
             buffer.append("ago");
             returnString = buffer.toString();
+
         } catch (NumberFormatException nfe) {
         }
+
         return returnString;
     }
 
@@ -340,15 +418,20 @@ public class SpQueuedMap {
         FileGlobFilter filter = new FileGlobFilter("^\\w+_-?\\d+_\\d*");
         String[] directoryContents = filePath.list(filter);
         int directoryContentsLength = 0;
-        if (directoryContents != null)
+
+        if (directoryContents != null) {
             directoryContentsLength = directoryContents.length;
+        }
+
         for (int index = 0; index < directoryContentsLength; index++) {
             String[] split = directoryContents[index].split("_");
             String checksum = split[0];
             treeSet.add(checksum);
             String timestamp = isChecksumOnDisk(checksum);
-            if (timestamp != null)
+
+            if (timestamp != null) {
                 treeMap.put(checksum, timestamp);
+            }
         }
     }
 }

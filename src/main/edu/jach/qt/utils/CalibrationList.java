@@ -53,19 +53,26 @@ public class CalibrationList {
     }
 
     public static OrderedMap<String, OrderedMap<String, SpItem>> getCalibrations() {
-        OrderedMap<String, OrderedMap<String, SpItem>> orderedMap = new OrderedMap<String, OrderedMap<String, SpItem>>();
+        OrderedMap<String, OrderedMap<String, SpItem>> orderedMap =
+                new OrderedMap<String, OrderedMap<String, SpItem>>();
 
         try {
             String scienceProgramString = MsbClient.fetchCalibrationProgram();
             SpItem spItem = new SpInputXML().xmlToSpItem(scienceProgramString);
             SpProg scienceProgram = null;
-            if (spItem instanceof SpProg)
+
+            if (spItem instanceof SpProg) {
                 scienceProgram = (SpProg) spItem;
-            if (scienceProgram != null)
+            }
+
+            if (scienceProgram != null) {
                 orderedMap = pickApart(orderedMap, scienceProgram);
+            }
+
         } catch (Exception e) {
             System.out.println(e);
         }
+
         return orderedMap;
     }
 
@@ -80,27 +87,35 @@ public class CalibrationList {
 
         while (enumeration.hasMoreElements()) {
             object = enumeration.nextElement();
+
             if (object instanceof SpAND) {
                 SpAND and = (SpAND) object;
                 String title = and.getTitle();
                 folder = new OrderedMap<String, SpItem>();
                 orderedMap.add(title, folder);
+
             } else if (object instanceof SpObs
                     && "UKIRT".equalsIgnoreCase(telescope)) {
                 SpObs obs = (SpObs) object;
                 String title = obs.getTitleAttr();
-                if (folder != null)
+                if (folder != null) {
                     folder.add(title, obs);
+                }
+
             } else if (object instanceof SpMSB && !(object instanceof SpObs)) {
                 SpMSB msb = (SpMSB) object;
                 String title = msb.getTitleAttr();
-                if (folder != null)
+                if (folder != null) {
                     folder.add(title, msb);
+                }
+
             } else if (object instanceof SpSurveyContainer) {
                 continue;
             }
+
             orderedMap = pickApart(orderedMap, object);
         }
+
         return orderedMap;
     }
 }

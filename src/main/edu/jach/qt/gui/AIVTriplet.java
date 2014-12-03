@@ -44,7 +44,7 @@ public class AIVTriplet {
     private AttributeOrigin _origin;
 
     /**
-     * Basic constructor
+     * Basic constructor.
      *
      * @param iterator The name of the iterator
      * @param attribute The name of the attribute
@@ -59,7 +59,9 @@ public class AIVTriplet {
         _origin = origin;
     }
 
-    /** Basic constructor */
+    /**
+     * Basic constructor.
+     */
     public AIVTriplet(String iterator, String attribute, String value,
             SpItem item, String name, int index) {
         _attribute = attribute;
@@ -68,31 +70,43 @@ public class AIVTriplet {
         _origin = new AttributeOrigin(item, name, index);
     }
 
-    /** Empty constructor */
+    /**
+     * Empty constructor.
+     */
     public AIVTriplet() {
     }
 
-    /** Return the iterator */
+    /**
+     * Return the iterator.
+     */
     public String iterator() {
         return _iterator;
     }
 
-    /** Return the attribute */
+    /**
+     * Return the attribute.
+     */
     public String attribute() {
         return _attribute;
     }
 
-    /** Return the value */
+    /**
+     * Return the value.
+     */
     public String value() {
         return _value;
     }
 
-    /** Return the origin */
+    /**
+     * Return the origin.
+     */
     public AttributeOrigin origin() {
         return _origin;
     }
 
-    /** String representation */
+    /**
+     * String representation.
+     */
     public String toString() {
         return "(" + iterator() + ":" + attribute() + " = " + value() + ")";
     }

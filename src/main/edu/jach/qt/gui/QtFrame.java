@@ -99,8 +99,8 @@ public class QtFrame extends JFrame implements ActionListener, MenuListener,
     private final static String WATER_VAPOUR = "Water Vapour";
     private static final String ABOUT = "About";
 
-    private static final String WIDGET_CONFIG_FILE = System
-            .getProperty("widgetFile");
+    private static final String WIDGET_CONFIG_FILE =
+            System.getProperty("widgetFile");
     static JACLogger logger = JACLogger.getLogger(QtFrame.class);
     private MSBQueryTableModel msbQTM;
     private JTable projectTable;
@@ -122,7 +122,8 @@ public class QtFrame extends JFrame implements ActionListener, MenuListener,
     private InfoPanel infoPanel;
     private JPopupMenu popup;
     private WidgetPanel _widgetPanel;
-    private Hashtable<JTable, int[]> columnSizes = new Hashtable<JTable, int[]>();
+    private Hashtable<JTable, int[]> columnSizes =
+            new Hashtable<JTable, int[]>();
     private boolean queryExpired = false;
     private JScrollPane resultsPanel;
     private JScrollPane projectPane;
@@ -153,16 +154,17 @@ public class QtFrame extends JFrame implements ActionListener, MenuListener,
         });
 
         try {
-
             om = new OmpOM();
             om.addNewTree(null);
 
             compInit();
             tabbedPane.setSelectedIndex(0);
             logger.info("Tree validated");
+
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         logger.info("Exiting QtFrame constructor");
     }
 
@@ -173,17 +175,20 @@ public class QtFrame extends JFrame implements ActionListener, MenuListener,
     public void exitQT() {
         logger.info("QT shutdown by user");
         boolean canExit = true;
+
         // See if there are any outstanding observations and ask the user what
         // to do with them...
-        if (om != null)
+        if (om != null) {
             canExit = om.checkProgramTree();
+        }
 
         if (!canExit) {
-            JOptionPane
-                    .showMessageDialog(
-                            this,
-                            "Can not exit the QT until the current MSB is accepted/rejected",
-                            "Can not exit QT", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this,
+                    "Can not exit the QT until the current MSB is"
+                            + " accepted/rejected",
+                    "Can not exit QT",
+                    JOptionPane.WARNING_MESSAGE);
+
             return;
         }
 
@@ -191,13 +196,17 @@ public class QtFrame extends JFrame implements ActionListener, MenuListener,
         DeferredProgramList.cleanup();
 
         File cacheDir = new File("/tmp/last_user");
+
         if (cacheDir.exists() && cacheDir.isDirectory()) {
             File[] files = cacheDir.listFiles();
+
             for (int i = 0; i < files.length; i++) {
-                if (files[i].isFile())
+                if (files[i].isFile()) {
                     files[i].delete();
+                }
             }
         }
+
         setVisible(false);
         dispose();
         logger.shutdown();
@@ -205,7 +214,9 @@ public class QtFrame extends JFrame implements ActionListener, MenuListener,
     }
 
     /**
-     * Component initialisation. Initialises all of the components on the frame.
+     * Component initialisation.
+     *
+     * Initialises all of the components on the frame.
      *
      * @exception Exception on error.
      */
@@ -216,9 +227,11 @@ public class QtFrame extends JFrame implements ActionListener, MenuListener,
         // Input Panel Setup
         WidgetPanel inputPanel = new WidgetPanel(
                 new Hashtable<String, String>(), widgetBag);
+
         _widgetPanel = inputPanel;
         calibrationMenu = new CalibrationsPanel();
         buildStagingPanel();
+
         // Table setup
         try {
             msbQTM = new MSBQueryTableModel();
@@ -227,6 +240,7 @@ public class QtFrame extends JFrame implements ActionListener, MenuListener,
             e.printStackTrace();
             exitQT();
         }
+
         infoPanel = new InfoPanel(msbQTM, localQuerytool, this);
 
         ProjectTableModel ptm = new ProjectTableModel();
@@ -314,19 +328,21 @@ public class QtFrame extends JFrame implements ActionListener, MenuListener,
             public void mouseClicked(MouseEvent e) {
                 if (SwingUtilities.isLeftMouseButton(e)
                         && e.getClickCount() == 2) {
-                    if (selRow == -1)
+                    if (selRow == -1) {
                         JOptionPane.showMessageDialog(null,
                                 "Must select a project summary first!");
-                    else
+                    } else {
                         sendToStagingArea();
+                    }
                 }
 
                 else if (SwingUtilities.isRightMouseButton(e)
                         && e.getClickCount() == 1) {
                     logger.debug("Right Mouse Hit");
-                    if (selRow != -1)
+                    if (selRow != -1) {
                         popup.show((Component) e.getSource(), e.getX(),
                                 e.getY());
+                    }
                 }
             }
 
@@ -335,10 +351,10 @@ public class QtFrame extends JFrame implements ActionListener, MenuListener,
 
             public void mouseReleased(MouseEvent e) {
             }
-
         });
 
         TableColumnModel tcm = table.getColumnModel();
+
         TableColumnModelListener mover = new TableColumnModelListener() {
             public void columnAdded(TableColumnModelEvent e) {
             }
@@ -359,6 +375,7 @@ public class QtFrame extends JFrame implements ActionListener, MenuListener,
             public void columnSelectionChanged(ListSelectionEvent e) {
             }
         };
+
         tcm.addColumnModelListener(mover);
 
         table.setVisible(true);
@@ -371,22 +388,28 @@ public class QtFrame extends JFrame implements ActionListener, MenuListener,
     }
 
     public void resetScrollBars() {
-        if (resultsPanel != null)
+        if (resultsPanel != null) {
             resultsPanel.getVerticalScrollBar().setValue(0);
-        if (projectPane != null)
+        }
+
+        if (projectPane != null) {
             projectPane.getVerticalScrollBar().setValue(0);
+        }
     }
 
     public void updateColumnHeaders() {
         TableColumnModel tcm = table.getColumnModel();
         MsbColumns columns = MsbClient.getColumnInfo();
-        for (int i = 0; i < msbQTM.getColumnCount(); i++)
+
+        for (int i = 0; i < msbQTM.getColumnCount(); i++) {
             columns.move((String) tcm.getColumn(i).getHeaderValue(), i);
+        }
     }
 
     /**
-     * Method used to set the current column sizes. This should be called before
-     * each query.
+     * Method used to set the current column sizes.
+     *
+     * This should be called before each query.
      */
     public void updateColumnSizes() {
         Set<JTable> tables = columnSizes.keySet();
@@ -396,6 +419,7 @@ public class QtFrame extends JFrame implements ActionListener, MenuListener,
             TableColumnModel tcm = current.getColumnModel();
             tableColumnSizes = new int[current.getColumnCount()];
             columnSizes.put(current, tableColumnSizes);
+
             for (int i = 0; i < current.getModel().getColumnCount(); i++) {
                 int width = tcm.getColumn(i).getWidth();
                 tableColumnSizes[i] = width;
@@ -408,18 +432,26 @@ public class QtFrame extends JFrame implements ActionListener, MenuListener,
      */
     public void setColumnSizes() {
         Set<JTable> tables = columnSizes.keySet();
+
         for (JTable current : tables) {
             TableColumnModel tcm = current.getColumnModel();
+
             if (tcm != null) {
                 int columnCount = tcm.getColumnCount();
                 int[] tableColumnSizes = columnSizes.get(current);
+
                 for (int i = 0; i < tableColumnSizes.length; i++) {
-                    if (i >= columnCount)
+                    if (i >= columnCount) {
                         break;
+                    }
+
                     TableColumn column = tcm.getColumn(i);
-                    if (column != null)
+
+                    if (column != null) {
                         column.setPreferredWidth(tableColumnSizes[i]);
+                    }
                 }
+
                 current.setColumnModel(tcm);
             }
         }
@@ -430,8 +462,10 @@ public class QtFrame extends JFrame implements ActionListener, MenuListener,
      */
     public void setTableToDefault() {
         TableColumnModel tcm = table.getColumnModel();
-        for (int i = 0; i < msbQTM.getColumnCount(); i++)
+
+        for (int i = 0; i < msbQTM.getColumnCount(); i++) {
             tcm.getColumn(i).setPreferredWidth(-1);
+        }
 
         table.setColumnModel(tcm);
     }
@@ -450,48 +484,56 @@ public class QtFrame extends JFrame implements ActionListener, MenuListener,
     }
 
     /**
-     * Sends the selected MSB to the Staging Area. The MSB must have first been
-     * retried and selected from the results table on the QT interface.
+     * Sends the selected MSB to the Staging Area.
+     *
+     * The MSB must have first been retried and selected from the results table
+     * on the QT interface.
      */
     public void sendToStagingArea() {
         if (queryExpired) {
             String[] options = {"Resubmit", "New Query"};
             int rtn = JOptionPane.showOptionDialog(this,
-                    "Query has Expired ;\nNew Query Required", null,
+                    "Query has Expired;\nNew Query Required", null,
                     JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE,
                     null, options, options[0]);
+
             if (rtn == JOptionPane.YES_OPTION) {
                 // Resubmit the existing query
                 InfoPanel.searchButton.doClick();
+
                 return;
+
             } else {
                 // Reset the panel to the search panel
                 tabbedPane.setSelectedIndex(0);
+
                 // Clear the summary model
                 msbQTM.clear();
+
                 // Clear the project model
                 ((ProjectTableModel) projectTable.getModel()).clear();
                 initProjectTable();
+
                 return;
             }
         }
 
         if (table.getSelectedRow() != -1) {
-
             performSendToStagingArea();
             om.updateDeferredList();
+
         } else {
             JOptionPane.showMessageDialog(this,
                     "Must select a project summary first!");
         }
-
     }
 
     /**
      * Fetch the "selected" MSB and send it to the staging area.
      */
     private void performSendToStagingArea() {
-        SwingWorker<Boolean, Void> msbWorker = new SwingWorker<Boolean, Void>() {
+        SwingWorker<Boolean, Void> msbWorker =
+                new SwingWorker<Boolean, Void>() {
             Integer msbID;
             MsbColumns columns = MsbClient.getColumnInfo();
 
@@ -502,16 +544,19 @@ public class QtFrame extends JFrame implements ActionListener, MenuListener,
                 logger.info("Setting up staging panel for the first time.");
                 om.enableList(false);
 
-                if (om == null)
+                if (om == null) {
                     om = new OmpOM();
+                }
 
                 try {
                     int checksumIndex = columns.getIndexForKey("checksum");
                     String checksum = (String) sorter.getValueAt(selRow,
                             checksumIndex);
+
                     if (remaining.isSelected()) {
                         String time = SpQueuedMap.getSpQueuedMap()
                                 .containsMsbChecksum(checksum);
+
                         if (time != null) {
                             int rtn = JOptionPane.showOptionDialog(null,
                                     "This observation was sent to the queue "
@@ -520,17 +565,20 @@ public class QtFrame extends JFrame implements ActionListener, MenuListener,
                                     JOptionPane.YES_NO_OPTION,
                                     JOptionPane.WARNING_MESSAGE, null, null,
                                     null);
+
                             if (rtn == JOptionPane.NO_OPTION) {
                                 isStatusOK = new Boolean(false);
                                 return isStatusOK;
                             }
                         }
                     }
+
                     int msbIndex = columns.getIndexForKey("msbid");
                     msbID = new Integer((String) sorter.getValueAt(selRow,
                             msbIndex));
                     om.setSpItem(localQuerytool.fetchMSB(msbID));
                     isStatusOK = new Boolean(true);
+
                 } catch (Exception e) {
                     // exceptions are generally Null Pointers or Number Format
                     // Exceptions
@@ -538,10 +586,12 @@ public class QtFrame extends JFrame implements ActionListener, MenuListener,
                             e.toString(), JOptionPane.ERROR_MESSAGE);
                     logger.debug(e.getMessage());
                     isStatusOK = new Boolean(false);
+
                 } finally {
                     om.enableList(true);
                     InfoPanel.logoPanel.stop();
                 }
+
                 return isStatusOK;
             }
 
@@ -578,7 +628,7 @@ public class QtFrame extends JFrame implements ActionListener, MenuListener,
                     logger.error("Error retriving MSB: " + e);
                 }
             }
-        }; // End inner class
+        };
 
         msbWorker.execute();
     }
@@ -624,16 +674,25 @@ public class QtFrame extends JFrame implements ActionListener, MenuListener,
      * Method to set the observational parameter to default.
      */
     public void setMenuDefault() {
-        if (disableAll.isSelected())
+        if (disableAll.isSelected()) {
             disableAll.doClick();
-        if (!(observability.isSelected()))
+        }
+
+        if (!(observability.isSelected())) {
             observability.doClick();
-        if (!(remaining.isSelected()))
+        }
+
+        if (!(remaining.isSelected())) {
             remaining.doClick();
-        if (!(allocation.isSelected()))
+        }
+
+        if (!(allocation.isSelected())) {
             allocation.doClick();
-        if (!(zoneOfAvoidance.isSelected()))
+        }
+
+        if (!(zoneOfAvoidance.isSelected())) {
             zoneOfAvoidance.doClick();
+        }
     }
 
     public void setQueryExpired(boolean flag) {
@@ -641,20 +700,20 @@ public class QtFrame extends JFrame implements ActionListener, MenuListener,
     }
 
     /**
-     * The <code>valueChanged</code> method is mandated by the
-     * ListSelectionListener. Called whenever the value of the selection
-     * changes.
+     * Mandated by the ListSelectionListener.
+     *
+     * Called whenever the value of the selection changes.
      *
      * @param e a <code>ListSelectionEvent</code> value
      */
     public void valueChanged(ListSelectionEvent e) {
-        if (!e.getValueIsAdjusting())
+        if (!e.getValueIsAdjusting()) {
             selRow = table.getSelectedRow();
+        }
     }
 
     /**
-     * The <code>buildMenu</code> method builds the menu system.
-     *
+     * Build the menu system.
      */
     private void buildMenu() {
         JMenuBar mbar = new JMenuBar();
@@ -696,31 +755,32 @@ public class QtFrame extends JFrame implements ActionListener, MenuListener,
         observability = new JCheckBoxMenuItem("Observability", true);
         observability.setToolTipText("Check that the source is observable.");
         remaining = new JCheckBoxMenuItem("Remaining", true);
-        remaining
-                .setToolTipText("Check that the MSB has repeats remaining to be observed.");
+        remaining.setToolTipText(
+                "Check that the MSB has repeats remaining to be observed.");
         allocation = new JCheckBoxMenuItem("Allocation", true);
-        allocation
-                .setToolTipText("Check that the project still has sufficient time allocated.");
+        allocation.setToolTipText(
+                "Check that the project still has sufficient time allocated.");
 
         String ZOA = System.getProperty("ZOA", "true");
         boolean tickZOA = true;
-        if ("false".equalsIgnoreCase(ZOA))
+        if ("false".equalsIgnoreCase(ZOA)) {
             tickZOA = false;
+        }
+
         zoneOfAvoidance = new JCheckBoxMenuItem("Zone of Avoidance", tickZOA);
         localQuerytool.setZoneOfAvoidanceConstraint(!tickZOA);
 
         disableAll = new JCheckBoxMenuItem("Disable All", false);
         JMenuItem cutItem = new JMenuItem("Cut", new ImageIcon("icons/cut.gif"));
         cutItem.setEnabled(false);
-        JMenuItem copyItem = new JMenuItem("Copy", new ImageIcon(
-                "icons/copy.gif"));
+        JMenuItem copyItem = new JMenuItem("Copy",
+                new ImageIcon("icons/copy.gif"));
         copyItem.setEnabled(false);
-        JMenuItem pasteItem = new JMenuItem("Paste", new ImageIcon(
-                "icons/paste.gif"));
+        JMenuItem pasteItem = new JMenuItem("Paste",
+                new ImageIcon("icons/paste.gif"));
         pasteItem.setEnabled(false);
 
-        mbar.add(makeMenu(
-                "Edit",
+        mbar.add(makeMenu("Edit",
                 new Object[]{
                         cutItem,
                         copyItem,
@@ -751,21 +811,20 @@ public class QtFrame extends JFrame implements ActionListener, MenuListener,
     }
 
     /**
-     * <code>menuSelected</code> method is an action triggered when a menu is
-     * selected.
+     * An action triggered when a menu is selected.
      *
      * @param evt a <code>MenuEvent</code> value
      */
     public void menuSelected(MenuEvent evt) {
         JMenu source = (JMenu) evt.getSource();
 
-        if (source.getText().equals("View..."))
+        if (source.getText().equals("View...")) {
             ((JMenuItem) source).setSelected(false);
+        }
     }
 
     /**
-     * <code>menuDeselected</code> method is an action triggered when a menu is
-     * unselected.
+     * An action triggered when a menu is unselected.
      *
      * @param evt a <code>MenuEvent</code> value
      */
@@ -773,8 +832,7 @@ public class QtFrame extends JFrame implements ActionListener, MenuListener,
     }
 
     /**
-     * The <code>menuCanceled</code> method is an action triggered when a menu
-     * is cancelled.
+     * An action triggered when a menu is cancelled.
      *
      * @param evt a <code>MenuEvent</code> value
      */
@@ -782,8 +840,10 @@ public class QtFrame extends JFrame implements ActionListener, MenuListener,
     }
 
     /**
-     * Implementation of the ActionListener interface. Called on changing a
-     * Check Box, Selecting a Menu Item,or pressing a button.
+     * Implementation of the ActionListener interface.
+     *
+     * Called on changing a Check Box, Selecting a Menu Item, or pressing
+     * a button.
      *
      * @param evt an <code>ActionEvent</code> value
      */
@@ -806,12 +866,13 @@ public class QtFrame extends JFrame implements ActionListener, MenuListener,
             } else {
                 disableAll.setSelected(false);
             }
+
             localQuerytool.setAllocationConstraint(!allocation.isSelected());
             localQuerytool.setRemainingConstraint(!remaining.isSelected());
-            localQuerytool.setObservabilityConstraint(!observability
-                    .isSelected());
-            localQuerytool.setZoneOfAvoidanceConstraint(!zoneOfAvoidance
-                    .isSelected());
+            localQuerytool.setObservabilityConstraint(
+                    !observability.isSelected());
+            localQuerytool.setZoneOfAvoidanceConstraint(
+                    !zoneOfAvoidance.isSelected());
             if (allocation.isSelected() && remaining.isSelected()
                     && observability.isSelected()
                     && zoneOfAvoidance.isSelected()) {
@@ -820,6 +881,7 @@ public class QtFrame extends JFrame implements ActionListener, MenuListener,
                 ImageIcon icon = new ImageIcon(url);
                 InfoPanel.searchButton.setIcon(icon);
                 table.setBackground(Color.WHITE);
+
             } else if (!allocation.isSelected() && !remaining.isSelected()
                     && !observability.isSelected()
                     && !zoneOfAvoidance.isSelected()) {
@@ -828,6 +890,7 @@ public class QtFrame extends JFrame implements ActionListener, MenuListener,
                 ImageIcon icon = new ImageIcon(url);
                 InfoPanel.searchButton.setIcon(icon);
                 table.setBackground(Color.RED.darker());
+
             } else {
                 // Some constraints disabled - set to amber
                 URL url = ClassLoader.getSystemResource("amber_light1.gif");
@@ -841,19 +904,25 @@ public class QtFrame extends JFrame implements ActionListener, MenuListener,
 
             if (INDEX.equalsIgnoreCase(thisText)) {
                 new HelpPage();
+
             } else if (ABOUT.equalsIgnoreCase(thisText)) {
                 String version = System.getProperty("version", "unknown");
                 JOptionPane.showMessageDialog(null,
                         "Build corresponds to Git commit : \n" + version);
+
             } else if (EXIT.equalsIgnoreCase(thisText)) {
                 exitQT();
+
             } else if (COLUMNS.equalsIgnoreCase(thisText)) {
                 new ColumnSelector(this);
+
             } else if (LOG.equalsIgnoreCase(thisText)) {
                 LogViewer viewer = new LogViewer();
                 viewer.showLog(System.getProperty("QT_LOG_DIR") + "/QT.log");
+
             } else if (INFRA_RED.equalsIgnoreCase(thisText)) {
                 infoPanel.getSatPanel().setDisplay(thisItem.getText());
+
             } else if (WATER_VAPOUR.equalsIgnoreCase(thisText)) {
                 infoPanel.getSatPanel().setDisplay(thisItem.getText());
             }
@@ -870,7 +939,7 @@ public class QtFrame extends JFrame implements ActionListener, MenuListener,
     }
 
     /**
-     * The <code>makeMenu</code> method is a convenience to make a generic menu.
+     * A convenience to make a generic menu.
      *
      * @param parent an <code>Object</code> value
      * @param items an <code>Object[]</code> value
@@ -879,26 +948,28 @@ public class QtFrame extends JFrame implements ActionListener, MenuListener,
      */
     public static JMenu makeMenu(Object parent, Object[] items, Object target) {
         JMenu m = null;
-        if (parent instanceof JMenu)
+
+        if (parent instanceof JMenu) {
             m = (JMenu) parent;
-        else if (parent instanceof String)
+        } else if (parent instanceof String) {
             m = new JMenu((String) parent);
-        else
+        } else {
             return null;
+        }
 
         for (int i = 0; i < items.length; i++) {
-            if (items[i] == null)
+            if (items[i] == null) {
                 m.addSeparator();
-            else
+            } else {
                 m.add(makeMenuItem(items[i], target));
+            }
         }
 
         return m;
     }
 
     /**
-     * The <code>makeMenuItem</code> method is a convenience for a generic menu
-     * item.
+     * A convenience for a generic menu item.
      *
      * @param item an <code>Object</code> value
      * @param target an <code>Object</code> value
@@ -906,27 +977,32 @@ public class QtFrame extends JFrame implements ActionListener, MenuListener,
      */
     public static JMenuItem makeMenuItem(Object item, Object target) {
         JMenuItem r = null;
-        if (item instanceof String)
-            r = new JMenuItem((String) item);
-        else if (item instanceof JMenuItem)
-            r = (JMenuItem) item;
-        else
-            return null;
 
-        if (target instanceof ActionListener)
+        if (item instanceof String) {
+            r = new JMenuItem((String) item);
+        } else if (item instanceof JMenuItem) {
+            r = (JMenuItem) item;
+        } else {
+            return null;
+        }
+
+        if (target instanceof ActionListener) {
             r.addActionListener((ActionListener) target);
+        }
+
         return r;
     }
 
     /**
-     * Return the (<code>WidgetPanel</code> from this frame.
+     * Return the <code>WidgetPanel</code> from this frame.
      */
     public WidgetPanel getWidgets() {
         return _widgetPanel;
     }
 
     public void resetCurrentMSB() {
-        if (om != null)
+        if (om != null) {
             om.addNewTree(null);
+        }
     }
 }

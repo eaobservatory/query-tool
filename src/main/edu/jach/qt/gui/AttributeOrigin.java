@@ -59,22 +59,30 @@ public class AttributeOrigin {
         _index = index;
     }
 
-    /** Return the item */
+    /**
+     * Return the item.
+     */
     public SpItem item() {
         return _item;
     }
 
-    /** Return the name */
+    /**
+     * Return the name.
+     */
     public String name() {
         return _name;
     }
 
-    /** Return the index */
+    /**
+     * Return the index.
+     */
     public int index() {
         return _index;
     }
 
-    /** Set the value of the originating attribute */
+    /**
+     * Set the value of the originating attribute.
+     */
     public void setValue(String value) {
         item().getTable().set(name(), value, index()); // Yukk
         // Set an override flag on the attribute so it does not get over-ridden
@@ -83,7 +91,9 @@ public class AttributeOrigin {
         item().getTable().set(overide, true, index());
     }
 
-    /** Convert to a string */
+    /**
+     * Convert to a string.
+     */
     public String toString() {
         return _item.getTitle() + ":" + _name + "[" + _index + "]";
     }

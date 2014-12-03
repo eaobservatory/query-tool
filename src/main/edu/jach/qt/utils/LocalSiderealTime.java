@@ -16,7 +16,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- *	Author : Sam Hart ( JAC )
+ *	Author: Sam Hart (JAC)
  *	Based on Perl code by Tim Jenness which uses SLA Lib by Pat Wallace
  */
 
@@ -75,7 +75,7 @@ public class LocalSiderealTime {
          * #Dtt(double)
          */
         double terrestrialTime = modifiedJulianDate
-                + (pal.Dtt(modifiedJulianDate) / 86400.);
+                + (pal.Dtt(modifiedJulianDate) / 86400.0);
         /*
          * Equation of the equinoxes (IAU 1994, double precision) #Eqeqx(double)
          */
@@ -107,9 +107,11 @@ public class LocalSiderealTime {
                 throw new RuntimeException("Telescope " + telescope
                         + " unknown", npe);
             }
+
             longitude = observatory.getLong();
             // Convert longitude to west negative
-            longitude *= -1.;
+            longitude *= -1.0;
+
         } else {
             throw new RuntimeException("No telescope specified");
         }
@@ -122,7 +124,8 @@ public class LocalSiderealTime {
          * Calculate fraction of day Convert hours, minutes, seconds to days.
          * #Dtf2d(int,%20int,%20double)
          */
-        double fractionOfDay = 0.;
+        double fractionOfDay = 0.0;
+
         try {
             fractionOfDay = pal.Dtf2d(hour, minute, second);
         } catch (palError pe) {
@@ -134,7 +137,7 @@ public class LocalSiderealTime {
          * Calculate modified julian date of UT day Gregorian calendar to
          * Modified Julian Date. #Cldj(int,%20int,%20int)
          */
-        double modifiedJulianDate = 0.;
+        double modifiedJulianDate = 0.0;
         try {
             modifiedJulianDate = pal.Cldj(year, month, day);
         } catch (palError pe) {

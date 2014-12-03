@@ -90,7 +90,7 @@ public class AttributeTableModel extends AbstractTableModel {
     }
 
     /**
-     * Implementation of <code>AbstarctTableModel</code> class.
+     * Implementation of <code>AbstractTableModel</code> class.
      *
      * @return The number of columns.
      */
@@ -99,7 +99,7 @@ public class AttributeTableModel extends AbstractTableModel {
     }
 
     /**
-     * Implementation of <code>AbstarctTableModel</code> class.
+     * Implementation of <code>AbstractTableModel</code> class.
      *
      * @return The number of rows.
      */
@@ -108,7 +108,7 @@ public class AttributeTableModel extends AbstractTableModel {
     }
 
     /**
-     * Implementation of <code>AbstarctTableModel</code> class.
+     * Implementation of <code>AbstractTableModel</code> class.
      *
      * @param row The row index of the data to extract.
      * @param col The column index of the data to extract.
@@ -120,6 +120,7 @@ public class AttributeTableModel extends AbstractTableModel {
 
     /**
      * Get the original value of the data at a specified location in the table.
+     *
      * The original value is that before editing and scaling.
      *
      * @param row The row index of the data to extract.
@@ -169,21 +170,20 @@ public class AttributeTableModel extends AbstractTableModel {
     public boolean isCellEditable(int row, int col) {
         // Note that the data/cell address is constant, no matter where the cell
         // appears onscreen.
-        if (col == 1)
+        if (col == 1) {
             return isEditable;
-        else
+        } else {
             return false;
+        }
     }
 
     /**
-     * public void scaleValuesBy(double factor)
-     *
      * Scale all the numerical values by the given factor.
      *
      * @param double factor
      * @author David Clarke
      *
-     **/
+     */
     public void scaleValuesBy(double factor) {
         for (int row = 0; row < getRowCount(); row++) {
             if (isNumberAt(row)) {
@@ -195,12 +195,12 @@ public class AttributeTableModel extends AbstractTableModel {
     }
 
     /**
-     * public void setValueAt(Object value, int row, int col)
+     * The user has edited a cell, so update the model accordingly.
      *
-     * The user has edited a cell, so update the model accordingly. This public
-     * method does whatever checking we do on the new data, and calls the
-     * private methods _setValueAt(...) and _resetValueAt() (according to
-     * whether the checks are passed or not) to do the actual updating.
+     * This public method does whatever checking we do on the new data,
+     * and calls the private methods _setValueAt(...) and _resetValueAt()
+     * (according to whether the checks are passed or not) to do the actual
+     * updating.
      *
      * The data checking is fairly primitive. If the field was originally a
      * number (as denoted by the isNumber[] flags), then insist that the new
@@ -211,22 +211,20 @@ public class AttributeTableModel extends AbstractTableModel {
      * @param int row
      * @param int col
      * @author David Clarke
-     *
-     **/
+     */
     public void setValueAt(Object value, int row, int col) {
         if (isNumberAt(row)) {
-            if (isANumber((String) value))
+            if (isANumber((String) value)) {
                 _setValueAt(value, row, col);
-            else
+            } else {
                 _resetValueAt(value, row, col);
+            }
         } else {
             _setValueAt(value, row, col);
         }
     }
 
     /**
-     * private void _setValueAt(Object value, int row, int col)
-     *
      * Do the actual updates to the model requested by the call to the public
      * setValueAt(...) -- remember the new data and note that the data is
      * changed. Also triggers the display refresh.
@@ -235,8 +233,7 @@ public class AttributeTableModel extends AbstractTableModel {
      * @param int row
      * @param int col
      * @author David Clarke
-     *
-     **/
+     */
     private void _setValueAt(Object value, int row, int col) {
         data[row][col] = value;
         isChanged[row] = true;
@@ -244,16 +241,13 @@ public class AttributeTableModel extends AbstractTableModel {
     }
 
     /**
-     * private void _resetValueAt(int row, int col)
-     *
      * This is for whan an update fails due to data checking failing. Simply
      * update the display without updating the model.
      *
      * @param int row
      * @param int col
      * @author David Clarke
-     *
-     **/
+     */
     private void _resetValueAt(Object value, int row, int col) {
         String message = value + " is an invalid value for the " + data[row][0]
                 + " attribute.";

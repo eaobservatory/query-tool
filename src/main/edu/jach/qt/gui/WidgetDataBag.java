@@ -38,8 +38,8 @@ public class WidgetDataBag {
     private Hashtable<String, Object> table = new Hashtable<String, Object>();
 
     /**
-     * The <code>put</code> method adds the key value pair to the Hashtable and
-     * notifies subscribed observers.
+     * Add the key value pair to the Hashtable and notifies subscribed
+     * observers.
      *
      * @param key a <code>String</code> value
      * @param value an <code>Object</code> value
@@ -48,13 +48,17 @@ public class WidgetDataBag {
      */
     public Object put(String key, Object value) {
         Object o = null;
-        if (key != null)
+
+        if (key != null) {
             o = table.put(key, value);
+        }
+
         return o;
     }
 
     /**
-     * The <code>toString</code> method represents this Hashtable as a string.
+     * Represents this Hashtable as a string.
+     *
      * The result is a list of comma delimited Key=value pairs enclosed in curly
      * braces.
      *

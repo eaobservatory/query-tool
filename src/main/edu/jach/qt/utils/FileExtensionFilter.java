@@ -26,22 +26,26 @@ public class FileExtensionFilter implements FilenameFilter {
     String extension;
 
     public FileExtensionFilter(String fileExtension) {
-        if (fileExtension == null)
+        if (fileExtension == null) {
             throw new RuntimeException("You asked for a null file extension.");
+        }
 
         fileExtension = fileExtension.trim();
 
-        if (fileExtension.equals(""))
+        if (fileExtension.equals("")) {
             throw new RuntimeException("You asked an empty file extension.");
+        }
 
-        if (fileExtension.lastIndexOf(".") > 0)
-            throw new RuntimeException(
-                    "The file extension you gave contained '.'s other than the initial one.");
+        if (fileExtension.lastIndexOf(".") > 0) {
+            throw new RuntimeException("The file extension you gave contained"
+                    + " '.'s other than the initial one.");
+        }
 
-        if (!fileExtension.startsWith("."))
+        if (!fileExtension.startsWith(".")) {
             extension = "." + fileExtension;
-        else
+        } else {
             extension = fileExtension;
+        }
     }
 
     public boolean accept(File dir, String name) {

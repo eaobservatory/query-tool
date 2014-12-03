@@ -30,9 +30,9 @@ import java.util.Iterator;
  */
 public class SimpleMoon implements OMPTimerListener {
     // Set up some stuff we are going to use
-    private static final double JD2000 = 2451545.;
-    private static final double DINR = 360. / (2 * Math.PI);
-    private static final double HINR = 24. / (2 * Math.PI);
+    private static final double JD2000 = 2451545.0;
+    private static final double DINR = 360.0 / (2 * Math.PI);
+    private static final double HINR = 24.0 / (2 * Math.PI);
 
     // Hard code the latitude and longitude of UKIRT for now...
     private static double longitude = -155.4717;
@@ -45,7 +45,8 @@ public class SimpleMoon implements OMPTimerListener {
     private TelescopeInformation ti;
     private Calendar _cal;
     private static SimpleMoon simpleMoon = null;
-    private static HashSet<MoonChangeListener> hashSet = new HashSet<MoonChangeListener>();
+    private static HashSet<MoonChangeListener> hashSet =
+            new HashSet<MoonChangeListener>();
 
     /**
      * Default constructor.
@@ -64,8 +65,10 @@ public class SimpleMoon implements OMPTimerListener {
     }
 
     public static synchronized SimpleMoon getInstance() {
-        if (simpleMoon == null)
+        if (simpleMoon == null) {
             simpleMoon = new SimpleMoon();
+        }
+
         return simpleMoon;
     }
 
@@ -83,6 +86,7 @@ public class SimpleMoon implements OMPTimerListener {
 
     public void timeElapsed() {
         boolean tmpBool = isUp();
+
         if (tmpBool != wasUp) {
             wasUp = tmpBool;
             stateChanged();
@@ -91,6 +95,7 @@ public class SimpleMoon implements OMPTimerListener {
 
         double tmpDouble = getIllumination();
         int tmpInt = (int) (tmpDouble * 100.);
+
         if (tmpInt != wasIlluminated) {
             wasIlluminated = tmpInt;
             stateChanged();
@@ -101,6 +106,7 @@ public class SimpleMoon implements OMPTimerListener {
     private void stateChanged() {
         MoonChangeListener listener;
         Iterator<MoonChangeListener> iterator = hashSet.iterator();
+
         while (iterator.hasNext()) {
             listener = iterator.next();
             listener.moonChanged();
@@ -112,8 +118,9 @@ public class SimpleMoon implements OMPTimerListener {
     }
 
     public static void removeChangeListener(MoonChangeListener listener) {
-        if (hashSet.contains(listener))
+        if (hashSet.contains(listener)) {
             hashSet.remove(listener);
+        }
     }
 
     /**
@@ -143,17 +150,17 @@ public class SimpleMoon implements OMPTimerListener {
         double angleSubtended = Math.acos(x1 * x2 + y1 * y2 + z1 * z2);
         if (angleSubtended < 1.0e-5) {
             /* seldom the case, so don't combine test */
-            if (Math.abs(currentDec) < (Math.PI / 2. - 0.001)
-                    && Math.abs(sun.getDec()) < (Math.PI / 2. - 0.001)) {
+            if (Math.abs(currentDec) < (Math.PI / 2.0 - 0.001)
+                    && Math.abs(sun.getDec()) < (Math.PI / 2.0 - 0.001)) {
                 /* recycled variables here... */
                 x1 = (sun.getRA() - currentRA)
-                        * Math.cos((currentDec + sun.getDec()) / 2.);
+                        * Math.cos((currentDec + sun.getDec()) / 2.0);
                 x2 = sun.getDec() - currentDec;
                 angleSubtended = Math.sqrt(x1 * x1 + x2 * x2);
             }
         }
 
-        double illuminated = 0.5 * (1. - Math.cos(angleSubtended));
+        double illuminated = 0.5 * (1.0 - Math.cos(angleSubtended));
 
         return illuminated;
     }
@@ -166,7 +173,6 @@ public class SimpleMoon implements OMPTimerListener {
      *
      * @return <code>true</code> if the moon is up ; <code>false</code>
      *         otherwise.
-     *
      */
     public boolean isUp() {
         // Calculates the current altitude - if -ve returns false
@@ -174,7 +180,7 @@ public class SimpleMoon implements OMPTimerListener {
 
         // get the current HA
         double localJD = toJulianDate(_cal);
-        double lst = getST(localJD) + longitude / 15.;
+        double lst = getST(localJD) + longitude / 15.0;
         double haMoon = lst - currentRA;
 
         double sinAlt = Math.sin(latitude / DINR) * Math.sin(currentDec / DINR)
@@ -182,8 +188,9 @@ public class SimpleMoon implements OMPTimerListener {
                 * Math.cos(haMoon / HINR);
 
         double altitude = Math.asin(sinAlt);
-        if (altitude < 0.)
+        if (altitude < 0.0) {
             up = false;
+        }
 
         return up;
     }
@@ -230,7 +237,7 @@ public class SimpleMoon implements OMPTimerListener {
 
         // Get the local siderial time
         double gst = getST(jDate);
-        double lst = gst + longitude / 15.;
+        double lst = gst + longitude / 15.0;
 
         double jCent = (jDate - JD2000) / 36525;
 
@@ -262,14 +269,16 @@ public class SimpleMoon implements OMPTimerListener {
         geoCentricDistance = gc.getd();
 
         // Form the topocentric coordinate
-        double lstInDeg = lst * 15.;
+        double lstInDeg = lst * 15.0;
         tc = new TopocentricCoords(gc.getx(), gc.gety(), gc.getz(), latitude,
                 lstInDeg);
 
         // Now we can calculate the current RA and Dec
         double ra = Math.atan2(tc.gety(), tc.getx());
-        if (ra < 0.)
-            ra = ra + 2. * Math.PI;
+        if (ra < 0.0) {
+            ra = ra + 2.0 * Math.PI;
+        }
+
         currentRA = ra * HINR;
 
         double declination = Math.asin(tc.getz() / tc.getd());
@@ -303,8 +312,8 @@ public class SimpleMoon implements OMPTimerListener {
         double jd = Math.floor(365.25 * (yr + 4716));
         jd += Math.floor(30.60001 * (mn + 1));
         jd += dy + b - 1524.5;
-        jd += c.get(Calendar.HOUR_OF_DAY) / 24. + c.get(Calendar.MINUTE)
-                / 1440. + c.get(Calendar.SECOND) / 86400.;
+        jd += c.get(Calendar.HOUR_OF_DAY) / 24.0 + c.get(Calendar.MINUTE)
+                / 1440.0 + c.get(Calendar.SECOND) / 86400.0;
 
         return jd;
     }
@@ -323,6 +332,7 @@ public class SimpleMoon implements OMPTimerListener {
         double jFrac = jDate - jDays;
         double jd0;
         double ut;
+
         if (jFrac < 0.5) {
             jd0 = jDays - 0.5;
             ut = jFrac + 0.5;
@@ -332,23 +342,28 @@ public class SimpleMoon implements OMPTimerListener {
         }
 
         double t = (jd0 - JD2000) / 36525;
-        double gst0 = (24110.54841 + 8640184.812866 * t + 0.093104 * t * t - 6.2e-6
-                * t * t * t) / 86400.;
+        double gst0 = (24110.54841
+                        + 8640184.812866 * t
+                        + 0.093104 * t * t
+                        - 6.2e-6 * t * t * t)
+                / 86400.0;
         gst0 = gst0 - Math.floor(gst0);
         double gst = gst0 + 1.0027379093 * ut;
-        gst = (gst - Math.floor(gst)) * 24.;
-        if (gst < 0.)
-            gst = gst + 24.;
+        gst = (gst - Math.floor(gst)) * 24.0;
+        if (gst < 0.0) {
+            gst = gst + 24.0;
+        }
 
         return gst;
     }
 
     /**
-     * Inner class which will gold the geocentric position of an object. It
-     * holds the directional cosines (l, m and n), and then rectangular
+     * Inner class which will gold the geocentric position of an object.
+     *
+     * It holds the directional cosines (l, m and n), and then rectangular
      * coordinates (x, y, z), as well as the distance in earth radii
      *
-     * Public methods exist to get each parameter
+     * Public methods exist to get each parameter.
      */
     class GeocentricCoords {
         private double _l;
@@ -360,9 +375,10 @@ public class SimpleMoon implements OMPTimerListener {
         private double _d;
 
         /**
-         * Contructor. Calculates the directional cosines, distance and
-         * rectangular coordinates of an object at the specified ecliptic
-         * position.
+         * Contructor.
+         *
+         * Calculates the directional cosines, distance and rectangular
+         * coordinates of an object at the specified ecliptic position.
          *
          * @param l ecliptic longitude
          * @param b ecliptic latitude
@@ -375,7 +391,7 @@ public class SimpleMoon implements OMPTimerListener {
             _n = 0.3978 * Math.cos(b / DINR) * Math.sin(l / DINR) + 0.9175
                     * Math.sin(b / DINR);
 
-            _d = 1. / Math.sin(p / DINR);
+            _d = 1.0 / Math.sin(p / DINR);
 
             _x = _d * _l;
             _y = _d * _m;
@@ -582,7 +598,7 @@ public class SimpleMoon implements OMPTimerListener {
             System.out.println("Rectangluar coords : (" + _x + "," + _y + ","
                     + _z + ")");
         }
-    } // End of Inner class TopocentricCoords
+    }
 
     /**
      * Inner class holding information on the loation of the sun.
@@ -621,7 +637,7 @@ public class SimpleMoon implements OMPTimerListener {
 
             double eclipticLongitude = meanLongitude + 1.915
                     * Math.sin(meanAnomaly / DINR) + 0.02
-                    * Math.sin(2. * meanAnomaly / DINR);
+                    * Math.sin(2.0 * meanAnomaly / DINR);
 
             double obliquity = 23.439 - 0.0000004 * deltaT;
 
@@ -630,8 +646,10 @@ public class SimpleMoon implements OMPTimerListener {
                     * Math.sin(eclipticLongitude / DINR);
 
             double ra = Math.atan2(y, x);
-            if (ra < 0.)
+            if (ra < 0.0) {
                 ra += 2. * Math.PI;
+            }
+
             double declination = Math.asin(Math.sin(obliquity / DINR)
                     * Math.sin(eclipticLongitude / DINR));
 

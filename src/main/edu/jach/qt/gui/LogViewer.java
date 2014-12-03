@@ -68,7 +68,7 @@ public class LogViewer {
         makeWindow();
     }
 
-    /*
+    /**
      * Make the base window and add stuff to it.
      */
     private void makeWindow() {
@@ -81,15 +81,15 @@ public class LogViewer {
         dispArea.setWrapStyleWord(true);
         dispArea.setEditable(false);
         JScrollPane srollPane = new JScrollPane(dispArea);
-        srollPane
-                .setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        srollPane
-                .setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        srollPane.setVerticalScrollBarPolicy(
+                JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        srollPane.setHorizontalScrollBarPolicy(
+                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
         baseFrame.add(srollPane, BorderLayout.CENTER);
     }
 
-    /*
+    /**
      * Make the toolbar that allows uers to select the number of lines and
      * filter
      */
@@ -99,23 +99,26 @@ public class LogViewer {
         // Make the tool bar components...
         JLabel nLineLabel = new JLabel("Lines");
         final JComboBox nLineChooser = new JComboBox();
-        for (int i = 0; i < lineChoices.length; i++)
+
+        for (int i = 0; i < lineChoices.length; i++) {
             nLineChooser.addItem(lineChoices[i]);
+        }
 
         nLineChooser.setSelectedIndex(0);
         nLines = Integer.valueOf(lineChoices[0]);
         nLineChooser.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                nLines = Integer.valueOf((String) nLineChooser
-                        .getSelectedItem());
+                nLines = Integer.valueOf(
+                        (String) nLineChooser.getSelectedItem());
                 showLog();
             }
         });
 
         JLabel filterLabel = new JLabel("Filter:");
         final JComboBox filterChooser = new JComboBox();
-        for (int i = 0; i < levelChoice.length; i++)
+        for (int i = 0; i < levelChoice.length; i++) {
             filterChooser.addItem(levelChoice[i]);
+        }
 
         filterChooser.setSelectedIndex(0);
         selectedLevel = 0;
@@ -140,7 +143,9 @@ public class LogViewer {
 
     /**
      * Show the current log message using a default of 20 lines and a filter of
-     * "All". If the file does not exist or there is a problem reading the file,
+     * "All".
+     *
+     * If the file does not exist or there is a problem reading the file,
      * then this text pane will contain a message indicating the problem.
      *
      * @param fileName The filename of the log file.
@@ -148,6 +153,7 @@ public class LogViewer {
     public void showLog(String fileName) {
         // Make sure the file exists and we can read it
         File logFile = new File(fileName);
+
         if (!logFile.exists() || !logFile.canRead()) {
             dispArea.append("Unable to read log file " + fileName);
         } else {
@@ -159,7 +165,7 @@ public class LogViewer {
         baseFrame.setVisible(true);
     }
 
-    /*
+    /**
      * Write the log info to the display area
      */
     private void showLog() {
@@ -171,16 +177,19 @@ public class LogViewer {
 
         int count = 0;
         ArrayList<String> displayData = new ArrayList<String>();
+
         // Start with the oldest data
         for (int i = 0; i < dataArray.length; i++) {
             // See what level the current string starts with
             StringTokenizer st = new StringTokenizer(dataArray[i]);
             String firstToken;
+
             try {
                 firstToken = st.nextToken();
             } catch (Exception e) {
                 firstToken = "All";
             }
+
             // See if this token is in the list of choices
             int currentLevel = 0;
             for (int j = 1; j < levelChoice.length - 1; j++) {
@@ -189,46 +198,57 @@ public class LogViewer {
                     break;
                 }
             }
+
             if (currentLevel >= selectedLevel) {
                 displayData.add(dataArray[i] + "\n");
                 count++;
             }
+
             // If we reach the maximum lines to display, break out
-            if (count == nLines)
+            if (count == nLines) {
                 break;
+            }
         }
+
         Collections.reverse(displayData);
-        for (int i = 0; i < displayData.size(); i++)
+
+        for (int i = 0; i < displayData.size(); i++) {
             dispArea.append(displayData.get(i));
+        }
     }
 
-    /*
+    /**
      * Read the data from the log file
      */
     private void readData(File logFile) {
         try {
             BufferedReader br = new BufferedReader(new FileReader(logFile));
             String line;
-            while ((line = br.readLine()) != null)
+
+            while ((line = br.readLine()) != null) {
                 data.add(line);
+            }
 
             br.close();
         } catch (Exception e) {
             data.add("Error reading log file");
             data.add(e.toString());
+
             return;
         }
+
         data.trimToSize();
 
         // Cut this down to the maximum size we deal with
         int maxSize = Integer.valueOf(lineChoices[lineChoices.length - 1]);
+
         if (data.size() > maxSize) {
             data.subList(0, data.size() - maxSize).clear();
             data.trimToSize();
         }
 
-        // Reverse the ArrayList so that when we display the info, we get things
-        // written in the correct order ( oldest first )
+        // Reverse the ArrayList so that when we display the info, we get
+        // things written in the correct order (oldest first)
         Collections.reverse(data);
     }
 }

@@ -28,8 +28,8 @@ import gemini.sp.SpMSB;
 import edu.jach.qt.utils.SpQueuedMap;
 
 public class ExecuteUKIRT extends Execute implements Runnable {
-    private static final JACLogger logger = JACLogger
-            .getLogger(ExecuteUKIRT.class);
+    private static final JACLogger logger =
+            JACLogger.getLogger(ExecuteUKIRT.class);
     private boolean _useQueue;
 
     public ExecuteUKIRT(boolean useQueue) throws Exception {
@@ -45,18 +45,22 @@ public class ExecuteUKIRT extends Execute implements Runnable {
             itemToExecute = DeferredProgramList.getCurrentItem();
             logger.info("Executing observation from deferred list");
         } else {
-            if (_useQueue)
+            if (_useQueue) {
                 itemToExecute = ProgramTree.getCurrentItem();
-            else
+            } else {
                 itemToExecute = ProgramTree.getSelectedItem();
+            }
             logger.info("Executing observation from Program List");
         }
 
         if (itemToExecute != null) {
             SpItem obs = itemToExecute;
             SpItem child = itemToExecute.child();
-            if (child instanceof SpMSB)
+
+            if (child instanceof SpMSB) {
                 obs = child;
+            }
+
             SpQueuedMap.getSpQueuedMap().putSpItem(obs);
         }
 
@@ -92,10 +96,13 @@ public class ExecuteUKIRT extends Execute implements Runnable {
             String command;
             StringBuffer buffer = new StringBuffer();
             buffer.append("/jac_sw/omp/QT/bin/");
-            if (super.isDeferred)
+
+            if (super.isDeferred) {
                 buffer.append("insertOCSQUEUE.ksh");
-            else
+            } else {
                 buffer.append("loadUKIRT.ksh");
+            }
+
             buffer.append(" ");
             buffer.append(tname);
             command = buffer.toString();
@@ -110,6 +117,7 @@ public class ExecuteUKIRT extends Execute implements Runnable {
                 return;
             }
         }
+
         failFile().delete();
     }
 }

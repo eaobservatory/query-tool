@@ -40,9 +40,10 @@ public class ExecDtask extends Thread {
     static JACLogger logger = JACLogger.getLogger(ExecDtask.class);
 
     /**
-     * public ExecDtask(String task) is the class constructor. The class has
-     * only one constructor so far. the two things are done during the
-     * construction.
+     * The class constructor.
+     *
+     * The class has only one constructor so far. The two things are done
+     * during the construction.
      */
     public ExecDtask(String[] task) {
         _task = task;
@@ -51,8 +52,9 @@ public class ExecDtask extends Thread {
     }
 
     /**
-     * public void run() is a public method it starts an external process on a
-     * Solaris machine This process is a drama task for the ORAC OM in our case
+     * Start an external process on a Solaris machine.
+     *
+     * This process is a drama task for the ORAC OM in our case.
      *
      * @param none
      * @return none
@@ -62,8 +64,8 @@ public class ExecDtask extends Thread {
         try {
             p = temp.exec(_task);
 
-            // add in new features to control task execution redirect output
-            // from a Java "shell"to a terminal screen via a separate thread.
+            // Add in new features to control task execution redirect output
+            // from a Java "shell" to a terminal screen via a separate thread.
             // This seems to work!
             if (output) {
                 et = new Thread() {
@@ -76,6 +78,7 @@ public class ExecDtask extends Thread {
                         logger.info("Stderr Thread started for: "
                                 + getTaskString());
                         this.setPriority(MAX_PRIORITY);
+
                         try {
                             while ((s = stdError.readLine()) != null) {
                                 logger.error(s);
@@ -85,6 +88,7 @@ public class ExecDtask extends Thread {
                             logger.error("Stderr got IO exception:"
                                     + e.getMessage());
                         }
+
                         logger.info("Stderr Thread completed for: "
                                 + getTaskString());
                     }
@@ -100,6 +104,7 @@ public class ExecDtask extends Thread {
                         logger.info("Stdout Thread started for: "
                                 + getTaskString());
                         this.setPriority(MAX_PRIORITY);
+
                         try {
                             while ((s = stdInput.readLine()) != null) {
                                 logger.info(s);
@@ -109,6 +114,7 @@ public class ExecDtask extends Thread {
                             logger.error("Stdout got IO exception:"
                                     + e.getMessage());
                         }
+
                         logger.info("Stdout Thread completed for: "
                                 + getTaskString());
                     }
@@ -117,6 +123,7 @@ public class ExecDtask extends Thread {
                 pt.start();
                 et.start();
             }
+
             // See if we need to wait for completion, and if so also get the
             // completion status. Added by AB 17-Apr-00
             if (waitFor) {
@@ -139,8 +146,9 @@ public class ExecDtask extends Thread {
     }
 
     /**
-     * public Process getProcess () is a public method it returns a process
-     * object This process is a drama task for the ORAC OM in our case
+     * Return a process object.
+     *
+     * This process is a drama task for the ORAC OM in our case.
      *
      * @param none
      * @return Process
@@ -165,8 +173,9 @@ public class ExecDtask extends Thread {
     private String getTaskString() {
         String argList = "";
 
-        for (int i = 0; i < _task.length; i++)
+        for (int i = 0; i < _task.length; i++) {
             argList += (" " + _task[i]);
+        }
 
         return argList;
     }

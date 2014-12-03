@@ -64,10 +64,12 @@ public class LabeledTextField extends WidgetPanel implements KeyListener,
         super(ht, wdb);
         textField = new JTextField("");
         label = new JLabel(text + ": ", JLabel.LEADING);
+
         if (toolTip != null && toolTip.trim().length() != 0) {
             textField.setToolTipText(toolTip);
             label.setToolTipText(toolTip);
         }
+
         setup();
     }
 
@@ -86,6 +88,7 @@ public class LabeledTextField extends WidgetPanel implements KeyListener,
 
     /**
      * Get the abbreviated name of the current <code>LabeledTextField</code>.
+     *
      * The abbreviated name is the name on the interface up to, but not
      * including any white space characters.
      *
@@ -113,9 +116,10 @@ public class LabeledTextField extends WidgetPanel implements KeyListener,
         textField.setText(val);
     }
 
-    /*
-     * Get the current text as a <code>Vector</code> list. A list may be given
-     * by typing comma separated values.
+    /**
+     * Get the current text as a <code>Vector</code> list.
+     *
+     * A list may be given by typing comma separated values.
      *
      * @return A <code>Vector</code> containing each item in the list.
      */
@@ -125,13 +129,16 @@ public class LabeledTextField extends WidgetPanel implements KeyListener,
         String[] split = tmpStr.split(",");
         int index = 0;
 
-        while (index < split.length)
+        while (index < split.length) {
             result.add(split[index++]);
+        }
+
         return result;
     }
 
     /**
      * The <code>insertUpdate</code> adds the current text to the WidgetDataBag.
+     *
      * All observers are notified.
      *
      * @param e a <code>DocumentEvent</code> value
@@ -142,6 +149,7 @@ public class LabeledTextField extends WidgetPanel implements KeyListener,
 
     /**
      * The <code>removeUpdate</code> adds the current text to the WidgetDataBag.
+     *
      * All observers are notified.
      *
      * @param e a <code>DocumentEvent</code> value
@@ -161,16 +169,18 @@ public class LabeledTextField extends WidgetPanel implements KeyListener,
     // implementation of java.awt.event.KeyListener interface
 
     /**
-     * Implementation of <code>java.awt.event.KeyListener</code> interface. If a
-     * CR character is pressed a Search is performed.
+     * Implementation of <code>java.awt.event.KeyListener</code> interface.
+     *
+     * If a CR character is pressed a Search is performed.
      *
      * @param param1 A <code>KeyEvent</code> object.
      */
     public void keyTyped(KeyEvent param1) {
         // TODO: implement this java.awt.event.KeyListener method
 
-        if (param1.getKeyChar() == 10)
+        if (param1.getKeyChar() == 10) {
             InfoPanel.searchButton.doClick();
+        }
     }
 
     /**

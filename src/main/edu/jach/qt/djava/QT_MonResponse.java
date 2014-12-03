@@ -28,8 +28,8 @@ import edu.jach.qt.gui.TelescopeDataPanel;
 import ocs.utils.CommandReceiver;
 
 /**
- * <code>CSO_MonResponse</code> This class is used to handle reponses to the
- * monitor messages created by the GetPath Success handler.
+ * This class is used to handle reponses to the monitor messages created by
+ * the GetPath Success handler.
  *
  * @author <a href="mailto:mrippa@jach.hawaii.edu">Mathew Rippa</a>
  */
@@ -44,8 +44,9 @@ public class QT_MonResponse extends MonitorResponse {
     }
 
     /**
-     * This function is invoked when a monitored parameter changes. This is the
-     * core of parameter monitoring.
+     * This function is invoked when a monitored parameter changes.
+     *
+     * This is the core of parameter monitoring.
      *
      * @param monitor A DramaMonoitor Object
      * @param task A DramaTask Object
@@ -66,6 +67,7 @@ public class QT_MonResponse extends MonitorResponse {
             TelescopeDataPanel.setAirmass(value.RealValue(name));
         } else if (name.equals("DYN_STATE")) {
             logger.info("Got DYN_STATE structure...");
+
             try {
                 SdsID tau = new SdsID(value, "JCMT_TAU");
                 double[] ary = new double[1];
@@ -75,6 +77,7 @@ public class QT_MonResponse extends MonitorResponse {
             } catch (DramaException e) {
                 logger.error("DRAMA error reading JCMT_TAU: " + e.toString());
             }
+
             try {
                 SdsID tautime = new SdsID(value, "JCMT_TAU_TIME");
                 String time = tautime.Get(0);

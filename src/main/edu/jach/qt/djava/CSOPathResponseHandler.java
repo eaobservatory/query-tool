@@ -28,8 +28,7 @@ import ocs.utils.CommandReceiver;
 import gemini.util.JACLogger;
 
 /**
- * <code>CSOPathResponseHandler</code> This class is used to handle responses to
- * the GetPath() method.
+ * This class is used to handle responses to the GetPath() method.
  *
  * @author <a href="mailto:mrippa@jach.hawaii.edu">Mathew Rippa</a>
  */

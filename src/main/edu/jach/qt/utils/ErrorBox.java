@@ -37,14 +37,14 @@ import javax.swing.JOptionPane;
 @SuppressWarnings("serial")
 final public class ErrorBox extends JFrame {
     /**
-     * public ErrorBox(String _m) is the constructor. The class has only one
-     * constructor so far.
+     * The constructor.
      *
-     * @param Strong m
+     * The class has only one constructor so far.
+     *
+     * @param String m
      * @return none
      * @throws none
      */
-
     public ErrorBox(String _m) {
         m = _m;
         JOptionPane.showMessageDialog(this, m, "Error Message",

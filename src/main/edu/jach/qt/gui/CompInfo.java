@@ -76,7 +76,9 @@ class CompInfo {
     }
 
     /**
-     * Set whether the objects are viewable. -1 indicates not viewable.
+     * Set whether the objects are viewable.
+     *
+     * -1 indicates not viewable.
      *
      * @param view Value indicating whether an object is viewable.
      */

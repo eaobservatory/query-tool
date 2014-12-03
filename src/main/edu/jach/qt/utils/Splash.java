@@ -47,6 +47,7 @@ public class Splash {
                             windowSize.width);
                     progress.setIndeterminate(true);
                     progress.setDoubleBuffered(true);
+
                     if (string != null) {
                         progress.setString(string);
                         progress.setStringPainted(true);

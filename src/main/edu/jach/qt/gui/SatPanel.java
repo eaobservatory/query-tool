@@ -52,7 +52,9 @@ public class SatPanel extends JLabel implements OMPTimerListener {
     private static String currentWebPage;
 
     /**
-     * Constructor. Sets the look and feel of the <code>JLabel</code> and
+     * Constructor.
+     *
+     * Sets the look and feel of the <code>JLabel</code> and
      * associates a timer with it to update the display.
      */
     public SatPanel() {
@@ -64,15 +66,16 @@ public class SatPanel extends JLabel implements OMPTimerListener {
         satBorder.setTitleColor(new Color(51, 134, 206));
         setBorder(satBorder);
 
-        if (System.getProperty("telescope").equalsIgnoreCase("jcmt"))
+        if (System.getProperty("telescope").equalsIgnoreCase("jcmt")) {
             currentWebPage = System.getProperty("satelliteWVPage");
-        else
+        } else {
             currentWebPage = System.getProperty("satelliteIRPage");
+        }
 
         refreshIcon();
 
-        OMPTimer.getOMPTimer().setTimer(600000, this); // refresh every 10
-                                                       // minutes
+        // Refresh every 10 minutes.
+        OMPTimer.getOMPTimer().setTimer(600000, this);
     }
 
     // implementation of edu.jach.qt.gui.TimerListener interface
@@ -95,8 +98,11 @@ public class SatPanel extends JLabel implements OMPTimerListener {
             System.out.println("Unable to convert to URL");
             url = null;
         }
+
         final URL thisURL = url;
-        SwingWorker<TimedImage, Void> worker = new SwingWorker<TimedImage, Void>() {
+
+        SwingWorker<TimedImage, Void> worker =
+                new SwingWorker<TimedImage, Void>() {
             public TimedImage doInBackground() throws Exception {
                 String imageSuffix = URLReader.getImageString(thisURL);
 
@@ -106,9 +112,10 @@ public class SatPanel extends JLabel implements OMPTimerListener {
                 int last_dot = imageSuffix.lastIndexOf('.');
                 int penu_dot = imageSuffix.lastIndexOf('.', last_dot - 1);
 
-                String timeString = ((last_dot > 0) && (penu_dot > 0) && (last_dot
-                        - penu_dot == 13)) ? imageSuffix.substring(
-                        penu_dot + 1, last_dot) : "Unknown";
+                String timeString = ((last_dot > 0) && (penu_dot > 0)
+                                && (last_dot - penu_dot == 13))
+                        ? imageSuffix.substring(penu_dot + 1, last_dot)
+                        : "Unknown";
 
                 return new TimedImage(timeString, ImageIO.read(new URL(
                         InfoPanel.IMG_PREFIX + imageSuffix)));
@@ -127,22 +134,26 @@ public class SatPanel extends JLabel implements OMPTimerListener {
                 }
             }
         };
-        if (url != null)
+
+        if (url != null) {
             worker.execute();
+        }
     }
 
     /**
-     * Method to set the currently displayed image. If the input string is
-     * "Water Vapour", a water vapour image is displayed. Otherwise and infra
-     * red image is displayed.
+     * Method to set the currently displayed image.
+     *
+     * If the input string is "Water Vapour", a water vapour image is
+     * displayed. Otherwise and infra-red image is displayed.
      *
      * @param image The type of satellite image to display.
      */
     public void setDisplay(String image) {
-        if (image.equalsIgnoreCase("Water Vapour"))
+        if (image.equalsIgnoreCase("Water Vapour")) {
             currentWebPage = System.getProperty("satelliteWVPage");
-        else
+        } else {
             currentWebPage = System.getProperty("satelliteIRPage");
+        }
 
         refreshIcon();
     }
@@ -173,10 +184,12 @@ class URLReader {
     public static String getImageString(URL url) throws Exception {
         String imgString = "";
         String inputLine, html = "";
-        BufferedReader in = new BufferedReader(new InputStreamReader(
-                url.openStream()));
-        while ((inputLine = in.readLine()) != null)
+        BufferedReader in = new BufferedReader(
+                new InputStreamReader(url.openStream()));
+
+        while ((inputLine = in.readLine()) != null) {
             html = html + inputLine;
+        }
 
         in.close();
 
@@ -184,6 +197,7 @@ class URLReader {
 
         while (st.hasMoreTokens()) {
             String temp = st.nextToken();
+
             if (temp.startsWith("SRC")) {
                 imgString = temp.substring(4, temp.indexOf('>'));
                 break;

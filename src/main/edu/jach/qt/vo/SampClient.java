@@ -144,12 +144,14 @@ public class SampClient implements HttpServer.Handler {
 
         for (final Map.Entry<String, Client> client : clients.entrySet()) {
             Subscriptions subscriptions = client.getValue().getSubscriptions();
+
             if (client.getKey().equals(selfId) || (subscriptions == null)
                     || !subscriptions.isSubscribed("table.load.votable")) {
                 continue;
             }
-            JMenuItem menuItem = new JMenuItem(client.getValue().getMetadata()
-                    .getName());
+
+            JMenuItem menuItem =
+                    new JMenuItem(client.getValue().getMetadata().getName());
             sendMenu.add(menuItem);
             menuItem.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
@@ -231,8 +233,8 @@ public class SampClient implements HttpServer.Handler {
             String[] decArray = decStr.split("\\/");
 
             if (raArray.length != decArray.length) {
-                System.err
-                        .println("Mismatching number of RA and Dec coordinates");
+                System.err.println(
+                        "Mismatching number of RA and Dec coordinates");
             } else {
                 for (int j = 0; j < raArray.length; j++) {
                     try {

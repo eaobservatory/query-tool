@@ -61,12 +61,14 @@ public class Execute {
             new PopUp("You have not selected an observation!",
                     "Please select an observation.", JOptionPane.ERROR_MESSAGE);
             throw new Exception("No Item Selected");
+
         } else if (ProgramTree.getSelectedItem() != null
                 && DeferredProgramList.getCurrentItem() != null) {
             new PopUp("You may only select one observation!",
                     "Please deselect an observation.",
                     JOptionPane.ERROR_MESSAGE);
             throw new Exception("Multiple Items Selected");
+
         } else if (DeferredProgramList.getCurrentItem() != null) {
             isDeferred = true;
         }
@@ -92,16 +94,19 @@ public class Execute {
         if (!successFile.exists()) {
             try {
                 File parent = successFile.getParentFile();
-                if (!parent.canWrite())
+                if (!parent.canWrite()) {
                     logger.warn("Don't appear to be able to write to "
                             + parent.getAbsolutePath());
+                }
                 successFile.createNewFile();
                 FileUtils.chmod(successFile);
+
             } catch (IOException ioe) {
                 logger.error("Unable to create success file "
                         + successFile.getAbsolutePath());
             }
         }
+
         return successFile;
     }
 
@@ -121,28 +126,36 @@ public class Execute {
         if (!failFile.exists()) {
             try {
                 File parent = failFile.getParentFile();
-                if (!parent.canWrite())
+
+                if (!parent.canWrite()) {
                     logger.warn("Don't appear to be able to write to "
                             + parent.getAbsolutePath());
+                }
+
                 failFile.createNewFile();
                 FileUtils.chmod(failFile);
+
             } catch (IOException ioe) {
                 logger.error("Unable to create failure file "
                         + failFile.getAbsolutePath());
             }
         }
+
         return failFile;
     }
 
     protected int executeCommand(String command, byte[] stdout) {
-        if (stdout == null)
+        if (stdout == null) {
             stdout = new byte[1024];
+        }
+
         byte[] stderr = new byte[1024];
         StringBuffer inputBuffer = new StringBuffer();
         StringBuffer errorBuffer = new StringBuffer();
         BufferedWriter errorWriter = null;
         Runtime rt;
         int rtn = -1;
+
         try {
             rt = Runtime.getRuntime();
             Process p = rt.exec(command);
@@ -153,9 +166,11 @@ public class Execute {
             boolean errorFinished = false;
             inputBuffer.delete(0, inputBuffer.length());
             errorBuffer.delete(0, errorBuffer.length());
+
             while (!(inputFinished && errorFinished)) {
                 if (!inputFinished) {
                     inputLength = istream.read(stdout);
+
                     if (inputLength == -1) {
                         inputFinished = true;
                         istream.close();
@@ -167,6 +182,7 @@ public class Execute {
 
                 if (!errorFinished) {
                     errorLength = estream.read(stderr);
+
                     if (errorLength == -1) {
                         errorFinished = true;
                         estream.close();
@@ -176,19 +192,24 @@ public class Execute {
                     }
                 }
             }
+
             p.waitFor();
             rtn = p.exitValue();
             logger.info(command + " returned with exit status " + rtn);
             logger.info("Output from " + command + ": "
                     + inputBuffer.toString());
-            if (rtn != 0)
+
+            if (rtn != 0) {
                 logger.error("Error from " + command + ": "
                         + errorBuffer.toString());
+            }
+
             errorWriter = new BufferedWriter(new FileWriter(failFile()));
             errorWriter.write(errorBuffer.toString());
             errorWriter.newLine();
             errorWriter.flush();
             errorWriter.close();
+
         } catch (IOException ioe) {
             logger.error("Error executing ...", ioe);
         } catch (InterruptedException ie) {
@@ -219,18 +240,21 @@ public class Execute {
 
     protected void checkpoint(String log) {
         String entry = "";
-        if (log != null)
+        if (log != null) {
             entry = log;
+        }
 
         long time = System.currentTimeMillis();
 
         long difference = time - lastTime;
 
-        if (lastTime == 0)
+        if (lastTime == 0) {
             logger.info(entry + " - " + "Checkpoint reset");
-        else
+        } else {
             logger.info(entry + " - " + difference
                     + " milliseconds since last checkpoint.");
+        }
+
         lastTime = time;
     }
 

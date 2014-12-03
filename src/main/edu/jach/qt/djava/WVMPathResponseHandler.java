@@ -26,8 +26,7 @@ import au.gov.aao.drama.DramaException;
 import ocs.utils.CommandReceiver;
 
 /**
- * <code>WVMPathResponseHandler</code> This class is used to handle responses to
- * the GetPath() method.
+ * This class is used to handle responses to the GetPath() method.
  */
 public class WVMPathResponseHandler extends CSOPathResponseHandler {
     public WVMPathResponseHandler(DramaPath p, CommandReceiver cr) {

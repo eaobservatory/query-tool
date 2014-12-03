@@ -26,12 +26,14 @@ public class MsbColumnInfo {
 
     public MsbColumnInfo(String name, String klassType) {
         this.name = name;
-        if (klassType.equalsIgnoreCase("Integer"))
+
+        if (klassType.equalsIgnoreCase("Integer")) {
             klass = Integer.class;
-        else if (klassType.equalsIgnoreCase("Float"))
+        } else if (klassType.equalsIgnoreCase("Float")) {
             klass = Number.class;
-        else
+        } else {
             klass = String.class;
+        }
     }
 
     public String getName() {

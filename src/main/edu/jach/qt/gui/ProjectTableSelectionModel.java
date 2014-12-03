@@ -42,9 +42,12 @@ class ProjectTableSelectionModel extends DefaultListSelectionModel implements
         // Get the MSBQueryTableModel
         String projectID = (String) _qtf.getProjectModel().getValueAt(
                 getMinSelectionIndex(), 0);
+
         if (projectID == null || projectID.equals("")
-                || projectID.startsWith("-"))
+                || projectID.startsWith("-")) {
             return;
+        }
+
         _qtf.updateColumnHeaders();
         _qtf.getModel().setProjectId(projectID);
         _qtf.setColumnSizes();

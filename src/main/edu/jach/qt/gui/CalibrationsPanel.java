@@ -79,14 +79,19 @@ public class CalibrationsPanel extends JPanel implements ListSelectionListener,
         DefaultListModel listModel = new DefaultListModel();
         calibrationList = CalibrationList.getCalibrations();
         int trimLength = AND_STRING.length();
+
         for (int index = 0; index < calibrationList.size(); index++) {
             OrderedMap<String, SpItem> folder = calibrationList.find(index);
+
             if (folder.size() != 0) {
                 String key = calibrationList.getNameForIndex(index);
-                if (key.startsWith("AND"))
+
+                if (key.startsWith("AND")) {
                     listModel.addElement(key.substring(trimLength));
+                }
             }
         }
+
         return listModel;
     }
 
@@ -99,8 +104,8 @@ public class CalibrationsPanel extends JPanel implements ListSelectionListener,
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 firstList = new JList(listModel);
-                firstList
-                        .setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+                firstList.setSelectionMode(
+                        ListSelectionModel.SINGLE_INTERVAL_SELECTION);
                 firstList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
                 firstList.setVisibleRowCount(-1);
                 firstList.addListSelectionListener(CalibrationsPanel.this);
@@ -110,8 +115,8 @@ public class CalibrationsPanel extends JPanel implements ListSelectionListener,
                 left.add(firstScrollPane);
 
                 secondList = new JList();
-                secondList
-                        .setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+                secondList.setSelectionMode(
+                        ListSelectionModel.SINGLE_INTERVAL_SELECTION);
                 secondList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
                 secondList.setVisibleRowCount(-1);
                 secondList.addListSelectionListener(CalibrationsPanel.this);
@@ -125,20 +130,25 @@ public class CalibrationsPanel extends JPanel implements ListSelectionListener,
     private DefaultListModel second(String selection) {
         DefaultListModel listModel = new DefaultListModel();
         currentList = calibrationList.find(AND_STRING + selection);
-        for (int index = 0; index < currentList.size(); index++)
+
+        for (int index = 0; index < currentList.size(); index++) {
             listModel.addElement(currentList.find(index).getTitleAttr());
+        }
 
         return listModel;
     }
 
     public void valueChanged(ListSelectionEvent e) {
         Object source = e.getSource();
+
         if (source instanceof JList) {
             JList list = (JList) source;
             Object value = list.getSelectedValue();
+
             if (value != null && value instanceof String) {
                 if (list.equals(firstList)) {
                     secondList.setModel(second((String) value));
+
                 } else if (list.equals(secondList) && e.getValueIsAdjusting()) {
                     if (currentList != null) {
                         SpItem item = currentList.find((String) value);

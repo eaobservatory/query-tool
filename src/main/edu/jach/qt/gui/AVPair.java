@@ -41,7 +41,7 @@ public class AVPair {
     private AttributeOrigin _origin;
 
     /**
-     * Basic constructor
+     * Basic constructor.
      *
      * @param attribute The name of the attribute.
      * @param value The value of the attribute.
@@ -54,7 +54,7 @@ public class AVPair {
     }
 
     /**
-     * Basic constructor
+     * Basic constructor.
      *
      * @param attribute The name of the attribute.
      * @param value The value of the attribute.
@@ -70,27 +70,35 @@ public class AVPair {
     }
 
     /**
-     * Default constructor
+     * Default constructor.
      */
     public AVPair() {
     }
 
-    /** Return the attribute */
+    /**
+     * Return the attribute.
+     */
     public String attribute() {
         return _attribute;
     }
 
-    /** Return the value */
+    /**
+     * Return the value.
+     */
     public String value() {
         return _value;
     }
 
-    /** Return the origin */
+    /**
+     * Return the origin.
+     */
     public AttributeOrigin origin() {
         return _origin;
     }
 
-    /** String representation */
+    /**
+     * String representation.
+     */
     public String toString() {
         return "(" + attribute() + " = " + value() + ")";
     }

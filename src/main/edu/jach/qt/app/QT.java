@@ -19,9 +19,16 @@
 
 package edu.jach.qt.app;
 
-/* JSKY imports */
+/* Standard imports */
+import java.awt.Dimension;
+import java.awt.Toolkit;
+import java.awt.AWTError;
+import javax.swing.SwingUtilities;
 
-/* ORAC imports */
+/* OT imports */
+import jsky.app.ot.OtCfg;
+import gemini.util.JACLogger;
+
 /* QT imports */
 import edu.jach.qt.gui.QtFrame;
 import edu.jach.qt.gui.WidgetDataBag;
@@ -29,23 +36,16 @@ import edu.jach.qt.utils.MsbClient;
 import edu.jach.qt.utils.QtTools;
 import edu.jach.qt.utils.Splash;
 
-/* Standard imports */
-
-import java.awt.Dimension;
-import java.awt.Toolkit;
-import java.awt.AWTError;
-import javax.swing.SwingUtilities;
-import jsky.app.ot.OtCfg;
-import gemini.util.JACLogger;
 
 /**
- * This is the top most OMP-QT class. Upon init it instantiates the Querytool
- * and QtFrame classes, in that order. These two classes define the structure of
- * the OMP-QT design. There has been defined a partition between the Graphical
- * User Interface (GUI) and the logic behind the application. Hence, the
- * directory structure shows a 'qt/gui' and a 'qt/app'. There also is an
- * 'qt/utils' directory which is a repository of utility classes needed for both
- * 'app' and 'gui' specific classes.
+ * This is the top-most OMP-QT class.
+ *
+ * Upon init it instantiates the Querytool and QtFrame classes, in that order.
+ * These two classes define the structure of the OMP-QT design. There has been
+ * defined a partition between the Graphical User Interface (GUI) and the logic
+ * behind the application. Hence, the directory structure shows a 'qt/gui' and
+ * a 'qt/app'. There also is an 'qt/utils' directory which is a repository of
+ * utility classes needed for both 'app' and 'gui' specific classes.
  *
  * @author <a href="mailto:mrippa@jach.hawaii.edu">Mathew Rippa</a>
  */
@@ -54,8 +54,9 @@ final public class QT implements Runnable {
 
     /**
      * Creates a new <code>QT</code> instance which starts a Querytool, the app
-     * itself, and a QtFrame, the user interface. The frame is also set be
-     * centered on the screen.
+     * itself, and a QtFrame, the user interface.
+     *
+     * The frame is also set be centered on the screen.
      */
     public QT() {
         logger.info("-------WELCOME TO THE QT----------");
@@ -93,7 +94,8 @@ final public class QT implements Runnable {
             System.exit(1);
         } catch (ClassCircularityError cce) {
             logger.fatal(
-                    "Talk to SHAUN!!!: PreTranslator ClassCircularityError starting the QT",
+                    "Talk to SHAUN!!!: PreTranslator ClassCircularityError"
+                            + " starting the QT",
                     cce);
             System.exit(1);
         }
@@ -115,10 +117,12 @@ final public class QT implements Runnable {
         Dimension frameSize = qtf.getSize();
 
         /* Fill screen if the screen is smaller that qtfSize. */
-        if (frameSize.height > screenSize.height)
+        if (frameSize.height > screenSize.height) {
             frameSize.height = screenSize.height;
-        if (frameSize.width > screenSize.width)
+        }
+        if (frameSize.width > screenSize.width) {
             frameSize.width = screenSize.width;
+        }
 
         /* Center the screen */
         int x = screenSize.width / 2 - frameSize.width / 2;
@@ -141,13 +145,15 @@ final public class QT implements Runnable {
         qtf.fetchCalibrations();
 
         String bigTelescope = System.getProperty("TELESCOPE");
-        if (bigTelescope == null || bigTelescope.equals(""))
+        if (bigTelescope == null || bigTelescope.equals("")) {
             System.setProperty("TELESCOPE", System.getProperty("telescope"));
+        }
     }
 
     /**
-     * Currently we take no args at startup. Just get the LookAndFeel from the
-     * UIManager and start the Main QT class.
+     * Currently we take no args at startup.
+     *
+     * Just get the LookAndFeel from the UIManager and start the Main QT class.
      *
      * @param args a <code>String[]</code> value
      */

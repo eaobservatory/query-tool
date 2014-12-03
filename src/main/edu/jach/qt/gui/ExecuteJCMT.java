@@ -60,17 +60,21 @@ public class ExecuteJCMT extends Execute {
 
     public static synchronized ExecuteJCMT getInstance(SpItem item) {
         try {
-            if (_instance == null)
+            if (_instance == null) {
                 _instance = new ExecuteJCMT();
+            }
             _itemToExecute = item;
+
         } catch (Exception e) {
             logger.error("Unable to construct");
             return null;
         }
+
         if (isRunning) {
             logger.error("Already running");
             return null;
         }
+
         return _instance;
     }
 
@@ -88,12 +92,14 @@ public class ExecuteJCMT extends Execute {
             jcmtDir = buffer.toString();
             buffer = null;
         }
+
         return jcmtDir;
     }
 
     private byte[] translate(File file) {
         byte[] stdout = new byte[1024];
         final String translator = System.getProperty("jcmtTranslator");
+
         if (translator != null) {
             StringBuffer buffer = new StringBuffer();
             buffer.append(translator);
@@ -102,12 +108,14 @@ public class ExecuteJCMT extends Execute {
             String command = buffer.toString();
             buffer = null;
             int rtn = executeCommand(command, stdout);
-            if (rtn != 0)
+            if (rtn != 0) {
                 stdout = null;
+            }
         } else {
             logger.error("No translation process defined");
             stdout = null;
         }
+
         file.delete();
         return stdout;
     }
@@ -115,16 +123,22 @@ public class ExecuteJCMT extends Execute {
     private boolean sendToQueue(byte[] stdout) {
         boolean failure = false;
 
-        if (stdout == null)
+        if (stdout == null) {
             stdout = new byte[0];
+        }
+
         String fileName = new String(stdout);
-        fileName = fileName.trim(); // clear up any whitespace that might give
-                                    // us a false positive
+
+        // clear up any whitespace that might give us a false positive
+        fileName = fileName.trim();
+
         String[] split = fileName.split("\n");
 
-        fileName = split[split.length - 1]; // Tim assures me it *should* be the
-                                            // last entry
-        fileName = fileName.trim(); // clean up line
+        // Tim assures me it *should* be the last entry
+        fileName = split[split.length - 1];
+
+        // clean up line
+        fileName = fileName.trim();
 
         File file = new File(fileName);
         boolean fileAvailable = file.exists() && file.canRead();
@@ -136,37 +150,49 @@ public class ExecuteJCMT extends Execute {
                 String command;
                 StringBuffer buffer = new StringBuffer();
                 buffer.append("/jac_sw/omp/QT/bin/");
-                if (super.isDeferred)
+
+                if (super.isDeferred) {
                     buffer.append("insertJCMTQUEUE.ksh");
-                else
+                } else {
                     buffer.append("loadJCMT.ksh");
+                }
+
                 buffer.append(" ");
                 buffer.append(fileName);
                 command = buffer.toString();
                 buffer = null;
                 logger.debug("Running command " + command);
                 int rtn = executeCommand(command, null);
-                if (rtn != 0)
+
+                if (rtn != 0) {
                     failure = true;
-                if (failure)
+                }
+                if (failure) {
                     logger.error("Problem sending to queue");
+                }
             }
         } else {
-            if (fileAvailable)
+            if (fileAvailable) {
                 logger.info("DRAMA not enabled");
-            else
+            } else {
                 logger.error("The following file does not appear to be available : "
                         + file.getAbsolutePath());
+            }
+
             failure = true;
         }
 
         if (_itemToExecute != null && !failure) {
             SpItem obs = _itemToExecute;
             SpItem child = _itemToExecute.child();
-            if (child instanceof SpMSB)
+
+            if (child instanceof SpMSB) {
                 obs = child;
+            }
+
             SpQueuedMap.getSpQueuedMap().putSpItem(obs);
         }
+
         return failure;
     }
 
@@ -180,6 +206,7 @@ public class ExecuteJCMT extends Execute {
         String filename = buffer.toString();
         buffer = null;
         File file = new File(filename);
+
         try {
             final FileWriter writer = new FileWriter(file);
             writer.write(_itemToExecute.toXML());
@@ -191,6 +218,7 @@ public class ExecuteJCMT extends Execute {
                     + file.getAbsolutePath());
             file = null;
         }
+
         return file;
     }
 
@@ -224,28 +252,31 @@ public class ExecuteJCMT extends Execute {
         checkpoint("XML");
         checkpoint("Translating");
 
-        if (XMLFile != null)
+        if (XMLFile != null) {
             stdout = translate(XMLFile);
-        else
+        } else {
             failure = true;
+        }
 
         checkpoint("Translated");
         checkpoint("Sending to queue");
 
-        if (stdout != null)
+        if (stdout != null) {
             failure = sendToQueue(stdout);
-        else
+        } else {
             failure = true;
+        }
 
         checkpoint("Sent to queue");
         checkpoint("Success ? " + !failure);
 
         isRunning = false;
 
-        if (failure)
+        if (failure) {
             successFile().delete();
-        else
+        } else {
             failFile().delete();
+        }
 
         return failure;
     }

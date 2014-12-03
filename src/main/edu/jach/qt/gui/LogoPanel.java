@@ -33,7 +33,7 @@ import javax.swing.JButton;
 import javax.swing.Timer;
 
 /**
- * LogoPanel
+ * LogoPanel.
  *
  * Created: Mon Apr 8 09:43:18 2002
  *
@@ -49,16 +49,19 @@ public class LogoPanel extends JLabel implements Runnable, ActionListener {
     Vector<ImageIcon> images;
 
     /**
-     * Constructor. Builds the QT logo and user interface.
+     * Constructor.
+     *
+     * Builds the QT logo and user interface.
      */
     public LogoPanel() {
         setHorizontalAlignment(SwingConstants.CENTER);
 
         images = new Vector<ImageIcon>();
         try {
-            for (int i = 1; i <= 10; i++)
+            for (int i = 1; i <= 10; i++) {
                 images.add(i - 1, new ImageIcon(new URL(
                         "file:///jac_sw/omp/QT/icons/QtLogo" + i + ".png")));
+            }
 
             buildUI();
 
@@ -97,6 +100,7 @@ public class LogoPanel extends JLabel implements Runnable, ActionListener {
      */
     public void stop() {
         stopAnimation();
+
         try {
             setIcon(new ImageIcon(new URL(
                     "file:///jac_sw/omp/QT/icons/QtLogo.png")));
@@ -114,8 +118,9 @@ public class LogoPanel extends JLabel implements Runnable, ActionListener {
             // image.
         } else {
             // Start animating!
-            if (!timer.isRunning())
+            if (!timer.isRunning()) {
                 timer.start();
+            }
         }
     }
 
@@ -124,13 +129,15 @@ public class LogoPanel extends JLabel implements Runnable, ActionListener {
      */
     public synchronized void stopAnimation() {
         // Stop the animating thread.
-        if (timer.isRunning())
+        if (timer.isRunning()) {
             timer.stop();
+        }
     }
 
     /**
-     * Implementation of <code>ActionListener</code> interface. Stops the
-     * interface scrolling.
+     * Implementation of <code>ActionListener</code> interface.
+     *
+     * Stops the interface scrolling.
      *
      * @param e An <code>ActionEvent</code>.
      */
