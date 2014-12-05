@@ -197,26 +197,55 @@ public class WidgetPanel extends JPanel implements ActionListener,
                 } while (true);
 
             } else if (widget.equals("JRadioButtonGroup")
-                    || widget.equals("JTextFieldGroup")) {
+                    || widget.equals("JTextFieldGroup")
+                    || widget.equals("JCheckBoxGroup")) {
                 CompInfo info = makeList(in);
 
+                // Create the appropriate type of panel.
                 WidgetPanel panel;
 
-                if (info.getView() != -1) {
-                    if (widget.equals("JRadioButtonGroup")) {
-                        panel = new RadioPanel(abbrevTable, widgetBag, info);
+                if (widget.equals("JRadioButtonGroup")) {
+                    panel = new RadioPanel(abbrevTable, widgetBag, info);
+                } else if (widget.equals("JTextFieldGroup")) {
+                    panel = new JTextFieldPanel(abbrevTable, widgetBag,
+                            info);
+                } else if (widget.equals("JCheckBoxGroup")) {
+                    panel = new ButtonPanel(abbrevTable, widgetBag, info);
+                } else {
+                    throw new IOException("Unknown widget type: " + widget);
+                }
+
+                // If we are constructing the instruments panel, save a
+                // reference to it.
+                if (info.getTitle().equalsIgnoreCase("Instruments")) {
+                    instrumentPanel = (ButtonPanel) panel;
+                }
+
+                panel.setName(info.getTitle());
+                gbc.fill = GridBagConstraints.HORIZONTAL;
+
+                // "Country" is currently a radio button group at JCMT and a
+                // checkbox group at UKIRT, but we still want it to appear
+                // as it would if it were a radio button group.  Therefore
+                // always treat "Country" as if it's not a checkbox group.
+                if (widget.equals("JCheckBoxGroup")
+                        && ! info.getTitle().equalsIgnoreCase("Country")) {
+                    gbc.weightx = 100;
+                    gbc.weighty = 100;
+                    gbc.insets.left = 10;
+
+                    if (info.getTitle().equalsIgnoreCase("Instruments")) {
+                        add(panel, gbc, 0, 20, 2, 1);
                     } else {
-                        panel = new JTextFieldPanel(abbrevTable, widgetBag,
-                                info);
+                        add(panel, gbc, 0, 21, 2, 1);
                     }
 
-                    panel.setName(info.getTitle());
+                } else if (info.getView() != -1) {
                     gbc.insets.top = 0;
                     gbc.insets.bottom = 0;
                     gbc.insets.left = 0;
                     gbc.insets.right = 0;
 
-                    gbc.fill = GridBagConstraints.HORIZONTAL;
                     gbc.anchor = GridBagConstraints.NORTH;
                     gbc.weightx = 50;
                     gbc.weighty = 0;
@@ -252,21 +281,6 @@ public class WidgetPanel extends JPanel implements ActionListener,
                     System.exit(1);
                 }
 
-            } else if (widget.equals("JCheckBoxGroup")) {
-                CompInfo info = makeList(in);
-
-                instrumentPanel = new ButtonPanel(abbrevTable, widgetBag, info);
-                gbc.fill = GridBagConstraints.HORIZONTAL;
-                gbc.weightx = 100;
-                gbc.weighty = 100;
-                gbc.insets.left = 10;
-
-                if (info.getTitle().equalsIgnoreCase("Instruments")) {
-                    add(instrumentPanel, gbc, 0, 20, 2, 1);
-                } else {
-                    add(instrumentPanel, gbc, 0, 21, 2, 1);
-                }
-
             } else if (!widget.equals("[Section]")) {
                 break;
             }
@@ -274,7 +288,6 @@ public class WidgetPanel extends JPanel implements ActionListener,
         }
 
         setButtons();
-
     }
 
     /**

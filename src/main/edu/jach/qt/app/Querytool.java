@@ -304,7 +304,8 @@ public class Querytool implements Runnable {
                         if (abstractButton.isSelected()) {
                             String text = abstractButton.getText();
 
-                            if (!text.equalsIgnoreCase("any")) {
+                            if ((!text.equalsIgnoreCase("any"))
+                                    && (!text.equalsIgnoreCase("any country"))) {
                                 String[] countries;
 
                                 if (text.indexOf("+") != -1) {
