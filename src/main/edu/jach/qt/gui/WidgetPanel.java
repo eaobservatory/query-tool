@@ -261,7 +261,7 @@ public class WidgetPanel extends JPanel implements ActionListener,
                             add(panel, gbc, 3, 20, 1, info.getSize() + 1);
                             setMoonPanel(panel);
                         } else if (info.getTitle().equalsIgnoreCase("Country")) {
-                            add(panel, gbc, 1, 0, 2, info.getSize() + 1);
+                            add(panel, gbc, 1, 0, 3, info.getSize() + 1);
                         } else {
                             add(panel, gbc, numRadPanels, 20, 1,
                                     info.getSize() + 1);
