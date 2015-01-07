@@ -52,7 +52,7 @@ final public class QT {
    public QT () {
        if (System.getProperty("QT_LOG_DIR") == null || System.getProperty("QT_LOG_DIR").equals(""))
        {
-	   PropertyConfigurator.configure("/jac_sw/omp/QT/config/nolog4j.properties");
+	   PropertyConfigurator.configure("/jac_sw/qt_michelle/config/nolog4j.properties");
        }
        else
        {

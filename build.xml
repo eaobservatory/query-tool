@@ -14,10 +14,10 @@
   <!-- ================================================ -->
   <!--    <property name="build.sysclasspath" value="first"/> -->
 
-  <property name="build.compiler" value="jikes"/>
-  <property name="build.compiler.emacs" value="true"/>
+  <!-- <property name="build.compiler" value="jikes"/> -->
+  <!-- <property name="build.compiler.emacs" value="true"/> -->
 
-  <property name="masterbuild.logdir" value="/home/mrippa/tmp/logs"/>
+  <property name="masterbuild.logdir" value="/jac_sw/qt_michelle/logs"/>
   <property name="junit.results" value="test-results" />
 
   <property name="cvs.repository" value="/jac_sw/cvsroot"/>
@@ -39,7 +39,7 @@
   <!--    ==================================================== -->
   <!--       Set the properties for the build area             -->
   <!--    ==================================================== -->
-  <property name="build.dir" value="/home/mrippa/netroot/install/omp/QT"/>
+  <property name="build.dir" value="/jac_sw/qt_michelle/install"/>
   <property name="build.classes" value="${build.dir}/classes"/>
   <property name="build.config" value="${build.dir}/config"/>
   <property name="build.icons" value="${build.dir}/icons"/>
@@ -47,6 +47,7 @@
   <property name="build.lib" value="${build.dir}/lib"/>
   <property name="build.javadocs" value="${build.dir}/javadocs"/>
   <property name="build.tests" value="${build.dir}/testcases"/>
+  <property name="ot.dir" value="/jac_sw/ot_michelle"/>
 
   <!--    ==================================================== -->
   <!--       Set the properties for the dist area             -->
@@ -182,6 +183,20 @@
       <exclude name="edu/jach/qt/gui/DragDropObject.java"/>
       <exclude name="edu/jach/qt/gui/PersonalInfo.java"/>
       <exclude name="edu/jach/qt/gui/DnDJTree.java"/>
+      <classpath>
+	<pathelement location="${ot.dir}/EDFREQ/install/classes" />
+	<pathelement location="${ot.dir}/GEMINI/install/classes" />
+	<pathelement location="${ot.dir}/ODB/install/classes" />
+	<pathelement location="${ot.dir}/OM/install/classes" />
+	<pathelement location="${ot.dir}/OMP/install/classes" />
+	<pathelement location="${ot.dir}/ORAC/install/classes" />
+	<pathelement location="${ot.dir}/OT/install/classes" />
+        <pathelement location="/jac_sw/itsroot/install/dcHub/javalib/dcHub.jar" />
+        <pathelement location="/jac_sw/drama/CurrentRelease/javalib" />
+        <fileset dir="lib">
+            <include name="*.jar" />
+        </fileset>
+      </classpath>
     </javac>
 
     <copy todir="${build.lib}">
