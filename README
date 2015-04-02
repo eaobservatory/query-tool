@@ -6,7 +6,7 @@ If you are reading this you already have the code.
 For the sake of completeness here are the full instructions.
 
 1. clone the repository ...
-git clone git://github.com/jac-h/query-tool.git qt
+git clone git://github.com/eaobservatory/query-tool.git qt
 
 2. change to the code directory ...
 cd qt
