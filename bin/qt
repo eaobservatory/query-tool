@@ -156,8 +156,13 @@ while ($#argv != 0)
                 breaksw
             case -jls:
                 shift
-                set widgetFile   = ../config/qtJcmtJlsWidget.conf
-                echo Restricting widgets to JLS
+                set widgetFile   = ../config/qtJcmtLapWidget.conf
+                echo Restricting widgets to LAP
+                breaksw
+            case -lap:
+                shift
+                set widgetFile   = ../config/qtJcmtLapWidget.conf
+                echo Restricting widgets to LAP
                 breaksw
             case -nodefer:
                 set NODEFER	= -DNODEFER
