@@ -81,12 +81,6 @@ public class WidgetPanel extends JPanel implements ActionListener,
     private boolean ignoreMoonUpdates = false;
 
     /**
-     * Describe variable <code>instrumentPanel</code> here.
-     *
-     */
-    public ButtonPanel instrumentPanel;
-
-    /**
      * Creates a new <code>WidgetPanel</code> instance.
      *
      * @param ht a <code>Hashtable</code> value
@@ -213,12 +207,6 @@ public class WidgetPanel extends JPanel implements ActionListener,
                     panel = new ButtonPanel(abbrevTable, widgetBag, info);
                 } else {
                     throw new IOException("Unknown widget type: " + widget);
-                }
-
-                // If we are constructing the instruments panel, save a
-                // reference to it.
-                if (info.getTitle().equalsIgnoreCase("Instruments")) {
-                    instrumentPanel = (ButtonPanel) panel;
                 }
 
                 panel.setName(info.getTitle());
@@ -364,7 +352,7 @@ public class WidgetPanel extends JPanel implements ActionListener,
 
         if (flag == true && moonPanel != null) {
             moonPanel.setToolTipText(null);
-            moonPanel.setBackground(instrumentPanel.getBackground());
+            moonPanel.setBackground(getBackground());
         }
     }
 
@@ -571,14 +559,6 @@ public class WidgetPanel extends JPanel implements ActionListener,
         if (source.equals(cb[0])) {
             widgetBag.put(abbrevTable.get(cb[0].getText()),
                     "" + cb[0].isSelected());
-        } else if (source.equals(cb[1])) {
-            if (cb[1].isSelected()) {
-                instrumentPanel.setSelected(false);
-                instrumentPanel.setEnabled(false);
-            } else {
-                instrumentPanel.setEnabled(true);
-                instrumentPanel.setSelected(false);
-            }
         }
     }
 
