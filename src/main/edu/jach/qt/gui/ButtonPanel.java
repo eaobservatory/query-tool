@@ -21,6 +21,7 @@ package edu.jach.qt.gui;
 
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
 import java.util.ListIterator;
@@ -40,7 +41,7 @@ import edu.jach.qt.gui.WidgetDataBag;
  * @author <a href="mailto:">Mathew Rippa</a>
  */
 @SuppressWarnings("serial")
-public class ButtonPanel extends WidgetPanel {
+public class ButtonPanel extends WidgetPanel implements ActionListener {
     LinkedList<JCheckBox> buttonList;
     ListIterator<String> iterator;
     private String next, myTitle;

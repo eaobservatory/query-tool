@@ -27,8 +27,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Component;
 import java.awt.Color;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.FileReader;
@@ -41,7 +39,6 @@ import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.ListIterator;
 import javax.swing.JPanel;
-import javax.swing.JCheckBox;
 import javax.swing.SwingConstants;
 import javax.swing.BoxLayout;
 import javax.swing.JToggleButton;
@@ -67,11 +64,9 @@ import gemini.util.ObservingToolUtilities;
  * @author <a href="mailto:mrippa@jach.hawaii.edu">Mathew Rippa</a>
  */
 @SuppressWarnings("serial")
-public class WidgetPanel extends JPanel implements ActionListener,
-        MoonChangeListener {
+public class WidgetPanel extends JPanel implements MoonChangeListener {
     static final JACLogger logger = JACLogger.getLogger(WidgetPanel.class);
     private int numComponents = 0;
-    private JCheckBox[] cb = new JCheckBox[3];
     protected Hashtable<String, String> abbrevTable;
     protected WidgetDataBag widgetBag;
     private int totalNumRadRows = 0;
@@ -107,7 +102,7 @@ public class WidgetPanel extends JPanel implements ActionListener,
         setLayout(layout);
 
         GridBagConstraints gbc = new GridBagConstraints();
-        String widget, next, tmp;
+        String widget;
 
         final URL url = ObservingToolUtilities.resourceURL(file);
         BufferedReader in = null;
@@ -165,30 +160,6 @@ public class WidgetPanel extends JPanel implements ActionListener,
                 gbc.insets.left = 10;
                 gbc.insets.right = 15;
                 addTextFields("Range", gbc, in);
-
-            } else if (widget.equals("JCheckBox")) {
-                gbc.fill = GridBagConstraints.HORIZONTAL;
-                gbc.anchor = GridBagConstraints.WEST;
-                gbc.weightx = 100;
-                gbc.weighty = 0;
-                int num = 0;
-
-                do {
-                    next = in.readLine().trim();
-                    if (next.equals("[EndSection]")) {
-                        break;
-                    }
-
-                    cb[num] = new JCheckBox(next);
-                    cb[num].setHorizontalAlignment(SwingConstants.CENTER);
-
-                    cb[num].addActionListener(this);
-
-                    add(cb[num], gbc, 1, num, 2, 1);
-                    num++;
-                    tmp = abbreviate(next);
-                    abbrevTable.put(next, tmp);
-                } while (true);
 
             } else if (widget.equals("JRadioButtonGroup")
                     || widget.equals("JTextFieldGroup")
@@ -541,25 +512,6 @@ public class WidgetPanel extends JPanel implements ActionListener,
      */
     public static RadioPanel getMoonPanel() {
         return WidgetPanel.moonPanel;
-    }
-
-    /**
-     * Mandated by ActionListener and is need particularly for the 2 checkbox
-     * widgets "Any Instrument" and "Photometric Whether Conditions".
-     *
-     * All other objects in this JPanel are themselves sub-JPanels and
-     * the actionPerformed methods are implemented in their respective classes.
-     * All subJPanels extend WidgetPanel.
-     *
-     * @param evt an <code>ActionEvent</code> value
-     */
-    public void actionPerformed(ActionEvent evt) {
-        Object source = evt.getSource();
-
-        if (source.equals(cb[0])) {
-            widgetBag.put(abbrevTable.get(cb[0].getText()),
-                    "" + cb[0].isSelected());
-        }
     }
 
     /**
