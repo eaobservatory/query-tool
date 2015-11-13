@@ -274,7 +274,7 @@ public class WidgetPanel extends JPanel implements MoonChangeListener {
                 bright = true;
             }
 
-            Object tmp = ht.get("Moon");
+            Object tmp = ht.get("moon");
 
             if (tmp != null && tmp instanceof LinkedList) {
                 ListIterator iter = ((LinkedList) tmp).listIterator(0);
