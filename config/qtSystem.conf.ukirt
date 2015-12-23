@@ -54,7 +54,7 @@ Browser:/usr/bin/mozilla
 # JCMT translator
 #jcmtTranslator:/home/dewitt/bin/doTranslate.ksh
 #jcmtTranslator:/jac_sw/omp/msbserver/client/jcmttranslator.pl
-jcmtTranslator:/jcmt_sw/bin/jcmttranslator -log
+jcmtTranslator:/jac_sw/omp/bin/jcmttranslator -log
 
 
 # EXEC_PATH: Where the sequences created by the translator will be written. 
