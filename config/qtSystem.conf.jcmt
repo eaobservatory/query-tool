@@ -30,7 +30,6 @@ binSelectedImage:/jac_sw/omp/QT/icons/wasteSelected.gif
 
 #The om.cfg location
 omCfg:/jac_sw/omp/QT/config/om.cfg
-#omCfg:/home/dewitt/omp/QT/config/om.cfg
 
 #Location of soap server
 msbServer:http://omp-private.eao.hawaii.edu/cgi-bin/msbsrv.pl
@@ -52,8 +51,6 @@ telescopeConfig:telescopedata.xml
 Browser:/usr/bin/mozilla
 
 # JCMT translator
-#jcmtTranslator:/home/dewitt/bin/doTranslate.ksh
-#jcmtTranslator:/jac_sw/omp/msbserver/client/jcmttranslator.pl
 jcmtTranslator:/jac_sw/omp/bin/jcmttranslator -log
 
 
