@@ -1,9 +1,0 @@
-#!//usr/local/bin/tcsh
-
-
-cd /jac_sw/omp/QT/
-
-ln -s src/main/edu/jach/qt/app app
-ln -s src/main/edu/jach/qt/gui gui
-ln -s src/main/edu/jach/qt/utils utils
-ln -s src/main/edu/jach/qt/djava djava
