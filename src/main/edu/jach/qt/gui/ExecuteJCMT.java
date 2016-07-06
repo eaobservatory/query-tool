@@ -152,9 +152,9 @@ public class ExecuteJCMT extends Execute {
                 buffer.append("/jac_sw/omp/QT/bin/");
 
                 if (super.isDeferred) {
-                    buffer.append("insertJCMTQUEUE.ksh");
+                    buffer.append("insertJCMTQUEUE.sh");
                 } else {
-                    buffer.append("loadJCMT.ksh");
+                    buffer.append("loadJCMT.sh");
                 }
 
                 buffer.append(" ");

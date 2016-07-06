@@ -98,9 +98,9 @@ public class ExecuteUKIRT extends Execute implements Runnable {
             buffer.append("/jac_sw/omp/QT/bin/");
 
             if (super.isDeferred) {
-                buffer.append("insertOCSQUEUE.ksh");
+                buffer.append("insertOCSQUEUE.sh");
             } else {
-                buffer.append("loadUKIRT.ksh");
+                buffer.append("loadUKIRT.sh");
             }
 
             buffer.append(" ");
