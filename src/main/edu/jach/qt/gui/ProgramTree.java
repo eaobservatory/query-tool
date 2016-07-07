@@ -38,7 +38,6 @@ import orac.ukirt.inst.SpInstUIST;
 
 /* QT imports */
 import edu.jach.qt.utils.ErrorBox;
-import edu.jach.qt.utils.HTMLViewer;
 import edu.jach.qt.utils.ObsListCellRenderer;
 import edu.jach.qt.utils.QtTools;
 
@@ -585,11 +584,6 @@ final public class ProgramTree extends JPanel implements ActionListener,
         // Check if there is already an existing model and whether it still has
         // observations to perform
         SpInstObsComp instrumentContext = getContext(sp);
-
-        if (instrumentContext instanceof SpInstHeterodyne
-                && HTMLViewer.visible()) {
-            return;
-        }
 
         // If we get here we should reinitialise with the new argument
         setCurrentItem(sp);

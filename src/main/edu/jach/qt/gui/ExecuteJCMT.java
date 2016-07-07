@@ -19,8 +19,6 @@
 
 package edu.jach.qt.gui;
 
-import edu.jach.qt.utils.HTMLViewer;
-
 import gemini.sp.SpItem;
 
 import java.io.File;
@@ -144,32 +142,28 @@ public class ExecuteJCMT extends Execute {
         boolean fileAvailable = file.exists() && file.canRead();
 
         if (fileAvailable && TelescopeDataPanel.DRAMA_ENABLED) {
-            if (fileName.toLowerCase().endsWith("html")) {
-                new HTMLViewer(null, fileName);
+            String command;
+            StringBuffer buffer = new StringBuffer();
+            buffer.append("/jac_sw/omp/QT/bin/");
+
+            if (super.isDeferred) {
+                buffer.append("insertJCMTQUEUE.sh");
             } else {
-                String command;
-                StringBuffer buffer = new StringBuffer();
-                buffer.append("/jac_sw/omp/QT/bin/");
+                buffer.append("loadJCMT.sh");
+            }
 
-                if (super.isDeferred) {
-                    buffer.append("insertJCMTQUEUE.sh");
-                } else {
-                    buffer.append("loadJCMT.sh");
-                }
+            buffer.append(" ");
+            buffer.append(fileName);
+            command = buffer.toString();
+            buffer = null;
+            logger.debug("Running command " + command);
+            int rtn = executeCommand(command, null);
 
-                buffer.append(" ");
-                buffer.append(fileName);
-                command = buffer.toString();
-                buffer = null;
-                logger.debug("Running command " + command);
-                int rtn = executeCommand(command, null);
-
-                if (rtn != 0) {
-                    failure = true;
-                }
-                if (failure) {
-                    logger.error("Problem sending to queue");
-                }
+            if (rtn != 0) {
+                failure = true;
+            }
+            if (failure) {
+                logger.error("Problem sending to queue");
             }
         } else {
             if (fileAvailable) {
