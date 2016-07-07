@@ -52,8 +52,9 @@ public class ExecuteJCMT extends Execute {
      * @param item The item to send to OCSQUEUE
      * @throws Exception From the base class.
      */
-    public ExecuteJCMT(SpItem item) throws Exception {
+    public ExecuteJCMT(SpItem item, boolean isDeferred) throws Exception {
         itemToExecute = item;
+        this.isDeferred = isDeferred;
 
         if (isRunning) {
             logger.error("Already running");

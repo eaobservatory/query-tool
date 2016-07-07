@@ -74,10 +74,6 @@ public class Execute {
         }
     }
 
-    public void setDeferred(boolean deferred) {
-        isDeferred = deferred;
-    }
-
     private static File successFile = null;
 
     public File successFile() {

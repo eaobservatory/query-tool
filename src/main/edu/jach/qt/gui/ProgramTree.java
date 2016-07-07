@@ -1069,7 +1069,7 @@ final public class ProgramTree extends JPanel implements ActionListener,
             boolean failed = false;
 
             try {
-                execute = new ExecuteJCMT(_item);
+                execute = new ExecuteJCMT(_item, _isDeferred);
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null,
                         "Please Wait. ExecuteJCMT already running or unable to identify observation to execute.",
@@ -1080,7 +1080,6 @@ final public class ProgramTree extends JPanel implements ActionListener,
             File failFile = execute.failFile();
             File successFile = execute.successFile();
 
-            execute.setDeferred(_isDeferred);
             failed = execute.run();
 
             if (failFile.exists()) {
