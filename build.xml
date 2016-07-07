@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <!DOCTYPE project PUBLIC "-//ANT//DTD project//EN" "ant/misc/project.dtd" >
 
-<project name="Omp" default="main" basedir=".">
+<project name="QT" default="main" basedir=".">
 
 	<!-- ==================================================== -->
 	<!--             OMP -QT BUILD TOOL-                      -->
