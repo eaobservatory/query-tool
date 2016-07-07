@@ -92,32 +92,11 @@ public class ExecuteUKIRT extends Execute implements Runnable {
          * Having successfully run through translation, now try to submit the
          * file to the ukirt instrument task
          */
-        if (TelescopeDataPanel.DRAMA_ENABLED) {
-            String command;
-            StringBuffer buffer = new StringBuffer();
-            buffer.append("/jac_sw/omp/QT/bin/");
-
-            if (super.isDeferred) {
-                buffer.append("insertOCSQUEUE.sh");
-            } else {
-                buffer.append("loadUKIRT.sh");
-            }
-
-            buffer.append(" ");
-            buffer.append(tname);
-            command = buffer.toString();
-            buffer = null;
-
-            logger.debug("Running command " + command);
-
-            int rtn = executeCommand(command, null);
-            if (rtn != 0) {
-                logger.error("Error loading UKIRT task");
-                successFile().delete();
-                return;
-            }
+        if (sendToQueue(tname)) {
+            failFile().delete();
         }
-
-        failFile().delete();
+        else {
+            successFile().delete();
+        }
     }
 }

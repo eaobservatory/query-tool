@@ -144,6 +144,63 @@ public class Execute {
         return failFile;
     }
 
+    /**
+     * Send observations to the queue.
+     *
+     * Returns true on success.
+     */
+    protected boolean sendToQueue(String fileName) {
+        File file = new File(fileName);
+        boolean fileAvailable = file.exists() && file.canRead();
+
+        if (fileAvailable && TelescopeDataPanel.DRAMA_ENABLED) {
+            StringBuffer buffer = new StringBuffer();
+            buffer.append("/jac_sw/omp/QT/bin/");
+
+            if (System.getProperty("telescope").equalsIgnoreCase("ukirt")) {
+                if (isDeferred) {
+                    buffer.append("insertOCSQUEUE.sh");
+                } else {
+                    buffer.append("loadUKIRT.sh");
+                }
+
+            } else if (System.getProperty("telescope").equalsIgnoreCase("jcmt")) {
+                if (isDeferred) {
+                    buffer.append("insertJCMTQUEUE.sh");
+                } else {
+                    buffer.append("loadJCMT.sh");
+                }
+            } else {
+                logger.error("Problem sending to queue: unknown telescope");
+                return false;
+            }
+
+            buffer.append(" ");
+            buffer.append(fileName);
+
+            String command = buffer.toString();
+
+            logger.debug("Running command " + command);
+            int rtn = executeCommand(command, null);
+
+            if (rtn != 0) {
+                logger.error("Problem sending to queue: command failed");
+                return false;
+            }
+        } else {
+            if (fileAvailable) {
+                logger.info("Problem sending to queue: DRAMA not enabled");
+            } else {
+                logger.error("The following file does not appear to be available : "
+                        + file.getAbsolutePath());
+            }
+
+            return false;
+        }
+
+        return true;
+    }
+
     protected int executeCommand(String command, byte[] stdout) {
         if (stdout == null) {
             stdout = new byte[1024];

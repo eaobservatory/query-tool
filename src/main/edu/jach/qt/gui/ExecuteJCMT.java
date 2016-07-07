@@ -94,7 +94,13 @@ public class ExecuteJCMT extends Execute {
         return jcmtDir;
     }
 
-    private byte[] translate(File file) {
+    /**
+     * Translate the given science program file.
+     *
+     * Returns the name of the queue manifest file returned by the
+     * translator, or null on failure.
+     */
+    private String translate(File file) {
         byte[] stdout = new byte[1024];
         final String translator = System.getProperty("jcmtTranslator");
 
@@ -115,14 +121,9 @@ public class ExecuteJCMT extends Execute {
         }
 
         file.delete();
-        return stdout;
-    }
-
-    private boolean sendToQueue(byte[] stdout) {
-        boolean failure = false;
 
         if (stdout == null) {
-            stdout = new byte[0];
+            return null;
         }
 
         String fileName = new String(stdout);
@@ -138,56 +139,7 @@ public class ExecuteJCMT extends Execute {
         // clean up line
         fileName = fileName.trim();
 
-        File file = new File(fileName);
-        boolean fileAvailable = file.exists() && file.canRead();
-
-        if (fileAvailable && TelescopeDataPanel.DRAMA_ENABLED) {
-            String command;
-            StringBuffer buffer = new StringBuffer();
-            buffer.append("/jac_sw/omp/QT/bin/");
-
-            if (super.isDeferred) {
-                buffer.append("insertJCMTQUEUE.sh");
-            } else {
-                buffer.append("loadJCMT.sh");
-            }
-
-            buffer.append(" ");
-            buffer.append(fileName);
-            command = buffer.toString();
-            buffer = null;
-            logger.debug("Running command " + command);
-            int rtn = executeCommand(command, null);
-
-            if (rtn != 0) {
-                failure = true;
-            }
-            if (failure) {
-                logger.error("Problem sending to queue");
-            }
-        } else {
-            if (fileAvailable) {
-                logger.info("DRAMA not enabled");
-            } else {
-                logger.error("The following file does not appear to be available : "
-                        + file.getAbsolutePath());
-            }
-
-            failure = true;
-        }
-
-        if (_itemToExecute != null && !failure) {
-            SpItem obs = _itemToExecute;
-            SpItem child = _itemToExecute.child();
-
-            if (child instanceof SpMSB) {
-                obs = child;
-            }
-
-            SpQueuedMap.getSpQueuedMap().putSpItem(obs);
-        }
-
-        return failure;
+        return fileName;
     }
 
     private File convertProgramToXML() {
@@ -235,7 +187,7 @@ public class ExecuteJCMT extends Execute {
         logger.info("Executing observation " + _itemToExecute.getTitle());
 
         File XMLFile = null;
-        byte[] stdout = null;
+        String queueFile = null;
         boolean failure = false;
 
         resetCheckpoint();
@@ -247,7 +199,7 @@ public class ExecuteJCMT extends Execute {
         checkpoint("Translating");
 
         if (XMLFile != null) {
-            stdout = translate(XMLFile);
+            queueFile = translate(XMLFile);
         } else {
             failure = true;
         }
@@ -255,14 +207,25 @@ public class ExecuteJCMT extends Execute {
         checkpoint("Translated");
         checkpoint("Sending to queue");
 
-        if (stdout != null) {
-            failure = sendToQueue(stdout);
+        if (queueFile != null) {
+            failure = ! sendToQueue(queueFile);
         } else {
             failure = true;
         }
 
         checkpoint("Sent to queue");
         checkpoint("Success ? " + !failure);
+
+        if (_itemToExecute != null && !failure) {
+            SpItem obs = _itemToExecute;
+            SpItem child = _itemToExecute.child();
+
+            if (child instanceof SpMSB) {
+                obs = child;
+            }
+
+            SpQueuedMap.getSpQueuedMap().putSpItem(obs);
+        }
 
         isRunning = false;
 
