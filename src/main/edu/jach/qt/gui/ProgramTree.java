@@ -406,22 +406,16 @@ final public class ProgramTree extends JPanel implements ActionListener,
         } else if (obsList.getSelectedValue() == null) {
             isDeferred = true;
             item = DeferredProgramList.getCurrentItem();
+        } else if (useQueue || System.getProperty("telescope").equalsIgnoreCase("jcmt")) {
+            item = ProgramTree.getCurrentItem();
+        } else {
+            item = ProgramTree.getSelectedItem();
         }
 
         setExecutable(false);
         engButton.setToolTipText("Run button disabled during execution");
 
         if (System.getProperty("telescope").equalsIgnoreCase("ukirt")) {
-            if (isDeferred) {
-                item = DeferredProgramList.getCurrentItem();
-            } else {
-                if (useQueue) {
-                    item = ProgramTree.getCurrentItem();
-                } else {
-                    item = ProgramTree.getSelectedItem();
-                }
-            }
-
             SpInstObsComp instrumentContext = getContext(item);
 
             if (instrumentContext instanceof SpInstUIST) {
@@ -455,8 +449,8 @@ final public class ProgramTree extends JPanel implements ActionListener,
             }
 
             try {
-                ExecuteUKIRT execute = new ExecuteUKIRT(useQueue);
-                execute.setDeferred(isDeferred);
+                ExecuteUKIRT execute = new ExecuteUKIRT(
+                    item, isDeferred, useQueue);
 
                 File failFile = execute.failFile();
                 File successFile = execute.successFile();
@@ -538,11 +532,7 @@ final public class ProgramTree extends JPanel implements ActionListener,
                 try {
                     ExecuteInThread ein;
 
-                    if (isDeferred) {
-                        ein = new ExecuteInThread(item, isDeferred);
-                    } else {
-                        ein = new ExecuteInThread(getCurrentItem(), isDeferred);
-                    }
+                    ein = new ExecuteInThread(item, isDeferred);
 
                     ein.start();
 

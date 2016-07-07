@@ -404,8 +404,9 @@ final public class DeferredProgramList extends JPanel implements
      */
     private void execute(boolean useQueue) {
         Thread t = null;
+        SpItem item = getCurrentItem();
 
-        if (getCurrentItem() != null) {
+        if (item != null) {
             /*
              * If we have items selected on both the ProgramList and Deferred
              * List let the execute method handle the problem.
@@ -413,9 +414,8 @@ final public class DeferredProgramList extends JPanel implements
             if (System.getProperty("telescope").equalsIgnoreCase("ukirt")) {
                 try {
                     logger.info("Sending observation "
-                            + getCurrentItem().getTitle() + " for execution.");
-                    ExecuteUKIRT execute = new ExecuteUKIRT(useQueue);
-                    execute.setDeferred(true);
+                            + item.getTitle() + " for execution.");
+                    ExecuteUKIRT execute = new ExecuteUKIRT(item, true, useQueue);
                     File failFile = execute.failFile();
                     File successFile = execute.successFile();
                     t = new Thread(execute, "UKIRT Execution Thread");
@@ -430,7 +430,7 @@ final public class DeferredProgramList extends JPanel implements
                         logger.warn("Failed to execute observation");
                     } else if (successFile.exists()) {
                         // Mark this observation as having been done
-                        markThisObservationAsDone(getCurrentItem());
+                        markThisObservationAsDone(item);
                         logger.info("Observation executed successfully");
                     } else {
                         // Neither file exists - report an error to the user
@@ -453,7 +453,7 @@ final public class DeferredProgramList extends JPanel implements
                     }
                 }
             } else if (System.getProperty("telescope").equalsIgnoreCase("jcmt")) {
-                new ExecuteInThread(getCurrentItem(), true).start();
+                new ExecuteInThread(item, true).start();
             }
         }
     }
