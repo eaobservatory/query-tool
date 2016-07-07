@@ -42,10 +42,9 @@ import edu.jach.qt.utils.FileUtils;
  */
 public class ExecuteJCMT extends Execute {
     static final JACLogger logger = JACLogger.getLogger(ExecuteJCMT.class);
-    private static SpItem _itemToExecute;
+    private SpItem itemToExecute;
     private static String jcmtDir = null;
     static boolean isRunning = false;
-    private static ExecuteJCMT _instance;
 
     /**
      * Constructor.
@@ -53,27 +52,13 @@ public class ExecuteJCMT extends Execute {
      * @param item The item to send to OCSQUEUE
      * @throws Exception From the base class.
      */
-    private ExecuteJCMT() throws Exception {
-    }
-
-    public static synchronized ExecuteJCMT getInstance(SpItem item) {
-        try {
-            if (_instance == null) {
-                _instance = new ExecuteJCMT();
-            }
-            _itemToExecute = item;
-
-        } catch (Exception e) {
-            logger.error("Unable to construct");
-            return null;
-        }
+    public ExecuteJCMT(SpItem item) throws Exception {
+        itemToExecute = item;
 
         if (isRunning) {
             logger.error("Already running");
-            return null;
+            throw new Exception("An ExecuteJCMT instance is already running");
         }
-
-        return _instance;
     }
 
     public static boolean isRunning() {
@@ -155,7 +140,7 @@ public class ExecuteJCMT extends Execute {
 
         try {
             final FileWriter writer = new FileWriter(file);
-            writer.write(_itemToExecute.toXML());
+            writer.write(itemToExecute.toXML());
             writer.flush();
             writer.close();
             FileUtils.chmod(file);
@@ -184,7 +169,7 @@ public class ExecuteJCMT extends Execute {
     public boolean run() {
         isRunning = true;
 
-        logger.info("Executing observation " + _itemToExecute.getTitle());
+        logger.info("Executing observation " + itemToExecute.getTitle());
 
         File XMLFile = null;
         String queueFile = null;
@@ -216,9 +201,9 @@ public class ExecuteJCMT extends Execute {
         checkpoint("Sent to queue");
         checkpoint("Success ? " + !failure);
 
-        if (_itemToExecute != null && !failure) {
-            SpItem obs = _itemToExecute;
-            SpItem child = _itemToExecute.child();
+        if (itemToExecute != null && !failure) {
+            SpItem obs = itemToExecute;
+            SpItem child = itemToExecute.child();
 
             if (child instanceof SpMSB) {
                 obs = child;

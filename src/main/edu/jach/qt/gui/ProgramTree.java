@@ -1078,10 +1078,11 @@ final public class ProgramTree extends JPanel implements ActionListener,
             ExecuteJCMT execute;
             boolean failed = false;
 
-            execute = ExecuteJCMT.getInstance(_item);
-            if (execute == null) {
+            try {
+                execute = new ExecuteJCMT(_item);
+            } catch (Exception e) {
                 JOptionPane.showMessageDialog(null,
-                        "Please Wait. ExecuteJCMT already running.",
+                        "Please Wait. ExecuteJCMT already running or unable to identify observation to execute.",
                         "Already running", JOptionPane.INFORMATION_MESSAGE);
                 return;
             }

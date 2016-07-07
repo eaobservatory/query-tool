@@ -785,8 +785,9 @@ final public class DeferredProgramList extends JPanel implements
             ExecuteJCMT execute = null;
             boolean failed = false;
 
-            execute = ExecuteJCMT.getInstance(_item);
-            if (execute == null) {
+            try {
+                execute = new ExecuteJCMT(_item);
+            } catch (Exception e) {
                 return;
             }
             execute.setDeferred(_isDeferred);
