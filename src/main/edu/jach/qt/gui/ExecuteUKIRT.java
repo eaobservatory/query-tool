@@ -30,13 +30,11 @@ import edu.jach.qt.utils.SpQueuedMap;
 public class ExecuteUKIRT extends Execute implements Runnable {
     private static final JACLogger logger =
             JACLogger.getLogger(ExecuteUKIRT.class);
-    private SpItem itemToExecute;
     private boolean _useQueue;
 
     public ExecuteUKIRT(SpItem item, boolean isDeferred,
-            boolean useQueue) throws Exception {
-        itemToExecute = item;
-        this.isDeferred = isDeferred;
+            boolean useQueue) {
+        super(item, isDeferred);
         _useQueue = useQueue;
     }
 

@@ -27,9 +27,7 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.util.Random;
 
-import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
-
+import gemini.sp.SpItem;
 import gemini.util.JACLogger;
 
 import edu.jach.qt.utils.FileUtils;
@@ -37,11 +35,13 @@ import edu.jach.qt.utils.FileUtils;
 /**
  * This class is a base class and should be extended to execute MSBs for each
  * telescope.
- *
- * It basically is used to decide whether the project being executed comes
- * from the deferred or project list.
  */
 public class Execute {
+    /**
+     * Item to be executed.
+     */
+    protected SpItem itemToExecute;
+
     /**
      * Indicates whether a observation is from the deferred list or the project
      * list.
@@ -52,26 +52,10 @@ public class Execute {
 
     /**
      * Default constructor.
-     *
-     * @throws Exception When no or multiple items selected.
      */
-    protected Execute() throws Exception {
-        if (ProgramTree.getSelectedItem() == null
-                && DeferredProgramList.getCurrentItem() == null) {
-            new PopUp("You have not selected an observation!",
-                    "Please select an observation.", JOptionPane.ERROR_MESSAGE);
-            throw new Exception("No Item Selected");
-
-        } else if (ProgramTree.getSelectedItem() != null
-                && DeferredProgramList.getCurrentItem() != null) {
-            new PopUp("You may only select one observation!",
-                    "Please deselect an observation.",
-                    JOptionPane.ERROR_MESSAGE);
-            throw new Exception("Multiple Items Selected");
-
-        } else if (DeferredProgramList.getCurrentItem() != null) {
-            isDeferred = true;
-        }
+    public Execute(SpItem item, boolean isDeferred) {
+        itemToExecute = item;
+        this.isDeferred = isDeferred;
     }
 
     private static File successFile = null;
@@ -274,19 +258,6 @@ public class Execute {
 
     protected long nextRandom() {
         return Math.abs(random.nextLong());
-    }
-
-    @SuppressWarnings("serial")
-    public class PopUp implements Serializable {
-        public PopUp(final String title, final String message,
-                final int errorLevel) {
-            SwingUtilities.invokeLater(new Runnable() {
-                public void run() {
-                    JOptionPane.showMessageDialog(null, message, title,
-                            errorLevel);
-                }
-            });
-        }
     }
 
     static long lastTime = 0;

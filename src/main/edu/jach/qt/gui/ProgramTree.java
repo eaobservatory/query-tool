@@ -1061,14 +1061,7 @@ final public class ProgramTree extends JPanel implements ActionListener,
             ExecuteJCMT execute;
             boolean failed = false;
 
-            try {
-                execute = new ExecuteJCMT(_item, _isDeferred);
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(null,
-                        "Please Wait. ExecuteJCMT unable to identify observation to execute.",
-                        "Cannot identify observation", JOptionPane.INFORMATION_MESSAGE);
-                return;
-            }
+            execute = new ExecuteJCMT(_item, _isDeferred);
 
             File failFile = execute.failFile();
             File successFile = execute.successFile();

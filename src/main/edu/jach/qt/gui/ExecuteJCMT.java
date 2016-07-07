@@ -42,18 +42,10 @@ import edu.jach.qt.utils.FileUtils;
  */
 public class ExecuteJCMT extends Execute {
     static final JACLogger logger = JACLogger.getLogger(ExecuteJCMT.class);
-    private SpItem itemToExecute;
     private static String jcmtDir = null;
 
-    /**
-     * Constructor.
-     *
-     * @param item The item to send to OCSQUEUE
-     * @throws Exception From the base class.
-     */
-    public ExecuteJCMT(SpItem item, boolean isDeferred) throws Exception {
-        itemToExecute = item;
-        this.isDeferred = isDeferred;
+    public ExecuteJCMT(SpItem item, boolean isDeferred) {
+        super(item, isDeferred);
     }
 
     private String jcmtDir() {
