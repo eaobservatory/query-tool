@@ -523,23 +523,16 @@ final public class ProgramTree extends JPanel implements ActionListener,
                 obsList.clearSelection();
             }
         } else if (System.getProperty("telescope").equalsIgnoreCase("jcmt")) {
-            if (ExecuteJCMT.isRunning()) {
-                setExecutable(false);
-                logger.debug("Disabling run button since ExecuteJCMT is still running");
-                engButton.setToolTipText("Button disabled during execution");
-                return;
-            } else {
-                try {
-                    ExecuteInThread ein;
+            try {
+                ExecuteInThread ein;
 
-                    ein = new ExecuteInThread(item, isDeferred);
+                ein = new ExecuteInThread(item, isDeferred);
 
-                    ein.start();
+                ein.start();
 
-                } catch (Exception e) {
-                    logger.error("Error running task", e);
-                    setExecutable(true);
-                }
+            } catch (Exception e) {
+                logger.error("Error running task", e);
+                setExecutable(true);
             }
         }
     }
@@ -1072,8 +1065,8 @@ final public class ProgramTree extends JPanel implements ActionListener,
                 execute = new ExecuteJCMT(_item, _isDeferred);
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null,
-                        "Please Wait. ExecuteJCMT already running or unable to identify observation to execute.",
-                        "Already running", JOptionPane.INFORMATION_MESSAGE);
+                        "Please Wait. ExecuteJCMT unable to identify observation to execute.",
+                        "Cannot identify observation", JOptionPane.INFORMATION_MESSAGE);
                 return;
             }
 

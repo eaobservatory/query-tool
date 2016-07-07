@@ -44,7 +44,6 @@ public class ExecuteJCMT extends Execute {
     static final JACLogger logger = JACLogger.getLogger(ExecuteJCMT.class);
     private SpItem itemToExecute;
     private static String jcmtDir = null;
-    static boolean isRunning = false;
 
     /**
      * Constructor.
@@ -55,15 +54,6 @@ public class ExecuteJCMT extends Execute {
     public ExecuteJCMT(SpItem item, boolean isDeferred) throws Exception {
         itemToExecute = item;
         this.isDeferred = isDeferred;
-
-        if (isRunning) {
-            logger.error("Already running");
-            throw new Exception("An ExecuteJCMT instance is already running");
-        }
-    }
-
-    public static boolean isRunning() {
-        return isRunning;
     }
 
     private String jcmtDir() {
@@ -168,8 +158,6 @@ public class ExecuteJCMT extends Execute {
      * the queue.
      */
     public boolean run() {
-        isRunning = true;
-
         logger.info("Executing observation " + itemToExecute.getTitle());
 
         File XMLFile = null;
@@ -212,8 +200,6 @@ public class ExecuteJCMT extends Execute {
 
             SpQueuedMap.getSpQueuedMap().putSpItem(obs);
         }
-
-        isRunning = false;
 
         if (failure) {
             successFile().delete();
