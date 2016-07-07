@@ -148,7 +148,6 @@ final public class ProgramTree extends JPanel implements ActionListener,
     private JPopupMenu msbDonePopup;
     private JMenuItem msbDoneMenuItem;
     private static final String msbDoneText = "Accept/Reject this MSB";
-    private boolean _useQueue = true;
     private boolean uistIrpol = false;
 
     private static final String sendToQueue = "Send to Queue";
@@ -373,8 +372,7 @@ final public class ProgramTree extends JPanel implements ActionListener,
                 tv.update(itemToXpand);
             }
         } else if (source == engButton) {
-            _useQueue = true;
-            doExecute();
+            doExecute(true);
         }
 
         if (source instanceof JMenuItem) {
@@ -387,13 +385,12 @@ final public class ProgramTree extends JPanel implements ActionListener,
             } else if (thisItem.getText().equals(rescaleText)) {
                 rescaleAttributes();
             } else if (thisItem.getText().equals(engString)) {
-                _useQueue = false;
-                doExecute();
+                doExecute(false);
             }
         }
     }
 
-    public void doExecute() {
+    public void doExecute(boolean useQueue) {
         SpItem item = null;
         boolean isDeferred = false;
         boolean failed = false;
@@ -418,7 +415,7 @@ final public class ProgramTree extends JPanel implements ActionListener,
             if (isDeferred) {
                 item = DeferredProgramList.getCurrentItem();
             } else {
-                if (_useQueue) {
+                if (useQueue) {
                     item = ProgramTree.getCurrentItem();
                 } else {
                     item = ProgramTree.getSelectedItem();
@@ -458,7 +455,7 @@ final public class ProgramTree extends JPanel implements ActionListener,
             }
 
             try {
-                ExecuteUKIRT execute = new ExecuteUKIRT(_useQueue);
+                ExecuteUKIRT execute = new ExecuteUKIRT(useQueue);
                 execute.setDeferred(isDeferred);
 
                 File failFile = execute.failFile();
@@ -500,7 +497,7 @@ final public class ProgramTree extends JPanel implements ActionListener,
                     }
                 }
 
-                if (!_useQueue) {
+                if (! useQueue) {
                     if (!isDeferred && !failed) {
                         markAsDone(obsList.getSelectedIndex());
                     } else if (!failed) {
@@ -849,9 +846,8 @@ final public class ProgramTree extends JPanel implements ActionListener,
     class SelectionListener extends MouseAdapter {
         public void mouseClicked(MouseEvent e) {
             if (e.getClickCount() == 2) {
-                _useQueue = true;
                 setSelectedItem((SpItem) obsList.getSelectedValue());
-                doExecute();
+                doExecute(true);
 
             } else if (e.getClickCount() == 1
                     && (e.getModifiers() & InputEvent.BUTTON1_MASK)

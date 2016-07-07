@@ -110,7 +110,6 @@ final public class DeferredProgramList extends JPanel implements
             new HashMap<SpItem, String>();
     private JPopupMenu engMenu = new JPopupMenu();
     private JMenuItem engItem = new JMenuItem("Send for Engineering");
-    private boolean _useQueue = true;
     private static HashSet<SpItem> duplicates = new HashSet<SpItem>();
     static JACLogger logger = JACLogger.getLogger(DeferredProgramList.class);
 
@@ -308,7 +307,7 @@ final public class DeferredProgramList extends JPanel implements
         MouseListener ml = new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 2) {
-                    execute();
+                    execute(true);
                 }
             }
 
@@ -403,7 +402,7 @@ final public class DeferredProgramList extends JPanel implements
      * Its real purpose is to let users do calibrations even if the
      * "Send for Execution" button is disabled.
      */
-    private void execute() {
+    private void execute(boolean useQueue) {
         Thread t = null;
 
         if (getCurrentItem() != null) {
@@ -415,7 +414,7 @@ final public class DeferredProgramList extends JPanel implements
                 try {
                     logger.info("Sending observation "
                             + getCurrentItem().getTitle() + " for execution.");
-                    ExecuteUKIRT execute = new ExecuteUKIRT(_useQueue);
+                    ExecuteUKIRT execute = new ExecuteUKIRT(useQueue);
                     execute.setDeferred(true);
                     File failFile = execute.failFile();
                     File successFile = execute.successFile();
@@ -424,9 +423,6 @@ final public class DeferredProgramList extends JPanel implements
                     // Start the process and wait for it to complete
                     t.start();
                     t.join();
-
-                    // Reset _useQueue
-                    _useQueue = true;
 
                     // Now check the result
                     if (failFile.exists()) {
@@ -755,8 +751,7 @@ final public class DeferredProgramList extends JPanel implements
 
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == engItem) {
-            _useQueue = false;
-            execute();
+            execute(false);
         }
     }
 
