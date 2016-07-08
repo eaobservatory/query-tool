@@ -490,8 +490,37 @@ are shown, only SCUBA will be available in the first release.<br>
    
 <p><big>The results are initially sorted by Project ID, but the user can
 sort by any of the columns by clicking the column header. &nbsp;In addition,
-each column can be resized to allow the whole of the value to become visible.<br>
+each column can be resized to allow the whole of the value to become visible.
+The results are color-coded as follows:<br>
   </big></p>
+
+<ul>
+    <li>
+        <b>White background:</b>
+        MSBs with no special considerations.
+    </li>
+    <li>
+        <b>Orange background:</b>
+        MSBs which the QT thinks have been queued for the last time.
+        I.e. they were sent to the queue with an observations remaining
+        counter value of 1 or less.
+        (This doesn't necessarily mean that the counter hasn't been
+        increased manually in the OMP database in the meantime.)
+    </li>
+    <li>
+        <b>Grey background:</b>
+        MSBs which have been queued (but not with a counter of 1 or less
+        at the time).
+    </li>
+    <li>
+        <b>Green background:</b>
+        MSBs in OR folders which belong to a project for which other
+        MSBs also in OR folders have been queued.
+        (The QT does not know whether the MSBs are in the same OR folder
+        or whether the OR folder has selections remaining &mdash;
+        this color is simply a warning about the presence of OR folders.)
+    </li>
+</ul
    
 <p><big>Once a MSB is selected by clicking one of the rows, it can be sent
  to the <a href="#StagingArea">Staging Area </a>by one of three methods:<br>
