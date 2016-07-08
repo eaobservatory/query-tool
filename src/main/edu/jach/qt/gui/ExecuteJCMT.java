@@ -42,8 +42,6 @@ import edu.jach.qt.utils.FileUtils;
  * It simply sends either a single deferred observation, or an entire science
  * project to the OCSQUEUE. This is currently only usable for all OCSQUEUE
  * CONFIG based observations.
- *
- * @see edu.jach.qt.gui.Execute Implements <code>Runnable</code>
  */
 public class ExecuteJCMT extends Execute {
     static final JACLogger logger = JACLogger.getLogger(ExecuteJCMT.class);
@@ -176,19 +174,18 @@ public class ExecuteJCMT extends Execute {
     }
 
     /**
-     * Implementation of the <code>Runnable</code> interface. The success or
-     * failure of the file is determined by a file called .success or .failure
-     * left in a defined directory when the method ends. Thus it is important to
-     * make sure that when this method is run as a thread, the caller joins the
-     * thread.
+     * Implementation for the SwingWorker abstract class.
      *
      * If the item is a science project, it overwrites the current contents of
      * the queue. If it is a deferred observation, it is inserted into the queue
      * at the next convinient point. <bold>Note:</bold> This method currently
      * uses hard coded path names for the files and for the commands to execute
      * the queue.
+     *
+     * Returns true on success.
      */
-    public boolean run() {
+    @Override
+    public Boolean doInBackground() {
         logger.info("Executing observation " + itemToExecute.getTitle());
 
         File XMLFile = null;
@@ -232,6 +229,6 @@ public class ExecuteJCMT extends Execute {
             SpQueuedMap.getSpQueuedMap().putSpItem(obs);
         }
 
-        return failure;
+        return ! failure;
     }
 }

@@ -27,18 +27,24 @@ import gemini.util.JACLogger;
 import gemini.sp.SpMSB;
 import edu.jach.qt.utils.SpQueuedMap;
 
-public class ExecuteUKIRT extends Execute implements Runnable {
+public class ExecuteUKIRT extends Execute {
     private static final JACLogger logger =
             JACLogger.getLogger(ExecuteUKIRT.class);
-    private boolean _useQueue;
+    protected boolean useQueue;
 
     public ExecuteUKIRT(SpItem item, boolean isDeferred,
             boolean useQueue) {
         super(item, isDeferred);
-        _useQueue = useQueue;
+        this.useQueue = useQueue;
     }
 
-    public void run() {
+    /**
+     * Implementation for the SwingWorker abstract class.
+     *
+     * Returns true on success.
+     */
+    @Override
+    public Boolean doInBackground() {
         System.out.println("Starting execution...");
 
         if (itemToExecute != null) {
@@ -53,13 +59,12 @@ public class ExecuteUKIRT extends Execute implements Runnable {
         }
 
         String tname = null;
-        if (_useQueue) {
+        if (useQueue) {
             tname = QtTools.createQueueXML(itemToExecute);
         } else {
             SpItem inst = (SpItem) SpTreeMan.findInstrument(itemToExecute);
             if (inst == null) {
                 logger.error("No instrument found");
-                successFile().delete();
             } else {
                 tname = QtTools.translate(itemToExecute, inst.type()
                         .getReadable());
@@ -69,22 +74,20 @@ public class ExecuteUKIRT extends Execute implements Runnable {
         // Catch null sequence names - probably means translation failed:
         if (tname == null) {
             logger.error("Translation failed. Please report this!");
-            successFile().delete();
-            return;
-        } else {
-            logger.info("Trans OK");
-            logger.debug("Translated file is " + tname);
+            return false;
         }
+
+        logger.info("Trans OK");
+        logger.debug("Translated file is " + tname);
 
         /*
          * Having successfully run through translation, now try to submit the
          * file to the ukirt instrument task
          */
         if (sendToQueue(tname)) {
-            failFile().delete();
+            return true;
         }
-        else {
-            successFile().delete();
-        }
+
+        return false;
     }
 }

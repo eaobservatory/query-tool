@@ -399,7 +399,6 @@ final public class DeferredProgramList extends JPanel implements
      * "Send for Execution" button is disabled.
      */
     private void execute(boolean useQueue) {
-        Thread t = null;
         SpItem item = getCurrentItem();
 
         if (item != null) {
@@ -408,48 +407,50 @@ final public class DeferredProgramList extends JPanel implements
              * List let the execute method handle the problem.
              */
             if (System.getProperty("telescope").equalsIgnoreCase("ukirt")) {
-                try {
-                    logger.info("Sending observation "
-                            + item.getTitle() + " for execution.");
-                    ExecuteUKIRT execute = new ExecuteUKIRT(item, true, useQueue);
-                    File failFile = execute.failFile();
-                    File successFile = execute.successFile();
-                    t = new Thread(execute, "UKIRT Execution Thread");
+                logger.info("Sending observation "
+                        + item.getTitle() + " for execution.");
 
-                    // Start the process and wait for it to complete
-                    t.start();
-                    t.join();
+                (new ExecuteUKIRT(item, true, useQueue) {
+                    @Override
+                    protected void done() {
+                        boolean success = false;
 
-                    // Now check the result
-                    if (failFile.exists()) {
-                        new ErrorBox(this, "Failed to Execute. Check messages.");
-                        logger.warn("Failed to execute observation");
-                    } else if (successFile.exists()) {
-                        // Mark this observation as having been done
-                        markThisObservationAsDone(item);
-                        logger.info("Observation executed successfully");
-                    } else {
-                        // Neither file exists - report an error to the user
-                        new ErrorBox("Unable to determine success status"
-                                + " - assuming failed.");
-                        logger.error("Unable to determine success status for observation.");
-                    }
+                        try {
+                            success = get();
+                        } catch (Exception e) {
+                        }
 
-                    // done with status files
-                    if (failFile.exists()) {
-                        failFile.delete();
+                        if (! success) {
+                            new ErrorBox("Failed to Execute. Check messages.");
+                            logger.warn("Failed to execute observation");
+                        } else {
+                            // Mark this observation as having been done
+                            markThisObservationAsDone(itemToExecute);
+                            logger.info("Observation executed successfully");
+                        }
                     }
-                    if (successFile.exists()) {
-                        successFile.delete();
-                    }
-                } catch (Exception e) {
-                    logger.error("Failed to execute thread.", e);
-                    if (t != null && t.isAlive()) {
-                        logger.error("Last observation still seems to be running");
-                    }
-                }
+                }).execute();
+
             } else if (System.getProperty("telescope").equalsIgnoreCase("jcmt")) {
-                new ExecuteInThread(item, true).start();
+                (new ExecuteJCMT(item, true) {
+                    @Override
+                    protected void done() {
+                        boolean success = false;
+
+                        try {
+                            success = get();
+                        } catch (Exception e) {
+                        }
+
+                        if (! success) {
+                            new ErrorBox("Failed to Execute. Check messages.");
+                            logger.warn("Failed to execute observation");
+                        } else {
+                            markThisObservationAsDone(getCurrentItem());
+                            logger.info("Observation executed successfully");
+                        }
+                    }
+                }).execute();
             }
         }
     }
@@ -748,34 +749,6 @@ final public class DeferredProgramList extends JPanel implements
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == engItem) {
             execute(false);
-        }
-    }
-
-    public class ExecuteInThread extends Thread {
-        private SpItem _item;
-
-        boolean _isDeferred;
-
-        public ExecuteInThread(SpItem item, boolean deferred) {
-            _item = item;
-            _isDeferred = deferred;
-        }
-
-        public void run() {
-            ExecuteJCMT execute = null;
-            boolean failed = false;
-
-            execute = new ExecuteJCMT(_item, _isDeferred);
-
-            failed = execute.run();
-
-            if (failed) {
-                new ErrorBox("Failed to Execute. Check messages.");
-                logger.warn("Failed to execute observation");
-            } else {
-                markThisObservationAsDone(getCurrentItem());
-                logger.info("Observation executed successfully");
-            }
         }
     }
 

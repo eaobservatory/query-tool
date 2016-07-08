@@ -93,7 +93,6 @@ import javax.swing.ToolTipManager;
 import javax.swing.JLabel;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
 
 import javax.swing.border.TitledBorder;
 import javax.swing.border.Border;
@@ -390,9 +389,6 @@ final public class ProgramTree extends JPanel implements ActionListener,
     public void doExecute(boolean useQueue) {
         SpItem item = null;
         boolean isDeferred = false;
-        boolean failed = false;
-
-        Thread t = null;
 
         if (obsList.getSelectedValue() == null
                 && DeferredProgramList.getCurrentItem() == null) {
@@ -445,92 +441,84 @@ final public class ProgramTree extends JPanel implements ActionListener,
                 uistIrpol = false;
             }
 
-            try {
-                ExecuteUKIRT execute = new ExecuteUKIRT(
-                    item, isDeferred, useQueue);
+            (new ExecuteUKIRT(item, isDeferred, useQueue) {
+                @Override
+                protected void done() {
+                    boolean success = false;
 
-                File failFile = execute.failFile();
-                File successFile = execute.successFile();
+                    try {
+                        success = get();
+                    } catch (Exception e) {
+                    }
 
-                t = new Thread(execute);
-                t.start();
-                t.join();
 
-                if (failFile.exists()) {
-                    failed = true;
-
-                    if (failFile.length() > 0) {
-                        StringBuffer error = new StringBuffer();
-
-                        try {
-                            // Read the information from the filure file
-                            BufferedReader rdr = new BufferedReader(
-                                    new FileReader(failFile));
-                            String line;
-
-                            while ((line = rdr.readLine()) != null) {
-                                error.append(line);
-                                error.append('\n');
-                            }
-
-                            new ErrorBox(this,
-                                    "Failed to Execute. Error was \n"
-                                            + error.toString());
-                        } catch (IOException ioe) {
-                            // If we failed, output a default error message and
-                            // reset the error buffer
-                            new ErrorBox(this,
-                                    "Failed to Execute. Check log using View>Log menu button.");
-                        }
-                    } else {
-                        new ErrorBox(this,
+                    if (! success) {
+                        new ErrorBox(
                                 "Failed to Execute. Check log using View>Log menu button.");
                     }
-                }
 
-                if (! useQueue) {
-                    if (!isDeferred && !failed) {
-                        markAsDone(obsList.getSelectedIndex());
-                    } else if (!failed) {
-                        DeferredProgramList.markThisObservationAsDone(item);
+                    if (! useQueue) {
+                        if (!isDeferred && success) {
+                            markAsDone(obsList.getSelectedIndex());
+                        } else if (success) {
+                            DeferredProgramList.markThisObservationAsDone(itemToExecute);
+                        }
+                    }
+
+                    setExecutable(true);
+
+                    if (!isDeferred && success) {
+                        obsList.setListData(new Vector());
+                        obsList.clearSelection();
                     }
                 }
+            }).execute();
 
-                // done with status files
-                if (failFile.exists()) {
-                    failFile.delete();
-                }
-
-                if (successFile.exists()) {
-                    successFile.delete();
-                }
-
-            } catch (Exception e) {
-                logger.error("Failed to execute", e);
-
-                if (t != null && t.isAlive()) {
-                    logger.info("Last execution still running");
-                }
-            }
-
-            setExecutable(true);
-
-            if (!isDeferred && !failed) {
-                obsList.setListData(new Vector());
-                obsList.clearSelection();
-            }
         } else if (System.getProperty("telescope").equalsIgnoreCase("jcmt")) {
-            try {
-                ExecuteInThread ein;
+            (new ExecuteJCMT(item, isDeferred) {
+                @Override
+                protected void done() {
+                    boolean success = false;
 
-                ein = new ExecuteInThread(item, isDeferred);
+                    try {
+                        success = get();
+                    } catch (Exception e) {
+                    }
 
-                ein.start();
+                    if (! success) {
+                        logger.info("Execution failed - Check log messages");
 
-            } catch (Exception e) {
-                logger.error("Error running task", e);
-                setExecutable(true);
-            }
+                        JOptionPane.showMessageDialog(null,
+                                "Failed to send project for execution;"
+                                        + " check log entries using"
+                                        + " the View>Log button",
+                                "JCMT Execution Failed",
+                                JOptionPane.ERROR_MESSAGE);
+                    }
+
+                    if (success) {
+                        if (! isDeferred) {
+                            model.clear();
+                            setCurrentItem(null);
+                            setSelectedItem(null);
+
+                        } else {
+                            DeferredProgramList.markThisObservationAsDone(
+                                    itemToExecute);
+                        }
+                    }
+
+                    setExecutable(true);
+
+                    if (! isDeferred && success) {
+                        obsList.setListData(new Vector());
+                        obsList.clearSelection();
+                    }
+
+                    logger.debug("Enabling run button since the ExecuteJCMT task has"
+                            + " completed");
+                }
+            }).execute();
         }
     }
 
@@ -1019,68 +1007,5 @@ final public class ProgramTree extends JPanel implements ActionListener,
 
     public JButton getRunButton() {
         return engButton;
-    }
-
-    public class ExecuteInThread extends Thread {
-        private SpItem _item;
-        private boolean _isDeferred;
-
-        public ExecuteInThread(SpItem item, boolean deferred) {
-            _item = item;
-            _isDeferred = deferred;
-        }
-
-        public void run() {
-            ExecuteJCMT execute;
-            boolean failed = false;
-
-            execute = new ExecuteJCMT(_item, _isDeferred);
-
-            failed = execute.run();
-
-            if (failed) {
-                logger.info("Execution failed - Check log messages");
-
-                new PopUp("JCMT Execution Failed",
-                        "Failed to send project for execution;"
-                                + " check log entries using"
-                                + " the View>Log button",
-                        JOptionPane.ERROR_MESSAGE);
-            }
-
-            if (!failed) {
-                if (!_isDeferred) {
-                    model.clear();
-                    setCurrentItem(null);
-                    setSelectedItem(null);
-
-                } else {
-                    DeferredProgramList.markThisObservationAsDone(
-                            _item);
-                }
-            }
-
-            setExecutable(true);
-
-            if (!_isDeferred && !failed) {
-                obsList.setListData(new Vector());
-                obsList.clearSelection();
-            }
-
-            logger.debug("Enabling run button since the ExecuteJCMT task has"
-                    + " completed");
-        }
-
-        public class PopUp {
-            public PopUp(final String title, final String message,
-                    final int errorLevel) {
-                SwingUtilities.invokeLater(new Runnable() {
-                    public void run() {
-                        JOptionPane.showMessageDialog(null, message, title,
-                                errorLevel);
-                    }
-                });
-            }
-        }
     }
 }

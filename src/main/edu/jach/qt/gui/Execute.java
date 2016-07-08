@@ -19,13 +19,13 @@
 
 package edu.jach.qt.gui;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.util.Random;
+
+import javax.swing.SwingWorker;
 
 import gemini.sp.SpItem;
 import gemini.util.JACLogger;
@@ -36,7 +36,7 @@ import edu.jach.qt.utils.FileUtils;
  * This class is a base class and should be extended to execute MSBs for each
  * telescope.
  */
-public class Execute {
+public abstract class Execute extends SwingWorker<Boolean, Void> {
     /**
      * Item to be executed.
      */
@@ -56,72 +56,6 @@ public class Execute {
     public Execute(SpItem item, boolean isDeferred) {
         itemToExecute = item;
         this.isDeferred = isDeferred;
-    }
-
-    private static File successFile = null;
-
-    public File successFile() {
-        if (successFile == null) {
-            StringBuffer buffer = new StringBuffer();
-            buffer.append(FileUtils.getDeferredDirectoryName());
-            buffer.append(".success-");
-            buffer.append(nextRandom());
-            String filename = buffer.toString();
-            successFile = new File(filename);
-            buffer = null;
-        }
-
-        if (!successFile.exists()) {
-            try {
-                File parent = successFile.getParentFile();
-                if (!parent.canWrite()) {
-                    logger.warn("Don't appear to be able to write to "
-                            + parent.getAbsolutePath());
-                }
-                successFile.createNewFile();
-                FileUtils.chmod(successFile);
-
-            } catch (IOException ioe) {
-                logger.error("Unable to create success file "
-                        + successFile.getAbsolutePath());
-            }
-        }
-
-        return successFile;
-    }
-
-    private static File failFile = null;
-
-    public File failFile() {
-        if (failFile == null) {
-            StringBuffer buffer = new StringBuffer();
-            buffer.append(FileUtils.getDeferredDirectoryName());
-            buffer.append(".failure-");
-            buffer.append(nextRandom());
-            String filename = buffer.toString();
-            failFile = new File(filename);
-            buffer = null;
-        }
-
-        if (!failFile.exists()) {
-            try {
-                File parent = failFile.getParentFile();
-
-                if (!parent.canWrite()) {
-                    logger.warn("Don't appear to be able to write to "
-                            + parent.getAbsolutePath());
-                }
-
-                failFile.createNewFile();
-                FileUtils.chmod(failFile);
-
-            } catch (IOException ioe) {
-                logger.error("Unable to create failure file "
-                        + failFile.getAbsolutePath());
-            }
-        }
-
-        return failFile;
     }
 
     /**
@@ -189,7 +123,6 @@ public class Execute {
         byte[] stderr = new byte[1024];
         StringBuffer inputBuffer = new StringBuffer();
         StringBuffer errorBuffer = new StringBuffer();
-        BufferedWriter errorWriter = null;
         Runtime rt;
         int rtn = -1;
 
@@ -241,11 +174,8 @@ public class Execute {
                         + errorBuffer.toString());
             }
 
-            errorWriter = new BufferedWriter(new FileWriter(failFile()));
-            errorWriter.write(errorBuffer.toString());
-            errorWriter.newLine();
-            errorWriter.flush();
-            errorWriter.close();
+            // TODO: replace failFile with exception containing the message
+            // text from errorBuffer.toString()
 
         } catch (IOException ioe) {
             logger.error("Error executing ...", ioe);
