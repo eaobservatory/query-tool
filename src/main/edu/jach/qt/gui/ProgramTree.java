@@ -23,12 +23,9 @@ package edu.jach.qt.gui;
 
 /* Gemini imports */
 import gemini.sp.SpItem;
-import gemini.sp.SpProg;
 import gemini.sp.SpObs;
 import gemini.sp.SpTreeMan;
 import gemini.sp.SpType;
-import gemini.sp.SpInsertData;
-import gemini.sp.SpFactory;
 import gemini.sp.obsComp.SpInstObsComp;
 import gemini.util.JACLogger;
 
@@ -1026,34 +1023,10 @@ final public class ProgramTree extends JPanel implements ActionListener,
 
     public class ExecuteInThread extends Thread {
         private SpItem _item;
-        private SpItem _deferredItem;
         private boolean _isDeferred;
 
         public ExecuteInThread(SpItem item, boolean deferred) {
-            super();
-
-            // If this is a deferred observation, then we need to convert the
-            // supplied item, which is an SpObs into an SpProg.
-            if (deferred) {
-                SpProg root = (SpProg) SpFactory.create(SpType.SCIENCE_PROGRAM);
-                root.setPI("observer");
-                root.setCountry("JAC");
-                root.setProjectID("CAL");
-                root.setTelescope();
-                root.setTitleAttr(item.getTitleAttr());
-                SpInsertData spID = SpTreeMan.evalInsertInside(item, root);
-
-                if (spID != null) {
-                    SpTreeMan.insert(spID);
-                }
-
-                _deferredItem = item;
-                _item = (SpItem) root;
-
-            } else {
-                _item = item;
-            }
-
+            _item = item;
             _isDeferred = deferred;
         }
 
@@ -1119,11 +1092,10 @@ final public class ProgramTree extends JPanel implements ActionListener,
 
                 } else {
                     DeferredProgramList.markThisObservationAsDone(
-                            _deferredItem);
+                            _item);
                 }
             }
 
-            _deferredItem = null;
             setExecutable(true);
 
             if (!_isDeferred && !failed) {

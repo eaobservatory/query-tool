@@ -76,10 +76,6 @@ import java.util.HashSet;
 import gemini.sp.SpItem;
 import gemini.sp.SpTreeMan;
 import gemini.sp.SpObs;
-import gemini.sp.SpInsertData;
-import gemini.sp.SpProg;
-import gemini.sp.SpFactory;
-import gemini.sp.SpType;
 import gemini.util.JACLogger;
 
 /* ORAC imports */
@@ -756,28 +752,12 @@ final public class DeferredProgramList extends JPanel implements
     }
 
     public class ExecuteInThread extends Thread {
-        SpProg _item = (SpProg) SpFactory.create(SpType.SCIENCE_PROGRAM);
+        private SpItem _item;
 
         boolean _isDeferred;
 
         public ExecuteInThread(SpItem item, boolean deferred) {
-            // Make the obs into an SpProg
-            _item.setPI("observer");
-            _item.setCountry("JAC");
-            _item.setTelescope();
-
-            if (_item.getProjectID() == null
-                    || _item.getProjectID().equals("")) {
-                _item.setProjectID("CAL");
-            }
-
-            _item.setTitleAttr(item.getTitleAttr());
-            SpInsertData spID = SpTreeMan.evalInsertInside(item, _item);
-
-            if (spID != null) {
-                SpTreeMan.insert(spID);
-            }
-
+            _item = item;
             _isDeferred = deferred;
         }
 

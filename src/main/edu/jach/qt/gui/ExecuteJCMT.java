@@ -19,7 +19,12 @@
 
 package edu.jach.qt.gui;
 
+import gemini.sp.SpInsertData;
 import gemini.sp.SpItem;
+import gemini.sp.SpFactory;
+import gemini.sp.SpProg;
+import gemini.sp.SpTreeMan;
+import gemini.sp.SpType;
 
 import java.io.File;
 import java.io.IOException;
@@ -60,6 +65,31 @@ public class ExecuteJCMT extends Execute {
         }
 
         return jcmtDir;
+    }
+
+    /**
+     * Create dummy science program containing a given item.
+     *
+     * To invoke the JCMT translator we need to be able to write a complete
+     * science program to disk.  This method takes a SpItem and places it
+     * in a new program which is returned.
+     */
+    private static SpProg createDummyProgram(SpItem item) {
+        SpProg root = (SpProg) SpFactory.create(SpType.SCIENCE_PROGRAM);
+
+        root.setPI("observer");
+        root.setCountry("JAC");
+        root.setProjectID("CAL");
+        root.setTelescope();
+        root.setTitleAttr(item.getTitleAttr());
+
+        SpInsertData spID = SpTreeMan.evalInsertInside(item, root);
+
+        if (spID != null) {
+            SpTreeMan.insert(spID);
+        }
+
+        return root;
     }
 
     /**
@@ -111,6 +141,15 @@ public class ExecuteJCMT extends Execute {
     }
 
     private File convertProgramToXML() {
+        // If this is a deferred observation, then we need to convert the
+        // supplied item, which is an SpObs into an SpProg.
+        SpItem item;
+        if (isDeferred) {
+            item = createDummyProgram(itemToExecute);
+        } else {
+            item = itemToExecute;
+        }
+
         StringBuffer buffer = new StringBuffer();
         buffer.append(jcmtDir());
         buffer.append(File.separator);
@@ -123,7 +162,7 @@ public class ExecuteJCMT extends Execute {
 
         try {
             final FileWriter writer = new FileWriter(file);
-            writer.write(itemToExecute.toXML());
+            writer.write(item.toXML());
             writer.flush();
             writer.close();
             FileUtils.chmod(file);
