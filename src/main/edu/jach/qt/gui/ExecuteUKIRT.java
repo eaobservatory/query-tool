@@ -24,9 +24,6 @@ import gemini.sp.SpItem;
 import gemini.sp.SpTreeMan;
 import gemini.util.JACLogger;
 
-import gemini.sp.SpMSB;
-import edu.jach.qt.utils.SpQueuedMap;
-
 public abstract class ExecuteUKIRT extends Execute {
     private static final JACLogger logger =
             JACLogger.getLogger(ExecuteUKIRT.class);
@@ -46,17 +43,6 @@ public abstract class ExecuteUKIRT extends Execute {
     @Override
     public Boolean doInBackground() {
         System.out.println("Starting execution...");
-
-        if (itemToExecute != null) {
-            SpItem obs = itemToExecute;
-            SpItem child = itemToExecute.child();
-
-            if (child instanceof SpMSB) {
-                obs = child;
-            }
-
-            SpQueuedMap.getSpQueuedMap().putSpItem(obs);
-        }
 
         String tname = null;
         if (useQueue) {
@@ -85,6 +71,8 @@ public abstract class ExecuteUKIRT extends Execute {
          * file to the ukirt instrument task
          */
         if (sendToQueue(tname)) {
+            addToQueuedMap(itemToExecute);
+
             return true;
         }
 

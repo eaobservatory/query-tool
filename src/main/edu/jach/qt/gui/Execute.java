@@ -29,9 +29,11 @@ import javax.swing.SwingWorker;
 import javax.swing.JOptionPane;
 
 import gemini.sp.SpItem;
+import gemini.sp.SpMSB;
 import gemini.util.JACLogger;
 
 import edu.jach.qt.utils.FileUtils;
+import edu.jach.qt.utils.SpQueuedMap;
 
 /**
  * This class is a base class and should be extended to execute MSBs for each
@@ -157,6 +159,24 @@ public abstract class Execute extends SwingWorker<Boolean, Void> {
         }
 
         return true;
+    }
+
+    /**
+     * Add the given SpItem to the SpQueuedMap.
+     *
+     * Does nothing if the given item is null.  If it has a SpMSB child then
+     * that child is added to the map instead.
+     */
+    protected static void addToQueuedMap(SpItem obs) {
+        if (obs != null) {
+            SpItem child = obs.child();
+
+            if (child instanceof SpMSB) {
+                obs = child;
+            }
+
+            SpQueuedMap.getSpQueuedMap().putSpItem(obs);
+        }
     }
 
     protected int executeCommand(String command, byte[] stdout) {

@@ -32,8 +32,6 @@ import java.io.FileWriter;
 
 import gemini.util.JACLogger;
 
-import gemini.sp.SpMSB;
-import edu.jach.qt.utils.SpQueuedMap;
 import edu.jach.qt.utils.FileUtils;
 
 /**
@@ -218,15 +216,8 @@ public abstract class ExecuteJCMT extends Execute {
         checkpoint("Sent to queue");
         checkpoint("Success ? " + !failure);
 
-        if (itemToExecute != null && !failure) {
-            SpItem obs = itemToExecute;
-            SpItem child = itemToExecute.child();
-
-            if (child instanceof SpMSB) {
-                obs = child;
-            }
-
-            SpQueuedMap.getSpQueuedMap().putSpItem(obs);
+        if (! failure) {
+            addToQueuedMap(itemToExecute);
         }
 
         return ! failure;
