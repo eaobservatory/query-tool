@@ -11,12 +11,6 @@ msbSummaryTest:/jac_sw/omp/config/msbSummaryTest.xml
 msbFile:/tmp/msb.xml
 arrayTests:/home/mrippa/tmp/array_tests.xml
 
-#Dummy table data --used for testing
-dummyTable:/jac_sw/omp/config/querySet.txt
-
-#The QtLogo location
-qtLogo:file:/jac_sw/omp/QT/icons/QtLogo.png
-
 #Sat page
 satelliteIRPage:http://mkwc.ifa.hawaii.edu/satellite/still.cgi?res=4km&chnl=ir&domain=big&anim=no&size=large&thumbs=on&banner=mkwc&satplat=goeswest&overlay=off
 satelliteWVPage:http://mkwc.ifa.hawaii.edu/satellite/still.cgi?res=8km&chnl=wv&domain=big&anim=no&size=large&thumbs=on&banner=mkwc&satplat=goeswest&overlay=off
@@ -24,12 +18,6 @@ imagePrefix:http://mkwc.ifa.hawaii.edu/
 
 #The QtLogo location
 binImage:/jac_sw/omp/QT/icons/waste.gif
-
-#The QtLogo location
-binSelectedImage:/jac_sw/omp/QT/icons/wasteSelected.gif
-
-#The om.cfg location
-omCfg:/jac_sw/omp/QT/config/om.cfg
 
 #Location of soap server
 msbServer:http://omp-private.eao.hawaii.edu/cgi-bin/msbsrv.pl

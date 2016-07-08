@@ -62,12 +62,6 @@ public class InfoPanel extends JPanel implements ActionListener,
         OMPTimerListener {
     private static final JACLogger logger =
             JACLogger.getLogger(InfoPanel.class);
-
-    /**
-     * Specifies the String location for the QT logo image.
-     */
-    public static final String LOGO_IMAGE = System.getProperty("qtLogo");
-
     /**
      * Specifies the webpage containing the String of the latest image to show.
      */
