@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2002-2013 Science and Technology Facilities Council.
+ * Copyright (C) 2016 East Asian Observatory.
  * All Rights Reserved.
  *
  * This program is free software; you can redistribute it and/or

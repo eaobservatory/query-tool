@@ -17,6 +17,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
  * Copyright (C) 2001-2013 Science and Technology Facilities Council.
+ * Copyright (C) 2016 East Asian Observatory.
  */
 
 package edu.jach.qt.gui;
