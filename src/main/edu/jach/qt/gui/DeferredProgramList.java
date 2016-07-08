@@ -412,18 +412,8 @@ final public class DeferredProgramList extends JPanel implements
 
                 (new ExecuteUKIRT(item, true, useQueue) {
                     @Override
-                    protected void done() {
-                        boolean success = false;
-
-                        try {
-                            success = get();
-                        } catch (Exception e) {
-                        }
-
-                        if (! success) {
-                            new ErrorBox("Failed to Execute. Check messages.");
-                            logger.warn("Failed to execute observation");
-                        } else {
+                    protected void doAfterExecute(boolean success) {
+                        if (success) {
                             // Mark this observation as having been done
                             markThisObservationAsDone(itemToExecute);
                             logger.info("Observation executed successfully");
@@ -434,18 +424,8 @@ final public class DeferredProgramList extends JPanel implements
             } else if (System.getProperty("telescope").equalsIgnoreCase("jcmt")) {
                 (new ExecuteJCMT(item, true) {
                     @Override
-                    protected void done() {
-                        boolean success = false;
-
-                        try {
-                            success = get();
-                        } catch (Exception e) {
-                        }
-
-                        if (! success) {
-                            new ErrorBox("Failed to Execute. Check messages.");
-                            logger.warn("Failed to execute observation");
-                        } else {
+                    protected void doAfterExecute(boolean success) {
+                        if (success) {
                             markThisObservationAsDone(getCurrentItem());
                             logger.info("Observation executed successfully");
                         }

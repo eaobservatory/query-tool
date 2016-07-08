@@ -26,6 +26,7 @@ import java.io.Serializable;
 import java.util.Random;
 
 import javax.swing.SwingWorker;
+import javax.swing.JOptionPane;
 
 import gemini.sp.SpItem;
 import gemini.util.JACLogger;
@@ -57,6 +58,49 @@ public abstract class Execute extends SwingWorker<Boolean, Void> {
         itemToExecute = item;
         this.isDeferred = isDeferred;
     }
+
+    /**
+     * Implementation for the SwingWorker abstract class.
+     *
+     * This method is called in the Swing event handling thread after
+     * the doInBackground method is complete.
+     *
+     * Retrieves the status (success or failure) and shows an error message
+     * on failure.  Then calls doAfterExecute with the boolean success
+     * value.
+     */
+    @Override
+    protected final void done() {
+        boolean success = false;
+
+        try {
+            success = get();
+        } catch (Exception e) {
+        }
+
+        if (! success) {
+            logger.info("Execution failed - Check log messages");
+
+            JOptionPane.showMessageDialog(null,
+                    "Failed to send project for execution;"
+                            + " check log entries using"
+                            + " the View>Log button",
+                    "Send to Queue failed",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+
+        doAfterExecute(success);
+    }
+
+    /**
+     * Method to be called after execution is complete.
+     *
+     * Subclasses should override this to implement any behavior required
+     * after an observation has been sent to the queue.  This is called in
+     * the Swing event handling thread.
+     */
+    protected abstract void doAfterExecute(boolean success);
+
 
     /**
      * Send observations to the queue.

@@ -43,7 +43,7 @@ import edu.jach.qt.utils.FileUtils;
  * project to the OCSQUEUE. This is currently only usable for all OCSQUEUE
  * CONFIG based observations.
  */
-public class ExecuteJCMT extends Execute {
+public abstract class ExecuteJCMT extends Execute {
     static final JACLogger logger = JACLogger.getLogger(ExecuteJCMT.class);
     private static String jcmtDir = null;
 

@@ -27,7 +27,7 @@ import gemini.util.JACLogger;
 import gemini.sp.SpMSB;
 import edu.jach.qt.utils.SpQueuedMap;
 
-public class ExecuteUKIRT extends Execute {
+public abstract class ExecuteUKIRT extends Execute {
     private static final JACLogger logger =
             JACLogger.getLogger(ExecuteUKIRT.class);
     protected boolean useQueue;

@@ -34,7 +34,6 @@ import orac.jcmt.inst.SpInstHeterodyne;
 import orac.ukirt.inst.SpInstUIST;
 
 /* QT imports */
-import edu.jach.qt.utils.ErrorBox;
 import edu.jach.qt.utils.ObsListCellRenderer;
 import edu.jach.qt.utils.QtTools;
 
@@ -443,20 +442,7 @@ final public class ProgramTree extends JPanel implements ActionListener,
 
             (new ExecuteUKIRT(item, isDeferred, useQueue) {
                 @Override
-                protected void done() {
-                    boolean success = false;
-
-                    try {
-                        success = get();
-                    } catch (Exception e) {
-                    }
-
-
-                    if (! success) {
-                        new ErrorBox(
-                                "Failed to Execute. Check log using View>Log menu button.");
-                    }
-
+                protected void doAfterExecute(boolean success) {
                     if (! useQueue) {
                         if (!isDeferred && success) {
                             markAsDone(obsList.getSelectedIndex());
@@ -477,25 +463,7 @@ final public class ProgramTree extends JPanel implements ActionListener,
         } else if (System.getProperty("telescope").equalsIgnoreCase("jcmt")) {
             (new ExecuteJCMT(item, isDeferred) {
                 @Override
-                protected void done() {
-                    boolean success = false;
-
-                    try {
-                        success = get();
-                    } catch (Exception e) {
-                    }
-
-                    if (! success) {
-                        logger.info("Execution failed - Check log messages");
-
-                        JOptionPane.showMessageDialog(null,
-                                "Failed to send project for execution;"
-                                        + " check log entries using"
-                                        + " the View>Log button",
-                                "JCMT Execution Failed",
-                                JOptionPane.ERROR_MESSAGE);
-                    }
-
+                protected void doAfterExecute(boolean success) {
                     if (success) {
                         if (! isDeferred) {
                             model.clear();
