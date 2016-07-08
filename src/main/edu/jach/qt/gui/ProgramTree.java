@@ -141,9 +141,6 @@ final public class ProgramTree extends JPanel implements ActionListener,
     private JMenuItem scaleAgain;
     private JMenuItem sendToEng;
     private JPopupMenu scalePopup;
-    private JPopupMenu msbDonePopup;
-    private JMenuItem msbDoneMenuItem;
-    private static final String msbDoneText = "Accept/Reject this MSB";
     private boolean uistIrpol = false;
 
     private static final String sendToQueue = "Send to Queue";
@@ -212,11 +209,6 @@ final public class ProgramTree extends JPanel implements ActionListener,
         sendToEng = new JMenuItem(engString);
         sendToEng.addActionListener(this);
         scalePopup.add(sendToEng);
-
-        msbDonePopup = new JPopupMenu();
-        msbDoneMenuItem = new JMenuItem(msbDoneText);
-        msbDoneMenuItem.addActionListener(this);
-        msbDonePopup.add(msbDoneMenuItem);
 
         gbc.fill = GridBagConstraints.NONE;
         gbc.anchor = GridBagConstraints.CENTER;
