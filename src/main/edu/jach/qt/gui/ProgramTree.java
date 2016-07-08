@@ -109,7 +109,7 @@ import javax.swing.tree.TreePath;
  */
 @SuppressWarnings("serial")
 final public class ProgramTree extends JPanel implements
-        KeyListener, DragSourceListener, DragGestureListener,
+        DragSourceListener, DragGestureListener,
         DropTargetListener {
     static final JACLogger logger = JACLogger.getLogger(ProgramTree.class);
     public static final String BIN_IMAGE = System.getProperty("binImage");
@@ -563,29 +563,6 @@ final public class ProgramTree extends JPanel implements
     public static void clearSelection() {
         obsList.clearSelection();
         setSelectedItem(null);
-    }
-
-    /**
-     * Implementation opf <code>KeyListener</code> interface.
-     *
-     * If the delete key is pressed, removes the currently selected item.
-     */
-    public void keyPressed(KeyEvent e) {
-        if ((e.getKeyCode() == KeyEvent.VK_DELETE)) {
-            removeCurrentNode();
-        }
-    }
-
-    /**
-     * Implementation of <code>KeyListener</code> interface.
-     */
-    public void keyReleased(KeyEvent e) {
-    }
-
-    /**
-     * Implementation of <code>KeyListener</code> interface.
-     */
-    public void keyTyped(KeyEvent e) {
     }
 
     /**
