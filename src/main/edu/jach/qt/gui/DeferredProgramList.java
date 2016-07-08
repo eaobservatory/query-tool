@@ -94,8 +94,7 @@ import edu.jach.qt.utils.QtTools;
  */
 @SuppressWarnings("serial")
 final public class DeferredProgramList extends JPanel implements
-        DropTargetListener, DragSourceListener, DragGestureListener,
-        ActionListener, ListSelectionListener {
+        DropTargetListener, DragSourceListener, DragGestureListener {
     private DropTarget dropTarget = null;
     private DragSource dragSource = null;
     private static JList obsList;
@@ -106,7 +105,6 @@ final public class DeferredProgramList extends JPanel implements
     private static HashMap<SpItem, String> fileToObjectMap =
             new HashMap<SpItem, String>();
     private JPopupMenu engMenu = new JPopupMenu();
-    private JMenuItem engItem = new JMenuItem("Send for Engineering");
     private static HashSet<SpItem> duplicates = new HashSet<SpItem>();
     static JACLogger logger = JACLogger.getLogger(DeferredProgramList.class);
 
@@ -143,8 +141,13 @@ final public class DeferredProgramList extends JPanel implements
         }
         dragSource = new DragSource();
 
+        JMenuItem engItem = new JMenuItem("Send for Engineering");
         engMenu.add(engItem);
-        engItem.addActionListener(this);
+        engItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                execute(false);
+            }
+        });
 
         // Set up the initial drop target
         scrollPane.getViewport().setDropTarget(dropTarget);
@@ -301,7 +304,7 @@ final public class DeferredProgramList extends JPanel implements
         dragSource.createDefaultDragGestureRecognizer(obsList,
                 DnDConstants.ACTION_MOVE, this);
 
-        MouseListener ml = new MouseAdapter() {
+        obsList.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 2) {
                     execute(true);
@@ -315,10 +318,20 @@ final public class DeferredProgramList extends JPanel implements
                     ProgramTree.clearSelection();
                 }
             }
-        };
+        });
 
-        obsList.addMouseListener(ml);
-        obsList.addListSelectionListener(this);
+        obsList.addListSelectionListener(new ListSelectionListener() {
+            public void valueChanged(ListSelectionEvent e) {
+                SpItem item = (SpItem) obsList.getSelectedValue();
+
+                if (item != null && getCurrentItem() != item) {
+                    setCurrentItem(item);
+                    NotePanel.setNote(getCurrentItem());
+                    ProgramTree.clearSelection();
+                }
+            }
+        });
+
         // Add the listbox to a scrolling pane
         scrollPane.getViewport().removeAll();
         scrollPane.getViewport().add(obsList);
@@ -724,25 +737,6 @@ final public class DeferredProgramList extends JPanel implements
             this.dropTarget.setActive(false);
             dragSource.startDrag(event, DragSource.DefaultMoveNoDrop, text,
                     this);
-        }
-    }
-
-    public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == engItem) {
-            execute(false);
-        }
-    }
-
-    public void valueChanged(ListSelectionEvent e) {
-        Object source = e.getSource();
-        if (source == obsList) {
-            SpItem item = (SpItem) obsList.getSelectedValue();
-
-            if (item != null && getCurrentItem() != item) {
-                setCurrentItem(item);
-                NotePanel.setNote(getCurrentItem());
-                ProgramTree.clearSelection();
-            }
         }
     }
 }

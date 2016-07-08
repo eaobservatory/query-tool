@@ -108,7 +108,7 @@ import javax.swing.tree.TreePath;
  * @author M.Tan@roe.ac.uk, modified by Mathew Rippa
  */
 @SuppressWarnings("serial")
-final public class ProgramTree extends JPanel implements ActionListener,
+final public class ProgramTree extends JPanel implements
         KeyListener, DragSourceListener, DragGestureListener,
         DropTargetListener {
     static final JACLogger logger = JACLogger.getLogger(ProgramTree.class);
@@ -116,7 +116,6 @@ final public class ProgramTree extends JPanel implements ActionListener,
     public static final String BIN_SEL_IMAGE = System.getProperty("binImage");
     private GridBagConstraints gbc;
     private static JButton engButton;
-    private JButton xpand;
     private static JList obsList;
     private DefaultListModel model;
     private JScrollPane scrollPane = new JScrollPane();;
@@ -130,16 +129,9 @@ final public class ProgramTree extends JPanel implements ActionListener,
     private TrashCan trash = null;
     private static SpItem selectedItem = null;
     private static SpItem obsToDefer = null;
-    private static final String editText = "Edit Attribute...";
-    private static final String scaleText = "Scale Exposure Times...";
-    private static String rescaleText = "Re-do Scale Exposure Times";
-    private static final String engString = "Send for Engineering";
     private Vector<SpObs> haveScaled = new Vector<SpObs>();
     private Vector<Double> scaleFactors = new Vector<Double>();
-    private JMenuItem edit;
-    private JMenuItem scale;
     private JMenuItem scaleAgain;
-    private JMenuItem sendToEng;
     private JPopupMenu scalePopup;
     private boolean uistIrpol = false;
 
@@ -175,11 +167,46 @@ final public class ProgramTree extends JPanel implements ActionListener,
         engButton.setText(sendToQueue);
         engButton.setMargin(new Insets(5, 10, 5, 10));
         engButton.setEnabled(true);
-        engButton.addActionListener(this);
+        engButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                doExecute(true);
+            }
+        });
 
-        xpand = new JButton("Expand Observation");
+        JButton xpand = new JButton("Expand Observation");
         xpand.setMargin(new Insets(5, 10, 5, 10));
-        xpand.addActionListener(this);
+        xpand.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                SpItem itemToXpand;
+
+                if (getSelectedItem() == null
+                        && DeferredProgramList.getCurrentItem() == null) {
+                    return;
+                } else if (getSelectedItem() == null) {
+                    itemToXpand = DeferredProgramList.getCurrentItem();
+                } else {
+                    itemToXpand = getSelectedItem();
+                }
+
+                SpItem temp = itemToXpand.deepCopy();
+
+                SpInstObsComp inst = SpTreeMan.findInstrumentInContext(itemToXpand);
+
+                if (inst == null) {
+                    inst = SpTreeMan.findInstrument(itemToXpand);
+
+                    if (inst != null) {
+                        QtTools.insert(inst, temp);
+                    }
+                }
+
+                if (tv == null) {
+                    tv = new TreeViewer(temp);
+                } else {
+                    tv.update(temp);
+                }
+            }
+        });
 
         dropTarget = new DropTarget();
         try {
@@ -195,19 +222,39 @@ final public class ProgramTree extends JPanel implements ActionListener,
 
         // Create a popup menu
         scalePopup = new JPopupMenu();
-        edit = new JMenuItem(editText);
-        edit.addActionListener(this);
+
+        JMenuItem edit = new JMenuItem("Edit Attribute...");
+        edit.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                editAttributes();
+            }
+        });
         scalePopup.add(edit);
-        scale = new JMenuItem(scaleText);
+
+        JMenuItem scale = new JMenuItem("Scale Exposure Times...");
         scale.setEnabled(false);
-        scale.addActionListener(this);
+        scale.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                scaleAttributes();
+            }
+        });
         scalePopup.add(scale);
-        scaleAgain = new JMenuItem(rescaleText);
-        scaleAgain.addActionListener(this);
+
+        scaleAgain = new JMenuItem("Re-do Scale Exposure Times");
+        scaleAgain.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                rescaleAttributes();
+            }
+        });
         scaleAgain.setEnabled(false);
         scalePopup.add(scaleAgain);
-        sendToEng = new JMenuItem(engString);
-        sendToEng.addActionListener(this);
+
+        JMenuItem sendToEng = new JMenuItem("Send for Engineering");
+        sendToEng.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                doExecute(false);
+            }
+        });
         scalePopup.add(sendToEng);
 
         gbc.fill = GridBagConstraints.NONE;
@@ -313,69 +360,6 @@ final public class ProgramTree extends JPanel implements ActionListener,
         gbc.gridwidth = w;
         gbc.gridheight = h;
         add(c, gbc);
-    }
-
-    /**
-     * Public method to react to button actions.
-     *
-     * The reaction is mainly about to start a SGML translation,
-     * then a "remote" frame to form a sequence console.
-     *
-     * @param ActionEvent
-     * @return none
-     * @throws none
-     *
-     */
-    public void actionPerformed(ActionEvent evt) {
-        Object source = evt.getSource();
-        if (source == xpand) {
-            SpItem itemToXpand;
-
-            if (getSelectedItem() == null
-                    && DeferredProgramList.getCurrentItem() == null) {
-                return;
-            } else if (getSelectedItem() == null) {
-                itemToXpand = DeferredProgramList.getCurrentItem();
-            } else {
-                itemToXpand = getSelectedItem();
-            }
-
-            SpItem temp = itemToXpand.deepCopy();
-
-            SpInstObsComp inst = SpTreeMan.findInstrumentInContext(itemToXpand);
-
-            if (inst == null) {
-                inst = SpTreeMan.findInstrument(itemToXpand);
-
-                if (inst != null) {
-                    QtTools.insert(inst, temp);
-                }
-            }
-
-            itemToXpand = temp;
-
-            if (tv == null) {
-                tv = new TreeViewer(itemToXpand);
-            } else {
-                tv.update(itemToXpand);
-            }
-        } else if (source == engButton) {
-            doExecute(true);
-        }
-
-        if (source instanceof JMenuItem) {
-            JMenuItem thisItem = (JMenuItem) source;
-
-            if (thisItem.getText().equals(editText)) {
-                editAttributes();
-            } else if (thisItem.getText().equals(scaleText)) {
-                scaleAttributes();
-            } else if (thisItem.getText().equals(rescaleText)) {
-                rescaleAttributes();
-            } else if (thisItem.getText().equals(engString)) {
-                doExecute(false);
-            }
-        }
     }
 
     public void doExecute(boolean useQueue) {
@@ -686,8 +670,8 @@ final public class ProgramTree extends JPanel implements ActionListener,
                     haveScaled.addElement(observation);
                     scaleFactors.addElement(new Double(sf));
                     scaleAgain.setEnabled(true);
-                    rescaleText = "Re-do Scale Exposure Times (x" + sf + ")";
-                    scaleAgain.setText(rescaleText);
+                    scaleAgain.setText(
+                        "Re-do Scale Exposure Times (x" + sf + ")");
                 }
             } else {
                 JOptionPane.showMessageDialog(this,
