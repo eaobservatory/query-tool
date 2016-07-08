@@ -232,12 +232,6 @@ public class ExecuteJCMT extends Execute {
             SpQueuedMap.getSpQueuedMap().putSpItem(obs);
         }
 
-        if (failure) {
-            successFile().delete();
-        } else {
-            failFile().delete();
-        }
-
         return failure;
     }
 }

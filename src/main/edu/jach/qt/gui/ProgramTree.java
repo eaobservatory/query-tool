@@ -1036,52 +1036,16 @@ final public class ProgramTree extends JPanel implements ActionListener,
 
             execute = new ExecuteJCMT(_item, _isDeferred);
 
-            File failFile = execute.failFile();
-            File successFile = execute.successFile();
-
             failed = execute.run();
 
-            if (failFile.exists()) {
+            if (failed) {
                 logger.info("Execution failed - Check log messages");
 
-                if (failFile.length() > 0) {
-                    StringBuffer error = new StringBuffer();
-
-                    try {
-                        // Read the information from the failure file
-                        BufferedReader rdr = new BufferedReader(
-                                new FileReader(failFile));
-                        String line;
-
-                        while ((line = rdr.readLine()) != null) {
-                            error.append(line);
-                            error.append('\n');
-                        }
-
-                        new PopUp("JCMT Execution Failed",
-                                "Failed to send project for execution;"
-                                        + " Error was \n"
-                                        + error.toString(),
-                                JOptionPane.ERROR_MESSAGE);
-
-                    } catch (IOException ioe) {
-                        // If we failed, output a default error message and
-                        // reset the error buffer
-                        new PopUp("JCMT Execution Failed",
-                                "Failed to send project for execution;"
-                                        + " check log entries using"
-                                        + " the View>Log button",
-                                JOptionPane.ERROR_MESSAGE);
-                    }
-                } else {
-                    new PopUp("JCMT Execution Failed",
-                            "Failed to send project for execution;"
-                                    + " check log entries using"
-                                    + " the View>Log button",
-                            JOptionPane.ERROR_MESSAGE);
-                }
-
-                failed = true;
+                new PopUp("JCMT Execution Failed",
+                        "Failed to send project for execution;"
+                                + " check log entries using"
+                                + " the View>Log button",
+                        JOptionPane.ERROR_MESSAGE);
             }
 
             if (!failed) {
@@ -1101,15 +1065,6 @@ final public class ProgramTree extends JPanel implements ActionListener,
             if (!_isDeferred && !failed) {
                 obsList.setListData(new Vector());
                 obsList.clearSelection();
-            }
-
-            // done with status files
-            if (failFile.exists()) {
-                failFile.delete();
-            }
-
-            if (successFile.exists()) {
-                successFile.delete();
             }
 
             logger.debug("Enabling run button since the ExecuteJCMT task has"
