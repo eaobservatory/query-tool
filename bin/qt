@@ -284,7 +284,6 @@ set CLASSPATH = ${CLASSPATH}:${OTROOT}/output/lib/omp.jar
 set CLASSPATH = ${CLASSPATH}:../lib/jsky.jar
 set CLASSPATH = ${CLASSPATH}:../lib/diva.jar
 set CLASSPATH = ${CLASSPATH}:../lib/junit.jar
-set CLASSPATH = ${CLASSPATH}:../icons
 set CLASSPATH = ${CLASSPATH}:/local/java/jdk/lib/tools.jar
 set CLASSPATH = ${CLASSPATH}:/jac_sw/itsroot/install/dcHub/javalib/dcHub.jar
 set CLASSPATH = ${CLASSPATH}:/jac_sw/drama/CurrentRelease/javalib
