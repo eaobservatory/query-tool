@@ -11,6 +11,7 @@ umask 002
 set OTROOT              = /jac_sw/orac3
 set JAVA		= java
 set baseOTConfigDir	= ${OTROOT}/output/cfg/ot
+set qtBinDir            = ./
 set qtConfig	        = ../config/qtSystem.conf
 set LOGPATH             = ""
 set NODEFER		= ""
@@ -297,6 +298,7 @@ ${JAVA} -Xms64m -Xmx${MAXMEM} ${classic} ${xdebug} ${xnoagent} ${xrunjdwptrans} 
         -DQUICKLOOK=${toql} \
         -Dtelescope=${telescope} \
         -DqtConfig=${qtConfig} \
+        -DqtBinDir=${qtBinDir} \
         -Dot.cfgdir=${instConfigDir}/ \
         -Dot.resource.cfgdir=${instConfigDir}/ \
         -DwidgetFile=${widgetFile} \

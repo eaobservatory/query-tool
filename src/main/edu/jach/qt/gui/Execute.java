@@ -116,7 +116,7 @@ public abstract class Execute extends SwingWorker<Boolean, Void> {
 
         if (fileAvailable && TelescopeDataPanel.DRAMA_ENABLED) {
             StringBuffer buffer = new StringBuffer();
-            buffer.append("/jac_sw/omp/QT/bin/");
+            buffer.append(System.getProperty("qtBinDir"));
 
             if (System.getProperty("telescope").equalsIgnoreCase("ukirt")) {
                 if (isDeferred) {
