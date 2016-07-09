@@ -771,13 +771,14 @@ public class QtFrame extends JFrame implements ActionListener, MenuListener,
         localQuerytool.setZoneOfAvoidanceConstraint(!tickZOA);
 
         disableAll = new JCheckBoxMenuItem("Disable All", false);
-        JMenuItem cutItem = new JMenuItem("Cut", new ImageIcon("icons/cut.gif"));
+        JMenuItem cutItem = new JMenuItem("Cut",
+                new ImageIcon(ClassLoader.getSystemResource("cut.gif")));
         cutItem.setEnabled(false);
         JMenuItem copyItem = new JMenuItem("Copy",
-                new ImageIcon("icons/copy.gif"));
+                new ImageIcon(ClassLoader.getSystemResource("copy.gif")));
         copyItem.setEnabled(false);
         JMenuItem pasteItem = new JMenuItem("Paste",
-                new ImageIcon("icons/paste.gif"));
+                new ImageIcon(ClassLoader.getSystemResource("paste.gif")));
         pasteItem.setEnabled(false);
 
         mbar.add(makeMenu("Edit",

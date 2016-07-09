@@ -16,9 +16,6 @@ satelliteIRPage:http://mkwc.ifa.hawaii.edu/satellite/still.cgi?res=4km&chnl=ir&d
 satelliteWVPage:http://mkwc.ifa.hawaii.edu/satellite/still.cgi?res=8km&chnl=wv&domain=big&anim=no&size=large&thumbs=on&banner=mkwc&satplat=goeswest&overlay=off
 imagePrefix:http://mkwc.ifa.hawaii.edu/
 
-#The QtLogo location
-binImage:/jac_sw/omp/QT/icons/waste.gif
-
 #Location of soap server
 msbServer:http://omp-private.eao.hawaii.edu/cgi-bin/msbsrv.pl
 

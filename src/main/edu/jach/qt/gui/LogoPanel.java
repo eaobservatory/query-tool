@@ -59,14 +59,14 @@ public class LogoPanel extends JLabel implements Runnable, ActionListener {
         images = new Vector<ImageIcon>();
         try {
             for (int i = 1; i <= 10; i++) {
-                images.add(i - 1, new ImageIcon(new URL(
-                        "file:///jac_sw/omp/QT/icons/QtLogo" + i + ".png")));
+                images.add(i - 1, new ImageIcon(ClassLoader.getSystemResource(
+                        "QtLogo" + i + ".png")));
             }
 
             buildUI();
 
-            setIcon(new ImageIcon(new URL(
-                    "file:///jac_sw/omp/QT/icons/QtLogo.png")));
+            setIcon(new ImageIcon(ClassLoader.getSystemResource(
+                    "QtLogo.png")));
         } catch (Exception e) {
         }
     }
@@ -102,8 +102,8 @@ public class LogoPanel extends JLabel implements Runnable, ActionListener {
         stopAnimation();
 
         try {
-            setIcon(new ImageIcon(new URL(
-                    "file:///jac_sw/omp/QT/icons/QtLogo.png")));
+            setIcon(new ImageIcon(ClassLoader.getSystemResource(
+                    "QtLogo.png")));
             frameNumber = -1;
         } catch (Exception e) {
         }

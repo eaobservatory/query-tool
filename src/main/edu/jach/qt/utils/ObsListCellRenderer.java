@@ -40,7 +40,8 @@ import gemini.util.JACLogger;
 @SuppressWarnings("serial")
 public class ObsListCellRenderer extends DefaultListCellRenderer {
     final static ImageIcon obsIcon = new ImageIcon(
-            System.getProperty("IMAG_PATH") + "observation.gif");
+            ClassLoader.getSystemResource(
+                    "jsky/app/ot/images/observation.gif"));
     static final JACLogger logger =
             JACLogger.getLogger(ObsListCellRenderer.class);
     public static Color OracBlue = new Color(0x80, 0x80, 0xFF);

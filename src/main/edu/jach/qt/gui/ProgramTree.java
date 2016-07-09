@@ -112,8 +112,6 @@ final public class ProgramTree extends JPanel implements
         DragSourceListener, DragGestureListener,
         DropTargetListener {
     static final JACLogger logger = JACLogger.getLogger(ProgramTree.class);
-    public static final String BIN_IMAGE = System.getProperty("binImage");
-    public static final String BIN_SEL_IMAGE = System.getProperty("binImage");
     private GridBagConstraints gbc;
     private static JButton engButton;
     private static JList obsList;
@@ -323,23 +321,6 @@ final public class ProgramTree extends JPanel implements
         } else {
             engButton.setText(sendToQueue);
             engButton.setToolTipText(null);
-        }
-    }
-
-    /**
-     * Set the Trash Can image.
-     *
-     * @param label The <code>JLabel</code> with which to associate the image.
-     * @exception Exception is unabe to set the image.
-     */
-    public void setImage(JLabel label) throws Exception {
-        URL url = new URL("file://" + BIN_IMAGE);
-
-        if (url != null) {
-            label.setIcon(new ImageIcon(url));
-        } else {
-            label.setIcon(new ImageIcon(
-                    ProgramTree.class.getResource("file://" + BIN_IMAGE)));
         }
     }
 
