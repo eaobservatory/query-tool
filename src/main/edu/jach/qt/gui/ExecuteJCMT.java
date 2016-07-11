@@ -95,46 +95,44 @@ public abstract class ExecuteJCMT extends Execute {
      * Returns the name of the queue manifest file returned by the
      * translator, or null on failure.
      */
-    private String translate(File file) {
-        byte[] stdout = new byte[1024];
+    private String translate(File file) throws SendToQueueException {
         final String translator = System.getProperty("jcmtTranslator");
+        String stdout = null;
 
-        if (translator != null) {
-            StringBuffer buffer = new StringBuffer();
-            buffer.append(translator);
-            buffer.append(" ");
-            buffer.append(file.getPath());
-            String command = buffer.toString();
-            buffer = null;
-            int rtn = executeCommand(command, stdout);
-            if (rtn != 0) {
-                stdout = null;
-            }
-        } else {
+        if (translator == null) {
             logger.error("No translation process defined");
-            stdout = null;
+            throw new SendToQueueException(
+                    "JCMT Translator command not defined.");
         }
 
-        file.delete();
+        StringBuffer buffer = new StringBuffer();
+        buffer.append(translator);
+        buffer.append(" ");
+        buffer.append(file.getPath());
+
+        try {
+            stdout = executeCommand(buffer.toString());
+        }
+        catch (SendToQueueException e) {
+            throw new SendToQueueException("Translation failed: " +
+                                           e.getMessage());
+        }
+        finally {
+            file.delete();
+        }
 
         if (stdout == null) {
-            return null;
+            throw new SendToQueueException("Translator output is null.");
         }
 
-        String fileName = new String(stdout);
-
         // clear up any whitespace that might give us a false positive
-        fileName = fileName.trim();
-
-        String[] split = fileName.split("\n");
+        String[] split = stdout.trim().split("\n");
 
         // Tim assures me it *should* be the last entry
-        fileName = split[split.length - 1];
+        String fileName = split[split.length - 1];
 
         // clean up line
-        fileName = fileName.trim();
-
-        return fileName;
+        return fileName.trim();
     }
 
     private File convertProgramToXML() {

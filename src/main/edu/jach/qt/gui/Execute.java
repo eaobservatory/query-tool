@@ -182,12 +182,13 @@ public abstract class Execute extends SwingWorker<Void, Void> {
             String command = buffer.toString();
 
             logger.debug("Running command " + command);
-            int rtn = executeCommand(command, null);
-
-            if (rtn != 0) {
+            try {
+                executeCommand(command);
+            }
+            catch (SendToQueueException e) {
                 logger.error("Problem sending to queue: command failed");
                 throw new SendToQueueException(
-                    "Send to queue command failed.");
+                    "Send to queue command failed: " + e.getMessage());
             }
         }
     }
@@ -210,19 +211,15 @@ public abstract class Execute extends SwingWorker<Void, Void> {
         }
     }
 
-    protected int executeCommand(String command, byte[] stdout) {
-        if (stdout == null) {
-            stdout = new byte[1024];
-        }
-
+    protected String executeCommand(String command)
+            throws SendToQueueException {
+        byte[] stdout = new byte[1024];
         byte[] stderr = new byte[1024];
         StringBuffer inputBuffer = new StringBuffer();
         StringBuffer errorBuffer = new StringBuffer();
-        Runtime rt;
-        int rtn = -1;
 
         try {
-            rt = Runtime.getRuntime();
+            Runtime rt = Runtime.getRuntime();
             Process p = rt.exec(command);
             InputStream istream = p.getInputStream();
             InputStream estream = p.getErrorStream();
@@ -259,7 +256,7 @@ public abstract class Execute extends SwingWorker<Void, Void> {
             }
 
             p.waitFor();
-            rtn = p.exitValue();
+            int rtn = p.exitValue();
             logger.info(command + " returned with exit status " + rtn);
             logger.info("Output from " + command + ": "
                     + inputBuffer.toString());
@@ -267,18 +264,21 @@ public abstract class Execute extends SwingWorker<Void, Void> {
             if (rtn != 0) {
                 logger.error("Error from " + command + ": "
                         + errorBuffer.toString());
+
+                throw new SendToQueueException("Command output: " +
+                                               errorBuffer.toString());
             }
 
-            // TODO: replace failFile with exception containing the message
-            // text from errorBuffer.toString()
-
-        } catch (IOException ioe) {
-            logger.error("Error executing ...", ioe);
-        } catch (InterruptedException ie) {
-            logger.error("Exited prematurely...", ie);
+        } catch (IOException e) {
+            logger.error("Error executing ...", e);
+            throw new SendToQueueException("I/O error: " + e.getMessage());
+        } catch (InterruptedException e) {
+            logger.error("Exited prematurely...", e);
+            throw new SendToQueueException("Command interrupted: " +
+                                           e.getMessage());
         }
 
-        return rtn;
+        return new String(stdout);
     }
 
     protected long nextRandom() {
