@@ -42,7 +42,7 @@ public abstract class ExecuteUKIRT extends Execute {
      * Returns true on success.
      */
     @Override
-    public Boolean doInBackground() {
+    public Void doInBackground() throws SendToQueueException {
         System.out.println("Starting execution...");
 
         String tname = null;
@@ -52,6 +52,7 @@ public abstract class ExecuteUKIRT extends Execute {
             SpItem inst = (SpItem) SpTreeMan.findInstrument(itemToExecute);
             if (inst == null) {
                 logger.error("No instrument found");
+                throw new SendToQueueException("No instrument found.");
             } else {
                 tname = QtTools.translate(itemToExecute, inst.type()
                         .getReadable());
@@ -61,7 +62,7 @@ public abstract class ExecuteUKIRT extends Execute {
         // Catch null sequence names - probably means translation failed:
         if (tname == null) {
             logger.error("Translation failed. Please report this!");
-            return false;
+            throw new SendToQueueException("Translation failed.");
         }
 
         logger.info("Trans OK");
@@ -71,12 +72,10 @@ public abstract class ExecuteUKIRT extends Execute {
          * Having successfully run through translation, now try to submit the
          * file to the ukirt instrument task
          */
-        if (sendToQueue(tname)) {
-            addToQueuedMap(itemToExecute);
+        sendToQueue(tname);
 
-            return true;
-        }
+        addToQueuedMap(itemToExecute);
 
-        return false;
+        return null;
     }
 }

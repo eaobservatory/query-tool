@@ -184,7 +184,7 @@ public abstract class ExecuteJCMT extends Execute {
      * Returns true on success.
      */
     @Override
-    public Boolean doInBackground() {
+    public Void doInBackground() throws SendToQueueException {
         logger.info("Executing observation " + itemToExecute.getTitle());
 
         File XMLFile = null;
@@ -197,30 +197,29 @@ public abstract class ExecuteJCMT extends Execute {
         XMLFile = convertProgramToXML();
 
         checkpoint("XML");
+
+        if (XMLFile == null) {
+            throw new SendToQueueException("Failed to write observation XML.");
+        }
+
         checkpoint("Translating");
 
-        if (XMLFile != null) {
-            queueFile = translate(XMLFile);
-        } else {
-            failure = true;
-        }
+        queueFile = translate(XMLFile);
 
         checkpoint("Translated");
+
+        if (queueFile == null) {
+            throw new SendToQueueException("Failed to translate observation.");
+        }
+
         checkpoint("Sending to queue");
 
-        if (queueFile != null) {
-            failure = ! sendToQueue(queueFile);
-        } else {
-            failure = true;
-        }
+        sendToQueue(queueFile);
 
         checkpoint("Sent to queue");
-        checkpoint("Success ? " + !failure);
 
-        if (! failure) {
-            addToQueuedMap(itemToExecute);
-        }
+        addToQueuedMap(itemToExecute);
 
-        return ! failure;
+        return null;
     }
 }

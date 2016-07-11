@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.util.Random;
+import java.util.concurrent.ExecutionException;
 
 import javax.swing.SwingWorker;
 import javax.swing.JOptionPane;
@@ -40,7 +41,7 @@ import edu.jach.qt.utils.SpQueuedMap;
  * This class is a base class and should be extended to execute MSBs for each
  * telescope.
  */
-public abstract class Execute extends SwingWorker<Boolean, Void> {
+public abstract class Execute extends SwingWorker<Void, Void> {
     /**
      * Item to be executed.
      */
@@ -68,26 +69,57 @@ public abstract class Execute extends SwingWorker<Boolean, Void> {
      * This method is called in the Swing event handling thread after
      * the doInBackground method is complete.
      *
-     * Retrieves the status (success or failure) and shows an error message
-     * on failure.  Then calls doAfterExecute with the boolean success
-     * value.
+     * Retrieves the status (based on lack of exceptions) and shows
+     * an error message on failure.
+     *
+     * Then calls doAfterExecute with the boolean success value.
      */
     @Override
     protected final void done() {
         boolean success = false;
+        // Prepare StringBuffer to contain informational messages in case
+        // of error.
+        StringBuffer messageBuffer = new StringBuffer(
+            "Failed to send observation for execution:\n");
 
         try {
-            success = get();
-        } catch (Exception e) {
+            get();
+            success = true;
+        }
+        catch (InterruptedException e) {
+            logger.error("Execution thread interrupted");
+        }
+        catch (ExecutionException e) {
+            String why = null;
+            Throwable cause = e.getCause();
+            if (cause != null) {
+                if (cause instanceof SendToQueueException) {
+                    // Caught our expected exception class: show the message.
+                    logger.error("Caught SendToQueueException");
+                    messageBuffer.append(cause.getMessage());
+                }
+                else {
+                    // Caught unexpected exception: show full toString info.
+                    logger.error("Caught unexpected exception:" +
+                                 cause.toString());
+                    messageBuffer.append("Unexpected error:\n");
+                    messageBuffer.append(cause.toString());
+                }
+            }
+            else {
+                // Null cause: show full toString info of original exception.
+                logger.error("Caught ExecutionException with null cause:" +
+                             e.toString());
+                messageBuffer.append("Null error received:\n");
+                messageBuffer.append(e.toString());
+            }
         }
 
         if (! success) {
-            logger.info("Execution failed - Check log messages");
+            logger.error("Execution failed - Check log messages");
 
             JOptionPane.showMessageDialog(null,
-                    "Failed to send project for execution;"
-                            + " check log entries using"
-                            + " the View>Log button",
+                    messageBuffer.toString(),
                     "Send to Queue failed",
                     JOptionPane.ERROR_MESSAGE);
         }
@@ -110,11 +142,19 @@ public abstract class Execute extends SwingWorker<Boolean, Void> {
      *
      * Returns true on success.
      */
-    protected boolean sendToQueue(String fileName) {
+    protected void sendToQueue(String fileName) throws SendToQueueException {
         File file = new File(fileName);
-        boolean fileAvailable = file.exists() && file.canRead();
 
-        if (fileAvailable && TelescopeDataPanel.DRAMA_ENABLED) {
+        if (! (file.exists() && file.canRead())) {
+            logger.error("The following file does not appear to be available : "
+                    + file.getAbsolutePath());
+            throw new SendToQueueException("Queue manifest file not available.");
+        }
+        else if (! TelescopeDataPanel.DRAMA_ENABLED) {
+            logger.info("Problem sending to queue: DRAMA not enabled");
+            throw new SendToQueueException("DRAMA is not enabled.");
+        }
+        else {
             StringBuffer buffer = new StringBuffer();
             buffer.append(System.getProperty("qtBinDir"));
 
@@ -133,7 +173,7 @@ public abstract class Execute extends SwingWorker<Boolean, Void> {
                 }
             } else {
                 logger.error("Problem sending to queue: unknown telescope");
-                return false;
+                throw new SendToQueueException("Unknown telescope.");
             }
 
             buffer.append(" ");
@@ -146,20 +186,10 @@ public abstract class Execute extends SwingWorker<Boolean, Void> {
 
             if (rtn != 0) {
                 logger.error("Problem sending to queue: command failed");
-                return false;
+                throw new SendToQueueException(
+                    "Send to queue command failed.");
             }
-        } else {
-            if (fileAvailable) {
-                logger.info("Problem sending to queue: DRAMA not enabled");
-            } else {
-                logger.error("The following file does not appear to be available : "
-                        + file.getAbsolutePath());
-            }
-
-            return false;
         }
-
-        return true;
     }
 
     /**
@@ -279,5 +309,15 @@ public abstract class Execute extends SwingWorker<Boolean, Void> {
 
     protected void resetCheckpoint() {
         lastTime = 0;
+    }
+
+    /**
+     * Exception class representing errors encountered during the process
+     * of sending an observation to the queue for execution.
+     */
+    protected static class SendToQueueException extends Exception {
+        public SendToQueueException(String message) {
+            super(message);
+        }
     }
 }
