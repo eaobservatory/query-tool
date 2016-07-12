@@ -20,7 +20,9 @@
 
 package edu.jach.qt.gui;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.InputStreamReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
@@ -213,60 +215,29 @@ public abstract class Execute extends SwingWorker<Void, Void> {
 
     protected String executeCommand(String command)
             throws SendToQueueException {
-        byte[] stdout = new byte[1024];
-        byte[] stderr = new byte[1024];
-        StringBuffer inputBuffer = new StringBuffer();
-        StringBuffer errorBuffer = new StringBuffer();
+        StreamReader stdout;
+        StreamReader stderr;
 
         try {
             Runtime rt = Runtime.getRuntime();
             Process p = rt.exec(command);
-            InputStream istream = p.getInputStream();
-            InputStream estream = p.getErrorStream();
-            int inputLength, errorLength;
-            boolean inputFinished = false;
-            boolean errorFinished = false;
-            inputBuffer.delete(0, inputBuffer.length());
-            errorBuffer.delete(0, errorBuffer.length());
-
-            while (!(inputFinished && errorFinished)) {
-                if (!inputFinished) {
-                    inputLength = istream.read(stdout);
-
-                    if (inputLength == -1) {
-                        inputFinished = true;
-                        istream.close();
-                    } else {
-                        String out = new String(stdout).trim();
-                        inputBuffer.append(out, 0, out.length());
-                    }
-                }
-
-                if (!errorFinished) {
-                    errorLength = estream.read(stderr);
-
-                    if (errorLength == -1) {
-                        errorFinished = true;
-                        estream.close();
-                    } else {
-                        String err = new String(stderr).trim();
-                        errorBuffer.append(err, 0, err.length());
-                    }
-                }
-            }
+            stdout = new StreamReader(p.getInputStream());
+            stderr = new StreamReader(p.getErrorStream());
+            (new Thread(stdout)).start();
+            (new Thread(stderr)).start();
 
             p.waitFor();
             int rtn = p.exitValue();
             logger.info(command + " returned with exit status " + rtn);
             logger.info("Output from " + command + ": "
-                    + inputBuffer.toString());
+                    + stdout.getText());
 
             if (rtn != 0) {
                 logger.error("Error from " + command + ": "
-                        + errorBuffer.toString());
+                        + stderr.getText());
 
                 throw new SendToQueueException("Command output: " +
-                                               errorBuffer.toString());
+                                               stderr.getText());
             }
 
         } catch (IOException e) {
@@ -278,7 +249,7 @@ public abstract class Execute extends SwingWorker<Void, Void> {
                                            e.getMessage());
         }
 
-        return new String(stdout);
+        return stdout.getText();
     }
 
     protected long nextRandom() {
@@ -318,6 +289,41 @@ public abstract class Execute extends SwingWorker<Void, Void> {
     protected static class SendToQueueException extends Exception {
         public SendToQueueException(String message) {
             super(message);
+        }
+    }
+
+    /**
+     * Runnable class to read from the given input stream.
+     */
+    protected static class StreamReader implements Runnable {
+        private BufferedReader in;
+        private StringBuffer text = new StringBuffer();
+
+        public StreamReader(InputStream in) {
+            this.in = new BufferedReader(new InputStreamReader(in));
+        }
+
+        public void run() {
+            char[] buff = new char[1024];
+            int length;
+
+            try {
+                while (true) {
+                    length = in.read(buff, 0, 1024);
+                    if (length == -1) {
+                        break;
+                    }
+                    text.append(buff, 0, length);
+                }
+
+                in.close();
+            }
+            catch (IOException e) {
+            }
+        }
+
+        public String getText() {
+            return text.toString();
         }
     }
 }
