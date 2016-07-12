@@ -303,7 +303,7 @@ public abstract class Execute extends SwingWorker<Void, Void> {
             this.in = new BufferedReader(new InputStreamReader(in));
         }
 
-        public void run() {
+        public synchronized void run() {
             char[] buff = new char[1024];
             int length;
 
@@ -322,7 +322,7 @@ public abstract class Execute extends SwingWorker<Void, Void> {
             }
         }
 
-        public String getText() {
+        public synchronized String getText() {
             return text.toString();
         }
     }
