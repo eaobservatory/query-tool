@@ -40,10 +40,9 @@ import javax.swing.Timer;
  * @author <a href="mailto:mrippa@jach.hawaii.edu">Mathew Rippa</a>
  */
 @SuppressWarnings("serial")
-public class LogoPanel extends JLabel implements Runnable, ActionListener {
+public class LogoPanel extends JLabel implements ActionListener {
     static int frameNumber = -1;
     int delay;
-    Thread animatorThread;
     static boolean frozen = false;
     Timer timer;
     Vector<ImageIcon> images;
@@ -144,12 +143,6 @@ public class LogoPanel extends JLabel implements Runnable, ActionListener {
     public void actionPerformed(ActionEvent e) {
         frameNumber++;
         setIcon(images.elementAt(LogoPanel.frameNumber % 10));
-    }
-
-    /**
-     * Implementation of the <code>Runnable</code> interface.
-     */
-    public void run() {
     }
 
     // Invoked only when this is run as an application.
