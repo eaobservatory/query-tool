@@ -54,15 +54,6 @@ import gemini.util.JACLogger;
  * @author <a href="mailto:mrippa@jach.hawaii.edu">Mathew Rippa</a>
  */
 public class QtTools {
-
-    public static final int OOS_STATE_UNKNOWN = -1;
-    public static final int OOS_STATE_IDLE = 0;
-    public static final int OOS_STATE_STOPPED = 1;
-    public static final int OOS_STATE_PAUSED = 2;
-    public static final int OOS_STATE_RUNNING = 3;
-    public static final int OOS_ACTIVE = 4;
-    public static final int OOS_INACTIVE = 5;
-
     static final JACLogger logger = JACLogger.getLogger(QtTools.class);
 
     /**
@@ -115,35 +106,6 @@ public class QtTools {
         } catch (IOException e) {
             logger.error("File error: " + e);
         }
-    }
-
-    /**
-     * Execute a DRAMA command
-     *
-     * @param someExec a <code>String[]</code> value
-     */
-    public static int execute(String[] cmd, boolean wait, boolean output) {
-        ExecDtask task = new ExecDtask(cmd);
-        task.setWaitFor(wait);
-
-        task.setOutput(output);
-        task.run();
-
-        // Check for errors from the script
-        int status = task.getExitStatus();
-        if (status != 0) {
-            logger.error(
-                    "Error reported by instrument startup script, code was: "
-                    + status);
-        }
-
-        try {
-            task.join();
-        } catch (InterruptedException e) {
-            logger.error("Load task join interrupted! " + e.getMessage());
-        }
-
-        return status;
     }
 
     /**
@@ -276,82 +238,6 @@ public class QtTools {
         }
 
         return tname;
-    }
-
-    /**
-     * Loads a DRAMA task
-     *
-     * @param name a <code>String</code> value
-     */
-    public static int loadDramaTasks(String name) {
-        // starting the drama tasks
-        String[] script = new String[6];
-
-        script[0] = System.getProperty("LOAD_DHSC");
-        script[1] = new String(name);
-        script[2] = "-" + System.getProperty("QUICKLOOK", "noql");
-        script[3] = "-" + System.getProperty("SIMULATE", "simTel");
-        script[4] = "-" + System.getProperty("ENGINEERING", "eng");
-        script[5] = "-omp";
-
-        logger.info("About to start script " + script[0] + " " + script[1]
-                + " " + script[2] + " " + script[3] + " " + script[4] + " "
-                + script[5]);
-
-        int status = QtTools.execute(script, false, true);
-
-        return status;
-    }
-
-    public static int oosTest(String[] cmd) {
-        String argList = "";
-
-        for (int i = 0; i < cmd.length; i++) {
-            argList += (" " + cmd[i]);
-        }
-
-        logger.debug("oosTest argList is: " + argList);
-
-        int status = -1;
-        try {
-            Process p = Runtime.getRuntime().exec(cmd);
-            BufferedReader stdOut = new BufferedReader(new InputStreamReader(
-                    p.getInputStream()));
-
-            String s = null;
-
-            while ((s = stdOut.readLine()) != null) {
-                System.err.println(s);
-                logger.debug("oosTest output: >>>" + s + "<<<");
-
-                if (s.endsWith("IS INACTIVE")) {
-                    status = QtTools.OOS_INACTIVE;
-                } else if (s.endsWith("IS ACTIVE")) {
-                    status = QtTools.OOS_ACTIVE;
-                } else if (s.endsWith("Idle ")) {
-                    status = QtTools.OOS_STATE_IDLE;
-                } else if (s.endsWith("Stopped ")) {
-                    status = QtTools.OOS_STATE_STOPPED;
-                } else if (s.endsWith("Paused ")) {
-                    status = QtTools.OOS_STATE_PAUSED;
-                } else if (s.endsWith("Running ")) {
-                    status = QtTools.OOS_STATE_RUNNING;
-                } else {
-                    logger.error("UNKNOWN OOS STATE.");
-                    status = QtTools.OOS_STATE_UNKNOWN;
-                }
-            }
-
-            p.waitFor();
-
-        } catch (IOException e) {
-            logger.error("StdOut got IO exception:" + e.getMessage());
-
-        } catch (InterruptedException ie) {
-            logger.error("oosTest process was interrupted abnormally.", ie);
-        }
-
-        return status;
     }
 
     /**

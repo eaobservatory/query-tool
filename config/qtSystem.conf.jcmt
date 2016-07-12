@@ -51,10 +51,6 @@ EXEC_PATH:/ukirtdata/orac_data/sequences
 # elsewhere, currently in the orac_env script
 CONF_PATH:/ukirtdata/orac_data/configs
 
-# Location of Unix shell script that is used to load the Drama systems for
-# the instruments and do any initialisation.
-LOAD_DHSC:loadORAC
-
 # Allowed editable attributes on a per instrument basis. Separate by spaces.
 UFTI_ATTRIBS: exposureTime coadds
 CGS4_ATTRIBS: exposureTime coadds
