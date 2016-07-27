@@ -45,6 +45,10 @@ public class LogoPanel extends JLabel implements ActionListener {
     int delay;
     static boolean frozen = false;
     Timer timer;
+    /**
+     * Icon to use when not performing animation.
+     */
+    private ImageIcon image_still;
     Vector<ImageIcon> images;
 
     /**
@@ -64,8 +68,9 @@ public class LogoPanel extends JLabel implements ActionListener {
 
             buildUI();
 
-            setIcon(new ImageIcon(ClassLoader.getSystemResource(
-                    "QtLogo.png")));
+            image_still = new ImageIcon(
+                ClassLoader.getSystemResource("QtLogo.png"));
+            setIcon(image_still);
         } catch (Exception e) {
         }
     }
@@ -101,8 +106,7 @@ public class LogoPanel extends JLabel implements ActionListener {
         stopAnimation();
 
         try {
-            setIcon(new ImageIcon(ClassLoader.getSystemResource(
-                    "QtLogo.png")));
+            setIcon(image_still);
             frameNumber = -1;
         } catch (Exception e) {
         }
