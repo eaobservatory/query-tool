@@ -590,10 +590,8 @@ public class QtFrame extends JFrame implements ActionListener, MenuListener,
 
                     // Perform the following actions of the worker was
                     // successful ('get' didn't raise an exception).
-                    om.setSpItem(item);
-
                     DeferredProgramList.clearSelection();
-                    om.addNewTree(msbID);
+                    om.addNewTree(item);
                     buildStagingPanel();
                 }
                 catch (InterruptedException e) {
@@ -663,7 +661,6 @@ public class QtFrame extends JFrame implements ActionListener, MenuListener,
             tabbedPane.setVisible(true);
         } else {
             tabbedPane.setTitleAt(1, om.getProgramName());
-            om.updateNotes();
         }
 
         tabbedPane.setSelectedIndex(1);

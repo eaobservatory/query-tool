@@ -55,7 +55,6 @@ public class OmpOM extends JPanel {
     static final JACLogger logger = JACLogger.getLogger(OmpOM.class);
     private ProgramTree ptree;
     private File file;
-    private SpItem spItem;
     private Hashtable<Integer, ProgramTree> ptreeHashtable;
     private DeferredProgramList deferredList;
     public NotePanel notes;
@@ -67,17 +66,6 @@ public class OmpOM extends JPanel {
         ptreeHashtable = new Hashtable<Integer, ProgramTree>();
         logger.info("SpItems initialized");
         ptree = new ProgramTree();
-    }
-
-    /**
-     * Set the SpItem.
-     *
-     * Set the SpItem to that passed in.
-     *
-     * @param item The value of the SpItem to set.
-     */
-    public void setSpItem(SpItem item) {
-        spItem = item;
     }
 
     /**
@@ -127,19 +115,19 @@ public class OmpOM extends JPanel {
     }
 
     /**
-     * This adds a <code>ProgramTree</code>, referrenced by the msbID, to the
+     * This adds a <code>ProgramTree</code> to the
      * list of trees.
      *
-     * @param msbID an <code>int</code> value
+     * Also updates the notes.
+     *
+     * @param item the <code>SpItem</code> to add, or null to clear
      */
-    public void addNewTree(Integer msbID) {
-        if (msbID == null) {
-            ptree.addList(null);
-        } else {
-            ptree.addList(spItem);
-        }
+    public void addNewTree(SpItem item) {
+        ptree.addList(item);
 
         ptree.setMinimumSize(new Dimension(400, 550));
+
+        updateNotes(item);
     }
 
     /**
@@ -150,20 +138,12 @@ public class OmpOM extends JPanel {
     public void addNewTree() {
         file = new File(System.getProperty("arrayTests",
                 "/home/mrippa/install/omp/QT/config/array_tests.xml"));
-        spItem = OtFileIO.fetchSp(file.getParent(), file.getName());
+        SpItem spItem = OtFileIO.fetchSp(file.getParent(), file.getName());
 
         ptree.addList(spItem);
         ptree.setMinimumSize(new Dimension(400, 550));
 
         ptreeHashtable.put(new Integer(41), ptree);
-    }
-
-    /**
-     * Reloads the current program.
-     */
-    public void resetTree() {
-        spItem = OtFileIO.fetchSp(file.getParent(), file.getName());
-        ptree.addList(spItem);
     }
 
     /**
@@ -187,14 +167,16 @@ public class OmpOM extends JPanel {
         return splitPane;
     }
 
-    public void updateNotes() {
+    private void updateNotes() {
         if (ProgramTree.getCurrentItem() != null) {
             NotePanel.setNote(ProgramTree.getCurrentItem());
         } else if (DeferredProgramList.getCurrentItem() != null) {
             NotePanel.setNote(DeferredProgramList.getCurrentItem());
-        } else {
-            NotePanel.setNote(spItem);
         }
+    }
+
+    private void updateNotes(SpItem item) {
+        NotePanel.setNote(item);
     }
 
     /**
