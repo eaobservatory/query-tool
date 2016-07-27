@@ -92,7 +92,6 @@ public abstract class Execute extends SwingWorker<Void, Void> {
             logger.error("Execution thread interrupted");
         }
         catch (ExecutionException e) {
-            String why = null;
             Throwable cause = e.getCause();
             if (cause != null) {
                 if (cause instanceof SendToQueueException) {
