@@ -41,15 +41,13 @@ import javax.swing.Timer;
  */
 @SuppressWarnings("serial")
 public class LogoPanel extends JLabel implements ActionListener {
-    static int frameNumber = -1;
-    int delay;
-    static boolean frozen = false;
-    Timer timer;
+    private int frameNumber = -1;
+    private Timer timer;
     /**
      * Icon to use when not performing animation.
      */
     private ImageIcon image_still;
-    Vector<ImageIcon> images;
+    private Vector<ImageIcon> images;
 
     /**
      * Constructor.
@@ -66,7 +64,15 @@ public class LogoPanel extends JLabel implements ActionListener {
                         "QtLogo" + i + ".png")));
             }
 
-            buildUI();
+            int fps = 40;
+
+            // How many milliseconds between frames?
+            int delay = (fps > 0) ? (1000 / fps) : 100;
+
+            // Set up a timer that calls this object's action handler
+            timer = new javax.swing.Timer(delay, this);
+            timer.setInitialDelay(0);
+            timer.setCoalesce(true);
 
             image_still = new ImageIcon(
                 ClassLoader.getSystemResource("QtLogo.png"));
@@ -75,35 +81,25 @@ public class LogoPanel extends JLabel implements ActionListener {
         }
     }
 
-    // Note: Container must use BorderLayout, which is the default layout
-    // manager for content panes.
-    /**
-     * Sets up animation of the QT interface.
-     */
-    void buildUI() {
-        int fps = 40;
-
-        // How many milliseconds between frames?
-        delay = (fps > 0) ? (1000 / fps) : 100;
-
-        // Set up a timer that calls this object's action handler
-        timer = new javax.swing.Timer(delay, this);
-        timer.setInitialDelay(0);
-        timer.setCoalesce(true);
-    }
-
     /**
      * Starts the QT logo animation sequence.
      */
-    public void start() {
-        startAnimation();
+    public synchronized void start() {
+        if (!timer.isRunning()) {
+            timer.start();
+        }
     }
 
     /**
      * Stops the QT logo animation sequence.
+     *
+     * Should only be run from the event dispatching thread since it sets
+     * the icon to the still image.
      */
-    public void stop() {
-        stopAnimation();
+    public synchronized void stop() {
+        if (timer.isRunning()) {
+            timer.stop();
+        }
 
         try {
             setIcon(image_still);
@@ -113,40 +109,15 @@ public class LogoPanel extends JLabel implements ActionListener {
     }
 
     /**
-     * Starts the QT logo animation sequence.
-     */
-    public synchronized void startAnimation() {
-        if (frozen) {
-            // Do nothing. The user has requested that we stop changing the
-            // image.
-        } else {
-            // Start animating!
-            if (!timer.isRunning()) {
-                timer.start();
-            }
-        }
-    }
-
-    /**
-     * Stops the QT logo animation sequence.
-     */
-    public synchronized void stopAnimation() {
-        // Stop the animating thread.
-        if (timer.isRunning()) {
-            timer.stop();
-        }
-    }
-
-    /**
      * Implementation of <code>ActionListener</code> interface.
      *
-     * Stops the interface scrolling.
+     * Shows the next image in sequence.
      *
      * @param e An <code>ActionEvent</code>.
      */
     public void actionPerformed(ActionEvent e) {
         frameNumber++;
-        setIcon(images.elementAt(LogoPanel.frameNumber % 10));
+        setIcon(images.elementAt(frameNumber % 10));
     }
 
     // Invoked only when this is run as an application.
