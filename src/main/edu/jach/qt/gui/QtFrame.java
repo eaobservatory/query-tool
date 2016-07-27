@@ -544,10 +544,6 @@ public class QtFrame extends JFrame implements ActionListener, MenuListener,
                 logger.info("Setting up staging panel for the first time.");
                 om.enableList(false);
 
-                if (om == null) {
-                    om = new OmpOM();
-                }
-
                 try {
                     int checksumIndex = columns.getIndexForKey("checksum");
                     String checksum = (String) sorter.getValueAt(selRow,
