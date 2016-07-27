@@ -20,6 +20,7 @@
 package edu.jach.qt.gui;
 
 /* OT imports */
+import gemini.sp.SpItem;
 import gemini.util.JACLogger;
 
 /* QT imports */
@@ -48,6 +49,7 @@ import java.net.URL;
 import java.util.Hashtable;
 import java.util.Set;
 import java.util.Vector;
+import java.util.concurrent.ExecutionException;
 import javax.swing.JFrame;
 import javax.swing.JTable;
 import javax.swing.JMenuItem;
@@ -530,103 +532,104 @@ public class QtFrame extends JFrame implements ActionListener, MenuListener,
 
     /**
      * Fetch the "selected" MSB and send it to the staging area.
+     *
+     * Should be called on the Swing event-dispatching thread.
      */
     private void performSendToStagingArea() {
-        SwingWorker<Boolean, Void> msbWorker =
-                new SwingWorker<Boolean, Void>() {
-            Integer msbID;
-            MsbColumns columns = MsbClient.getColumnInfo();
+        MsbColumns columns = MsbClient.getColumnInfo();
 
-            public Boolean doInBackground() {
-                Boolean isStatusOK;
+        final Integer msbID = new Integer((String) sorter.getValueAt(
+            selRow, columns.getIndexForKey("msbid")));
+        final String checksum = (String) sorter.getValueAt(
+            selRow, columns.getIndexForKey("checksum"));
+        final String projectid = (String) sorter.getValueAt(
+            selRow, columns.getIndexForKey("projectid"));
 
-                InfoPanel.logoPanel.start();
-                logger.info("Setting up staging panel for the first time.");
-                om.enableList(false);
+        // Perform SpQueuedMap check and other Swing actions before
+        // launching the SwingWorker thread.
+        if (remaining.isSelected()) {
+            String time =
+                SpQueuedMap.getSpQueuedMap().containsMsbChecksum(checksum);
 
-                try {
-                    int checksumIndex = columns.getIndexForKey("checksum");
-                    String checksum = (String) sorter.getValueAt(selRow,
-                            checksumIndex);
+            if (time != null) {
+                int rtn = JOptionPane.showOptionDialog(null,
+                        "This observation was sent to the queue "
+                                + time + ".\n Continue ?",
+                        "Duplicate execution warning",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.WARNING_MESSAGE, null, null,
+                        null);
 
-                    if (remaining.isSelected()) {
-                        String time = SpQueuedMap.getSpQueuedMap()
-                                .containsMsbChecksum(checksum);
-
-                        if (time != null) {
-                            int rtn = JOptionPane.showOptionDialog(null,
-                                    "This observation was sent to the queue "
-                                            + time + ".\n Continue ?",
-                                    "Duplicate execution warning",
-                                    JOptionPane.YES_NO_OPTION,
-                                    JOptionPane.WARNING_MESSAGE, null, null,
-                                    null);
-
-                            if (rtn == JOptionPane.NO_OPTION) {
-                                isStatusOK = new Boolean(false);
-                                return isStatusOK;
-                            }
-                        }
-                    }
-
-                    int msbIndex = columns.getIndexForKey("msbid");
-                    msbID = new Integer((String) sorter.getValueAt(selRow,
-                            msbIndex));
-                    om.setSpItem(localQuerytool.fetchMSB(msbID));
-                    isStatusOK = new Boolean(true);
-
-                } catch (Exception e) {
-                    // exceptions are generally Null Pointers or Number Format
-                    // Exceptions
-                    JOptionPane.showMessageDialog(null, "Could not fetch MSB",
-                            e.toString(), JOptionPane.ERROR_MESSAGE);
-                    logger.debug(e.getMessage());
-                    isStatusOK = new Boolean(false);
-
-                } finally {
-                    om.enableList(true);
-                    InfoPanel.logoPanel.stop();
+                if (rtn == JOptionPane.NO_OPTION) {
+                    return;
                 }
+            }
+        }
 
-                return isStatusOK;
+        logger.info("Fetching MSB " + msbID + " INFO is: " + projectid +
+                    ", " + checksum);
+
+        InfoPanel.logoPanel.start();
+        om.enableList(false);
+
+        (new SwingWorker<SpItem, Void>() {
+            public SpItem doInBackground() {
+                return localQuerytool.fetchMSB(msbID);
             }
 
             // Runs on the event-dispatching thread.
             protected void done() {
+                // Restore GUI state: we want to do this on the
+                // event-dispatching thread regardless of whether the worker
+                // succeeded or not.
+                om.enableList(true);
+                InfoPanel.logoPanel.stop();
+
                 try {
-                    Boolean isStatusOK = get();
+                    SpItem item = get();
 
-                    InfoPanel.logoPanel.stop();
-                    om.enableList(true);
+                    // Perform the following actions of the worker was
+                    // successful ('get' didn't raise an exception).
+                    om.setSpItem(item);
 
-                    int msbIndex = columns.getIndexForKey("msbid");
-                    msbID = new Integer((String) sorter.getValueAt(selRow,
-                            msbIndex));
-
-                    if (isStatusOK) {
-                        DeferredProgramList.clearSelection();
-                        om.addNewTree(msbID);
-                        buildStagingPanel();
-
-                        int checksumIndex = columns.getIndexForKey("checksum");
-                        String checksum = (String) sorter.getValueAt(selRow,
-                                checksumIndex);
-                        int projectIndex = columns.getIndexForKey("projectid");
-                        String projectid = (String) sorter.getValueAt(selRow,
-                                projectIndex);
-
-                        logger.info("MSB " + msbID + " INFO is: " + projectid
-                                + ", " + checksum);
-                    } else {
-                        logger.error("No msb ID retrieved!");
-                    }
-                } catch (Exception e) {
+                    DeferredProgramList.clearSelection();
+                    om.addNewTree(msbID);
+                    buildStagingPanel();
+                }
+                catch (InterruptedException e) {
+                    logger.error("Execution thread interrupted");
+                }
+                catch (ExecutionException e) {
                     logger.error("Error retriving MSB: " + e);
+                    String why = null;
+                    Throwable cause = e.getCause();
+                    if (cause != null) {
+                        why = cause.toString();
+                    }
+                    else {
+                        why = e.toString();
+                    }
+
+                    // exceptions are generally Null Pointers or Number Format
+                    // Exceptions
+                    logger.debug(why);
+                    JOptionPane.showMessageDialog(
+                        null, why, "Could not fetch MSB",
+                        JOptionPane.ERROR_MESSAGE);
+                }
+                catch (Exception e) {
+                    // Retaining this catch-all block as one was present in
+                    // the previous version of this code.  Exceptions
+                    // raised by 'get' should be caught above -- this block
+                    // is in case the in-QT handling of the MSB fails.
+                    // (Not sure if that can happen or not.)
+                    logger.error("Error processing retrieved MSB: " + e);
+                    JOptionPane.showMessageDialog(
+                        null, e.toString(), "Could not process fetched MSB",
+                        JOptionPane.ERROR_MESSAGE);
                 }
             }
-        };
-
-        msbWorker.execute();
+        }).execute();
     }
 
     /**
