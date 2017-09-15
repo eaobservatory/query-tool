@@ -17,10 +17,10 @@ satelliteWVPage:http://mkwc.ifa.hawaii.edu/satellite/still.cgi?res=8km&chnl=wv&d
 imagePrefix:http://mkwc.ifa.hawaii.edu/
 
 #Location of soap server
-msbServer:http://omp-private.eao.hawaii.edu/cgi-bin/msbsrv.pl
+msbServer:http://omp-dev-private.eao.hawaii.edu/cgi-bin/msbsrv.pl
 
 #Location of soap server
-spServer:http://omp.eao.hawaii.edu/cgi-bin/spsrv.pl
+spServer:http://omp-dev.eao.hawaii.edu/cgi-bin/spsrv.pl
 
 # Generic location of deferred files: 
 # Always expected to be in a file named <telescope>data/<thisname>
