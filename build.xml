@@ -61,7 +61,7 @@
 	<!--    ==================================================== -->
 	<!--       OT PATHS                                          -->
 	<!--    ==================================================== -->
-	<property name="ot.dir" value="/jac_sw/orac3/output"/>
+	<property name="ot.dir" value="/jac_sw/omp_dev/ot/output"/>
 	<property name="ot.lib.dir" value="${ot.dir}/lib"/>
 
 

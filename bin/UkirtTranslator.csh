@@ -1,6 +1,6 @@
 #!/bin/csh
-set OT_INSTALL_DIR = /jac_sw/orac3
-set OMP_DIR = /jac_sw/omp/QT
+set OT_INSTALL_DIR = /jac_sw/omp_dev/ot
+set OMP_DIR = /jac_sw/omp_dev/qt
 
 set CLASSPATH = ${OT_INSTALL_DIR}/output/lib/xercesImpl.jar
 set CLASSPATH = ${CLASSPATH}:${OT_INSTALL_DIR}/output/lib/xmlParserAPIs.jar
