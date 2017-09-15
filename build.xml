@@ -36,7 +36,7 @@
 	<!--    ==================================================== -->
 	<!--       Set the properties for the build area             -->
 	<!--    ==================================================== -->
-	<property name="build.dir" value="/tmp/install/jac_sw/omp/${Name}${version}"/>
+	<property name="build.dir" value="/tmp/install/jac_sw/omp_dev/${Name}${version}"/>
 	<property name="build.classes" value="${build.dir}/classes"/>
 	<property name="build.config" value="${build.dir}/config"/>
 	<property name="build.icons" value="${build.dir}/icons"/>
@@ -51,7 +51,7 @@
 	<property name="dist.dir" value="/tmp/install/${name}${version}"/>
 	<property name="dist.classes" value="${dist.dir}/classes"/>
 	<property name="dist.config" value="${dist.dir}/config"/>
-	<property name="sys.dist.config" value="/jac_sw/omp/config"/>
+	<property name="sys.dist.config" value="/jac_sw/omp_dev/config"/>
 	<property name="dist.icons" value="${dist.dir}/icons"/>
 	<property name="dist.bin" value="${dist.dir}/bin"/>
 	<property name="dist.lib" value="${dist.dir}/lib"/>
@@ -61,7 +61,7 @@
 	<!--    ==================================================== -->
 	<!--       OT PATHS                                          -->
 	<!--    ==================================================== -->
-	<property name="ot.dir" value="/jac_sw/orac3/output"/>
+	<property name="ot.dir" value="/jac_sw/omp_dev/ot/output"/>
 	<property name="ot.lib.dir" value="${ot.dir}/lib"/>
 
 

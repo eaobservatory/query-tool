@@ -26,7 +26,7 @@ telescopeConfig:telescopedata.xml
 Browser:/usr/bin/mozilla
 
 # JCMT translator
-jcmtTranslator:/jac_sw/omp/bin/jcmttranslator -log
+jcmtTranslator:/jac_sw/omp_dev/bin/jcmttranslator -log
 
 
 # EXEC_PATH: Where the sequences created by the translator will be written. 
