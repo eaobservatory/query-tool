@@ -802,9 +802,8 @@ public class QtFrame extends JFrame implements ActionListener, MenuListener,
      * Method to run the calibration fetching thread, so it can be done after
      * everything else.
      */
-    public boolean fetchCalibrations() {
+    public void fetchCalibrations() {
         calibrationMenu.init();
-        return menuBuilt;
     }
 
     /**
