@@ -94,6 +94,7 @@ import javax.swing.table.TableColumn;
 public class QtFrame extends JFrame implements ActionListener, MenuListener,
         ListSelectionListener {
     private final static String INDEX = "Index";
+    private final static String RELOAD_CAL = "Reload calibrations";
     private final static String EXIT = "Exit";
     private final static String LOG = "Log...";
     private final static String COLUMNS = "Columns...";
@@ -111,6 +112,7 @@ public class QtFrame extends JFrame implements ActionListener, MenuListener,
     private int selRow;
     private JMenuItem saveItem;
     private JMenuItem saveAsItem;
+    private JMenuItem reloadCalItem;
     private JMenuItem exitItem;
     private JCheckBoxMenuItem disableAll;
     private JCheckBoxMenuItem observability;
@@ -726,9 +728,11 @@ public class QtFrame extends JFrame implements ActionListener, MenuListener,
         saveItem.setEnabled(false);
         saveAsItem = new JMenuItem("Save As");
         saveAsItem.setEnabled(false);
+        reloadCalItem = new JMenuItem(RELOAD_CAL);
         exitItem = new JMenuItem(EXIT);
 
         mbar.add(makeMenu(fileMenu, new Object[]{newItem, openItem, null,
+                reloadCalItem, null,
                 saveItem, saveAsItem, null, exitItem}, this));
 
         JMenu viewMenu = new JMenu("View");
@@ -905,6 +909,9 @@ public class QtFrame extends JFrame implements ActionListener, MenuListener,
                 String version = System.getProperty("version", "unknown");
                 JOptionPane.showMessageDialog(null,
                         "Build corresponds to Git commit : \n" + version);
+
+            } else if (RELOAD_CAL.equalsIgnoreCase(thisText)) {
+                calibrationMenu.reload();
 
             } else if (EXIT.equalsIgnoreCase(thisText)) {
                 exitQT();

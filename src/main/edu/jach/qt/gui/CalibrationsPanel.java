@@ -62,6 +62,8 @@ public class CalibrationsPanel extends JPanel implements ListSelectionListener,
 
     private JLabel waiting = new JLabel("Waiting for database ...");
 
+    private boolean ready = false;
+
     public CalibrationsPanel() {
         this.setLayout(gridlayout);
         this.add(left);
@@ -73,6 +75,23 @@ public class CalibrationsPanel extends JPanel implements ListSelectionListener,
     public void init() {
         Thread thread = new Thread(this);
         thread.start();
+    }
+
+    // Reload calibrations panel.  Must be called from the Swing thread.
+    public void reload() {
+        if (! ready) {
+            System.err.println("Calibrations not yet loaded: can not reload");
+            return;
+        }
+
+        ready = false;
+
+        left.removeAll();
+        right.removeAll();
+        left.add(waiting);
+        repaint();
+
+        init();
     }
 
     private DefaultListModel setup() {
@@ -123,6 +142,8 @@ public class CalibrationsPanel extends JPanel implements ListSelectionListener,
                 secondScrollPane = new JScrollPane(secondList);
                 secondScrollPane.setPreferredSize(new Dimension(350, 400));
                 right.add(secondScrollPane);
+
+                ready = true;
             }
         });
     }
