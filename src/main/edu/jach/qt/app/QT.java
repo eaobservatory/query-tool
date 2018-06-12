@@ -23,6 +23,7 @@ package edu.jach.qt.app;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.AWTError;
+import java.net.InetAddress;
 import javax.swing.SwingUtilities;
 
 /* OT imports */
@@ -60,6 +61,13 @@ final public class QT implements Runnable {
      */
     public QT() {
         logger.info("-------WELCOME TO THE QT----------");
+
+        try {
+            logger.info("Host name: " +
+                InetAddress.getLocalHost().getHostName());
+        } catch (Exception e) {
+            logger.warn("Failed to determine host name");
+        }
 
         QtTools.loadConfig(System.getProperty("qtConfig"));
 
