@@ -30,11 +30,11 @@ import java.util.Random;
 import java.util.concurrent.ExecutionException;
 
 import javax.swing.SwingWorker;
-import javax.swing.JOptionPane;
 
 import gemini.sp.SpItem;
 import gemini.sp.SpMSB;
 import gemini.util.JACLogger;
+import gemini.util.SelectableDialog;
 
 import edu.jach.qt.utils.FileUtils;
 import edu.jach.qt.utils.SpQueuedMap;
@@ -119,10 +119,9 @@ public abstract class Execute extends SwingWorker<Void, Void> {
         if (! success) {
             logger.error("Execution failed - Check log messages");
 
-            JOptionPane.showMessageDialog(null,
-                    messageBuffer.toString(),
+            SelectableDialog.showError(
                     "Send to Queue failed",
-                    JOptionPane.ERROR_MESSAGE);
+                    messageBuffer.toString());
         }
 
         doAfterExecute(success);
