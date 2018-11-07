@@ -178,7 +178,46 @@ public class TableSorter extends TableMap {
         } else if (type == String.class) {
             String s1 = (String) data.getValueAt(row1, column);
             String s2 = (String) data.getValueAt(row2, column);
-            int result = s1.compareTo(s2);
+            int result = 0;
+
+            // Check for special /-separated coordinate list column.
+            final String columnName = model.getColumnName(column);
+            if (columnName.equals("ra")
+                    || columnName.equals("ha")
+                    || columnName.equals("dec")
+                    || columnName.equals("az")
+                    || columnName.equals("el") // Listed in OMP column types but currently not used.
+                    || columnName.equals("airmass")) {
+                Double d1 = null;
+                Double d2 = null;
+
+                try {
+                    d1 = new Double(s1.split("\\/")[0]);
+                } catch (NumberFormatException e) {
+                    // Trap strings such as "CAL" for unknown coordinates.
+                }
+
+                try {
+                    d2 = new Double(s2.split("\\/")[0]);
+                } catch (NumberFormatException e) {
+                    // Trap strings such as "CAL" for unknown coordinates.
+                }
+
+                if (d1 == null) {
+                    if (d2 == null) {
+                        // Use string comparison for special values such as "CAL" or "TLE".
+                        result = s1.compareTo(s2);
+                    } else {
+                        result = 1;
+                    }
+                } else if (d2 == null) {
+                    result = -1;
+                } else {
+                    result = d1.compareTo(d2);
+                }
+            } else {
+                result = s1.compareTo(s2);
+            }
 
             if (result < 0) {
                 return -1;
