@@ -22,7 +22,7 @@ if( ${MACHTYPE} == x86_64 ) then
         set MAXMEM = 512m
 endif
 
-set usage		= "Usage: $0 <telescope> [-options] \n\nwhere telescope is:\n\tukirt\t\tspecifies the UKIRT widget set\n\tjcmt\t\tspecifies the jcmt widget set\n\nand options include:\n\t-config <file>\tspecies the absolute path to the \042file\042 used for this session\n\t-scenario\tspecifies scenario mode (does not depend on drama)\n\n"
+set usage		= "Usage: $0 <telescope> [-options] \n\nwhere telescope is:\n\tukirt\t\tspecifies the UKIRT widget set\n\tjcmt\t\tspecifies the jcmt widget set\n\nand options include:\n\t-config <file>\tspecifies the absolute path to the \042file\042 used for this session\n\t-widget <file>\tspecifies the absolute path to the widget configuration file to use\n\t-scenario\tspecifies scenario mode (does not depend on drama)\n\n"
 
 set classic = ""
 set xdebug = ""
@@ -134,6 +134,11 @@ while ($#argv != 0)
             case -config
                 shift
                 set qtConfig = $argv[1]
+                shift
+                breaksw
+            case -widget
+                shift
+                set widgetFile = $argv[1]
                 shift
                 breaksw
             case -debug
