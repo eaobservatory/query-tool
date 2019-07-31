@@ -26,6 +26,9 @@ import gemini.sp.SpAND;
 import gemini.sp.SpMSB;
 import gemini.sp.SpItem;
 import gemini.sp.SpObs;
+import gemini.sp.SpInsertData;
+import gemini.sp.SpTreeMan;
+import gemini.sp.obsComp.SpTelescopeObsComp;
 import gemini.util.JACLogger;
 
 /* Standard imports */
@@ -66,7 +69,7 @@ public class CalibrationList {
             }
 
             if (scienceProgram != null) {
-                orderedMap = pickApart(orderedMap, scienceProgram);
+                pickApart(scienceProgram, orderedMap, null, null);
             }
 
         } catch (Exception e) {
@@ -76,11 +79,11 @@ public class CalibrationList {
         return orderedMap;
     }
 
-    private static OrderedMap<String, SpItem> folder = null;
-
-    private static OrderedMap<String, OrderedMap<String, SpItem>> pickApart(
+    private static void pickApart(
+            SpItem spItem,
             OrderedMap<String, OrderedMap<String, SpItem>> orderedMap,
-            SpItem spItem) {
+            OrderedMap<String, SpItem> folder,
+            SpSurveyContainer surveyContainer) {
         Enumeration<SpItem> enumeration = spItem.children();
         String telescope = System.getProperty("telescope");
         SpItem object;
@@ -90,32 +93,72 @@ public class CalibrationList {
 
             if (object instanceof SpAND) {
                 SpAND and = (SpAND) object;
-                String title = and.getTitle();
                 folder = new OrderedMap<String, SpItem>();
-                orderedMap.add(title, folder);
+                orderedMap.add(and.getTitle(), folder);
 
             } else if (object instanceof SpObs
                     && "UKIRT".equalsIgnoreCase(telescope)) {
-                SpObs obs = (SpObs) object;
-                String title = obs.getTitleAttr();
-                if (folder != null) {
-                    folder.add(title, obs);
-                }
+                addMsbToFolder((SpObs) object, folder, surveyContainer);
 
             } else if (object instanceof SpMSB && !(object instanceof SpObs)) {
-                SpMSB msb = (SpMSB) object;
-                String title = msb.getTitleAttr();
-                if (folder != null) {
-                    folder.add(title, msb);
-                }
+                addMsbToFolder((SpMSB) object, folder, surveyContainer);
 
             } else if (object instanceof SpSurveyContainer) {
-                continue;
+                surveyContainer = (SpSurveyContainer) object;
             }
 
-            orderedMap = pickApart(orderedMap, object);
+            pickApart(object, orderedMap, folder, surveyContainer);
+        }
+    }
+
+    private static void addMsbToFolder(SpMSB msb, OrderedMap<String, SpItem> folder,
+            SpSurveyContainer surveyContainer) {
+        if (folder == null) {
+            return;
         }
 
-        return orderedMap;
+        String title = msb.getTitleAttr();
+
+        if (surveyContainer == null) {
+            folder.add(title, msb);
+        }
+        else {
+            // Normally the OMP would override the target with one from the
+            // survey container when an individual MSB is fetched.  However
+            // since the QT deals with the whole calibration program, we must
+            // do that step at this point.  (Having the OMP expand everything
+            // would negate any smaller-XML benefit from using survey
+            // containers in calibration programs.)
+            String prefix = "Target Information: ";
+            int n = surveyContainer.size();
+
+            for (int i = 0; i < n; i ++) {
+                SpTelescopeObsComp override = surveyContainer.getSpTelescopeObsComp(i);
+
+                String name = override.getTitle();
+                if (name.startsWith(prefix)) {
+                    name = name.substring(prefix.length());
+                }
+                String fullTitle = name + " " + title;
+
+                try {
+                    SpMSB copy = (SpMSB) msb.deepCopy();
+
+                    // Set the title.
+                    copy.setTitleAttr(fullTitle);
+
+                    // Insert the target component.
+                    SpInsertData spid = SpTreeMan.evalInsertInside(override, copy);
+                    if (spid != null) {
+                        SpTreeMan.insert(spid);
+                    }
+
+                    folder.add(fullTitle, copy);
+                }
+                catch (Exception e) {
+                    System.out.println(e);
+                }
+            }
+        }
     }
 }
