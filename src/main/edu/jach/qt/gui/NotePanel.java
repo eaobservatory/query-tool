@@ -41,6 +41,7 @@ import javax.swing.text.Document;
 import gemini.sp.SpTreeMan;
 import gemini.sp.SpItem;
 import gemini.sp.SpNote;
+import gemini.sp.obsComp.SpSchedConstObsComp;
 
 /**
  * Constructs a scrollable text panel.
@@ -111,6 +112,18 @@ final public class NotePanel extends JPanel {
         if (sp != null) {
             ArrayList<String> notes = new ArrayList<String>();
             ArrayList<String> styles = new ArrayList<String>();
+
+            Vector<SpItem> schedConstVector =
+                    SpTreeMan.findAllItems(sp, SpSchedConstObsComp.class.getName());
+
+            for (SpItem item : schedConstVector) {
+                SpSchedConstObsComp thisSchedConst = (SpSchedConstObsComp) item;
+                String period = thisSchedConst.getPeriod();
+                if (period != null) {
+                    notes.add("Rescheduling period: " + period + " days\n\n");
+                    styles.add("bold");
+                }
+            }
 
             Vector<SpItem> noteVector =
                     SpTreeMan.findAllItems(sp, SpNote.class.getName());
