@@ -420,22 +420,7 @@ final public class DeferredProgramList extends JPanel implements
              * If we have items selected on both the ProgramList and Deferred
              * List let the execute method handle the problem.
              */
-            if (System.getProperty("telescope").equalsIgnoreCase("ukirt")) {
-                logger.info("Sending observation "
-                        + item.getTitle() + " for execution.");
-
-                (new ExecuteUKIRT(item, true, useQueue) {
-                    @Override
-                    protected void doAfterExecute(boolean success) {
-                        if (success) {
-                            // Mark this observation as having been done
-                            markThisObservationAsDone(itemToExecute);
-                            logger.info("Observation executed successfully");
-                        }
-                    }
-                }).execute();
-
-            } else if (System.getProperty("telescope").equalsIgnoreCase("jcmt")) {
+            if (System.getProperty("telescope").equalsIgnoreCase("jcmt")) {
                 (new ExecuteJCMT(item, true) {
                     @Override
                     protected void doAfterExecute(boolean success) {

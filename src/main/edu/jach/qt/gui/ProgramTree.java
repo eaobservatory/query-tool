@@ -32,7 +32,6 @@ import gemini.util.JACLogger;
 
 /* ORAC imports */
 import orac.jcmt.inst.SpInstHeterodyne;
-import orac.ukirt.inst.SpInstUIST;
 
 /* QT imports */
 import edu.jach.qt.utils.ObsListCellRenderer;
@@ -131,7 +130,6 @@ final public class ProgramTree extends JPanel implements
     private Vector<Double> scaleFactors = new Vector<Double>();
     private JMenuItem scaleAgain;
     private JPopupMenu scalePopup;
-    private boolean uistIrpol = false;
 
     private static final String sendToQueue = "Send to Queue";
     private static final String disabled =
@@ -365,60 +363,7 @@ final public class ProgramTree extends JPanel implements
         setExecutable(false);
         engButton.setToolTipText("Run button disabled during execution");
 
-        if (System.getProperty("telescope").equalsIgnoreCase("ukirt")) {
-            SpInstObsComp instrumentContext = getContext(item);
-
-            if (instrumentContext instanceof SpInstUIST) {
-                SpInstUIST uist = (SpInstUIST) instrumentContext;
-
-                if (uist.isPolarimetry() && !uistIrpol) {
-                    int result = JOptionPane.showConfirmDialog(
-                            null,
-                            "You are attempting to do a Polarimetry"
-                                    + " observation with UIST"
-                                    + " - is the IRPOL arm in the beam ?",
-                            "Is IRPOL arm in beam ?",
-                            JOptionPane.YES_NO_OPTION);
-
-                    if (result == JOptionPane.NO_OPTION) {
-                        JOptionPane.showMessageDialog(null,
-                                "Queue submission cancelled.",
-                                "Queue submission cancelled.",
-                                JOptionPane.INFORMATION_MESSAGE);
-                        setExecutable(true);
-                        return;
-                    }
-
-                    uistIrpol = true;
-
-                } else {
-                    uistIrpol = false;
-                }
-            } else {
-                uistIrpol = false;
-            }
-
-            (new ExecuteUKIRT(item, isDeferred, useQueue) {
-                @Override
-                protected void doAfterExecute(boolean success) {
-                    if (! useQueue) {
-                        if (!isDeferred && success) {
-                            markAsDone(obsList.getSelectedIndex());
-                        } else if (success) {
-                            DeferredProgramList.markThisObservationAsDone(itemToExecute);
-                        }
-                    }
-
-                    setExecutable(true);
-
-                    if (!isDeferred && success) {
-                        obsList.setListData(new Vector());
-                        obsList.clearSelection();
-                    }
-                }
-            }).execute();
-
-        } else if (System.getProperty("telescope").equalsIgnoreCase("jcmt")) {
+        if (System.getProperty("telescope").equalsIgnoreCase("jcmt")) {
             (new ExecuteJCMT(item, isDeferred) {
                 @Override
                 protected void doAfterExecute(boolean success) {

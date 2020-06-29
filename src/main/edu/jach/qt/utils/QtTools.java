@@ -23,7 +23,6 @@ import gemini.sp.SpInsertData;
 import gemini.sp.SpTreeMan;
 import gemini.sp.SpObs;
 import gemini.sp.SpItem;
-import gemini.sp.SpTranslationNotSupportedException;
 import gemini.sp.obsComp.SpDRObsComp;
 import gemini.sp.obsComp.SpInstObsComp;
 import gemini.sp.obsComp.SpTelescopeObsComp;
@@ -43,7 +42,6 @@ import java.util.TimeZone;
 
 import java.text.SimpleDateFormat;
 
-import gemini.util.ConfigWriter;
 import gemini.util.JACLogger;
 
 /**
@@ -106,138 +104,6 @@ public class QtTools {
         } catch (IOException e) {
             logger.error("File error: " + e);
         }
-    }
-
-    /**
-     * Wrapper around the translator method which generates XML for the new
-     * queue processing.
-     *
-     * The file will be stored in the same location as the execs for now.
-     *
-     * @param SpItem and MSB
-     * @return String a filename
-     */
-    public static String createQueueXML(SpItem item) {
-        // We are going to take some shortcuts, like assuming the telescope is
-        // UKIRT
-
-        // File will go into exec path and be called ukirt_yyyymmddThhmmss.xml
-        String opDir = System.getProperty("EXEC_PATH");
-        if ("false".equalsIgnoreCase(System.getProperty("DRAMA_ENABLED"))) {
-            opDir = System.getProperty("user.home");
-        }
-
-        Calendar cal = new GregorianCalendar(TimeZone.getTimeZone("UTC"));
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd'T'HHmmss");
-        StringBuffer fileName = new StringBuffer(sdf.format(cal.getTime()));
-        fileName.append(".xml");
-        fileName.insert(0, File.separatorChar);
-        fileName.insert(0, opDir);
-        System.out.println("QUEUE filename is " + fileName.toString());
-
-        try {
-            FileWriter fw = new FileWriter(fileName.toString());
-            fw.write("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n");
-            fw.write("<QueueEntries  telescope=\"UKIRT\">\n");
-
-            // Now we need to get (a) the sequence for each obs in the MSB and
-            // (b) the estimated duration of the obs and (c) the instrument name
-            // for the obs.
-            Vector<SpItem> obs = SpTreeMan.findAllItems(item,
-                    SpObs.class.getName());
-
-            for (SpItem obsItem : obs) {
-                SpObs currentObs = (SpObs) obsItem;
-                String inst = SpTreeMan.findInstrument(currentObs).type()
-                        .getReadable();
-                double time = currentObs.getElapsedTime();
-                fw.write("  <Entry totalDuration=\"" + time
-                        + "\"  instrument=\"" + inst + "\">\n");
-
-                // if we are using the old translator, we need to add the exec
-                // path, otherwise we don't
-                String tName = translate((SpItem) currentObs, inst);
-                if (tName != null && tName.indexOf(opDir) == -1) {
-                    fw.write("    " + opDir + File.separatorChar + tName + "\n");
-                } else {
-                    fw.write("    " + tName + "\n");
-                }
-
-                fw.write("  </Entry>\n");
-            }
-
-            // Close off the entry
-            fw.write("</QueueEntries>\n");
-            fw.flush();
-            fw.close();
-
-        } catch (IOException ioe) {
-            String message = "Unable to write queue file "
-                    + fileName.toString();
-            logger.error(message, ioe);
-            fileName = new StringBuffer();
-        }
-
-        return fileName.toString();
-    }
-
-    /**
-     * String trans (SpItem observation) is a private method to translate an
-     * observation java object into an exec string and write it into an ASCII
-     * file where is located in "EXEC_PATH" directory and has a name stored in
-     * "execFilename"
-     *
-     * @param SpItem observation
-     * @return String a filename
-     *
-     */
-    public static String translate(SpItem observation, String inst) {
-        String tname = null;
-        try {
-            if (observation == null) {
-                throw new NullPointerException(
-                        "Observation passed to translate() is null");
-            }
-
-            SpObs spObs = null;
-
-            if (observation instanceof SpObs) {
-                spObs = (SpObs) observation;
-            } else {
-                while (observation != null) {
-                    observation = observation.parent();
-
-                    if ((observation != null) && (observation instanceof SpObs)) {
-                        spObs = (SpObs) observation;
-
-                        break;
-                    }
-                }
-            }
-
-            if (spObs == null) {
-                throw new NullPointerException(
-                        "Observation passed to translate() not translatable");
-            }
-
-            spObs.translate(new Vector<String>());
-
-            tname = ConfigWriter.getCurrentInstance().getExecName();
-            logger.debug("Translated file set to: " + tname);
-            String fileProperty = new String(inst + "ExecFilename");
-            Properties properties = System.getProperties();
-            properties.put(fileProperty, tname);
-            logger.debug("System property " + fileProperty + " now set to "
-                    + tname);
-
-        } catch (NullPointerException e) {
-            logger.fatal("Translation failed!, Missing value " + e);
-
-        } catch (SpTranslationNotSupportedException sptnse) {
-            logger.fatal("Translation failed! " + sptnse);
-        }
-
-        return tname;
     }
 
     /**

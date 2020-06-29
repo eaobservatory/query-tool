@@ -22,7 +22,7 @@ if( ${MACHTYPE} == x86_64 ) then
         set MAXMEM = 512m
 endif
 
-set usage		= "Usage: $0 <telescope> [-options] \n\nwhere telescope is:\n\tukirt\t\tspecifies the UKIRT widget set\n\tjcmt\t\tspecifies the jcmt widget set\n\nand options include:\n\t-config <file>\tspecifies the absolute path to the \042file\042 used for this session\n\t-widget <file>\tspecifies the absolute path to the widget configuration file to use\n\t-scenario\tspecifies scenario mode (does not depend on drama)\n\n"
+set usage		= "Usage: $0 <telescope> [-options] \n\nwhere telescope is:\n\tjcmt\t\tspecifies the jcmt widget set\n\nand options include:\n\t-config <file>\tspecifies the absolute path to the \042file\042 used for this session\n\t-widget <file>\tspecifies the absolute path to the widget configuration file to use\n\t-scenario\tspecifies scenario mode (does not depend on drama)\n\n"
 
 set classic = ""
 set xdebug = ""
@@ -146,14 +146,6 @@ while ($#argv != 0)
                 echo debug on
                 shift
                 breaksw
-            case ukirt:
-		set qtConfig     = ../config/qtSystem.conf.ukirt
-                set widgetFile   = ../config/qtUkirtWidget.conf
-                set instConfigDir = ${baseOTConfigDir}/ukirt
-                set telescope	  = Ukirt
-                echo Telescope set to use ukirt widget set
-                shift
-                breaksw
             case jcmt:
                 set qtConfig     = ../config/qtSystem.conf.jcmt
                 set widgetFile   = ../config/qtJcmtWidget.conf
@@ -190,16 +182,10 @@ set hstdate = `date +%Y%m%d-%H%M%S`
 set hsttime = `date +%H%M%S`
 
 set domain = ${SITE}
-if (${domain} == "ukirt") then
-    set taskname = UKIRT_QT_${hsttime}
-else if (${domain} == "jcmt") then
+if (${domain} == "jcmt") then
     set taskname = JCMT_QT_${hsttime}
 else if (${domain} == "hilo") then
-    if ( ${telescope} == "jcmt" ) then
-        set taskname="JCMT_QT"
-    else
-        set taskname="UKIRT_QT"
-    endif
+    set taskname="JCMT_QT"
 endif
 
 if !($?widgetFile) then
@@ -213,7 +199,7 @@ endif
 
 
 if ( ${LOGPATH} == "" ) then
-    if ( ${domain} ==  "ukirt" || ${domain} == "jcmt" ) then
+    if ( ${domain} == "jcmt" ) then
         set LOGPATH = "/jac_logs/${utdate}/OCSqt_${hstdate}"
     else
         set LOGPATH = "/home/${user}/qtLogs/${utdate}"

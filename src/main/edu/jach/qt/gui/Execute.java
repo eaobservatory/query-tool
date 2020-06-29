@@ -158,14 +158,7 @@ public abstract class Execute extends SwingWorker<Void, Void> {
             StringBuffer buffer = new StringBuffer();
             buffer.append(System.getProperty("qtBinDir"));
 
-            if (System.getProperty("telescope").equalsIgnoreCase("ukirt")) {
-                if (isDeferred) {
-                    buffer.append("insertOCSQUEUE.sh");
-                } else {
-                    buffer.append("loadUKIRT.sh");
-                }
-
-            } else if (System.getProperty("telescope").equalsIgnoreCase("jcmt")) {
+            if (System.getProperty("telescope").equalsIgnoreCase("jcmt")) {
                 if (isDeferred) {
                     buffer.append("insertJCMTQUEUE.sh");
                 } else {
