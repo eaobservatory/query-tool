@@ -284,13 +284,13 @@ set CLASSPATH = ${CLASSPATH}:../lib/soap.jar
 set CLASSPATH = ${CLASSPATH}:../lib/log4j-1.2.14.jar
 set CLASSPATH = ${CLASSPATH}:../lib/jsamp.jar
 set CLASSPATH = ${CLASSPATH}:${OTROOT}/output/lib/ot.jar
+set CLASSPATH = ${CLASSPATH}:${OTROOT}/output/lib/pal.jar
 set CLASSPATH = ${CLASSPATH}:../lib/jsky.jar
 set CLASSPATH = ${CLASSPATH}:../lib/diva.jar
 set CLASSPATH = ${CLASSPATH}:../lib/junit.jar
 set CLASSPATH = ${CLASSPATH}:/local/java/jdk/lib/tools.jar
 set CLASSPATH = ${CLASSPATH}:/jac_sw/itsroot/install/dcHub/javalib/dcHub.jar
 set CLASSPATH = ${CLASSPATH}:/jac_sw/drama/CurrentRelease/javalib
-set CLASSPATH = ${CLASSPATH}:/star/starjava/lib/pal/pal.jar
 
 ${JAVA} -Xms64m -Xmx${MAXMEM} ${classic} ${xdebug} ${xnoagent} ${xrunjdwptrans} ${xbootclasspath} \
         -Ddebug=${debug} \
