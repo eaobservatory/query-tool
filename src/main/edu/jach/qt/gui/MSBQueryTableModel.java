@@ -53,8 +53,6 @@ public class MSBQueryTableModel extends AbstractTableModel
     public static final String ROOT_ELEMENT_TAG = "SpMSBSummary";
     public static final String MSB_SUMMARY = System.getProperty("msbSummary")
             + "." + System.getProperty("user.name");
-    public static final String MSB_SUMMARY_TEST =
-            System.getProperty("msbSummaryTest");
     private int colCount; // The number of columns TO DISPLAY
     // This may be less than the actual number of columns
 

@@ -26,9 +26,6 @@ import gemini.sp.SpTreeMan;
 import gemini.sp.SpMSB;
 import gemini.util.JACLogger;
 
-/* JSKY imports */
-import jsky.app.ot.OtFileIO;
-
 /* QT imports */
 import edu.jach.qt.utils.QtTools;
 
@@ -55,7 +52,6 @@ public class OmpOM extends JPanel {
     static final JACLogger logger = JACLogger.getLogger(OmpOM.class);
     private ProgramTree ptree;
     private File file;
-    private Hashtable<Integer, ProgramTree> ptreeHashtable;
     private DeferredProgramList deferredList;
     public NotePanel notes;
 
@@ -63,7 +59,6 @@ public class OmpOM extends JPanel {
      * Creates a new <code>OmpOM</code> instance.
      */
     public OmpOM() {
-        ptreeHashtable = new Hashtable<Integer, ProgramTree>();
         logger.info("SpItems initialized");
         ptree = new ProgramTree();
     }
@@ -131,22 +126,6 @@ public class OmpOM extends JPanel {
     }
 
     /**
-     * The method used for debugging.
-     *
-     * It loads in a hard-wired MSB file to use as the ProgramTree object.
-     */
-    public void addNewTree() {
-        file = new File(System.getProperty("arrayTests",
-                "/home/mrippa/install/omp/QT/config/array_tests.xml"));
-        SpItem spItem = OtFileIO.fetchSp(file.getParent(), file.getName());
-
-        ptree.addList(spItem);
-        ptree.setMinimumSize(new Dimension(400, 550));
-
-        ptreeHashtable.put(new Integer(41), ptree);
-    }
-
-    /**
      * Construct the Staging Panel.
      *
      * Builds the deferred list and Observer Notes panel and displaays as a
@@ -201,17 +180,5 @@ public class OmpOM extends JPanel {
 
     public void enableList(boolean flag) {
         ptree.enableList(flag);
-    }
-
-    public static void main(String[] args) {
-        QtTools.loadConfig(System.getProperty("qtConfig"));
-        QtTools.loadConfig(System.getProperty("omConfig"));
-
-        JFrame f = new JFrame();
-        OmpOM om = new OmpOM();
-        om.addNewTree();
-        f.add(om.getTreePanel());
-        f.setSize(400, 300);
-        f.setVisible(true);
     }
 }

@@ -118,27 +118,6 @@ public class ButtonPanel extends WidgetPanel implements ActionListener {
         }
     }
 
-    private void wfcamSelected(boolean selected) {
-        JCheckBox next;
-        for (ListIterator<JCheckBox> iter = buttonList.listIterator();
-                iter.hasNext(); iter.nextIndex()) {
-            next = iter.next();
-
-            // If flag is true, we need to deselect everything else and disable
-            // the
-            if (selected) {
-                boolean wfcam = (next.getText().equals("WFCAM"));
-                next.setSelected(wfcam);
-                next.setEnabled(wfcam);
-            } else {
-                // WFCAM is deselected. Just enable all other buttons
-                next.setEnabled(!selected);
-            }
-        }
-
-        setAttribute(myTitle, buttonList);
-    }
-
     /**
      * Notifies the WidgetDataBag of the state of all JCheckBoxes.
      *
@@ -147,11 +126,6 @@ public class ButtonPanel extends WidgetPanel implements ActionListener {
     public void actionPerformed(ActionEvent evt) {
         Object source = evt.getSource();
         JCheckBox temp = (JCheckBox) source;
-
-        if (temp.getText().equals("WFCAM")) {
-            wfcamSelected(temp.isSelected());
-            return;
-        }
 
         if (temp.getText().equals("Any Instrument")
                 || temp.getText().equals("Any Heterodyne")

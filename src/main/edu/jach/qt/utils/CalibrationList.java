@@ -96,10 +96,6 @@ public class CalibrationList {
                 folder = new OrderedMap<String, SpItem>();
                 orderedMap.add(and.getTitle(), folder);
 
-            } else if (object instanceof SpObs
-                    && "UKIRT".equalsIgnoreCase(telescope)) {
-                addMsbToFolder((SpObs) object, folder, surveyContainer);
-
             } else if (object instanceof SpMSB && !(object instanceof SpObs)) {
                 addMsbToFolder((SpMSB) object, folder, surveyContainer);
 
