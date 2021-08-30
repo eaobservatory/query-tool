@@ -378,44 +378,57 @@ public class SampClient implements HttpServer.Handler {
             return;
         }
 
+        String[] targetArray = target.split("\\/");
         String[] raArray = raStr.split("\\/");
         String[] decArray = decStr.split("\\/");
 
-        if (raArray.length != decArray.length) {
+        int numCoords = 0;
+
+        if (raArray.length == decArray.length) {
+            numCoords = raArray.length;
+        }
+        else if (raArray.length == 1) {
+            numCoords = decArray.length;
+        }
+        else if (decArray.length == 1) {
+            numCoords = raArray.length;
+        }
+        else if (raArray.length > 1 && decArray.length > 1) {
+            numCoords = 1;
             System.err.println(
-                    "Mismatching number of RA and Dec coordinates");
-        } else {
-            for (int j = 0; j < raArray.length; j++) {
-                try {
-                    String raDeg = String.format("%.1f",
-                            Double.parseDouble(raArray[j]) * 15.0);
-                    String decDeg = String.format("%.1f",
-                            Double.parseDouble(decArray[j]));
+                    "WARNING: Mismatching number of RA and Dec coordinates: sending first only");
+        }
 
-                    String name = project + ": " + target;
+        for (int j = 0; j < numCoords; j++) {
+            try {
+                String raDeg = String.format("%.1f",
+                        Double.parseDouble(raArray[raArray.length > 1 ? j : 0]) * 15.0);
+                String decDeg = String.format("%.1f",
+                        Double.parseDouble(decArray[decArray.length > 1 ? j : 0]));
 
-                    if (name.length() > 30) {
-                        name = name.substring(0, 30);
-                    }
+                String name = project + ": " + ((targetArray.length == numCoords) ? targetArray[j] : (target + " (" + (j + 1) + ")"));
 
-                    table.append("                    <TR>" + "<TD>");
-
-                    for (int k = 0; k < name.length(); k++) {
-                        char c = name.charAt(k);
-                        if ((c >= 'A' && c <= 'Z')
-                                || (c >= 'a' && c <= 'a')
-                                || (c >= '0' && c <= '9') || (c == ' ')) {
-                            table.append(c);
-                        } else {
-                            table.append(String.format("&#%d;", (int) c));
-                        }
-                    }
-
-                    table.append("</TD>" + "<TD>" + raDeg + "</TD>"
-                            + "<TD>" + decDeg + "</TD>" + "</TR>\n");
-                } catch (NumberFormatException e) {
-                    System.err.println("Malformed RA or Dec coordinate");
+                if (name.length() > 30) {
+                    name = name.substring(0, 30);
                 }
+
+                table.append("                    <TR>" + "<TD>");
+
+                for (int k = 0; k < name.length(); k++) {
+                    char c = name.charAt(k);
+                    if ((c >= 'A' && c <= 'Z')
+                            || (c >= 'a' && c <= 'a')
+                            || (c >= '0' && c <= '9') || (c == ' ')) {
+                        table.append(c);
+                    } else {
+                        table.append(String.format("&#%d;", (int) c));
+                    }
+                }
+
+                table.append("</TD>" + "<TD>" + raDeg + "</TD>"
+                        + "<TD>" + decDeg + "</TD>" + "</TR>\n");
+            } catch (NumberFormatException e) {
+                System.err.println("Malformed RA or Dec coordinate");
             }
         }
     }
