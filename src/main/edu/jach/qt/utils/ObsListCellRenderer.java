@@ -44,7 +44,8 @@ public class ObsListCellRenderer extends DefaultListCellRenderer {
                     "jsky/app/ot/images/observation.gif"));
     static final JACLogger logger =
             JACLogger.getLogger(ObsListCellRenderer.class);
-    public static Color OracBlue = new Color(0x80, 0x80, 0xFF);
+    public static Color lightBlue = new Color(0xCC, 0xCC, 0xFF);
+    public static Color darkGreen = new Color(0x00, 0x88, 0x00);
 
     /**
      * This is the only method defined by ListCellRenderer.
@@ -108,7 +109,7 @@ public class ObsListCellRenderer extends DefaultListCellRenderer {
         if (((SpObs) value).isOptional() == false) {
             setForeground(list.getForeground());
         } else {
-            setForeground(Color.green);
+            setForeground(darkGreen);
         }
 
         if (((SpObs) value).isMSB() && ((SpObs) value).isSuspended()) {
@@ -140,7 +141,7 @@ public class ObsListCellRenderer extends DefaultListCellRenderer {
         setIcon(obsIcon);
 
         if (isSelected) {
-            setBackground(OracBlue);
+            setBackground(lightBlue);
         } else {
             setBackground(list.getBackground());
         }
