@@ -791,7 +791,7 @@ public class QtFrame extends JFrame implements ActionListener, MenuListener,
                                 remaining, allocation, zoneOfAvoidance, null,
                                 disableAll}, this)}, this));
 
-        mbar.add(SampClient.getInstance().buildMenu(this, msbQTM));
+        mbar.add(SampClient.getInstance().buildMenu(this, sorter, table));
 
         JMenu helpMenu = new JMenu("Help");
         helpMenu.setMnemonic('H');

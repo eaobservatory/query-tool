@@ -35,7 +35,11 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ListDataListener;
 import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.event.ListSelectionEvent;
 import javax.swing.table.TableModel;
+import javax.swing.event.TableModelListener;
+import javax.swing.event.TableModelEvent;
 
 import org.astrogrid.samp.Client;
 import org.astrogrid.samp.Metadata;
@@ -49,6 +53,7 @@ import org.astrogrid.samp.httpd.UtilServer;
 import edu.jach.qt.utils.ErrorBox;
 import edu.jach.qt.utils.MsbClient;
 import edu.jach.qt.utils.MsbColumns;
+import edu.jach.qt.gui.QtTable;
 
 /**
  * A SAMP client for the QT.
@@ -91,36 +96,74 @@ public class SampClient implements HttpServer.Handler {
     /**
      * Create a menu for controlling the SAMP client.
      */
-    public JMenu buildMenu(final Component parent, final TableModel tableModel) {
+    public JMenu buildMenu(final Component parent, final TableModel tableModel, final QtTable table) {
         JMenu menu = new JMenu("Interop");
         menu.add(conn.createRegisterOrHubAction(parent, null));
         menu.add(conn.createShowMonitorAction());
-        menu.add(new broadcastTableAction(tableModel));
+
+        menu.addSeparator();
+
+        menu.add(new broadcastTableAction(tableModel, null));
 
         final JMenu sendMenu = new JMenu("Send query result coordinates to...");
-        sendMenu.setEnabled(conn.isConnected());
+        setSendMenuEnabledStatus(sendMenu, tableModel, null);
         menu.add(sendMenu);
         conn.addConnectionListener(new ChangeListener() {
             public void stateChanged(ChangeEvent e) {
-                sendMenu.setEnabled(conn.isConnected());
+                setSendMenuEnabledStatus(sendMenu, tableModel, null);
+            }
+        });
+        tableModel.addTableModelListener(new TableModelListener() {
+            public void tableChanged(TableModelEvent e) {
+                setSendMenuEnabledStatus(sendMenu, tableModel, null);
+            };
+        });
+
+        menu.addSeparator();
+
+        menu.add(new broadcastTableAction(tableModel, table));
+
+        final JMenu sendSelectedMenu = new JMenu("Send selected result to...");
+        setSendMenuEnabledStatus(sendSelectedMenu, tableModel, table);
+        menu.add(sendSelectedMenu);
+        conn.addConnectionListener(new ChangeListener() {
+            public void stateChanged(ChangeEvent e) {
+                setSendMenuEnabledStatus(sendSelectedMenu, tableModel, table);
+            }
+        });
+        tableModel.addTableModelListener(new TableModelListener() {
+            public void tableChanged(TableModelEvent e) {
+                setSendMenuEnabledStatus(sendSelectedMenu, tableModel, table);
+            };
+        });
+        table.getSelectionModel().addListSelectionListener(new ListSelectionListener () {
+            public void valueChanged(ListSelectionEvent e) {
+                if (! e.getValueIsAdjusting()) {
+                    setSendMenuEnabledStatus(sendSelectedMenu, tableModel, table);
+                }
             }
         });
 
         conn.getClientListModel().addListDataListener(new ListDataListener() {
             public void contentsChanged(ListDataEvent e) {
-                buildSendToMenu(sendMenu, tableModel);
+                buildSendToMenu(sendMenu, tableModel, null);
+                buildSendToMenu(sendSelectedMenu, tableModel, table);
             }
 
             public void intervalAdded(ListDataEvent e) {
-                buildSendToMenu(sendMenu, tableModel);
+                buildSendToMenu(sendMenu, tableModel, null);
+                buildSendToMenu(sendSelectedMenu, tableModel, table);
             }
 
             public void intervalRemoved(ListDataEvent e) {
-                buildSendToMenu(sendMenu, tableModel);
+                buildSendToMenu(sendMenu, tableModel, null);
+                buildSendToMenu(sendSelectedMenu, tableModel, table);
             }
         });
 
-        buildSendToMenu(sendMenu, tableModel);
+        buildSendToMenu(sendMenu, tableModel, null);
+        buildSendToMenu(sendSelectedMenu, tableModel, table);
+
         return menu;
     }
 
@@ -128,7 +171,7 @@ public class SampClient implements HttpServer.Handler {
      * Create the "send to" menu listing all connect clients which are
      * subscribed to VO table load events.
      */
-    private void buildSendToMenu(JMenu sendMenu, final TableModel tableModel) {
+    private void buildSendToMenu(JMenu sendMenu, final TableModel tableModel, final QtTable table) {
         sendMenu.removeAll();
         if (!conn.isConnected()) {
             return;
@@ -155,10 +198,20 @@ public class SampClient implements HttpServer.Handler {
             sendMenu.add(menuItem);
             menuItem.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                    notifyTableCoordinates(tableModel, client.getKey());
+                    notifyTableCoordinates(tableModel, ((table == null) ? -1 : table.getSelectedRow()), client.getKey());
                 }
             });
         }
+    }
+
+    private void setSendMenuEnabledStatus(JMenu sendMenu, final TableModel tableModel, final QtTable table) {
+        boolean enabled = conn.isConnected() && (tableModel.getRowCount() > 0);
+
+        if (enabled && (table != null)) {
+            enabled = (table.getSelectedRow() != -1);
+        }
+
+        sendMenu.setEnabled(enabled);
     }
 
     /**
@@ -166,23 +219,55 @@ public class SampClient implements HttpServer.Handler {
      *
      * This enables/disables itself based on whether we are connected to a hub.
      */
-    private class broadcastTableAction extends AbstractAction implements
-            ChangeListener {
+    private class broadcastTableAction extends AbstractAction {
         private TableModel tableModel;
+        private QtTable table;
 
-        public broadcastTableAction(TableModel tableModel) {
-            super("Broadcast query result coordinates");
+        public broadcastTableAction(final TableModel tableModel, final QtTable table) {
+            super((table == null)
+                ? "Broadcast query result coordinates"
+                : "Broadcast selected result");
+
             this.tableModel = tableModel;
-            conn.addConnectionListener(this);
-            setEnabled(conn.isConnected());
+            this.table = table;
+
+            conn.addConnectionListener(new ChangeListener() {
+                public void stateChanged(ChangeEvent e) {
+                    setEnabledStatus();
+                }
+            });
+
+            tableModel.addTableModelListener(new TableModelListener() {
+                public void tableChanged(TableModelEvent e) {
+                    setEnabledStatus();
+                };
+            });
+
+            if (table != null ) {
+                table.getSelectionModel().addListSelectionListener(new ListSelectionListener () {
+                    public void valueChanged(ListSelectionEvent e) {
+                        if (! e.getValueIsAdjusting()) {
+                            setEnabledStatus();
+                        }
+                    }
+                });
+            }
+
+            setEnabledStatus();
         }
 
         public void actionPerformed(ActionEvent e) {
-            notifyTableCoordinates(tableModel, null);
+            notifyTableCoordinates(tableModel, ((table == null) ? -1 : table.getSelectedRow()), null);
         }
 
-        public void stateChanged(ChangeEvent e) {
-            setEnabled(conn.isConnected());
+        private void setEnabledStatus() {
+            boolean enabled = conn.isConnected() && (tableModel.getRowCount() > 0);
+
+            if (enabled && (table != null)) {
+                enabled = (table.getSelectedRow() != -1);
+            }
+
+            setEnabled(enabled);
         }
     };
 
@@ -195,84 +280,8 @@ public class SampClient implements HttpServer.Handler {
      * This places the table in the tableCoords map and issues an URL by which
      * the clients can retrieve it.
      */
-    private void notifyTableCoordinates(TableModel tableModel, String clientId) {
-        MsbColumns columns = MsbClient.getColumnInfo();
-        int projectColumn = columns.getIndexForKey("projectid");
-        int targetColumn = columns.getIndexForKey("target");
-        int raColumn = columns.getIndexForKey("ra");
-        int decColumn = columns.getIndexForKey("dec");
-
-        int rows = tableModel.getRowCount();
-
-        StringBuilder table = new StringBuilder(
-                "<?xml version=\"1.0\"?>\n"
-                        + "<VOTABLE version=\"1.3\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-                        + "         xmlns=\"http://www.ivoa.net/xml/VOTable/v1.3\">\n"
-                        + "    <RESOURCE name=\"QT Query Results\">\n"
-                        + "        <TABLE name=\"Results\">\n"
-                        + "            <FIELD name=\"Name\" ID=\"col1\" ucd=\"meta.id;meta.main\"\n"
-                        + "                   datatype=\"char\" arraysize=\"*\"/>\n"
-                        + "            <FIELD name=\"RA\" ID=\"col2\" ucd=\"pos.eq.ra;meta.main\"\n"
-                        + "                   datatype=\"float\" width=\"5\" precision=\"1\" unit=\"deg\"/>\n"
-                        + "            <FIELD name=\"Dec\" ID=\"col3\" ucd=\"pos.eq.dec;meta.main\"\n"
-                        + "                   datatype=\"float\" width=\"5\" precision=\"1\" unit=\"deg\"/>\n"
-                        + "            <DATA>\n"
-                        + "                <TABLEDATA>\n");
-
-        for (int i = 0; i < rows; i++) {
-            String project = (String) tableModel.getValueAt(i, projectColumn);
-            String target = (String) tableModel.getValueAt(i, targetColumn);
-            String raStr = (String) tableModel.getValueAt(i, raColumn);
-            String decStr = (String) tableModel.getValueAt(i, decColumn);
-
-            if (raStr.equals("CAL") || decStr.equals("CAL")) {
-                continue;
-            }
-
-            String[] raArray = raStr.split("\\/");
-            String[] decArray = decStr.split("\\/");
-
-            if (raArray.length != decArray.length) {
-                System.err.println(
-                        "Mismatching number of RA and Dec coordinates");
-            } else {
-                for (int j = 0; j < raArray.length; j++) {
-                    try {
-                        String raDeg = String.format("%.1f",
-                                Double.parseDouble(raArray[j]) * 15.0);
-                        String decDeg = String.format("%.1f",
-                                Double.parseDouble(decArray[j]));
-
-                        String name = project + ": " + target;
-
-                        if (name.length() > 30) {
-                            name = name.substring(0, 30);
-                        }
-
-                        table.append("                    <TR>" + "<TD>");
-
-                        for (int k = 0; k < name.length(); k++) {
-                            char c = name.charAt(k);
-                            if ((c >= 'A' && c <= 'Z')
-                                    || (c >= 'a' && c <= 'a')
-                                    || (c >= '0' && c <= '9') || (c == ' ')) {
-                                table.append(c);
-                            } else {
-                                table.append(String.format("&#%d;", (int) c));
-                            }
-                        }
-
-                        table.append("</TD>" + "<TD>" + raDeg + "</TD>"
-                                + "<TD>" + decDeg + "</TD>" + "</TR>\n");
-                    } catch (NumberFormatException e) {
-                        System.err.println("Malformed RA or Dec coordinate");
-                    }
-                }
-            }
-        }
-
-        table.append("                </TABLEDATA>\n" + "            </DATA>\n"
-                + "        </TABLE>\n" + "    </RESOURCE>\n" + "</VOTABLE>\n");
+    private void notifyTableCoordinates(TableModel tableModel, int row, String clientId) {
+        String table = createVoTable(tableModel, row);
 
         try {
             UtilServer server = UtilServer.getInstance();
@@ -286,7 +295,7 @@ public class SampClient implements HttpServer.Handler {
 
             String url = server.getServer().getBaseUrl().toString() + path;
 
-            tableCoords.put(path, table.toString());
+            tableCoords.put(path, table);
 
             Map msg = new HashMap();
             Map params = new HashMap();
@@ -310,6 +319,104 @@ public class SampClient implements HttpServer.Handler {
                     new ErrorBox(null, message);
                 }
             });
+        }
+    }
+
+    private String createVoTable(TableModel tableModel, int row) {
+        MsbColumns columns = MsbClient.getColumnInfo();
+        int projectColumn = columns.getIndexForKey("projectid");
+        int targetColumn = columns.getIndexForKey("target");
+        int raColumn = columns.getIndexForKey("ra");
+        int decColumn = columns.getIndexForKey("dec");
+
+        StringBuilder table = new StringBuilder(
+                "<?xml version=\"1.0\"?>\n"
+                        + "<VOTABLE version=\"1.3\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
+                        + "         xmlns=\"http://www.ivoa.net/xml/VOTable/v1.3\">\n"
+                        + "    <RESOURCE name=\"QT Query Results\">\n"
+                        + "        <TABLE name=\"Results\">\n"
+                        + "            <FIELD name=\"Name\" ID=\"col1\" ucd=\"meta.id;meta.main\"\n"
+                        + "                   datatype=\"char\" arraysize=\"*\"/>\n"
+                        + "            <FIELD name=\"RA\" ID=\"col2\" ucd=\"pos.eq.ra;meta.main\"\n"
+                        + "                   datatype=\"float\" width=\"5\" precision=\"1\" unit=\"deg\"/>\n"
+                        + "            <FIELD name=\"Dec\" ID=\"col3\" ucd=\"pos.eq.dec;meta.main\"\n"
+                        + "                   datatype=\"float\" width=\"5\" precision=\"1\" unit=\"deg\"/>\n"
+                        + "            <DATA>\n"
+                        + "                <TABLEDATA>\n");
+
+
+        if (row == -1) {
+            int rows = tableModel.getRowCount();
+
+            for (int i = 0; i < rows; i++) {
+                addVoTableRow(table, tableModel, i, projectColumn, targetColumn, raColumn, decColumn);
+            }
+        } else {
+            addVoTableRow(table, tableModel, row, projectColumn, targetColumn, raColumn, decColumn);
+        }
+
+        table.append("                </TABLEDATA>\n" + "            </DATA>\n"
+                + "        </TABLE>\n" + "    </RESOURCE>\n" + "</VOTABLE>\n");
+
+        return table.toString();
+    }
+
+    private void addVoTableRow(
+            StringBuilder table,
+            TableModel tableModel,
+            int i,
+            int projectColumn,
+            int targetColumn,
+            int raColumn,
+            int decColumn) {
+        String project = (String) tableModel.getValueAt(i, projectColumn);
+        String target = (String) tableModel.getValueAt(i, targetColumn);
+        String raStr = (String) tableModel.getValueAt(i, raColumn);
+        String decStr = (String) tableModel.getValueAt(i, decColumn);
+
+        if (raStr.equals("CAL") || decStr.equals("CAL")) {
+            return;
+        }
+
+        String[] raArray = raStr.split("\\/");
+        String[] decArray = decStr.split("\\/");
+
+        if (raArray.length != decArray.length) {
+            System.err.println(
+                    "Mismatching number of RA and Dec coordinates");
+        } else {
+            for (int j = 0; j < raArray.length; j++) {
+                try {
+                    String raDeg = String.format("%.1f",
+                            Double.parseDouble(raArray[j]) * 15.0);
+                    String decDeg = String.format("%.1f",
+                            Double.parseDouble(decArray[j]));
+
+                    String name = project + ": " + target;
+
+                    if (name.length() > 30) {
+                        name = name.substring(0, 30);
+                    }
+
+                    table.append("                    <TR>" + "<TD>");
+
+                    for (int k = 0; k < name.length(); k++) {
+                        char c = name.charAt(k);
+                        if ((c >= 'A' && c <= 'Z')
+                                || (c >= 'a' && c <= 'a')
+                                || (c >= '0' && c <= '9') || (c == ' ')) {
+                            table.append(c);
+                        } else {
+                            table.append(String.format("&#%d;", (int) c));
+                        }
+                    }
+
+                    table.append("</TD>" + "<TD>" + raDeg + "</TD>"
+                            + "<TD>" + decDeg + "</TD>" + "</TR>\n");
+                } catch (NumberFormatException e) {
+                    System.err.println("Malformed RA or Dec coordinate");
+                }
+            }
         }
     }
 
