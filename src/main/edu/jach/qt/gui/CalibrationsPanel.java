@@ -42,8 +42,7 @@ import gemini.sp.SpItem;
 import edu.jach.qt.utils.CalibrationList;
 
 @SuppressWarnings("serial")
-public class CalibrationsPanel extends JPanel implements ListSelectionListener,
-        Runnable {
+public class CalibrationsPanel extends JPanel {
     private final static String AND_STRING = "AND Folder: ";
 
     private JPanel left = new JPanel();
@@ -73,8 +72,11 @@ public class CalibrationsPanel extends JPanel implements ListSelectionListener,
     }
 
     public void init() {
-        Thread thread = new Thread(this);
-        thread.start();
+        (new Thread() {
+            public void run() {
+                fetchCalibrations();
+            }
+        }).start();
     }
 
     // Reload calibrations panel.  Must be called from the Swing thread.
@@ -114,7 +116,7 @@ public class CalibrationsPanel extends JPanel implements ListSelectionListener,
         return listModel;
     }
 
-    public void run() {
+    private void fetchCalibrations() {
         // Call the setup() method to actually fetch the calibrations.
         final DefaultListModel listModel = setup();
 
@@ -127,7 +129,14 @@ public class CalibrationsPanel extends JPanel implements ListSelectionListener,
                         ListSelectionModel.SINGLE_INTERVAL_SELECTION);
                 firstList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
                 firstList.setVisibleRowCount(-1);
-                firstList.addListSelectionListener(CalibrationsPanel.this);
+                firstList.addListSelectionListener(new ListSelectionListener() {
+                    public void valueChanged(ListSelectionEvent e) {
+                        Object value = firstList.getSelectedValue();
+                        if (value != null && value instanceof String) {
+                            secondList.setModel(second((String) value));
+                        }
+                    }
+                });
                 firstScrollPane = new JScrollPane(firstList);
                 firstScrollPane.setPreferredSize(new Dimension(350, 400));
                 left.remove(waiting);
@@ -138,7 +147,17 @@ public class CalibrationsPanel extends JPanel implements ListSelectionListener,
                         ListSelectionModel.SINGLE_INTERVAL_SELECTION);
                 secondList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
                 secondList.setVisibleRowCount(-1);
-                secondList.addListSelectionListener(CalibrationsPanel.this);
+                secondList.addListSelectionListener(new ListSelectionListener() {
+                    public void valueChanged(ListSelectionEvent e) {
+                        Object value = secondList.getSelectedValue();
+                        if (value != null && value instanceof String && e.getValueIsAdjusting() && currentList != null) {
+                            SpItem item = currentList.find((String) value);
+                            DeferredProgramList.addCalibration(item);
+                            JOptionPane.showMessageDialog(CalibrationsPanel.this, "'" + value
+                                    + "' added to deferred observations.");
+                        }
+                    }
+                });
                 secondScrollPane = new JScrollPane(secondList);
                 secondScrollPane.setPreferredSize(new Dimension(350, 400));
                 right.add(secondScrollPane);
@@ -157,28 +176,5 @@ public class CalibrationsPanel extends JPanel implements ListSelectionListener,
         }
 
         return listModel;
-    }
-
-    public void valueChanged(ListSelectionEvent e) {
-        Object source = e.getSource();
-
-        if (source instanceof JList) {
-            JList list = (JList) source;
-            Object value = list.getSelectedValue();
-
-            if (value != null && value instanceof String) {
-                if (list.equals(firstList)) {
-                    secondList.setModel(second((String) value));
-
-                } else if (list.equals(secondList) && e.getValueIsAdjusting()) {
-                    if (currentList != null) {
-                        SpItem item = currentList.find((String) value);
-                        DeferredProgramList.addCalibration(item);
-                        JOptionPane.showMessageDialog(this, "'" + value
-                                + "' added to deferred observations.");
-                    }
-                }
-            }
-        }
     }
 }
