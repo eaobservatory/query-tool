@@ -127,7 +127,7 @@ public class CalibrationsPanel extends JPanel {
                 firstList = new JList(listModel);
                 firstList.setSelectionMode(
                         ListSelectionModel.SINGLE_INTERVAL_SELECTION);
-                firstList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
+                firstList.setLayoutOrientation(JList.VERTICAL);
                 firstList.setVisibleRowCount(-1);
                 firstList.addListSelectionListener(new ListSelectionListener() {
                     public void valueChanged(ListSelectionEvent e) {
@@ -145,7 +145,7 @@ public class CalibrationsPanel extends JPanel {
                 secondList = new JList();
                 secondList.setSelectionMode(
                         ListSelectionModel.SINGLE_INTERVAL_SELECTION);
-                secondList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
+                secondList.setLayoutOrientation(JList.VERTICAL);
                 secondList.setVisibleRowCount(-1);
                 secondList.addListSelectionListener(new ListSelectionListener() {
                     public void valueChanged(ListSelectionEvent e) {
