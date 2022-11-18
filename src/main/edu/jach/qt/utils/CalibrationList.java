@@ -32,22 +32,26 @@ import gemini.sp.obsComp.SpTelescopeObsComp;
 import gemini.util.JACLogger;
 
 /* Standard imports */
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 import orac.util.SpInputXML;
-import orac.util.OrderedMap;
 
 /**
- * This class returns a <code>OrderedMap</code> of calibrations.
+ * This class returns a <code>Map</code> of calibrations.
  *
- * Each entry in the OrderedMap takes the form (String title, SpItem cal),
+ * Each entry in the Map takes the form (String title, SpItem cal),
  * where title is the title of the Observation and cal is calibration
  * observation. Calibration entries are expected to be in the database and
  * belong to a project called "CAL". This project must be unique and ONLY
  * contain calibration observations.
  */
 public class CalibrationList {
-    static final JACLogger logger = JACLogger.getLogger(CalibrationList.class);
+    private static final JACLogger logger = JACLogger.getLogger(CalibrationList.class);
+    private static final String TARGET_PREFIX = "Target Information: ";
 
     /**
      * Constructor
@@ -55,9 +59,8 @@ public class CalibrationList {
     private CalibrationList() {
     }
 
-    public static OrderedMap<String, OrderedMap<String, SpItem>> getCalibrations() {
-        OrderedMap<String, OrderedMap<String, SpItem>> orderedMap =
-                new OrderedMap<String, OrderedMap<String, SpItem>>();
+    public static Map<String, List<SpItem>> getCalibrations() {
+        Map <String, List<SpItem>> map = new LinkedHashMap<String, List<SpItem>>();
 
         try {
             String scienceProgramString = MsbClient.fetchCalibrationProgram();
@@ -69,32 +72,30 @@ public class CalibrationList {
             }
 
             if (scienceProgram != null) {
-                pickApart(scienceProgram, orderedMap, null, null);
+                pickApart(scienceProgram, map, null, null);
             }
 
         } catch (Exception e) {
             System.out.println(e);
         }
 
-        return orderedMap;
+        return map;
     }
 
     private static void pickApart(
             SpItem spItem,
-            OrderedMap<String, OrderedMap<String, SpItem>> orderedMap,
-            OrderedMap<String, SpItem> folder,
+            Map<String, List<SpItem>> map,
+            List<SpItem> folder,
             SpSurveyContainer surveyContainer) {
         Enumeration<SpItem> enumeration = spItem.children();
         String telescope = System.getProperty("telescope");
-        SpItem object;
 
         while (enumeration.hasMoreElements()) {
-            object = enumeration.nextElement();
+            SpItem object = enumeration.nextElement();
 
             if (object instanceof SpAND) {
-                SpAND and = (SpAND) object;
-                folder = new OrderedMap<String, SpItem>();
-                orderedMap.add(and.getTitle(), folder);
+                folder = new ArrayList<SpItem>();
+                map.put(((SpAND) object).getTitle(), folder);
 
             } else if (object instanceof SpMSB && !(object instanceof SpObs)) {
                 addMsbToFolder((SpMSB) object, folder, surveyContainer);
@@ -103,20 +104,18 @@ public class CalibrationList {
                 surveyContainer = (SpSurveyContainer) object;
             }
 
-            pickApart(object, orderedMap, folder, surveyContainer);
+            pickApart(object, map, folder, surveyContainer);
         }
     }
 
-    private static void addMsbToFolder(SpMSB msb, OrderedMap<String, SpItem> folder,
+    private static void addMsbToFolder(SpMSB msb, List<SpItem> folder,
             SpSurveyContainer surveyContainer) {
         if (folder == null) {
             return;
         }
 
-        String title = msb.getTitleAttr();
-
         if (surveyContainer == null) {
-            folder.add(title, msb);
+            folder.add(msb);
         }
         else {
             // Normally the OMP would override the target with one from the
@@ -125,16 +124,17 @@ public class CalibrationList {
             // do that step at this point.  (Having the OMP expand everything
             // would negate any smaller-XML benefit from using survey
             // containers in calibration programs.)
-            String prefix = "Target Information: ";
+            String title = msb.getTitleAttr();
             int n = surveyContainer.size();
 
             for (int i = 0; i < n; i ++) {
                 SpTelescopeObsComp override = surveyContainer.getSpTelescopeObsComp(i);
 
                 String name = override.getTitle();
-                if (name.startsWith(prefix)) {
-                    name = name.substring(prefix.length());
+                if (name.startsWith(TARGET_PREFIX)) {
+                    name = name.substring(TARGET_PREFIX.length());
                 }
+
                 String fullTitle = name + " " + title;
 
                 try {
@@ -149,7 +149,7 @@ public class CalibrationList {
                         SpTreeMan.insert(spid);
                     }
 
-                    folder.add(fullTitle, copy);
+                    folder.add(copy);
                 }
                 catch (Exception e) {
                     System.out.println(e);

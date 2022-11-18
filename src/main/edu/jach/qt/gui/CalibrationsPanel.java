@@ -20,10 +20,13 @@
 package edu.jach.qt.gui;
 
 // Standard imports
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 
 import javax.swing.DefaultListModel;
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
@@ -34,8 +37,10 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import java.util.List;
+import java.util.Map;
+
 // OT imports
-import orac.util.OrderedMap;
 import gemini.sp.SpItem;
 
 // QT imports
@@ -43,21 +48,18 @@ import edu.jach.qt.utils.CalibrationList;
 
 @SuppressWarnings("serial")
 public class CalibrationsPanel extends JPanel {
+    private final static Color lightBlue = new Color(0xCC, 0xCC, 0xFF);
     private final static String AND_STRING = "AND Folder: ";
 
     private JPanel left = new JPanel();
     private JPanel right = new JPanel();
-
-    private JList firstList;
-    private JList secondList;
 
     private JScrollPane firstScrollPane;
     private JScrollPane secondScrollPane;
 
     private GridLayout gridlayout = new GridLayout(1, 2);
 
-    private OrderedMap<String, OrderedMap<String, SpItem>> calibrationList;
-    private OrderedMap<String, SpItem> currentList;
+    private Map<String, List<SpItem>> calibrationList;
 
     private JLabel waiting = new JLabel("Waiting for database ...");
 
@@ -96,35 +98,26 @@ public class CalibrationsPanel extends JPanel {
         init();
     }
 
-    private DefaultListModel setup() {
-        DefaultListModel listModel = new DefaultListModel();
+    private void fetchCalibrations() {
+        final DefaultListModel listModel = new DefaultListModel();
         calibrationList = CalibrationList.getCalibrations();
-        int trimLength = AND_STRING.length();
 
-        for (int index = 0; index < calibrationList.size(); index++) {
-            OrderedMap<String, SpItem> folder = calibrationList.find(index);
+        for (final Map.Entry<String, List<SpItem>> entry : calibrationList.entrySet()) {
+            String key = entry.getKey();
+            List<SpItem> items = entry.getValue();
 
-            if (folder.size() != 0) {
-                String key = calibrationList.getNameForIndex(index);
-
-                if (key.startsWith("AND")) {
-                    listModel.addElement(key.substring(trimLength));
-                }
+            if (key.startsWith(AND_STRING) && (items.size() != 0)) {
+                listModel.addElement(key.substring(AND_STRING.length()));
             }
         }
-
-        return listModel;
-    }
-
-    private void fetchCalibrations() {
-        // Call the setup() method to actually fetch the calibrations.
-        final DefaultListModel listModel = setup();
 
         // Creating the GUI needs to be done in the Swing thread,
         // so use invokeLater.
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                firstList = new JList(listModel);
+                final JList firstList = new JList(listModel);
+                final JList secondList = new JList();
+
                 firstList.setSelectionMode(
                         ListSelectionModel.SINGLE_INTERVAL_SELECTION);
                 firstList.setLayoutOrientation(JList.VERTICAL);
@@ -133,7 +126,16 @@ public class CalibrationsPanel extends JPanel {
                     public void valueChanged(ListSelectionEvent e) {
                         Object value = firstList.getSelectedValue();
                         if (value != null && value instanceof String) {
-                            secondList.setModel(second((String) value));
+                            DefaultListModel listModel = new DefaultListModel();
+                            List<SpItem> currentList = calibrationList.get(AND_STRING + value);
+
+                            if (currentList != null) {
+                                for (SpItem item : currentList) {
+                                    listModel.addElement(item);
+                                }
+                            }
+
+                            secondList.setModel(listModel);
                         }
                     }
                 });
@@ -142,7 +144,6 @@ public class CalibrationsPanel extends JPanel {
                 left.remove(waiting);
                 left.add(firstScrollPane);
 
-                secondList = new JList();
                 secondList.setSelectionMode(
                         ListSelectionModel.SINGLE_INTERVAL_SELECTION);
                 secondList.setLayoutOrientation(JList.VERTICAL);
@@ -150,14 +151,16 @@ public class CalibrationsPanel extends JPanel {
                 secondList.addListSelectionListener(new ListSelectionListener() {
                     public void valueChanged(ListSelectionEvent e) {
                         Object value = secondList.getSelectedValue();
-                        if (value != null && value instanceof String && e.getValueIsAdjusting() && currentList != null) {
-                            SpItem item = currentList.find((String) value);
+                        if (value != null && (value instanceof SpItem) && e.getValueIsAdjusting()) {
+                            SpItem item = (SpItem) value;
                             DeferredProgramList.addCalibration(item);
-                            JOptionPane.showMessageDialog(CalibrationsPanel.this, "'" + value
+                            JOptionPane.showMessageDialog(CalibrationsPanel.this,
+                                    "'" + item.getTitleAttr()
                                     + "' added to deferred observations.");
                         }
                     }
                 });
+                secondList.setCellRenderer(new CalListCellRenderer());
                 secondScrollPane = new JScrollPane(secondList);
                 secondScrollPane.setPreferredSize(new Dimension(350, 400));
                 right.add(secondScrollPane);
@@ -167,14 +170,29 @@ public class CalibrationsPanel extends JPanel {
         });
     }
 
-    private DefaultListModel second(String selection) {
-        DefaultListModel listModel = new DefaultListModel();
-        currentList = calibrationList.find(AND_STRING + selection);
+    private class CalListCellRenderer extends DefaultListCellRenderer {
+        public Component getListCellRendererComponent(JList list, Object value,
+                int index, boolean isSelected, boolean cellHasFocus) {
+            if ((value == null) || ! (value instanceof SpItem)) {
+                return this;
+            }
 
-        for (int index = 0; index < currentList.size(); index++) {
-            listModel.addElement(currentList.find(index).getTitleAttr());
+            SpItem item = (SpItem) value;
+            String title = item.getTitleAttr();
+
+            setText(title);
+
+            if (isSelected) {
+                setBackground(lightBlue);
+            } else {
+                setBackground(list.getBackground());
+            }
+
+            setEnabled(list.isEnabled());
+            setFont(list.getFont());
+            repaint();
+
+            return this;
         }
-
-        return listModel;
     }
 }
