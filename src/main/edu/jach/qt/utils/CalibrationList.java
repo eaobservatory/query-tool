@@ -52,6 +52,7 @@ import orac.util.SpInputXML;
 public class CalibrationList {
     private static final JACLogger logger = JACLogger.getLogger(CalibrationList.class);
     private static final String TARGET_PREFIX = "Target Information: ";
+    private static final String AND_PREFIX = "AND Folder: ";
 
     /**
      * Constructor
@@ -95,7 +96,13 @@ public class CalibrationList {
 
             if (object instanceof SpAND) {
                 folder = new ArrayList<SpItem>();
-                map.put(((SpAND) object).getTitle(), folder);
+                String key = ((SpAND) object).getTitle();
+
+                if (key.startsWith(AND_PREFIX)) {
+                    key = key.substring(AND_PREFIX.length());
+                }
+
+                map.put(key, folder);
 
             } else if (object instanceof SpMSB && !(object instanceof SpObs)) {
                 addMsbToFolder((SpMSB) object, folder, surveyContainer);

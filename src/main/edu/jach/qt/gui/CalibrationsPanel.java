@@ -49,7 +49,6 @@ import edu.jach.qt.utils.CalibrationList;
 @SuppressWarnings("serial")
 public class CalibrationsPanel extends JPanel {
     private final static Color lightBlue = new Color(0xCC, 0xCC, 0xFF);
-    private final static String AND_STRING = "AND Folder: ";
 
     private JPanel left = new JPanel();
     private JPanel right = new JPanel();
@@ -105,8 +104,8 @@ public class CalibrationsPanel extends JPanel {
             String key = entry.getKey();
             List<SpItem> items = entry.getValue();
 
-            if (key.startsWith(AND_STRING) && (items.size() != 0)) {
-                listModel.addElement(key.substring(AND_STRING.length()));
+            if (items.size() != 0) {
+                listModel.addElement(key);
             }
         }
 
@@ -125,7 +124,7 @@ public class CalibrationsPanel extends JPanel {
                         Object value = firstList.getSelectedValue();
                         if (value != null && value instanceof String) {
                             DefaultListModel listModel = new DefaultListModel();
-                            List<SpItem> currentList = calibrationList.get(AND_STRING + value);
+                            List<SpItem> currentList = calibrationList.get(value);
 
                             if (currentList != null) {
                                 for (SpItem item : currentList) {
