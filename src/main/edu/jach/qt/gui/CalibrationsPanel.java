@@ -20,9 +20,9 @@
 package edu.jach.qt.gui;
 
 // Standard imports
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.GridLayout;
 
 import javax.swing.DefaultListModel;
@@ -54,11 +54,6 @@ public class CalibrationsPanel extends JPanel {
     private JPanel left = new JPanel();
     private JPanel right = new JPanel();
 
-    private JScrollPane firstScrollPane;
-    private JScrollPane secondScrollPane;
-
-    private GridLayout gridlayout = new GridLayout(1, 2);
-
     private Map<String, List<SpItem>> calibrationList;
 
     private JLabel waiting = new JLabel("Waiting for database ...");
@@ -66,11 +61,15 @@ public class CalibrationsPanel extends JPanel {
     private boolean ready = false;
 
     public CalibrationsPanel() {
-        this.setLayout(gridlayout);
-        this.add(left);
-        this.add(right);
+        setLayout(new GridLayout(1, 2, 10, 10));
 
-        left.add(waiting);
+        add(left);
+        add(right);
+
+        left.setLayout(new BorderLayout());
+        right.setLayout(new BorderLayout());
+
+        left.add(waiting, BorderLayout.NORTH);
     }
 
     public void init() {
@@ -92,7 +91,7 @@ public class CalibrationsPanel extends JPanel {
 
         left.removeAll();
         right.removeAll();
-        left.add(waiting);
+        left.add(waiting, BorderLayout.NORTH);
         repaint();
 
         init();
@@ -121,7 +120,6 @@ public class CalibrationsPanel extends JPanel {
                 firstList.setSelectionMode(
                         ListSelectionModel.SINGLE_INTERVAL_SELECTION);
                 firstList.setLayoutOrientation(JList.VERTICAL);
-                firstList.setVisibleRowCount(-1);
                 firstList.addListSelectionListener(new ListSelectionListener() {
                     public void valueChanged(ListSelectionEvent e) {
                         Object value = firstList.getSelectedValue();
@@ -139,15 +137,14 @@ public class CalibrationsPanel extends JPanel {
                         }
                     }
                 });
-                firstScrollPane = new JScrollPane(firstList);
-                firstScrollPane.setPreferredSize(new Dimension(350, 400));
-                left.remove(waiting);
-                left.add(firstScrollPane);
+
+                left.removeAll();
+                JScrollPane firstScrollPane = new JScrollPane(firstList);
+                left.add(firstScrollPane, BorderLayout.CENTER);
 
                 secondList.setSelectionMode(
                         ListSelectionModel.SINGLE_INTERVAL_SELECTION);
                 secondList.setLayoutOrientation(JList.VERTICAL);
-                secondList.setVisibleRowCount(-1);
                 secondList.addListSelectionListener(new ListSelectionListener() {
                     public void valueChanged(ListSelectionEvent e) {
                         Object value = secondList.getSelectedValue();
@@ -161,9 +158,10 @@ public class CalibrationsPanel extends JPanel {
                     }
                 });
                 secondList.setCellRenderer(new CalListCellRenderer());
-                secondScrollPane = new JScrollPane(secondList);
-                secondScrollPane.setPreferredSize(new Dimension(350, 400));
-                right.add(secondScrollPane);
+
+                right.removeAll();
+                JScrollPane secondScrollPane = new JScrollPane(secondList);
+                right.add(secondScrollPane, BorderLayout.CENTER);
 
                 ready = true;
             }
