@@ -24,9 +24,13 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.GridLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.DefaultListModel;
 import javax.swing.DefaultListCellRenderer;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
@@ -37,11 +41,18 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
 // OT imports
 import gemini.sp.SpItem;
+import gemini.sp.SpObs;
+import gemini.sp.SpTelescopePos;
+import gemini.sp.SpTreeMan;
+import gemini.sp.obsComp.SpInstObsComp;
+import gemini.sp.obsComp.SpTelescopeObsComp;
+import orac.jcmt.inst.SpInstHeterodyne;
 
 // QT imports
 import edu.jach.qt.utils.CalibrationList;
@@ -114,7 +125,7 @@ public class CalibrationsPanel extends JPanel {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 final JList firstList = new JList(listModel);
-                final JList secondList = new JList();
+                final JList<SpItem> secondList = new JList<SpItem>();
 
                 firstList.setSelectionMode(
                         ListSelectionModel.SINGLE_INTERVAL_SELECTION);
@@ -123,7 +134,7 @@ public class CalibrationsPanel extends JPanel {
                     public void valueChanged(ListSelectionEvent e) {
                         Object value = firstList.getSelectedValue();
                         if (value != null && value instanceof String) {
-                            DefaultListModel listModel = new DefaultListModel();
+                            DefaultListModel<SpItem> listModel = new DefaultListModel<SpItem>();
                             List<SpItem> currentList = calibrationList.get(value);
 
                             if (currentList != null) {
@@ -146,9 +157,8 @@ public class CalibrationsPanel extends JPanel {
                 secondList.setLayoutOrientation(JList.VERTICAL);
                 secondList.addListSelectionListener(new ListSelectionListener() {
                     public void valueChanged(ListSelectionEvent e) {
-                        Object value = secondList.getSelectedValue();
-                        if (value != null && (value instanceof SpItem) && e.getValueIsAdjusting()) {
-                            SpItem item = (SpItem) value;
+                        SpItem item = secondList.getSelectedValue();
+                        if (item != null && e.getValueIsAdjusting()) {
                             DeferredProgramList.addCalibration(item);
                             JOptionPane.showMessageDialog(CalibrationsPanel.this,
                                     "'" + item.getTitleAttr()
@@ -162,9 +172,137 @@ public class CalibrationsPanel extends JPanel {
                 JScrollPane secondScrollPane = new JScrollPane(secondList);
                 right.add(secondScrollPane, BorderLayout.CENTER);
 
+                JPanel sortPanel = new JPanel();
+                right.add(sortPanel, BorderLayout.NORTH);
+
+                sortPanel.add(new JLabel("Sort by:"));
+
+                JButton button = new JButton("Title");
+                button.setMargin(new Insets(1, 1, 1, 1));
+                button.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        sortSpItemList(secondList, new Comparator<SpItem>() {
+                             public int compare(SpItem o1, SpItem o2) {
+                                String t1 = o1.getTitleAttr();
+                                String t2 = o2.getTitleAttr();
+                                return t1.compareTo(t2);
+                            }
+                        });
+                    }
+                });
+                sortPanel.add(button);
+
+                button = new JButton("Target name");
+                button.setMargin(new Insets(1, 1, 1, 1));
+                button.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        sortSpItemList(secondList, new SpItemTargetComparator(true));
+                    }
+                });
+                sortPanel.add(button);
+
+                button = new JButton("Target pos.");
+                button.setMargin(new Insets(1, 1, 1, 1));
+                button.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        sortSpItemList(secondList, new SpItemTargetComparator(false));
+                    }
+                });
+                sortPanel.add(button);
+
+                button = new JButton("Freq.");
+                button.setMargin(new Insets(1, 1, 1, 1));
+                button.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        sortSpItemList(secondList, new Comparator<SpItem>() {
+                            public int compare(SpItem o1, SpItem o2) {
+                                SpItem obs1 = SpTreeMan.findAllItems(o1, SpObs.class.getName()).firstElement();
+                                SpItem obs2 = SpTreeMan.findAllItems(o2, SpObs.class.getName()).firstElement();
+
+                                SpInstObsComp inst1 = SpTreeMan.findInstrument(obs1);
+                                SpInstObsComp inst2 = SpTreeMan.findInstrument(obs2);
+
+                                if (((inst1 == null) || ! (inst1 instanceof SpInstHeterodyne)) &&
+                                        ((inst2 == null) || ! (inst2 instanceof SpInstHeterodyne))) {
+                                    return 0;
+                                }
+                                else if ((inst1 == null) || ! (inst1 instanceof SpInstHeterodyne)) {
+                                    return 1;
+                                }
+                                else if ((inst2 == null) || ! (inst2 instanceof SpInstHeterodyne)) {
+                                    return -1;
+                                }
+                                else {
+                                    return Double.compare(
+                                        ((SpInstHeterodyne) inst1).getRestFrequency(0),
+                                        ((SpInstHeterodyne) inst2).getRestFrequency(0));
+                                }
+                            }
+                        });
+                    }
+                });
+                sortPanel.add(button);
+
                 ready = true;
             }
         });
+    }
+
+    private class SpItemTargetComparator implements Comparator<SpItem> {
+        boolean name;
+
+        public SpItemTargetComparator(boolean name) {
+            this.name = name;
+        }
+
+        public int compare(SpItem o1, SpItem o2) {
+            SpItem obs1 = SpTreeMan.findAllItems(o1, SpObs.class.getName()).firstElement();
+            SpItem obs2 = SpTreeMan.findAllItems(o2, SpObs.class.getName()).firstElement();
+
+            SpTelescopeObsComp obsComp1 = SpTreeMan.findTargetList(obs1);
+            SpTelescopeObsComp obsComp2 = SpTreeMan.findTargetList(obs2);
+
+            SpTelescopePos pos1 = (obsComp1 == null) ? null : obsComp1.getPosList().getBasePosition();
+            SpTelescopePos pos2 = (obsComp2 == null) ? null : obsComp2.getPosList().getBasePosition();
+
+            if ((pos1 == null) && (pos2 == null)) {
+                return 0;
+            }
+            else if (pos1 == null) {
+                return 1;
+            }
+            else if (pos2 == null) {
+                return -1;
+            }
+            else if (name) {
+                return pos1.getName().compareTo(pos2.getName());
+            }
+            else {
+                return Double.compare(pos1.getXaxis(), pos2.getXaxis());
+            }
+        }
+    }
+
+    private void sortSpItemList(JList<SpItem> list, Comparator<SpItem> comparator) {
+        list.clearSelection();
+
+        DefaultListModel<SpItem> model = (DefaultListModel<SpItem>) list.getModel();
+        if ((model == null) || (model.size() == 0)) {
+            return;
+        }
+
+        for (int i = 1; i < model.size(); i ++) {
+            SpItem item = model.get(i);
+
+            for (int j = 0; j < i; j ++ ) {
+                if (comparator.compare(item, model.get(j)) < 0) {
+                    model.add(j, model.remove(i));
+                    break;
+                }
+            }
+        }
+
+        list.ensureIndexIsVisible(0);
     }
 
     private class CalListCellRenderer extends DefaultListCellRenderer {
