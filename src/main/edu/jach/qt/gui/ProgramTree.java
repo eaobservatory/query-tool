@@ -165,7 +165,7 @@ final public class ProgramTree extends JPanel implements
         engButton.setEnabled(true);
         engButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-                doExecute(true);
+                doExecute();
             }
         });
 
@@ -244,14 +244,6 @@ final public class ProgramTree extends JPanel implements
         });
         scaleAgain.setEnabled(false);
         scalePopup.add(scaleAgain);
-
-        JMenuItem sendToEng = new JMenuItem("Send for Engineering");
-        sendToEng.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                doExecute(false);
-            }
-        });
-        scalePopup.add(sendToEng);
 
         gbc.fill = GridBagConstraints.NONE;
         gbc.anchor = GridBagConstraints.CENTER;
@@ -341,7 +333,7 @@ final public class ProgramTree extends JPanel implements
         add(c, gbc);
     }
 
-    public void doExecute(boolean useQueue) {
+    public void doExecute() {
         SpItem item = null;
         boolean isDeferred = false;
 
@@ -354,10 +346,8 @@ final public class ProgramTree extends JPanel implements
         } else if (obsList.getSelectedValue() == null) {
             isDeferred = true;
             item = DeferredProgramList.getCurrentItem();
-        } else if (useQueue || System.getProperty("telescope").equalsIgnoreCase("jcmt")) {
-            item = ProgramTree.getCurrentItem();
         } else {
-            item = ProgramTree.getSelectedItem();
+            item = ProgramTree.getCurrentItem();
         }
 
         setExecutable(false);
@@ -663,7 +653,7 @@ final public class ProgramTree extends JPanel implements
         public void mouseClicked(MouseEvent e) {
             if (e.getClickCount() == 2) {
                 setSelectedItem((SpItem) obsList.getSelectedValue());
-                doExecute(true);
+                doExecute();
 
             } else if (e.getClickCount() == 1
                     && (e.getModifiers() & InputEvent.BUTTON1_MASK)

@@ -104,7 +104,6 @@ final public class DeferredProgramList extends JPanel implements
     private static SpItem currentItem;
     private static HashMap<SpItem, String> fileToObjectMap =
             new HashMap<SpItem, String>();
-    private JPopupMenu engMenu = new JPopupMenu();
     private static HashSet<SpItem> duplicates = new HashSet<SpItem>();
     static JACLogger logger = JACLogger.getLogger(DeferredProgramList.class);
 
@@ -140,14 +139,6 @@ final public class DeferredProgramList extends JPanel implements
             logger.error("Too many drop target listeners", tmle);
         }
         dragSource = new DragSource();
-
-        JMenuItem engItem = new JMenuItem("Send for Engineering");
-        engMenu.add(engItem);
-        engItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                execute(false);
-            }
-        });
 
         // Set up the initial drop target
         scrollPane.getViewport().setDropTarget(dropTarget);
@@ -296,15 +287,7 @@ final public class DeferredProgramList extends JPanel implements
         obsList.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 2) {
-                    execute(true);
-                }
-            }
-
-            public void mousePressed(MouseEvent e) {
-                if (e.isPopupTrigger() && getCurrentItem() != null) {
-                    engMenu.show(e.getComponent(), e.getX(), e.getY());
-                } else {
-                    ProgramTree.clearSelection();
+                    execute();
                 }
             }
         });
@@ -401,7 +384,7 @@ final public class DeferredProgramList extends JPanel implements
      * Its real purpose is to let users do calibrations even if the
      * "Send for Execution" button is disabled.
      */
-    private void execute(boolean useQueue) {
+    private void execute() {
         SpItem item = getCurrentItem();
 
         if (item != null) {
