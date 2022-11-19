@@ -195,21 +195,10 @@ final public class DeferredProgramList extends JPanel implements
                         && !currentFile.isHidden()) {
                     try {
                         FileReader reader = new FileReader(currentFile);
-                        char[] chars = new char[1024];
-                        int readLength = 0;
-                        StringBuffer buffer = new StringBuffer();
 
-                        while (!reader.ready()) {
-                        }
-
-                        while ((readLength = reader.read(chars)) != -1) {
-                            buffer.append(chars, 0, readLength);
-                        }
+                        SpItem currentSpItem = (new SpInputXML()).xmlToSpItem(reader);
 
                         reader.close();
-
-                        SpItem currentSpItem = (new SpInputXML()).xmlToSpItem(
-                                buffer.toString());
 
                         if (currentSpItem != null) {
                             fileToObjectMap.put(currentSpItem, currentFileName);
