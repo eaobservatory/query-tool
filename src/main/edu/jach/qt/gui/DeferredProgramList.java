@@ -94,13 +94,13 @@ import edu.jach.qt.utils.QtTools;
  */
 @SuppressWarnings("serial")
 final public class DeferredProgramList extends JPanel implements
-        DropTargetListener, DragSourceListener, DragGestureListener {
+        DropTargetListener, DragGestureListener {
     private DropTarget dropTarget = null;
     private DragSource dragSource = null;
-    private static JList obsList;
+    private static JList<SpItem> obsList;
     private GridBagConstraints gbc;
     private JScrollPane scrollPane = new JScrollPane();
-    private static DefaultListModel model;
+    private static DefaultListModel<SpItem> model;
     private static SpItem currentItem;
     private static HashMap<SpItem, String> fileToObjectMap =
             new HashMap<SpItem, String>();
@@ -129,7 +129,7 @@ final public class DeferredProgramList extends JPanel implements
         setLayout(gbl);
         gbc = new GridBagConstraints();
 
-        model = new DefaultListModel();
+        model = new DefaultListModel<SpItem>();
         currentItem = null;
 
         dropTarget = new DropTarget();
@@ -259,7 +259,7 @@ final public class DeferredProgramList extends JPanel implements
         // hopefully this will make sure...
         obsList.setEnabled(true);
         obsList.setSelectedIndex(model.getSize() - 1);
-        setCurrentItem((SpItem) obsList.getSelectedValue());
+        setCurrentItem(obsList.getSelectedValue());
         NotePanel.setNote(getCurrentItem());
         ProgramTree.clearSelection();
     }
@@ -276,7 +276,7 @@ final public class DeferredProgramList extends JPanel implements
      * Display the current list of deferred observations.
      */
     public void displayList() {
-        obsList = new JList(model);
+        obsList = new JList<SpItem>(model);
         obsList.setCellRenderer(new ObsListCellRenderer());
 
         // Make this list and drag source and drop target
@@ -294,7 +294,7 @@ final public class DeferredProgramList extends JPanel implements
 
         obsList.addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent e) {
-                SpItem item = (SpItem) obsList.getSelectedValue();
+                SpItem item = obsList.getSelectedValue();
 
                 if (item != null && getCurrentItem() != item) {
                     setCurrentItem(item);
@@ -366,7 +366,7 @@ final public class DeferredProgramList extends JPanel implements
         String currentObsXML = obs.toXML();
 
         for (int i = 0; i < model.size(); i++) {
-            SpItem thisObs = (SpItem) model.elementAt(i);
+            SpItem thisObs = model.elementAt(i);
             String thisObsXML = thisObs.toXML();
 
             if (thisObsXML.equals(currentObsXML)) {
@@ -620,60 +620,6 @@ final public class DeferredProgramList extends JPanel implements
         }
     }
 
-    /* DRAG SOURCE EVENTS */
-    /**
-     * Remove the entry from the list on successful drop.
-     *
-     * Implementation of the <code>DragSourceListener</code> interface.
-     *
-     * @param evt A <code>DragSourceDropEvent</code> object.
-     */
-    public void dragDropEnd(DragSourceDropEvent evt) {
-        if (evt.getDropSuccess()) {
-            // Delete the file
-            String fileToRemove = fileToObjectMap.get(
-                    obsList.getSelectedValue());
-
-            if (fileToRemove != null) {
-                File f = new File(fileToRemove);
-                f.delete();
-            }
-
-            // Delete the entry from the map
-            fileToObjectMap.remove(obsList.getSelectedValue());
-
-            // Remove the entry from the list
-            int index = obsList.getSelectedIndex();
-            if (index > -1) {
-                model.removeElementAt(index);
-            }
-
-            setCurrentItem(null);
-        }
-
-        obsList.setEnabled(true);
-        this.dropTarget.setActive(true);
-    }
-
-    public void dragEnter(DragSourceDragEvent evt) {
-    }
-
-    public void dragExit(DragSourceEvent evt) {
-        evt.getDragSourceContext().setCursor(DragSource.DefaultMoveNoDrop);
-    }
-
-    public void dragOver(DragSourceDragEvent evt) {
-        evt.getDragSourceContext().setCursor(DragSource.DefaultMoveDrop);
-    }
-
-    /**
-     * Implementation of the <code>DragSourceListener</code> interface.
-     *
-     * @param evt A <code>DragSourceDragEvent</code> object.
-     */
-    public void dropActionChanged(DragSourceDragEvent evt) {
-    }
-
     /**
      * Disables the current list from being a drop target temporarily so that
      * we can't drop items from the list back on to the list.
@@ -683,17 +629,81 @@ final public class DeferredProgramList extends JPanel implements
      * @param event A <code>DragGestureEvent</code> object.
      */
     public void dragGestureRecognized(DragGestureEvent event) {
-        SpItem selected = (SpItem) obsList.getSelectedValue();
+        StringSelection text = null;
+        int index = -1;
+
+        Component component = event.getComponent();
+        if (component == obsList) {
+            index = obsList.locationToIndex(event.getDragOrigin());
+            try {
+                SpItem dragged = model.get(index);
+                text = new StringSelection(dragged.toString());
+            }
+            catch (ArrayIndexOutOfBoundsException e) {
+            }
+        }
+
+        if (text == null) {
+            return;
+        }
+
         ProgramTree.clearSelection();
         obsList.setEnabled(false);
 
-        if (selected != null) {
-            StringSelection text = new StringSelection(selected.toString());
+        final int draggedIndex = index;
 
-            // Disable dropping on this window
-            this.dropTarget.setActive(false);
-            dragSource.startDrag(event, DragSource.DefaultMoveNoDrop, text,
-                    this);
-        }
+        // Disable dropping on this window
+        this.dropTarget.setActive(false);
+
+        dragSource.startDrag(
+                event, DragSource.DefaultMoveNoDrop, text,
+                new DragSourceListener() {
+            public void dragDropEnd(DragSourceDropEvent evt) {
+                // Remove the entry from the list on successful drop.
+                if (evt.getDropSuccess()) {
+                    SpItem draggedValue = null;
+                    try {
+                        draggedValue = model.get(draggedIndex);
+
+                        // Remove the entry from the list
+                        model.removeElementAt(draggedIndex);
+                    }
+                    catch (ArrayIndexOutOfBoundsException e) {
+                    }
+
+                    if (draggedValue != null) {
+                        // Delete the file
+                        String fileToRemove = fileToObjectMap.get(draggedValue);
+
+                        if (fileToRemove != null) {
+                            File f = new File(fileToRemove);
+                            f.delete();
+                        }
+
+                        // Delete the entry from the map
+                        fileToObjectMap.remove(draggedValue);
+                    }
+
+                    setCurrentItem(null);
+                }
+
+                obsList.setEnabled(true);
+                DeferredProgramList.this.dropTarget.setActive(true);
+            }
+
+            public void dragEnter(DragSourceDragEvent evt) {
+            }
+
+            public void dragExit(DragSourceEvent evt) {
+                evt.getDragSourceContext().setCursor(DragSource.DefaultMoveNoDrop);
+            }
+
+            public void dragOver(DragSourceDragEvent evt) {
+                evt.getDragSourceContext().setCursor(DragSource.DefaultMoveDrop);
+            }
+
+            public void dropActionChanged(DragSourceDragEvent evt) {
+            }
+        });
     }
 }
