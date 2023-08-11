@@ -58,6 +58,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseAdapter;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.ListSelectionEvent;
+import java.util.Arrays;
 import java.util.Vector;
 import java.util.HashMap;
 import java.util.TooManyListenersException;
@@ -65,10 +66,10 @@ import java.util.Date;
 import java.util.Calendar;
 import java.util.TimeZone;
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.text.SimpleDateFormat;
 
 import java.util.HashSet;
@@ -185,11 +186,11 @@ final public class DeferredProgramList extends JPanel implements
                         && currentFile.length() > 0
                         && !currentFile.isHidden()) {
                     try {
-                        FileReader reader = new FileReader(currentFile);
+                        FileInputStream is = new FileInputStream(currentFile);
 
-                        SpItem currentSpItem = (new SpInputXML()).xmlToSpItem(reader);
+                        SpItem currentSpItem = (new SpInputXML()).xmlToSpItem(is);
 
-                        reader.close();
+                        is.close();
 
                         if (currentSpItem != null) {
                             fileToObjectMap.put(currentSpItem, currentFileName);
@@ -345,8 +346,8 @@ final public class DeferredProgramList extends JPanel implements
         SpItem newItem = current;
 
         try {
-            String xmlString = current.toXML();
-            newItem = (new SpInputXML()).xmlToSpItem(xmlString);
+            byte[] xml = current.toXML();
+            newItem = (new SpInputXML()).xmlToSpItem(xml);
         } catch (Exception e) {
         }
 
@@ -363,13 +364,13 @@ final public class DeferredProgramList extends JPanel implements
     public static boolean isDuplicate(SpItem obs) {
         boolean isDuplicate = false;
 
-        String currentObsXML = obs.toXML();
+        byte[] currentObsXML = obs.toXML();
 
         for (int i = 0; i < model.size(); i++) {
             SpItem thisObs = model.elementAt(i);
-            String thisObsXML = thisObs.toXML();
+            byte[] thisObsXML = thisObs.toXML();
 
-            if (thisObsXML.equals(currentObsXML)) {
+            if (Arrays.equals(thisObsXML, currentObsXML)) {
                 isDuplicate = true;
                 break;
             }
@@ -433,18 +434,18 @@ final public class DeferredProgramList extends JPanel implements
     private static void makePersistent(SpItem item) {
         if (!nodefer) {
             String fName = makeFilenameForDeferredObservation();
-            FileWriter fw = null;
+            FileOutputStream os = null;
 
             try {
-                fw = new FileWriter(fName);
-                fw.write(item.toXML());
-                fw.flush();
+                os = new FileOutputStream(fName);
+                os.write(item.toXML());
+                os.flush();
             } catch (IOException ioe) {
                 logger.error("Error writing file " + fName, ioe);
             } finally {
-                if (fw != null) {
+                if (os != null) {
                     try {
-                        fw.close();
+                        os.close();
                     } catch (IOException ioe) {
                     }
                 }

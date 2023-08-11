@@ -64,8 +64,8 @@ public class CalibrationList {
         Map <String, List<SpItem>> map = new LinkedHashMap<String, List<SpItem>>();
 
         try {
-            String scienceProgramString = MsbClient.fetchCalibrationProgram();
-            SpItem spItem = new SpInputXML().xmlToSpItem(scienceProgramString);
+            byte[] scienceProgramXML = MsbClient.fetchCalibrationProgram();
+            SpItem spItem = new SpInputXML().xmlToSpItem(scienceProgramXML);
             SpProg scienceProgram = null;
 
             if (spItem instanceof SpProg) {

@@ -29,7 +29,7 @@ import gemini.sp.SpType;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 
 import gemini.util.JACLogger;
 
@@ -156,10 +156,10 @@ public abstract class ExecuteJCMT extends Execute {
         File file = new File(filename);
 
         try {
-            final FileWriter writer = new FileWriter(file);
-            writer.write(item.toXML());
-            writer.flush();
-            writer.close();
+            final FileOutputStream os = new FileOutputStream(file);
+            os.write(item.toXML());
+            os.flush();
+            os.close();
             FileUtils.chmod(file);
         } catch (IOException ioe) {
             logger.error("Error writing translation file "

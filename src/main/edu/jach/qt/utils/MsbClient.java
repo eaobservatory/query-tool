@@ -30,7 +30,7 @@ import orac.util.SpInputXML;
 import omp.SoapClient;
 
 // Standard imports
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.net.URL;
 import java.net.MalformedURLException;
 
@@ -93,13 +93,22 @@ public class MsbClient extends SoapClient {
         flushParameter();
         addParameter("xmlquery", String.class, xmlQueryString);
         try {
-            FileWriter fw = new FileWriter(getFilename());
+            FileOutputStream os = new FileOutputStream(getFilename());
             Object tmp = doCall(getURL(), "urn:OMP::MSBServer", "queryMSB");
 
+            byte[] xml = null;
             if (tmp != null) {
-                fw.write((String) tmp);
-                fw.flush();
-                fw.close();
+                if (tmp instanceof byte[]) {
+                    xml = (byte[]) tmp;
+                } else if (tmp instanceof String) {
+                    xml = ((String) tmp).getBytes("UTF-8");
+                }
+            }
+
+            if (xml != null) {
+                os.write(xml);
+                os.flush();
+                os.close();
             }
 
             success = true;
@@ -112,8 +121,8 @@ public class MsbClient extends SoapClient {
         return success;
     }
 
-    public static String fetchCalibrationProgram() {
-        String xml = null;
+    public static byte[] fetchCalibrationProgram() {
+        byte[] xml = null;
         String telescope = System.getProperty("telescope");
         logger.debug("Sending fetchCalProgram: " + telescope);
         flushParameter();
@@ -124,7 +133,9 @@ public class MsbClient extends SoapClient {
             Object tmp = doCall(getURL(), "urn:OMP::MSBServer",
                     "fetchCalProgram");
             if (tmp instanceof byte[]) {
-                xml = new String((byte[]) tmp);
+                xml = (byte []) tmp;
+            } else if (tmp instanceof String) {
+                xml = ((String) tmp).getBytes("UTF-8");
             }
         } catch (Exception e) {
             logger.error("fetchCalibrationProgram threw Exception", e);
@@ -145,26 +156,26 @@ public class MsbClient extends SoapClient {
      */
     public static SpItem fetchMSB(Integer msbid) {
         SpItem spItem = null;
-        String spXML = null;
+        byte[] spXML = null;
         logger.debug("Sending fetchMSB: " + msbid);
         flushParameter();
         addParameter("key", Integer.class, msbid);
         addParameter("compress", String.class, "gzip");
 
         try {
-            FileWriter fw = new FileWriter(getFilename());
+            FileOutputStream os = new FileOutputStream(getFilename());
             Object o = doCall(getURL(), "urn:OMP::MSBServer", "fetchMSB");
 
             if (o != null) {
                 if (o instanceof byte[]) {
-                    spXML = new String((byte[]) o);
+                    spXML = (byte[]) o;
                 } else if (o instanceof String) {
-                    spXML = (String) o;
+                    spXML = ((String) o).getBytes("UTF-8");
                 }
 
-                fw.write(spXML);
-                fw.flush();
-                fw.close();
+                os.write(spXML);
+                os.flush();
+                os.close();
                 SpInputXML spInputXML = new SpInputXML();
                 spItem = spInputXML.xmlToSpItem(spXML);
             }
