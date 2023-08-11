@@ -112,36 +112,6 @@ public class MsbClient extends SoapClient {
         return success;
     }
 
-    /**
-     * Perform a query to the MsbServer with the special calibration query
-     * String.
-     *
-     * Success will return a true value and write the msbSummary XML to file.
-     * A unique file will be written for each user to allow multiple users on
-     * the same machine. This file should not be read by the code.
-     *
-     * @param xmlQueryString a <code>String</code> value. The XML representing
-     *            the query.
-     * @return a <code>String</code> value of the results in XML.
-     */
-    public static String queryCalibration(String xmlQueryString) {
-        String returnString = null;
-        logger.debug("Sending queryMSB: " + xmlQueryString);
-        flushParameter();
-        addParameter("xmlquery", String.class, xmlQueryString);
-        addParameter("maxcount", Integer.class, new Integer(2000));
-
-        try {
-            Object tmp = doCall(getURL(), "urn:OMP::MSBServer", "queryMSB");
-            returnString = tmp.toString();
-        } catch (Exception e) {
-            logger.error("queryCalibration threw Exception", e);
-            e.printStackTrace();
-        }
-
-        return returnString;
-    }
-
     public static String fetchCalibrationProgram() {
         String xml = null;
         String telescope = System.getProperty("telescope");
