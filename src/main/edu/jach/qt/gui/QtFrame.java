@@ -291,9 +291,6 @@ public class QtFrame extends JFrame implements ActionListener, MenuListener,
     }
 
     private void projectTableSetup(ProjectTableModel ptm) {
-        Vector<String> columnNames = new Vector<String>();
-        columnNames.add("projectid");
-        columnNames.add("priority");
         projectTable = new JTable(ptm);
         projectTable.setPreferredScrollableViewportSize(new Dimension(150, -1));
         ToolTipManager.sharedInstance().unregisterComponent(projectTable);
@@ -302,6 +299,9 @@ public class QtFrame extends JFrame implements ActionListener, MenuListener,
         projectTable.setAutoResizeMode(JTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
 
         projectTable.setSelectionModel(new ProjectTableSelectionModel(this));
+
+        // Request greater width for project ID to hopefully show it in full.
+        projectTable.getColumnModel().getColumn(0).setPreferredWidth(200);
 
         projectTable.setVisible(true);
 

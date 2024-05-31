@@ -21,10 +21,12 @@ package edu.jach.qt.utils;
 
 public class ProjectData {
     public String projectID = null;
+    public String semester = null;
     public Integer priority = null;
 
-    public ProjectData(String projectID, Integer priority) {
+    public ProjectData(String projectID, String semester, Integer priority) {
         this.projectID = projectID;
+        this.semester = semester;
         this.priority = priority;
     }
 }

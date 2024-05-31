@@ -425,13 +425,18 @@ public class XmlUtils {
                     StringTokenizer st = new StringTokenizer(priority, ".");
                     priority = st.nextToken();
                     Integer iPriority = new Integer(priority);
-                    projectData.add(new ProjectData(value, iPriority));
+
+                    String semester = getValue(
+                            getElement(projectDoc, "SpMSBSummary", i),
+                            "semester");
+
+                    projectData.add(new ProjectData(value, semester, iPriority));
                     projectIds.add(value);
                 }
             }
         }
 
-        projectData.add(0, new ProjectData("All", new Integer(0)));
+        projectData.add(0, new ProjectData("All", "", new Integer(0)));
 
         return projectData;
     }
