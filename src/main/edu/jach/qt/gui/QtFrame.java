@@ -292,7 +292,7 @@ public class QtFrame extends JFrame implements ActionListener, MenuListener,
 
     private void projectTableSetup(ProjectTableModel ptm) {
         projectTable = new JTable(ptm);
-        projectTable.setPreferredScrollableViewportSize(new Dimension(150, -1));
+        projectTable.setPreferredScrollableViewportSize(new Dimension(200, -1));
         ToolTipManager.sharedInstance().unregisterComponent(projectTable);
         ToolTipManager.sharedInstance().unregisterComponent(
                 projectTable.getTableHeader());

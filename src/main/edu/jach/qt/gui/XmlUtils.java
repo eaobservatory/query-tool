@@ -430,13 +430,17 @@ public class XmlUtils {
                             getElement(projectDoc, "SpMSBSummary", i),
                             "semester");
 
-                    projectData.add(new ProjectData(value, semester, iPriority));
+                    String country = getValue(
+                            getElement(projectDoc, "SpMSBSummary", i),
+                            "country");
+
+                    projectData.add(new ProjectData(value, country, semester, iPriority));
                     projectIds.add(value);
                 }
             }
         }
 
-        projectData.add(0, new ProjectData("All", "", new Integer(0)));
+        projectData.add(0, new ProjectData("All", "", "", new Integer(0)));
 
         return projectData;
     }

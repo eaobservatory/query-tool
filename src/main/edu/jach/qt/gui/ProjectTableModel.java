@@ -33,9 +33,10 @@ public class ProjectTableModel extends AbstractTableModel implements Runnable,
         TableModelListener {
     static final JACLogger logger =
             JACLogger.getLogger(ProjectTableModel.class);
-    private static String[] colName = {"projectid", "semester", "priority"};
-    private static Class<?>[] colClass = {String.class, String.class, Integer.class};
+    private static String[] colName = {"projectid", "country", "semester", "priority"};
+    private static Class<?>[] colClass = {String.class, String.class, String.class, Integer.class};
     private Vector<String> projectIds = new Vector<String>();
+    private Vector<String> countries = new Vector<String>();
     private Vector<String> semesters = new Vector<String>();
     private Vector<Integer> priorities = new Vector<Integer>();
 
@@ -70,6 +71,8 @@ public class ProjectTableModel extends AbstractTableModel implements Runnable,
 
         if (colName[c].equalsIgnoreCase("projectid")) {
             return projectIds.elementAt(r);
+        } else if (colName[c].equalsIgnoreCase("country")) {
+            return countries.elementAt(r);
         } else if (colName[c].equalsIgnoreCase("semester")) {
             return semesters.elementAt(r);
         } else if (colName[c].equalsIgnoreCase("priority")) {
@@ -84,6 +87,7 @@ public class ProjectTableModel extends AbstractTableModel implements Runnable,
 
     public void tableChanged(TableModelEvent evt) {
         projectIds.clear();
+        countries.clear();
         semesters.clear();
         priorities.clear();
         Vector<ProjectData> data = XmlUtils.getProjectData();
@@ -91,6 +95,7 @@ public class ProjectTableModel extends AbstractTableModel implements Runnable,
         if (data != null) {
             for (ProjectData projectData : data) {
                 projectIds.add(projectData.projectID);
+                countries.add(projectData.country);
                 semesters.add(projectData.semester);
                 priorities.add(projectData.priority);
             }
@@ -100,6 +105,7 @@ public class ProjectTableModel extends AbstractTableModel implements Runnable,
     public void clear() {
         if (projectIds.size() != 0) {
             projectIds.clear();
+            countries.clear();
             semesters.clear();
             priorities.clear();
             XmlUtils.clearProjectData();
