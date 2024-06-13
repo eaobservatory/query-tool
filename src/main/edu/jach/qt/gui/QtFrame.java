@@ -110,6 +110,7 @@ public class QtFrame extends JFrame implements ActionListener, MenuListener,
     private TableSorter sorter;
     private QtTable table;
     private int selRow;
+    private int popupRow = -1;
     private JMenuItem saveItem;
     private JMenuItem saveAsItem;
     private JMenuItem reloadCalItem;
@@ -326,7 +327,12 @@ public class QtFrame extends JFrame implements ActionListener, MenuListener,
         JMenuItem menuSendMSB = new JMenuItem("Send MSB to Staging Area");
         popup.add(menuSendMSB);
         table.add(popup);
-        menuSendMSB.addActionListener(this);
+        menuSendMSB.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                logger.debug("Popup send MSB");
+                sendToStagingArea(popupRow);
+            }
+        });
 
         table.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
@@ -343,7 +349,8 @@ public class QtFrame extends JFrame implements ActionListener, MenuListener,
                 else if (SwingUtilities.isRightMouseButton(e)
                         && e.getClickCount() == 1) {
                     logger.debug("Right Mouse Hit");
-                    if (selRow != -1) {
+                    popupRow = table.rowAtPoint(e.getPoint());
+                    if (popupRow != -1) {
                         popup.show((Component) e.getSource(), e.getX(),
                                 e.getY());
                     }
@@ -494,6 +501,16 @@ public class QtFrame extends JFrame implements ActionListener, MenuListener,
      * on the QT interface.
      */
     public void sendToStagingArea() {
+        if (table.getSelectedRow() != -1) {
+            sendToStagingArea(selRow);
+        }
+        else {
+            JOptionPane.showMessageDialog(this,
+                    "Must select a project summary first!");
+        }
+    }
+
+    private void sendToStagingArea(int row) {
         if (queryExpired) {
             String[] options = {"Resubmit", "New Query"};
             int rtn = JOptionPane.showOptionDialog(this,
@@ -522,13 +539,9 @@ public class QtFrame extends JFrame implements ActionListener, MenuListener,
             }
         }
 
-        if (table.getSelectedRow() != -1) {
-            performSendToStagingArea();
+        if (row != -1) {
+            performSendToStagingArea(row);
             om.updateDeferredList();
-
-        } else {
-            JOptionPane.showMessageDialog(this,
-                    "Must select a project summary first!");
         }
     }
 
@@ -537,15 +550,15 @@ public class QtFrame extends JFrame implements ActionListener, MenuListener,
      *
      * Should be called on the Swing event-dispatching thread.
      */
-    private void performSendToStagingArea() {
+    private void performSendToStagingArea(int row) {
         MsbColumns columns = MsbClient.getColumnInfo();
 
         final Integer msbID = new Integer((String) sorter.getValueAt(
-            selRow, columns.getIndexForKey("msbid")));
+            row, columns.getIndexForKey("msbid")));
         final String checksum = (String) sorter.getValueAt(
-            selRow, columns.getIndexForKey("checksum"));
+            row, columns.getIndexForKey("checksum"));
         final String projectid = (String) sorter.getValueAt(
-            selRow, columns.getIndexForKey("projectid"));
+            row, columns.getIndexForKey("projectid"));
 
         // Perform SpQueuedMap check and other Swing actions before
         // launching the SwingWorker thread.
@@ -934,9 +947,6 @@ public class QtFrame extends JFrame implements ActionListener, MenuListener,
 
             if (thisButton.getText().equals(EXIT)) {
                 exitQT();
-            } else {
-                logger.debug("Popup send MSB");
-                performSendToStagingArea();
             }
         }
     }
