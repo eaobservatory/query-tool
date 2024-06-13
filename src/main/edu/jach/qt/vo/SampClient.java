@@ -103,7 +103,7 @@ public class SampClient implements HttpServer.Handler {
 
         menu.addSeparator();
 
-        menu.add(new broadcastTableAction(tableModel, null));
+        menu.add(new BroadcastTableAction(tableModel, null));
 
         final JMenu sendMenu = new JMenu("Send query result coordinates to...");
         setSendMenuEnabledStatus(sendMenu, tableModel, null);
@@ -121,7 +121,7 @@ public class SampClient implements HttpServer.Handler {
 
         menu.addSeparator();
 
-        menu.add(new broadcastTableAction(tableModel, table));
+        menu.add(new BroadcastTableAction(tableModel, table));
 
         final JMenu sendSelectedMenu = new JMenu("Send selected result to...");
         setSendMenuEnabledStatus(sendSelectedMenu, tableModel, table);
@@ -219,17 +219,13 @@ public class SampClient implements HttpServer.Handler {
      *
      * This enables/disables itself based on whether we are connected to a hub.
      */
-    private class broadcastTableAction extends AbstractAction {
-        private TableModel tableModel;
-        private QtTable table;
+    private abstract class BroadcastCoordinatesAction extends AbstractAction {
+        protected TableModel tableModel;
 
-        public broadcastTableAction(final TableModel tableModel, final QtTable table) {
-            super((table == null)
-                ? "Broadcast query result coordinates"
-                : "Broadcast selected result");
+        public BroadcastCoordinatesAction(String name, final TableModel tableModel) {
+            super(name);
 
             this.tableModel = tableModel;
-            this.table = table;
 
             conn.addConnectionListener(new ChangeListener() {
                 public void stateChanged(ChangeEvent e) {
@@ -242,8 +238,25 @@ public class SampClient implements HttpServer.Handler {
                     setEnabledStatus();
                 };
             });
+        }
 
-            if (table != null ) {
+        protected void setEnabledStatus() {
+            setEnabled(conn.isConnected() && (tableModel.getRowCount() > 0));
+        }
+    }
+
+    private class BroadcastTableAction extends BroadcastCoordinatesAction {
+        private QtTable table;
+
+        public BroadcastTableAction(final TableModel tableModel, final QtTable table) {
+            super(((table == null)
+                ? "Broadcast query result coordinates"
+                : "Broadcast selected result"),
+                tableModel);
+
+            this.table = table;
+
+            if (table != null) {
                 table.getSelectionModel().addListSelectionListener(new ListSelectionListener () {
                     public void valueChanged(ListSelectionEvent e) {
                         if (! e.getValueIsAdjusting()) {
@@ -260,16 +273,36 @@ public class SampClient implements HttpServer.Handler {
             notifyTableCoordinates(tableModel, ((table == null) ? -1 : table.getSelectedRow()), null);
         }
 
-        private void setEnabledStatus() {
-            boolean enabled = conn.isConnected() && (tableModel.getRowCount() > 0);
+        protected void setEnabledStatus() {
+            super.setEnabledStatus();
 
-            if (enabled && (table != null)) {
-                enabled = (table.getSelectedRow() != -1);
+            if ((table != null) && isEnabled()) {
+                if (table.getSelectedRow() == -1) {
+                    setEnabled(false);
+                }
             }
-
-            setEnabled(enabled);
         }
     };
+
+    public class BroadcastRowAction extends BroadcastCoordinatesAction {
+        private int row = -1;
+
+        public BroadcastRowAction(final TableModel tableModel) {
+            super("Broadcast coordinates", tableModel);
+
+            setEnabledStatus();
+        }
+
+        public void setRow(final int row) {
+            this.row = row;
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            if (row != -1) {
+                notifyTableCoordinates(tableModel, row, null);
+            }
+        }
+    }
 
     /**
      * Notify SAMP clients of VO table of the query coordinates to load.

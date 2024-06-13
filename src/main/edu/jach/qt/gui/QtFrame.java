@@ -326,6 +326,8 @@ public class QtFrame extends JFrame implements ActionListener, MenuListener,
         popup = new JPopupMenu("MSB");
         JMenuItem menuSendMSB = new JMenuItem("Send MSB to Staging Area");
         popup.add(menuSendMSB);
+        final SampClient.BroadcastRowAction broadcastAction = SampClient.getInstance().new BroadcastRowAction(msbQTM);
+        popup.add(broadcastAction);
         table.add(popup);
         menuSendMSB.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
@@ -350,6 +352,7 @@ public class QtFrame extends JFrame implements ActionListener, MenuListener,
                         && e.getClickCount() == 1) {
                     logger.debug("Right Mouse Hit");
                     popupRow = table.rowAtPoint(e.getPoint());
+                    broadcastAction.setRow(popupRow);
                     if (popupRow != -1) {
                         popup.show((Component) e.getSource(), e.getX(),
                                 e.getY());
