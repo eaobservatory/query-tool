@@ -326,7 +326,7 @@ public class QtFrame extends JFrame implements ActionListener, MenuListener,
         popup = new JPopupMenu("MSB");
         JMenuItem menuSendMSB = new JMenuItem("Send MSB to Staging Area");
         popup.add(menuSendMSB);
-        final SampClient.BroadcastRowAction broadcastAction = SampClient.getInstance().new BroadcastRowAction(msbQTM);
+        final SampClient.BroadcastRowAction broadcastAction = SampClient.getInstance().new BroadcastRowAction(sorter);
         popup.add(broadcastAction);
         table.add(popup);
         menuSendMSB.addActionListener(new ActionListener() {
