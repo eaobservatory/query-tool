@@ -449,8 +449,8 @@ public class SampClient implements HttpServer.Handler {
                 String name = ((project == null) ? "" : project + ": ")
                         + ((targetArray.length == numCoords) ? targetArray[j] : (target + " (" + (j + 1) + ")"));
 
-                if (name.length() > 30) {
-                    name = name.substring(0, 30);
+                if (name.length() > 16) {
+                    name = name.substring(0, 16);
                 }
 
                 table.append("                    <TR>" + "<TD>");
