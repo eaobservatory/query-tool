@@ -28,6 +28,7 @@ import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.AbstractAction;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.SwingUtilities;
@@ -67,6 +68,7 @@ public class SampClient implements HttpServer.Handler {
     private String basePath = null;
     private HashMap<String, String> tableCoords = new HashMap<String, String>();
     private int tableCoordsNum = 0;
+    private JCheckBoxMenuItem includeProjectCheckBox;
 
     private SampClient() {
         conn = new GuiHubConnector(DefaultClientProfile.getProfile());
@@ -100,6 +102,11 @@ public class SampClient implements HttpServer.Handler {
         JMenu menu = new JMenu("Interop");
         menu.add(conn.createRegisterOrHubAction(parent, null));
         menu.add(conn.createShowMonitorAction());
+
+        menu.addSeparator();
+
+        includeProjectCheckBox = new JCheckBoxMenuItem("Include project in name", true);
+        menu.add(includeProjectCheckBox);
 
         menu.addSeparator();
 
@@ -314,7 +321,7 @@ public class SampClient implements HttpServer.Handler {
      * the clients can retrieve it.
      */
     private void notifyTableCoordinates(TableModel tableModel, int row, String clientId) {
-        String table = createVoTable(tableModel, row);
+        String table = createVoTable(tableModel, row, includeProjectCheckBox.isSelected());
 
         try {
             UtilServer server = UtilServer.getInstance();
@@ -355,9 +362,9 @@ public class SampClient implements HttpServer.Handler {
         }
     }
 
-    private String createVoTable(TableModel tableModel, int row) {
+    private String createVoTable(TableModel tableModel, int row, boolean includeProject) {
         MsbColumns columns = MsbClient.getColumnInfo();
-        int projectColumn = columns.getIndexForKey("projectid");
+        int projectColumn = includeProject ? columns.getIndexForKey("projectid") : -1;
         int targetColumn = columns.getIndexForKey("target");
         int raColumn = columns.getIndexForKey("ra");
         int decColumn = columns.getIndexForKey("dec");
@@ -402,7 +409,7 @@ public class SampClient implements HttpServer.Handler {
             int targetColumn,
             int raColumn,
             int decColumn) {
-        String project = (String) tableModel.getValueAt(i, projectColumn);
+        String project = projectColumn == -1 ? null : (String) tableModel.getValueAt(i, projectColumn);
         String target = (String) tableModel.getValueAt(i, targetColumn);
         String raStr = (String) tableModel.getValueAt(i, raColumn);
         String decStr = (String) tableModel.getValueAt(i, decColumn);
@@ -439,7 +446,8 @@ public class SampClient implements HttpServer.Handler {
                 String decDeg = String.format("%.1f",
                         Double.parseDouble(decArray[decArray.length > 1 ? j : 0]));
 
-                String name = project + ": " + ((targetArray.length == numCoords) ? targetArray[j] : (target + " (" + (j + 1) + ")"));
+                String name = ((project == null) ? "" : project + ": ")
+                        + ((targetArray.length == numCoords) ? targetArray[j] : (target + " (" + (j + 1) + ")"));
 
                 if (name.length() > 30) {
                     name = name.substring(0, 30);
