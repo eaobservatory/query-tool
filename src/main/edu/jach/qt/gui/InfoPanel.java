@@ -62,16 +62,6 @@ public class InfoPanel extends JPanel implements ActionListener,
         OMPTimerListener {
     private static final JACLogger logger =
             JACLogger.getLogger(InfoPanel.class);
-    /**
-     * Specifies the webpage containing the String of the latest image to show.
-     */
-    public static final String SAT_WEBPAGE =
-            System.getProperty("satellitePage");
-
-    /**
-     * The static portion of the image source URL.
-     */
-    public static final String IMG_PREFIX = System.getProperty("imagePrefix");
 
     /**
      * The button clicked to start a query.

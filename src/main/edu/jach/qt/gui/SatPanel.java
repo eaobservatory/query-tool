@@ -21,11 +21,13 @@ package edu.jach.qt.gui;
 
 import java.awt.Color;
 import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.lang.Exception;
 import java.net.URL;
-import java.util.StringTokenizer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.imageio.ImageIO;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
@@ -50,6 +52,14 @@ import edu.jach.qt.utils.OMPTimerListener;
 public class SatPanel extends JLabel implements OMPTimerListener {
     private TitledBorder satBorder;
     private static String currentWebPage;
+
+    /**
+     * The static portion of the image source URL.
+     */
+    public static final String IMG_PREFIX = System.getProperty("imagePrefix");
+
+    private static final Pattern pattern_date = Pattern.compile("<a href=/satellite/anim.cgi?.*imgtime=(\\d\\d\\d\\d)(\\d\\d)(\\d\\d)(\\d\\d)(\\d\\d).*>ON</a>");
+    private static final Pattern pattern_image = Pattern.compile("<img src=/(satellite/[-_A-Za-z0-9./]+\\.png)>");
 
     /**
      * Constructor.
@@ -104,31 +114,60 @@ public class SatPanel extends JLabel implements OMPTimerListener {
         SwingWorker<TimedImage, Void> worker =
                 new SwingWorker<TimedImage, Void>() {
             public TimedImage doInBackground() throws Exception {
-                String imageSuffix = URLReader.getImageString(thisURL);
+                String date = null;
+                String image_url = null;
 
-                // The timestamp is now at the end of the URL before the file
-                // extension, separated by dots. It is 12 digits long (plus
-                // one for the first dot.
-                int last_dot = imageSuffix.lastIndexOf('.');
-                int penu_dot = imageSuffix.lastIndexOf('.', last_dot - 1);
+                String inputLine, html = "";
+                BufferedReader in = new BufferedReader(
+                        new InputStreamReader(thisURL.openStream()));
 
-                String timeString = ((last_dot > 0) && (penu_dot > 0)
-                                && (last_dot - penu_dot == 13))
-                        ? imageSuffix.substring(penu_dot + 1, last_dot)
-                        : "Unknown";
+                while ((inputLine = in.readLine()) != null) {
+                    html = html + inputLine;
+                }
 
-                return new TimedImage(timeString, ImageIO.read(new URL(
-                        InfoPanel.IMG_PREFIX + imageSuffix)));
+                in.close();
+
+                Matcher matcher = pattern_date.matcher(html);
+                if (matcher.find()) {
+                    date = matcher.group(1)
+                        + "-" + matcher.group(2)
+                        + "-" + matcher.group(3)
+                        + " " + matcher.group(4)
+                        + ":" + matcher.group(5)
+                        + " UTC";
+                }
+                else {
+                    throw new Exception("Could not extract date from satellite page");
+                }
+
+                matcher = pattern_image.matcher(html);
+                if (matcher.find()) {
+                    image_url = matcher.group(1);
+                }
+                else {
+                    throw new Exception("Could not extract image URL from satellite page");
+                }
+
+                BufferedImage image = ImageIO.read(new URL(IMG_PREFIX + image_url));
+
+                // The current MKWC shows a larger area than the original (Big Island) view,
+                // so extract a subimage from it.
+                double scale = 0.2;
+                double width = image.getWidth();
+                double height = image.getHeight();
+                image = image.getSubimage(
+                    (int) Math.round(width * (0.586 - (scale / 2))), (int) Math.round(height * (0.49 - (scale / 2))),
+                    (int) Math.round(width * scale), (int) Math.round(height * scale));
+
+                // Make sure we scale the image
+                return new TimedImage(date, image.getScaledInstance(112, 90, Image.SCALE_SMOOTH));
             }
 
             protected void done() {
                 try {
                     TimedImage result = get();
-                    // Make sure we scale the image
-                    setIcon(new ImageIcon(result.image.getScaledInstance(112,
-                            90, Image.SCALE_DEFAULT)));
-
-                    satBorder.setTitle(result.time + " UTC");
+                    setIcon(new ImageIcon(result.image));
+                    satBorder.setTitle(result.time);
                 } catch (Exception e) {
                     System.err.println("Caught exception: " + e);
                 }
@@ -166,44 +205,5 @@ public class SatPanel extends JLabel implements OMPTimerListener {
             this.time = time;
             this.image = image;
         }
-    }
-}
-
-/**
- * Reads a URL.
- */
-class URLReader {
-
-    /**
-     * Get the String associated with a URL.
-     *
-     * @param url The URL associated with the satellite image.
-     * @return The name of the Image.
-     * @exception Exception if unable to open the URL.
-     */
-    public static String getImageString(URL url) throws Exception {
-        String imgString = "";
-        String inputLine, html = "";
-        BufferedReader in = new BufferedReader(
-                new InputStreamReader(url.openStream()));
-
-        while ((inputLine = in.readLine()) != null) {
-            html = html + inputLine;
-        }
-
-        in.close();
-
-        StringTokenizer st = new StringTokenizer(html);
-
-        while (st.hasMoreTokens()) {
-            String temp = st.nextToken();
-
-            if (temp.startsWith("SRC")) {
-                imgString = temp.substring(4, temp.indexOf('>'));
-                break;
-            }
-        }
-
-        return imgString;
     }
 }

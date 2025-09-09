@@ -5,8 +5,8 @@
 msbSummary:/tmp/msbSummary.xml
 
 #Sat page
-satelliteIRPage:http://mkwc.ifa.hawaii.edu/satellite/still.cgi?res=4km&chnl=ir&domain=big&anim=no&size=large&thumbs=on&banner=mkwc&satplat=goeswest&overlay=off
-satelliteWVPage:http://mkwc.ifa.hawaii.edu/satellite/still.cgi?res=8km&chnl=wv&domain=big&anim=no&size=large&thumbs=on&banner=mkwc&satplat=goeswest&overlay=off
+satelliteIRPage:http://mkwc.ifa.hawaii.edu/satellite/anim.cgi?chnl=13&domain=haw-zoom&satplat=goes17&platform=hawaii&anim=off
+satelliteWVPage:http://mkwc.ifa.hawaii.edu/satellite/anim.cgi?chnl=08&domain=haw-zoom&satplat=goes17&platform=hawaii&anim=off
 imagePrefix:http://mkwc.ifa.hawaii.edu/
 
 #Location of soap server
