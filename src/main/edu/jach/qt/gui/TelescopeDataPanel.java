@@ -99,7 +99,7 @@ public class TelescopeDataPanel extends JPanel implements ActionListener {
         updateButton = new JButton("Set Default");
         this.infoPanel = panel;
 
-        if (TelescopeDataPanel.DRAMA_ENABLED) {
+        if (DRAMA_ENABLED) {
             hub = DcHub.getHandle();
             hub.setParentComponent(this); // Use for ErrorBox dialogs in the
                                           // hub.
@@ -318,13 +318,15 @@ public class TelescopeDataPanel extends JPanel implements ActionListener {
      * @return The current DRAMA hub created by the constructor.
      */
     public void closeHub() {
-        try {
-            Thread hubThread = hub.getThread();
+        if (DRAMA_ENABLED) {
+            try {
+                Thread hubThread = hub.getThread();
 
-            hub.closeDcHub(closeHI);
-            hubThread.join();
-        } catch (ObeyNotRegisteredException onr) {
-        } catch (InterruptedException ie) {
+                hub.closeDcHub(closeHI);
+                hubThread.join();
+            } catch (ObeyNotRegisteredException onr) {
+            } catch (InterruptedException ie) {
+            }
         }
     }
 

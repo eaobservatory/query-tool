@@ -78,7 +78,6 @@ public class InfoPanel extends JPanel implements ActionListener,
     private SatPanel satPanel;
     private Querytool localQuerytool;
     private QtFrame qtf;
-    private JButton exitButton;
     private JButton fetchMSB;
     private TimerTask queryTask;
     final private InfoPanel infoPanel;
@@ -106,9 +105,9 @@ public class InfoPanel extends JPanel implements ActionListener,
         setBackground(Color.black);
         setBorder(matte);
         setLayout(gbl);
-        setMinimumSize(new Dimension(174, 450));
-        setPreferredSize(new Dimension(174, 450));
-        setMaximumSize(new Dimension(174, 450));
+        setMinimumSize(new Dimension(174, 400));
+        setPreferredSize(new Dimension(174, 400));
+        setMaximumSize(new Dimension(174, 400));
 
         compInit();
     }
@@ -116,7 +115,6 @@ public class InfoPanel extends JPanel implements ActionListener,
     private void compInit() {
         final GridBagConstraints gbc = new GridBagConstraints();
 
-        exitButton = new JButton();
         fetchMSB = new JButton();
         timePanel = new TimePanel();
         satPanel = new SatPanel();
@@ -229,12 +227,6 @@ public class InfoPanel extends JPanel implements ActionListener,
         fetchMSB.setBackground(java.awt.Color.gray);
         fetchMSB.addActionListener(this);
 
-        /* Setup the EXIT button */
-        exitButton.setText("Exit");
-        exitButton.setName("Exit");
-        exitButton.setBackground(java.awt.Color.gray);
-        exitButton.addActionListener(this);
-
         gbc.fill = GridBagConstraints.BOTH;
         gbc.anchor = GridBagConstraints.NORTH;
         gbc.weighty = 0.0;
@@ -248,7 +240,6 @@ public class InfoPanel extends JPanel implements ActionListener,
         /* Add all the buttons */
         add(InfoPanel.searchButton, gbc, 0, 5, 1, 1);
         add(fetchMSB, gbc, 0, 10, 1, 1);
-        add(exitButton, gbc, 0, 15, 1, 1);
 
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.anchor = GridBagConstraints.CENTER;
@@ -332,14 +323,7 @@ public class InfoPanel extends JPanel implements ActionListener,
      */
     public void actionPerformed(ActionEvent e) {
         Object source = e.getSource();
-        if (source == exitButton) {
-            if (TelescopeDataPanel.DRAMA_ENABLED) {
-                telescopeInfoPanel.closeHub();
-            }
-
-            qtf.exitQT();
-
-        } else if (source == fetchMSB) {
+        if (source == fetchMSB) {
             qtf.sendToStagingArea();
         }
     }

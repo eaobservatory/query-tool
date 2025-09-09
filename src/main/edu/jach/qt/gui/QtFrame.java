@@ -212,6 +212,12 @@ public class QtFrame extends JFrame implements ActionListener, MenuListener,
             }
         }
 
+        try {
+            infoPanel.getTelescopeDataPanel().closeHub();
+        } catch (Exception e) {
+            System.err.println("Error closing DRAMA hub: " + e);
+        }
+
         setVisible(false);
         dispose();
         logger.shutdown();
