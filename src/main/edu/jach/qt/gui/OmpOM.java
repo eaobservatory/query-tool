@@ -64,15 +64,6 @@ public class OmpOM extends JPanel {
     }
 
     /**
-     * Set whether the current SpItems can be executed.
-     *
-     * @param flag <code>true</code> if items can be executed.
-     */
-    public void setExecutable(boolean flag) {
-        ProgramTree.setExecutable(flag);
-    }
-
-    /**
      * Get the name of the program.
      *
      * Gets the name of the program from Title field in the first observation.

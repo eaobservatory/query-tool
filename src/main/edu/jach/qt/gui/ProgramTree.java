@@ -132,8 +132,6 @@ final public class ProgramTree extends JPanel implements
     private JPopupMenu scalePopup;
 
     private static final String sendToQueue = "Send to Queue";
-    private static final String disabled =
-            "Time constraint edited, click \"Set Default\"";
 
     private SelectionListener selectionlistener = null;
     private MouseListener popupListener = null;
@@ -299,17 +297,15 @@ final public class ProgramTree extends JPanel implements
      *
      * @param flag <code>true</code> to enable execution.
      */
-    public static void setExecutable(boolean flag) {
+    private static void setExecutable(boolean flag) {
         logger.debug("In ProgramTree.setExecutable(); setting run.enabled to "
                 + flag);
         engButton.setEnabled(flag);
 
         if (flag == false) {
-            engButton.setText(disabled);
-            engButton.setToolTipText("Disabled due to edited time constraint");
+            engButton.setToolTipText("Run button disabled during execution / editing.");
             ToolTipManager.sharedInstance().setInitialDelay(250);
         } else {
-            engButton.setText(sendToQueue);
             engButton.setToolTipText(null);
         }
     }
@@ -351,7 +347,6 @@ final public class ProgramTree extends JPanel implements
         }
 
         setExecutable(false);
-        engButton.setToolTipText("Run button disabled during execution");
 
         if (System.getProperty("telescope").equalsIgnoreCase("jcmt")) {
             (new ExecuteJCMT(item, isDeferred) {

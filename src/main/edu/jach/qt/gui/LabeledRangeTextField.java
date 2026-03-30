@@ -419,7 +419,6 @@ public class LabeledRangeTextField extends WidgetPanel implements
      */
     public void startTimer() {
         timer.start();
-        ProgramTree.setExecutable(true);
     }
 
     /**
@@ -429,7 +428,6 @@ public class LabeledRangeTextField extends WidgetPanel implements
      */
     public void restartTimer() {
         timer.restart();
-        ProgramTree.setExecutable(true);
     }
 
     /**
@@ -439,7 +437,6 @@ public class LabeledRangeTextField extends WidgetPanel implements
      */
     public void stopTimer() {
         timer.stop();
-        ProgramTree.setExecutable(false);
     }
 
     /**
